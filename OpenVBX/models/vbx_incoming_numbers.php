@@ -196,7 +196,7 @@ class VBX_Incoming_numbers extends Model
 										   array('Url' => $voice_url,
 												 'SmsUrl' => $sms_url,
 												 'VoiceFallbackUrl' => base_url().'fallback/voice.php',
-												 'SmsFallbackUrl' => base_url().'fallback/voice.php',
+												 'SmsFallbackUrl' => base_url().'fallback/sms.php',
 												 'VoiceFallbackMethod' => 'GET',
 												 'SmsFallbackMethod' => 'GET',
 												 'SmsMethod' => 'POST')
