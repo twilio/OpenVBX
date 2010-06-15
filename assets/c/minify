@@ -1,0 +1,9 @@
+#!/bin/sh
+
+INPUT=$1;
+
+# CSS_EXPR1='s/^[ \t]*//g; s/[ \t]*$//g; s/\([:{;,]\) /\1/g; s/^@import ".*";//g; s/ {/{/g; s/\/\*.*\*\///g; /^$/d';
+CSS_EXPR2='$!N; s/\n\(.\)/\1/; ta';
+# Process CSS
+# cat $INPUT | sed -e "$CSS_EXPR1" | sed -e :a -e "$CSS_EXPR2" 
+cat $INPUT | sed -e :a -e "$CSS_EXPR2" 

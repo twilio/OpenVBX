@@ -1,0 +1,39 @@
+/* AUDIO PLAYER */
+.player {
+}
+
+.message-row table.player td { 
+    /* Have to override the bottom-border-width that comes from the message row. */
+    border-bottom-width: 0px !important;
+    /* Override the padding that comes from the message row */
+    padding: 0px !important;
+}
+
+.player .player-bar {
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+	float: left;
+    background: rgb(195, 195, 195);
+    border: 1px solid #aaa;
+    display: block;
+    width: 100%;
+    height: 20px;
+}
+
+.player .load-bar {
+    background-color: rgb(172, 172, 172);
+    height: 20px;
+    width:0px;
+    cursor: pointer;
+}
+
+.player .play-bar {
+    background-color: #48c8e3;
+    width:0px;
+    height: 20px;
+}
+
+.load-bar.jqjp_buffer {
+    background: url("../../i/bar_buffer.gif")  top left repeat-x;
+    background-color: #fff;
+}

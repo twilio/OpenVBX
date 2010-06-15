@@ -1,0 +1,50 @@
+/* Voicemail */
+
+.voicemail-blank {
+    padding: 20px 0 35px 110px;
+    background: #EAF4FB url('../i/voicemail-icon.png') no-repeat 15px 10px;
+    border: 3px solid #CCC;
+    border-bottom: none;
+}
+
+.voicemail-blank h2 {
+    font-size: 28px;
+    color: #454545;
+}
+
+.voicemail-blank p {
+    font-size: 17px;
+    color: #666;
+}
+
+.voicemail-container {
+	padding: 5px 10px;
+    border: 1px solid #CCC;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+	overflow: auto;
+}
+
+.voicemail-icon {
+	float: left;
+	margin: 5px 15px 0 0;
+}
+
+.voicemail-label {
+	float: left;
+	line-height: 35px;
+	width: 135px;
+	margin: 0 15px 0 0;
+	font-weight: bold;
+}
+
+.voicemail-picker {
+	float: left;
+	width: 540px;
+}
+
+
+
+
+
+

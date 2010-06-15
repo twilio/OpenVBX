@@ -1,0 +1,139 @@
+/*
+Template Name: Barbosa
+*/
+
+/* Links */
+
+.barbosa-theme a:link {
+	color: #368FC9;
+}
+
+.barbosa-theme a:visited {
+	color: #368FC9;
+}
+
+.barbosa-theme a:hover {
+	color: #40A4D9;
+}
+
+.barbosa-theme a:active {
+	color: #333;
+}
+
+/* Header */
+
+#openvbx-logo a {
+    display: block;
+    float: left;
+    height: 54px;
+    width: 208px;
+    margin: 15px 10px;
+    background: #FFF url(images/openvbx-header-logo.png) no-repeat left top;
+    outline: none;
+}
+
+
+/* VBX Context Menu */
+
+#vbx-context-menu {
+    padding: 5px;
+    background: #E37E33 url(images/main-context-menu-bg.png) repeat-x top left;
+    border-bottom: 1px solid #FFF;
+    overflow: auto;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -webkit-border-radius-topleft: 4px;
+    -webkit-border-radius-topright: 4px;
+}
+
+
+
+/* Main Navigation */
+
+#vbx-main-nav .vbx-nav-item a {
+    display: block;
+    padding: 6px 5px 6px 10px;
+    font-size: 14px;
+    text-decoration: none;
+    background-color: #FFF;
+	border: none;
+    overflow: auto;
+}
+
+#vbx-main-nav .vbx-nav-item a:hover {
+	color: #40A4D9;
+}
+
+#vbx-main-nav .selected a,
+#vbx-main-nav .selected a:hover {
+    width: 166px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFF1C3;
+    background-color: #333;
+}
+
+
+
+
+
+/* VBX Items Grid */
+
+.vbx-items-grid .quick-call-popup .call {
+    display: block;
+    height: 28px;
+    line-height: 28px;
+    width: 42px;
+    padding-left: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFF;
+    text-decoration: none;
+    background: url(images/quick-call-popup-button-bg.png) no-repeat center center;
+}
+
+.vbx-items-grid .quick-sms-popup .send-button {
+    height: 28px;
+    width: 80px;
+    margin-left: 10px;
+    padding-left: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFF;
+    background: url(images/quick-sms-send-button-bg.png) no-repeat center center;
+}
+
+
+
+/* Message Details*/
+
+.message-details-header .quick-call-popup .call {
+    display: block;
+    height: 28px;
+    line-height: 28px;
+    width: 42px;
+    padding-left: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFF;
+    text-decoration: none;
+    background: url(images/quick-call-popup-button-bg.png) no-repeat center center;
+}
+
+
+
+/* Admin */
+
+#user-container .user {
+    display: inline-block;
+    width: 221px;
+    margin: 0 10px 10px 0;
+    padding: 20px 10px 10px 10px;
+    background: #FFF url(images/user-drag-grip.png) no-repeat center 2px;
+    cursor: move;
+    overflow: hidden;
+    border: 1px solid #777;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+

@@ -1,0 +1,629 @@
+/* Flows */
+
+.flows-blank {
+	padding: 20px 0 15px 115px;
+	background: #EAF4FB url('../i/flows-icon.png') no-repeat 15px 20px;
+	border-bottom: 3px solid #CCC;
+}
+
+.flows-blank h2 {
+	font-size: 28px;
+	color: #454545;
+}
+
+.flows-blank p {
+	width: 460px;
+	font-size: 17px;
+	color: #666;
+}
+
+.flows-menu .menu-item .add-button{
+    display: block;
+    float: right;
+    height: 32px;
+    margin: 0 5px 0 0;
+}
+
+#flows-table .flows-head-row .flow-name {
+    width: 280px;
+}
+
+#flows-table .flows-head-row .flow-copy,
+#flows-table .flows-head-row .flow-delete {
+    width: 30px;
+}
+
+
+
+/* Phone Numbers */
+
+.numbers-blank {
+	padding: 20px 0 15px 115px;
+	background: #EAF4FB url('../i/numbers-icon.png') no-repeat 15px 20px;
+	border-bottom: 3px solid #CCC;
+}
+
+.numbers-blank h2 {
+	font-size: 28px;
+	color: #454545;
+}
+
+.numbers-blank p {
+	width: 460px;
+	font-size: 17px;
+	color: #666;
+}
+
+.phone-numbers-menu .menu-item .add-button{
+    display: block;
+    float: right;
+    height: 32px;
+    margin: 0 5px 0 0;
+}
+
+#phone-numbers-table .number-row .incoming-number-phone,
+#phone-numbers-table .number-row .incoming-number-name {
+    width: 150px;
+}
+
+#phone-numbers-table .sandbox-row .sandbox-label {
+    font-weight: bolder;
+    float: left;
+    width: 100%;
+}
+
+#phone-numbers-table .sandbox-row td {
+    padding-top: 10px;
+    width: 150px;
+    background-color: #FFF;
+}
+
+
+
+#phone-numbers-table .number-row .incoming-number-flow {
+}
+
+#phone-numbers-table .option-selected,
+#phone-numbers-table select {
+	display: block;
+	float: left;
+}
+
+#phone-numbers-table .option-selected {
+	margin-top: 3px;
+	cursor: pointer;
+}
+
+#phone-numbers-table select {
+	padding: 3px 2px;
+}
+
+#phone-numbers-table .cancel,
+#phone-numbers-table .flow {
+	float: left;
+	margin-left: 10px;
+	cursor: pointer;
+}
+
+
+.area-code {
+    margin: 10px 0;
+    padding: 20px;
+    background-color: #EEE;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+}
+
+#dlg_add .error {
+	margin-bottom: 15px;
+	padding: 10px;
+	font-weight: bold;
+	border: 1px solid #999;
+}
+
+#dlg_add .field-label-inline {
+    margin-right: 15px;
+}
+
+.area-code-label {
+    display: block;
+    font-size: 17px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+#area-code-wrapper {
+    height: 48px;
+    line-height: 48px;
+    font-size: 25px;
+    font-weight: normal;
+}
+
+.area-code input {
+    width: 60px;
+    padding: 5px;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+#completed-order p {
+	text-align: center;
+}
+
+#completed-order .number {
+	height: 80px;
+	line-height: 80px;
+	margin: 30px 0;
+	font-size: 48px;
+	font-weight: bold;
+	color: #333;
+}
+
+#completed-order .link-button {
+	display: block;
+	width: 140px;
+	margin: 0 auto;
+	padding: 10px 5px;
+	font-size: 17px;
+	color: #FFF;
+	text-decoration: none;
+	text-align: center;
+	background-color: #4B9727;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+#completed-order .link-button img {
+	margin-left: 10px;
+}
+
+#completed-order .link-button:hover {
+	background-color: #5CBA30;
+}
+
+#completed-order .skip-link {
+}
+
+#completed-order .skip-link:hover {
+	color: #333;
+}
+
+
+
+
+
+/* Accounts */
+
+.user-groups-menu .normal-button {
+    margin: 0 10px 0 0;
+}
+
+.accounts-section {
+    padding: 20px;
+    background-color: #FFF;
+}
+
+.accounts-section h3 {
+    font-size: 19px;
+    font-weight: bold;
+    color: #444;
+}
+
+#user-container .user-list {
+    margin: 10px 0;
+    padding: 8px 0 0 8px;
+    background-color: #EEE;
+    border: 1px solid #999;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+	overflow: auto;
+}
+
+#user-container .user {
+    display: block;
+	float: left;
+	height: 45px;
+    width: 211px;
+    margin: 0 8px 8px 0;
+    padding: 20px 10px 10px 10px;
+    background: #FFF url(../i/user-drag-grip.png) no-repeat center 2px;
+    cursor: move;
+    overflow: hidden;
+    border: 1px solid #777;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+#user-container .user-info {
+    padding-left: 45px;
+}
+
+#user-container .user-name {
+    font-weight: bold;
+    color: #333;
+}
+
+#user-container .user-email {
+    color: #555;
+}
+
+#user-container .user-utilities {
+	position: relative;
+    display: block;
+	float: left;
+    height: 30px;
+    width: 35px;
+    margin-bottom: 15px;
+    background: url(../i/user-group-icon.png) top no-repeat;
+}
+
+#user-container .user-edit {
+	position: absolute;
+	top: 32px;
+	left: 2px;
+    display: block;
+    height: 13px;
+    width: 13px;
+    background: url(../i/user-group-utilities.png) no-repeat;
+}
+
+#user-container .user-remove {
+	position: absolute;
+	top: 32px;
+	left: 20px;
+    display: block;
+    height: 13px;
+    width: 13px;
+    background: url(../i/user-group-utilities.png) -17px 0 no-repeat;
+}
+
+#group-container .group-list {
+    padding: 10px 0;
+}
+
+#group-container .group {
+    position: relative;
+    margin: 0 0 20px 0;
+    padding: 15px 20px 25px 15px;
+    background-color: #FFF;
+    cursor: pointer;
+    border: 1px dashed #555;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+#group-container .ui-state-hover {
+    border: 1px solid #333;
+    background-color: #FFC;
+}
+
+#group-container .group-counter {
+    position: absolute;
+    right: -12px;
+    top: -12px;
+    padding: 4px 10px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #FFF;
+    background-color: #444;
+    border: 3px solid #FFF;
+    -moz-border-radius: 24px;
+    -webkit-border-radius: 24px;
+}
+
+#group-container .group-counter-loader {
+    position: absolute;
+    right: -12px;
+    top: -12px;
+    padding: 4px 10px;
+    background-color: #444;
+    border: 3px solid #FFF;
+    -moz-border-radius: 24px;
+    -webkit-border-radius: 24px;
+}
+
+#group-container .group-info {
+	padding: 0 0 0 45px;
+}
+
+#group-container .group-name {
+	width: 150px;
+    padding: 5px 0 10px 0;
+    font-size: 25px;
+    font-weight: bold;
+    color: #555;
+	overflow: hidden;
+}
+
+#group-container .group-utilities {
+    position: relative;
+    display: block;
+	float: left;
+    height: 30px;
+    width: 35px;
+    margin-bottom: 15px;
+    background: url(../i/user-group-icon.png) 3px -30px no-repeat;
+}
+
+#group-container .group-edit {
+    background: url(../i/user-group-utilities.png) no-repeat;
+    bottom: -12px;
+    display: block;
+    height: 13px;
+    left: 3px;
+    position: absolute;
+    text-indent: -999em;
+    width: 13px;
+	outline: none;
+}
+
+#group-container .group-remove {
+    background: url(../i/user-group-utilities.png) -17px 0 no-repeat;
+    bottom: -12px;
+    display: block;
+    height: 13px;
+    position: absolute;
+    right: 3px;
+    text-indent: -999em;
+    width: 13px;
+	outline: none;
+}
+
+#group-container .group .members {
+    display:none;
+}
+
+#group-container .group.expanded .members {
+    display: inherit;
+    list-style: none;
+	margin-top: 15px;
+    clear: left;
+}
+
+#group-container .group .members li {
+    list-style: none;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background: #666;
+    color: #FFF;
+    padding: 8px 10px;
+    margin: 5px 0 0 0;
+    font-size: 12px;
+    font-weight: bold;
+    position: relative;
+	overflow: hidden;
+}
+
+#group-container .members .remove {
+    display:block;
+    width: 16px;
+    height: 16px;
+    text-indent: -999em;
+    background: url(../i/remove-user.png) no-repeat;
+    cursor: pointer;
+    position: absolute;
+    right: 3px;
+    top: 7px;
+	outline: none;
+}
+
+
+
+/* Connect */
+
+.connect-section {
+    padding: 20px;
+    background-color: #FFF;
+}
+
+.connect-section h3 {
+    font-size: 19px;
+    font-weight: bold;
+    color: #444;
+}
+
+#numbers-container .numbers-list {
+    margin: 10px 0;
+    padding: 10px 10px 0 10px;
+    background-color: #666;
+    border: 1px solid #000;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+	overflow: auto;
+}
+
+#numbers-container .number {
+    display: block;
+	float: left;
+    width: 178px;
+    margin: 0 10px 10px 0;
+    padding: 10px;
+	background-color: #FFF;
+    border: 1px solid #333;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    overflow: hidden;
+}
+
+#numbers-container .number-info {
+	margin-right: 20px;
+	background-color: #CCC;
+}
+
+#numbers-container .number-name {
+	font-size: 19px;
+    font-weight: bold;
+    color: #333;
+}
+
+#numbers-container .number-nickname {
+	font-size: 15px;
+    color: #444;
+}
+
+#numbers-container .number-utilities {
+	position: relative;
+    display: block;
+	float: right;
+	width: 16px;
+	height: 40px;
+	background-color: #FFF;
+}
+
+#numbers-container .number-edit {
+	position: absolute;
+    display: block;
+	top: 0;
+	left: 0;
+    height: 16px;
+    width: 16px;
+}
+
+#numbers-container .number-delete {
+	position: absolute;
+    display: block;
+	top: 25px;
+	left: 0;
+    height: 16px;
+    width: 16px;
+}
+
+#numbers-container .number-flow {
+	margin-top: 10px;
+}
+
+#numbers-container .drop-flow {
+	padding: 10px 10px 10px 40px;
+	font-size: 11px;
+	font-weight: bold;
+	color: #C5C5C5;
+	text-transform: uppercase;
+	background-color: #F0F0F0;
+	border: 1px dashed #999;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+
+
+#flows-container .flows-list {
+	margin: 10px 0;
+    padding: 10px;
+	background-color: #E1E1E1;
+	border: 1px solid #999;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+#flows-container .flow {
+    position: relative;
+    margin: 0 0 20px 0;
+    padding: 15px 20px 25px 15px;
+    background: #FFF url(../i/user-drag-grip.png) no-repeat center 2px;
+    border: 1px solid #777;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+	cursor: move;
+}
+
+#flows-container .flow-info {
+	padding: 0 0 0 45px;
+}
+
+#flows-container .flow-name {
+    padding: 5px 0 10px 0;
+    font-size: 25px;
+    font-weight: bold;
+    color: #555;
+}
+
+#flows-container .flow-utilities {
+    position: relative;
+    display: block;
+	float: left;
+    height: 30px;
+    width: 35px;
+    margin-bottom: 15px;
+    background: url(../i/ui/user_group_icon.png) 3px -30px no-repeat;
+}
+
+#flows-container .flow-edit {
+    background: url(../i/ui/user_group_utilities.png) no-repeat;
+    bottom: -12px;
+    display: block;
+    height: 13px;
+    left: 3px;
+    position: absolute;
+    text-indent: -999em;
+    width: 13px;
+}
+
+#flows-container .flow-remove {
+    background: url(../i/ui/user_group_utilities.png) -17px 0 no-repeat;
+    bottom: -12px;
+    display: block;
+    height: 13px;
+    position: absolute;
+    right: 3px;
+    text-indent: -999em;
+    width: 13px;
+}
+
+
+
+
+
+/* Site Settings */
+
+/* Plugins */
+
+#settings-plugins .plugin-name {
+	width: 15%;
+}
+
+#settings-plugins .plugin-author {
+	width: 15%;
+}
+
+#settings-plugins .plugin-desc {
+	width: 22%;
+}
+
+#settings-plugins .plugin-path {
+	width: 40%;
+}
+
+#settings-plugins .plugin-config {
+}
+
+
+
+/* Tenants */
+
+.add-tenant-button {
+    float: left;
+    margin: 1px 0 0 10px !important;
+}
+
+#tenant-table .tenant-row strong {
+    font-weight: bold;
+    color: #222;
+}
+
+#tenant-table .edit-tenant {
+    width: 30px;
+}
+
+.activate-tenant {
+    margin: 0 0 15px 0;
+}
+
+.activate-tenant label {
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.activate-tenant input {
+    margin-right: 2px;
+}
+

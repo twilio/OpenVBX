@@ -1,0 +1,66 @@
+/* Main Content Navigation */
+
+#vbx-main-nav {
+    background-color: #FFF;
+}
+
+#vbx-main-nav .vbx-nav-title {
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #555;
+    text-transform: uppercase;
+    background-color: #DDD;
+    border-bottom: 1px solid #CCC;
+}
+
+#vbx-main-nav .vbx-main-nav-items {
+    margin-bottom: 20px;
+}
+
+#vbx-main-nav .vbx-nav-item {
+	display: inline;
+}
+
+#vbx-main-nav .vbx-nav-item a {
+    display: block;
+    padding: 6px 5px 6px 10px;
+    font-size: 14px;
+    text-decoration: none;
+    background-color: #EEE;
+	border-bottom: 1px solid #DDD;
+	outline: none;
+    overflow: auto;
+}
+
+#vbx-main-nav .selected a,
+#vbx-main-nav .selected a:hover {
+    width: 166px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #FFF;
+    background-color: #333;
+}
+
+#vbx-main-nav .label {
+    display: block;
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    width: 120px;
+    overflow: hidden;
+}
+
+#vbx-main-nav .count {
+    float: right;
+    height: 20px;
+    line-height: 20px;
+	padding: 0 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #222;
+    text-align: center;
+    background-color: #FFF;
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+}

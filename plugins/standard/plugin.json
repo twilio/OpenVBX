@@ -1,0 +1,6 @@
+{
+    "name" : "Standard",
+    "author" : "Twilio <vbx@twilio.com>",
+    "description" : "Standard set of applets for OpenVBX",
+    "url" : "http://openvbx.org"
+}

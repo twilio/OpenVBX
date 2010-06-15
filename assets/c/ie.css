@@ -1,0 +1,79 @@
+/* IE Stylesheet */
+
+
+/* Context Menu */
+
+/* Added margin to create spacing between floated buttons */
+#main-call-sms-buttons button {
+	margin-right: 10px;
+}
+
+/* Added margin to create spacing for button */
+#main-context-menu .call-dialog fieldset {
+	margin-bottom: 10px;
+}
+
+
+/* Reduced width to prevent overflow scrolling */
+#main-context-menu .sms-dialog .sms-message {
+    height: 80px;
+    width: 340px;
+    padding: 3px 4px;
+}
+
+
+/* Content Menu */
+
+.vbx-content-menu li.menu-item ul {
+    position: absolute;
+    left: 195px;
+}
+
+
+
+
+/* Items Grid */
+
+.vbx-items-grid .quick-call-popup {
+    height: 28px;
+    width: 212px;
+	margin: 2px 0 0 -202px;
+}
+
+.vbx-items-grid .call-type .quick-call-popup {
+	margin: -4px 0 0 -179px;
+}
+
+.vbx-items-grid .quick-sms-popup {
+	margin: 2px 0 0 -24px;
+}
+
+.vbx-items-grid .quick-sms-popup .count {
+	margin-right: 10px;
+    color: #999;
+    font-style: italic;
+}
+
+
+
+/* Message Details */
+
+.message-details-header .quick-call-popup {
+    height: 28px;
+    width: 212px;
+	margin: -2px 0 0 -180px;
+}
+
+
+/* Admin */
+
+/* Accounts */
+
+#user-container .user-info {
+	padding-left: 5px;
+	overflow: hidden;
+}
+
+
+
+

@@ -1,0 +1,13 @@
+    {
+            "name" : "VBX Styles",
+            "author" : "Josh Gomez",
+            "description" : "Sandbox for testing VBX Styles",
+            "links" : [{
+                    "menu" : "Sandbox",
+                    "url" : "vbx-style",
+                    "script" : "vbx-style.php",
+                    "label" : "VBX Styles"
+            }],
+            "disabled" : true
+    }
+

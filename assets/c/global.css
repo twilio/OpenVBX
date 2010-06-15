@@ -1,0 +1,97 @@
+/* Upgrade Account */
+
+#upgrade-account {
+	padding: 10px;
+	color: #4D841A;
+	background-color: #DBF3C5;
+	border-bottom: 2px solid #74C729;
+}
+
+#upgrade-account a {
+	font-weight: bold;
+	color: #4D841A;
+	text-decoration: underline;
+}
+
+
+/* Header */
+
+#openvbx-logo a {
+    display: block;
+    float: left;
+    height: 54px;
+    width: 208px;
+    margin: 15px 10px;
+    background: #FFF url(../i/openvbx-header-logo.png) no-repeat left top;
+	outline: none;
+}
+
+
+/* Footer */
+
+#ft {
+    height: 200px;
+    margin-top: 20px;
+    background-color: #FFF;
+    border-top: 1px solid #CCC;
+}
+
+.copyright {
+    padding: 10px;
+    font-size: 12px;
+    color: #777;
+    text-align: center;
+}
+
+
+/* Standard Icons */
+
+.standard-icon {
+    height: 24px;
+    width: 24px;
+    background: url(../i/standard-icons-sprite.png) no-repeat left center;
+}
+
+.phone-icon {
+    background-position: 0px center;
+}
+
+.voicemail-icon {
+    background-position: -68px center;
+}
+
+
+/* Misc */
+
+.yui-override-main-margin {
+    margin-left: 181px !important;
+}
+
+br.clear {
+    clear: both;
+}
+
+br.clear-left {
+    clear: left;
+}
+
+br.clear-right {
+    clear: right;
+}
+
+span.replace {
+    display: none;
+}
+
+em {
+    font-style: italic;
+}
+
+.hide {
+    display: none;
+}
+
+.open {
+    display: block;
+}
+

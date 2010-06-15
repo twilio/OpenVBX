@@ -1,0 +1,12 @@
+
+/* Normally the usergroup widget would consume all available width */
+.dial-applet .usergroup-container {
+    margin: 0px !important;
+    padding: 0px !important;
+    border-width: 0px !important;
+    display: inline !important;
+}
+
+.dial-applet .no-answer tr.radio-table-row {
+    height: 100px;
+}

@@ -1,0 +1,35 @@
+/* Do not add css in this file, just imports */
+
+@import url(reset-fonts-grids-2.8.css);
+/*
+ * Add css includes here 
+ * - be careful and use discretion
+ *
+ * Example: @import url(layout.css);
+ * 
+ * Remember to include the file in Makefile
+ *	to rebuild
+ */
+
+@import url(global.css);
+@import url(login.css);
+@import url(utility-menu.css);
+@import url(context-menu.css);
+@import url(navigation.css);
+@import url(content.css);
+
+@import url(forms.css);
+@import url(buttons.css);
+@import url(controls.css);
+
+@import url(plugin.css);
+
+@import url(messages.css);
+@import url(devices.css);
+@import url(voicemail.css);
+@import url(admin.css);
+@import url(flows.css);
+@import url(applet.css);
+
+@import url(jplayer.css);
+@import url(uploadify.css);

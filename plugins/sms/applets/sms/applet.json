@@ -1,0 +1,8 @@
+{
+    "name" : "Sms",
+	"sms_name" : "Send a Reply",
+	"voice_title" : "Sms",
+	"sms_title" : "Send a Reply",
+    "description" : "Send text message to the caller or sender.",
+    "type" : ["sms", "voice"]
+}

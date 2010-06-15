@@ -1,0 +1,142 @@
+/* VBX Plugin Wrapper */
+
+.vbx-plugin {
+    min-height: 600px;
+	padding: 15px;
+    background-color: #FFF;
+}
+
+.vbx-plugin h2 {
+	margin: 0;
+    font-size: 25px;
+    font-weight: bold;
+    color: #333;
+}
+
+.vbx-plugin h3 {
+	font-size: 21px;
+	color: #222;
+}
+
+.vbx-plugin h4 {
+	margin: 5px 0;
+	font-size: 17px;
+	color: #444;
+}
+
+
+.vbx-plugin p {
+	margin-bottom: 10px;
+}
+
+.vbx-plugin ul,
+.vbx-plugin ol {
+	margin-bottom: 20px;
+}
+
+.vbx-plugin li {
+	padding: 3px 0;
+}
+
+.vbx-plugin ul li {
+	margin-left: 15px;
+	list-style-type: disc;
+}
+
+.vbx-plugin ol li {
+	margin-left: 20px;
+	list-style-type: decimal;
+}
+
+.vbx-plugin table {
+    width: 100%;
+	margin: 5px 0 20px 0;
+    background-color: #CCC;
+    border-collapse: collapse;
+    border: 3px solid #CCC;
+    table-layout: fixed;
+}
+
+.vbx-plugin table th {
+    padding: 6px;
+    font-size: 11px;
+    color: #555;
+    text-transform: uppercase;
+    background-color: #DDD;
+    border-collapse: collapse;
+    border-bottom: 1px solid #CCC;
+    vertical-align: center;
+}
+
+.vbx-plugin table td {
+    padding: 6px;
+    background-color: #EEE;
+    border-collapse: collapse;
+    border-bottom: 1px solid #CCC;
+    vertical-align: center;
+}
+
+.vbx-plugin form label {
+		display: block;
+		margin-bottom: 12px;
+		font-size: 13px;
+		color: #404040;
+}
+
+.vbx-plugin fieldset {
+	margin-bottom: 15px;
+}
+
+.vbx-plugin fieldset span {
+    font-size: 11px;
+    font-style: italic;
+    color: #666;
+}
+
+.vbx-plugin fieldset.text input {
+        display: block;
+        width: 290px;
+        margin-top: 3px;
+        padding: 0 5px;
+        height: 30px;
+        font-size: 14px;
+        background: url(../i/form-input-text-300.png) no-repeat left top;
+        border: none;
+}
+
+.vbx-plugin fieldset.checkbox label,
+.vbx-plugin fieldset.radio label {
+	font-weight: bold;
+	cursor: pointer
+}
+
+.vbx-plugin select {
+        display: block;
+        margin-top: 3px;
+        padding: 6px 5px 5px 5px;
+        height: 30px;
+        font-size: 14px;
+        border: none;
+        width: 300px;
+        background: url(../i/form-input-text-300.png) no-repeat left top;
+}
+
+.vbx-plugin select option {
+	padding: 4px 5px;
+}
+
+.vbx-plugin textarea {
+    display: block;
+    height: 80px;
+    width: 290px;
+    margin: 3px 0 0 0;
+    padding: 4px 6px;
+}
+
+
+
+
+
+
+
+

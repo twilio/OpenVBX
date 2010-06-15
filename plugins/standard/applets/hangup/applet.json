@@ -1,0 +1,5 @@
+{
+    "name" : "Hangup",
+    "description" : "Hangup a caller.",
+    "type" : "voice"
+}

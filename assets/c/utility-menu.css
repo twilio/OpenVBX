@@ -1,0 +1,26 @@
+/* Utility Menu */
+
+#vbx-util-menu {
+    float: right;
+	margin: -30px 10px 0 0;
+}
+
+#vbx-util-menu .vbx-util-item {
+    display: inline;
+    float: left;
+}
+
+#vbx-util-menu .vbx-util-item a {
+    display: block;
+    float: left;
+    padding: 4px 6px;
+    margin-left: 15px;
+    background-color: #FFF;
+}
+
+#vbx-util-menu .vbx-util-item .username {
+    display: block;
+    float: left;
+    padding: 4px 6px;
+    margin-left: 15px;
+}

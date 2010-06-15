@@ -1,0 +1,6 @@
+{
+    "name" : "Conference",
+    "description" : "Drop people into a conference.",
+    "type" : "voice",
+	"order" : 4
+}

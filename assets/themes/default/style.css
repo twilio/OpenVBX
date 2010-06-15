@@ -1,0 +1,277 @@
+/*
+Template Name: Default
+*/
+
+
+
+/* Links */
+
+.default-theme a:link {
+	color: #333;
+}
+
+.default-theme a:visited {
+	color: #777;
+}
+
+.default-theme a:hover {
+	color: #000;
+}
+
+.default-theme a:active {
+	color: #09F;
+}
+
+
+
+
+/* Header */
+
+#openvbx-logo a {
+    display: block;
+    float: left;
+    height: 54px;
+    width: 208px;
+    margin: 15px 10px;
+    background: #FFF url(images/openvbx-header-logo.png) no-repeat left top;
+    outline: none;
+}
+
+
+
+/* VBX Utility Menu */
+
+#vbx-util-menu .vbx-util-item a {
+    display: block;
+    float: left;
+    padding: 4px 6px;
+    margin-left: 15px;
+	color: #4E9E29;
+    background-color: #FFF;
+}
+
+#vbx-util-menu .vbx-util-item .username {
+	color: #777;
+}
+
+
+
+/* VBX Context Menu */
+
+#vbx-context-menu {
+    padding: 5px;
+    background: #666 url(images/main-context-menu-bg.png) repeat-x left bottom;
+    border-bottom: 1px solid #FFF;
+    overflow: auto;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -webkit-border-radius-topleft: 4px;
+    -webkit-border-radius-topright: 4px;
+}
+
+
+/* VBX Main Navigation */
+
+#vbx-main-nav .vbx-nav-title {
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #8BC8E9;
+    text-transform: uppercase;
+    background: #316480 url(images/nav-title-bg.png) repeat-x left top;
+    border-bottom: 1px solid #316480;
+}
+
+#vbx-main-nav .vbx-nav-item a {
+    display: block;
+    padding: 6px 5px 6px 10px;
+    font-size: 14px;
+	color: #FFF;
+    text-decoration: none;
+    background-color: #869BA6;
+    border-bottom: 1px solid #FFF;
+}
+
+#vbx-main-nav .vbx-nav-item a:hover {
+	background-color: #6DA0BE;
+}
+
+#vbx-main-nav .selected a,
+#vbx-main-nav .selected a:hover {
+    width: 166px;
+    font-size: 14px;
+    font-weight: bold;
+	color: #F7ECB7;
+    background-color: #333;
+}
+
+
+
+
+/* VBX Items Grid */
+
+.vbx-items-grid .unread .phone-number {
+    color: #329FD8;
+}
+
+.vbx-items-grid .message-row .phone-number {
+    color: #316480;
+}
+
+.vbx-items-grid .quick-call-popup .call {
+    display: block;
+    height: 28px;
+    line-height: 28px;
+    width: 42px;
+    padding-left: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFF;
+    text-decoration: none;
+    background: url(images/quick-call-popup-button-bg.png) no-repeat center center;
+}
+
+.vbx-items-grid .quick-sms-popup .send-button {
+    height: 28px;
+    width: 80px;
+    margin-left: 10px;
+    padding-left: 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFF;
+    background: url(images/quick-sms-popup-button-bg.png) no-repeat center center;
+}
+
+.pagination a:link,
+.pagination a:visited {
+    color: #BBB;
+}
+
+.pagination a:hover {
+    color: #FFF;
+}
+
+.pagination a:active {
+    color: #FFF;
+}
+
+.pagination .current {
+    color: #FFF;
+    background-color: #333;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+    color: #FFF;
+    background-color: #329FD8;
+}
+
+
+
+
+/* Message Details*/
+
+.message-details-header .quick-call-popup .call {
+    display: block;
+    height: 28px;
+    line-height: 28px;
+    width: 42px;
+    padding-left: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFF;
+    text-decoration: none;
+    background: url(images/quick-call-popup-button-bg.png) no-repeat center center;
+}
+
+
+
+/* Buttons */
+
+button.normal-button {
+    background: transparent url(images/normal-button-bg.png) no-repeat right -96px;
+}
+
+button.normal-button span {
+    background: transparent url(images/normal-button-bg.png) no-repeat left top;
+	color: #253C49;
+}
+
+button.normal-button:hover span, button.normal-button-hover span {
+	color: #0D181E;
+}
+
+button.normal-button:active span, button.normal-button-active span {
+	color: #2E5669;
+}
+
+
+button.submit-button {
+    background: transparent url(images/submit-button-bg.png) no-repeat right -96px;
+}
+
+button.submit-button span {
+    background: transparent url(images/submit-button-bg.png) no-repeat left top;
+	color: #253C49;
+}
+
+button.submit-button:hover span, button.submit-button-hover span {
+	color: #0D181E;
+}
+
+button.submit-button:active span, button.submit.button-active span {
+	color: #2E5669;
+}
+
+button.call-button {
+    background: transparent url(images/call-button-bg.png) no-repeat right -96px;
+}
+
+button.call-button span {
+    background: transparent url(images/call-button-bg.png) no-repeat left top;
+	color: #253C49;
+}
+
+button.call-button:hover span, button.call-button-hover span {
+	color: #0D181E;
+}
+
+button.call-button:active span, button.call-button-active span {
+	color: #2E5669;
+}
+
+button.sms-button {
+    background: transparent url(images/sms-button-bg.png) no-repeat right -96px;
+}
+
+button.sms-button span {
+    background: transparent url(images/sms-button-bg.png) no-repeat left top;
+	color: #253C49;
+}
+
+button.sms-button:hover span, button.sms-button-hover span {
+	color: #0D181E;
+}
+
+button.sms-button:active span, button.sms-button-active span {
+	color: #2E5669;
+}
+
+.quick-call-button {
+    background: url(images/quick-call-button-bg.png) no-repeat center top;
+}
+
+.quick-sms-button {
+    background: url(images/quick-sms-button-bg.png) no-repeat center top;
+}
+
+
+.playback-button {
+    background: url(images/play-pause-stop-bg.png) no-repeat left top;
+}
+
+.assign-button {
+    background: url(images/assign-owner-button-bg.png) no-repeat right top;
+}
+
+
+

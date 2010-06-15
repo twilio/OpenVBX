@@ -1,0 +1,6 @@
+{
+    "name" : "Sandbox",
+    "description" : "",
+    "type" : ["voice", "sms"],
+    "disabled" : true
+}

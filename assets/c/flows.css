@@ -1,0 +1,165 @@
+/* Flow Editor */
+
+#flowline-nav {
+	float: right;
+	background-color: #FFF;
+}
+
+#flowline-nav-items {
+	float: right;
+}
+
+#flowline-nav-items .flowline-nav-item {
+	display: inline;
+}
+
+#flowline-nav-items .flowline-nav-item a {
+	display: block;
+	float: left;
+	height: 24px;
+	width: 24px;
+	margin-right: 15px;
+	background: url(../i/flowline-nav-arrows-sprite.png) no-repeat;
+}
+
+#flowline-nav-items #start-arrow {
+	background-position: 0px top;
+}
+#flowline-nav-items #start-arrow:hover {
+	background-position: 0px bottom;
+}
+
+#flowline-nav-items #back-arrow {
+	background-position: -34px top;
+}
+#flowline-nav-items #back-arrow:hover {
+	background-position: -34px bottom;
+}
+	
+#flowline-nav-items #next-arrow {
+	background-position: -68px top;
+}
+#flowline-nav-items #next-arrow:hover {
+	background-position: -68px bottom;
+}
+	
+#flowline-nav-items #end-arrow {
+	background-position: -102px top;
+}
+#flowline-nav-items #end-arrow:hover {
+	background-position: -102px bottom;
+}
+	
+
+
+#flowline {
+	min-height: 600px;
+	margin: 0;
+	padding: 10px;
+	background-color: #555;
+	border-right: 3px solid #CCC;
+	overflow-x: scroll;
+}
+
+#flowline table {
+	width: 100%;
+}
+
+#flowline #instances td {
+	vertical-align: top;
+}
+
+#flowline .flow-instance {
+	width: 600px;
+	margin: 10px;
+	background-color: #FFF;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	overflow: auto;
+}
+
+#flowline .flow-instance .minimize {
+	float: right;
+	margin: 7px 12px 0 0;
+}
+
+#flowline .flow-instance .view-source {
+	display: block;
+	float: left;
+	margin: 5px;
+	padding: 5px 10px;
+	font-size: 11px;
+	color: #777;
+	text-decoration: none;
+	background-color: #EEE;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+#flowline .flow-instance .view-source:hover {
+	color: #333;
+	background-color: #DDD;
+}
+
+#flowline .applet-name {
+	margin-bottom: 10px;
+	padding: 8px;
+	font-size: 17px;
+	color: #EEE;
+	text-align: center;
+	background-color: #222;
+	border: 1px solid #FFF;
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright: 4px;
+	-webkit-border-top-left-radius: 4px;
+	-webkit-border-top-right-radius: 4px;
+}
+
+
+/* Items Toolbox */
+
+#items-toolbox {
+	margin: 20px 0;
+}
+
+#items-toolbox h3 {
+	margin-bottom: 15px;
+	padding: 0 10px;
+	font-size: 21px;
+	font-weight: bold;
+	color: #444;
+}
+
+#items-toolbox .applet-item {
+	display: block;
+	float: left;
+	height: 40px;
+	width: 97px;
+	margin: 0 8px 16px 8px;
+	padding: 20px 10px 10px 10px;
+	font-size: 11px;
+	font-weight: bold;
+	color: #333;
+	text-align: center;
+	text-decoration: none;
+	background: #FFF url(../i/applet-drag-grip.png) no-repeat center 2px;
+	border: 1px solid #666;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+	cursor: move;
+}
+
+#items-toolbox .applet-item:hover {
+	background-color: #FFF;
+	border-color: #222;
+}
+
+/* Applet Icons */
+
+#items-toolbox .applet-icon,
+.filled-item .applet-icon {
+	display: block;
+	height: 24px;
+	width: 24px;
+	margin: 0 auto 5px auto;
+}

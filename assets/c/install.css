@@ -1,0 +1,287 @@
+/*CSS RESET*/
+
+html, body, div, span, applet, object, iframe, table, caption, tbody, tfoot, thead, tr, th, td,
+del, dfn, em, font, img, ins, kbd, q, s, samp, select, small, strike, strong, sub, sup, tt, var,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code,
+dl, dt, dd, ol, ul, li, fieldset, form, label, legend {
+	vertical-align: baseline;
+	font-family: inherit;
+	font-weight: inherit;
+	font-style: inherit;
+	font-size: 100%;
+	outline: 0;
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+body {
+	font-family: 'Arial', 'Helvetica', sans-serif;
+    background-color: #F7F7F7;
+}
+
+a {
+	color: #74C729;
+}
+
+#install-container {
+	width: 700px;
+	height: 100%;
+	margin: 30px auto 0 auto;
+}
+
+#openvbx-logo a {
+    display: block;
+    height: 54px;
+    width: 208px;
+    margin: 15px 10px 20px 10px;
+    background: #FFF url(../i/openvbx-install-logo.png) no-repeat left top;
+    outline: none;
+}
+
+
+.steps {
+    position: relative;
+    width: 5000px;
+}
+
+.step {
+    float: left;
+    display: block;
+    width: 660px;
+	padding: 20px 20px 50px 20px;
+    text-align: left;
+}
+
+.step .help {
+	float: right;
+	display: block;
+	margin-top: 20px;
+	padding: 6px 9px;
+	font-size: 10px;
+	font-weight: bold;
+	color: #869BA6;
+	text-decoration: none;
+	background-color: #D1E3ED;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+.step .help:hover {
+	color: #316480;
+}
+
+.step h1 {
+	margin: 15px 0 10px 10px;
+	font-size: 32px;
+	color: #444;
+}
+
+.step h1 .number {
+	padding-right: 20px;
+	font-weight: bold;
+	color: #333;
+}
+
+.step-desc {
+	margin: 0 0 20px 0;
+	padding: 0 15px;
+	line-height: 1.4em;
+	color: #444;
+}
+
+.information {
+	padding: 15px;
+	line-height: 1.4em;
+	color: #444;
+}
+
+
+#step-6 h1 {
+	margin-top: 30px;
+	font-size: 50px;
+	text-align: center;
+}
+
+#step-6 .step-desc {
+	margin-bottom: 50px;
+	text-align: center;
+}
+
+#login-openvbx {
+	display: block;
+	width: 140px;
+	margin: 20px auto;
+	padding: 12px 20px;
+	font-size: 32px;
+	font-weight: bold;
+	color: #FFF;
+	text-align: center;
+	text-decoration: none;
+	background-color: #74C729;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+#login-openvbx:active {
+	background-color: #528D1D;
+}
+
+
+
+strong {
+	font-weight: bold;
+}
+
+
+
+
+ul.dependencies {
+    margin: 0 0 40px 0;
+	overflow: auto;
+}
+
+ul.dependencies li {
+	display: block;
+	float: left;
+	width: 185px;
+	margin: 10px 0 0 10px;
+	padding: 10px;
+	background-color: #74C729;
+	color: #FFF;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	overflow: auto;
+}
+
+ul.dependencies li .req-info {
+	font-size: 12px;
+	word-wrap: break-word
+}
+
+ul.dependencies li .req-status {
+	float: right;
+	display: block;
+	margin: 0 0 0 10px;
+	font-weight: bold;
+}
+
+ul.dependencies li.fail {
+	background-color: #CA3A26;
+}
+
+ul.dependencies li.fail.optional {
+	background-color: #869BA6;
+}
+
+
+
+
+#install-form {
+    position: relative;
+    overflow: hidden;
+	width: 700px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background-color: #FFF;
+    border: 1px solid #EEE;
+	margin: 0 auto;
+}
+
+#install-form fieldset {
+	padding: 15px;
+}
+
+#install-form label {
+        display: block;
+        margin-bottom: 18px;
+        font-size: 15px;
+        color: #404040;
+}
+
+#install-form .instruction {
+    font-size: 11px;
+    color: #666;
+    font-style: italic;
+}
+
+#install-form input.medium {
+        display: block;
+        width: 290px;
+        margin-top: 3px;
+        padding: 0 5px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 15px;
+        background: url(../i/form-input-text-300.png) no-repeat left top;
+        border: none;
+}
+
+
+.error {
+	display: none;
+	margin-bottom: 10px;
+	padding: 20px;
+	color: #FFF;
+	background-color: #CA3A26;
+	border-bottom: 2px solid #B13321;
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright: 4px;
+	-webkit-border-top-left-radius: 4px;
+	-webkit-border-top-right-radius: 4px;
+}
+
+
+
+.navigation {
+    position: absolute;
+    bottom: 10px;
+    right: 0;
+	width: 100%;
+}
+
+.navigation button {
+    padding: 8px 20px;
+	font-size: 17px;
+	font-weight: bold;
+	color: #FFF;
+	background-color: #74C729;
+	border: none;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    cursor: pointer;
+	outline: none;
+}
+
+.navigation .prev {
+	float: left;
+	margin: 0 20px 0 10px;
+	background-color: #888;
+}
+.navigation .prev:active {
+	background-color: #666;
+}
+
+.navigation .next {
+	float: right;
+	margin: 0 10px 0 20px;
+}
+.navigation .next:active {
+	background-color: #528D1D;
+}
+
+.navigation .submit {
+	float: right;
+	margin: 0 10px 0 20px;
+	background-color: #316480;
+}
+
+.navigation .submit:active {
+	background-color: #0066FF;
+}
+
+
+.replace {
+	display: none;
+}
+

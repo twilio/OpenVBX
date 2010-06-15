@@ -1,0 +1,6 @@
+{
+	"name" : "Menu",
+    "author" : "Twilio <vbx@twilio.com>",
+    "description" : "Menu applets for OpenVBX",
+    "url" : "http://openvbx.org"
+}

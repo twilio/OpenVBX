@@ -1,0 +1,52 @@
+/* Login */
+
+.login-wrapper {
+    width: 350px;
+    margin: 0 auto;
+	text-align: left;
+    overflow: hidden;
+}
+
+.login-wrapper #openvbx-logo {
+	margin: 50px 0 10px 50px;
+}
+
+.login-wrapper #vbx-main {
+    min-height: 0px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+.login-wrapper .notify {
+    width: 348px;
+	margin-bottom: 10px;
+}
+
+.login-wrapper #ft {
+    position: absolute;
+    left: 0;
+    z-index: 100;
+    width: 100%;
+}
+
+#login {
+	padding: 30px 15px 20px 15px;
+	overflow: auto;
+}
+
+#login .instruct {
+	margin-bottom: 10px;
+	font-size: 12px;
+	color: #555;
+}
+
+#login .submit-button {
+	float: left;
+}
+
+#login .forgot-password,
+#login .remember-password {
+	float: right;
+	margin: 20px 5px 0 0;
+}
+

@@ -1,0 +1,226 @@
+/* Messages */
+
+.messages-blank {
+	min-height: 100px;
+    width: 460px;
+    margin: 10px 0 0 10px;
+    padding-left: 100px;
+    background: #FFF url('../i/messages-icon.png') no-repeat left 5px;
+}
+
+.messages-blank h2 {
+    font-size: 28px;
+    color: #454545;
+}
+
+.messages-blank p {
+    font-size: 17px;
+    color: #666;
+}
+
+
+/* Message Details */
+
+.message-details-header {
+	padding: 15px;
+    border-bottom: 1px solid #CCC;
+	overflow: auto;
+}
+
+.message-details-header .date-created {
+    float: right;
+    padding: 3px;
+}
+
+.message-details-header .details-info {
+    float: left;
+    margin-right: 15px;
+}
+
+.message-details-header .details-info td {
+    padding: 5px 0;
+}
+
+.message-details-header .details-info select {
+    margin: 0 !important;
+}
+
+.message-details-header .call-from-label,
+.message-details-header .call-to-label,
+.message-details-header .status-label,
+.message-details-header .assign-label {
+    float: right;
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    text-align: right;
+    text-decoration: none;
+}
+
+.message-details-header .status-label,
+.message-details-header .assign-label {
+    padding: 0 5px 0 15px;
+}
+
+.message-details-header .call-from-number {
+    float: left;
+    height: 27px;
+    line-height: 27px;
+    margin: 0 10px;
+    font-size: 15px;
+}
+.message-details-header .quick-call-button {
+    float: left;
+}
+
+.message-details-header .quick-call-popup {
+    position: absolute;
+    margin: -1px 0 0 -50px;
+    padding: 1px;
+    background-color: #FFF;
+    border: 1px solid #999;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+.message-details-header .quick-call-popup .close {
+    float: left;
+    margin: 2px 0 0 3px;
+}
+
+.message-details-header .quick-call-popup .call-from-number,
+.message-details-header .call-to-number {
+    float: left;
+    height: 27px;
+    line-height: 27px;
+    margin: 0 10px;
+    font-size: 15px;
+}
+
+.message-details-header .quick-call-popup .caller-id-phone {
+    float: right;
+}
+
+.message-details-header .quick-call-popup .call {
+    display: block;
+    height: 28px;
+    line-height: 28px;
+    width: 42px;
+    padding-left: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFF;
+    text-decoration: none;
+    background: url(../i/quick-call-popup-button-bg.png) no-repeat center center;
+}
+
+.message-details-header .quick-call-popup .calling {
+    height: 28px;
+    line-height: 28px;
+    width: 62px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #444;
+    text-align: center;
+}
+
+.message-details-playback {
+	padding: 15px;
+    border-bottom: 1px solid #CCC;
+	overflow: auto;
+}
+
+.message-details-playback .playback-button {
+    float: left;
+}
+
+.message-details-playback .play-time {
+    float: left;
+    padding: 2px;
+    margin:2px 0 2px 10px;
+}
+
+.message-details-transcript {
+	padding: 15px;
+    border-bottom: 1px solid #CCC;
+	overflow: auto;
+}
+
+.message-details-transcript .message-transcript {
+    width: 660px;
+    font-size: 15px;
+    color: #555;
+}
+
+
+.message-details-notes {
+	padding: 15px;
+	overflow: auto;
+}
+
+.message-details-notes #add-annotation {
+    margin-bottom: 30px;
+}
+
+.message-details-notes #description,
+.message-details-notes #content {
+    height: 140px;
+    width: 650px;
+    padding: 5px;
+    font-size: 15px;
+    color: #555;
+}
+
+.message-details-notes .count-desc {
+    margin: 5px 0 15px 0;
+    font-size: 14px;
+    font-style: italic;
+    color: #666;
+}
+
+.message-details-notes #message-details-notes-list {
+    border: 1px solid #DDD;
+    border-bottom: none;
+}
+
+.message-details-notes #message-details-notes-list .note {
+    padding: 10px;
+    border-bottom: 1px solid #DDD;
+}
+
+.message-details-notes #message-details-notes-list .note-created {
+    float: right;
+    padding: 3px;
+}
+
+.message-details-notes #message-details-notes-list .note-header {
+    margin-bottom: 5px;
+}
+
+.message-details-notes #message-details-notes-list .note-user-fullname {
+    float: left;
+    margin-right: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    color: #444;
+}
+
+.message-details-notes #message-details-notes-list .note-user-email {
+    height: 21px;
+    line-height: 21px;
+    color: #777;
+}
+
+.message-details-notes #message-details-notes-list .note-content {
+    width: 700px;
+    font-size: 15px;
+    color: #555;
+}
+
+.message-details-notes .note-count {
+    margin: 5px 10px;
+    font-size: 11px;
+    color: #777;
+    text-align: right;
+}
+

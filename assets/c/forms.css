@@ -1,0 +1,205 @@
+/* Forms */
+
+.vbx-form {
+    background-color: #FFF;
+}
+
+.vbx-form .field-label {
+        display: block;
+        margin-bottom: 12px;
+        font-size: 13px;
+        color: #404040;
+}
+
+
+.vbx-input-container .instruction {
+    font-size: 11px;
+    color: #666;
+    font-style: italic;
+}
+
+.vbx-input-container input.tiny {
+        display: block;
+        width: 40px;
+        margin-top: 3px;
+        padding: 0 5px;
+        height: 30px;
+		line-height: 30px;
+        font-size: 14px;
+        background: url(../i/form-input-text-50.png) no-repeat left top;
+        border: none;
+}
+
+.vbx-input-container input.small {
+        display: block;
+        width: 140px;
+        margin-top: 3px;
+        padding: 0 5px;
+        height: 30px;
+		line-height: 30px;
+        font-size: 14px;
+        background: url(../i/form-input-text-150.png) no-repeat left top;
+        border: none;
+}
+
+.vbx-input-container input.smedium {
+        display: block;
+        width: 190px;
+        margin-top: 3px;
+        padding: 0 5px;
+        height: 30px;
+		line-height: 30px;
+        font-size: 14px;
+        background: url(../i/form-input-text-200.png) no-repeat left top;
+        border: none;
+}
+
+.vbx-input-container input.medium {
+        display: block;
+        width: 290px;
+        margin-top: 3px;
+        padding: 0 5px;
+        height: 30px;
+		line-height: 30px;
+        font-size: 14px;
+        background: url(../i/form-input-text-300.png) no-repeat left top;
+        border: none;
+}
+
+.vbx-input-container input.large {
+        display: block;
+        width: 540px;
+        margin-top: 3px;
+        padding: 0 5px;
+        height: 30px;
+		line-height: 30px;
+        font-size: 14px;
+        background: url(../i/form-input-text-600.png) no-repeat left top;
+        border: none;
+}
+
+.vbx-input-container textarea {
+    display: block;
+    margin: 3px 0 10px 0;
+    padding: 4px 6px;
+}
+
+.vbx-input-container textarea.small {
+	height: 80px;
+	width: 140px;	
+}
+
+.vbx-input-container textarea.medium {
+	height: 80px;
+	width: 290px;	
+}
+
+.vbx-input-container textarea.large {
+	height: 80px;
+	width: 540px;	
+}
+
+.vbx-input-complex {
+    clear: both;
+    overflow: auto;
+}
+
+.vbx-input-complex .inline {
+    display: inline !important;
+}
+
+.vbx-input-complex .full {
+    display: block;
+    clear: both;
+}
+
+.vbx-input-complex .left {
+    float: left;
+}
+
+.vbx-input-complex .field-label-left {
+	float: left;
+	margin-left: 5px;
+	line-height: 30px;
+}
+
+.vbx-input-complex .right {
+    float: right;
+}
+
+.vbx-input-file {
+    float: left;
+    margin-bottom: 12px;
+    padding: 10px;
+    border: 1px solid #999;
+    overflow: auto;
+}
+
+.vbx-input-file label {
+    margin: 0 !important;
+}
+
+.vbx-input-file input {
+    float: left;
+    margin: 1px 5px 0 0 !important;
+}
+
+.vbx-input-file button {
+    float: left;
+    margin: 0 !important;
+}
+
+.vbx-input-container select {
+        display: block;
+        margin-top: 3px;
+        padding: 6px 5px 5px 5px;
+        height: 30px;
+        font-size: 14px;
+        border: none;
+}
+
+.vbx-input-container select.tiny {
+        width: 50px;
+        background: url(../i/form-input-text-50.png) no-repeat left top;
+}
+
+.vbx-input-container select.small {
+        width: 150px;
+        background: url(../i/form-input-text-150.png) no-repeat left top;
+}
+
+.vbx-input-container select.smedium {
+        width: 200px;
+        background: url(../i/form-input-text-200.png) no-repeat left top;
+}
+
+.vbx-input-container select.medium {
+        width: 300px;
+        background: url(../i/form-input-text-300.png) no-repeat left top;
+}
+
+.vbx-input-container select.large {
+        width: 600px;
+        background: url(../i/form-input-text-600.png) no-repeat left top;
+}
+
+
+.vbx-input-container option {
+        padding: 4px 5px;
+}
+
+.vbx-form .field-label-checkbox,
+.vbx-form .field-label-radio {
+        float: left;
+        margin: 10px 20px 10px 0;
+        font-weight: bold;
+        color: #444;
+        background-color: #FFF;
+        cursor: pointer;
+}
+
+.vbx-form .checkbox,
+.vbx-form .radio {
+        float: left;
+        margin: 2px 5px 0 0;
+}

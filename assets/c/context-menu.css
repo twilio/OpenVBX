@@ -1,0 +1,199 @@
+/* Context Menu */
+
+#vbx-context-menu {
+	clear: both;
+    padding: 5px;
+	background-color: #777;
+    border-bottom: 1px solid #FFF;
+    overflow: auto;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -webkit-border-top-left-radius: 4px;
+    -webkit-border-top-right-radius: 4px;
+}
+
+/* Call and SMS Buttons */
+
+#vbx-call-sms-buttons {
+    float: left;
+}
+
+#vbx-context-menu .call-dialog,
+#vbx-context-menu .sms-dialog {
+    display: none;
+    width: 400px;
+    padding: 10px;
+    background-color: #FFF;
+    border: 3px solid #333;
+    z-index: 100;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+}
+
+#vbx-context-menu .call-dialog h3,
+#vbx-context-menu .sms-dialog h3 {
+    padding: 0 10px;
+    font-size: 20px;
+}
+
+#vbx-context-menu .call-dialog .close,
+#vbx-context-menu .sms-dialog .close {
+    float: right;
+    margin: 0 0 10px 5px;
+}
+
+#vbx-context-menu .call-dialog .instruct,
+#vbx-context-menu .sms-dialog .instruct {
+    padding: 10px;
+}
+
+#vbx-context-menu .sms-dialog .sms-dialog-form,
+#vbx-context-menu .call-dialog .call-dialog-form {
+    padding: 10px;
+}
+
+#vbx-context-menu .sms-dialog label,
+#vbx-context-menu .call-dialog label {
+    margin-right: 20px;
+    overflow: none;
+}
+
+#vbx-context-menu .sms-dialog .sms-message {
+    height: 80px;
+    width: 360px;
+    padding: 3px 4px;
+}
+
+#vbx-context-menu .sms-dialog .count {
+    color: #777;
+    font-style: italic;
+}
+
+
+
+
+/* Flow Editor Context Menu */
+
+.flow-editor-wrapper .flow-details {
+	float: left;
+	margin-left: 25%;
+}
+
+.flow-name-title {
+	padding: 4px;
+	font-size: 21px;
+	font-weight: bold;
+	color: #FFF;
+}
+
+.flow-name-title .flow-number {
+	padding-left: 5px;
+	font-weight: normal;
+	color: #DDD;
+}
+
+
+.flow-editor-wrapper #vbx-context-menu {
+	position: relative;
+}
+
+.flow-editor-wrapper #vbx-context-menu .vbx-menu-items-right {
+    float: right;
+}
+
+.flow-editor-wrapper #vbx-context-menu .menu-item {
+    display: inline;
+}
+
+.flow-editor-wrapper  #vbx-context-menu .menu-item a.link-button {
+    display: block;
+    float: left;
+    height: 32px;
+    margin-right: 10px;
+    padding-right: 15px;
+    background: url(../i/button-bg.png) no-repeat right -96px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.flow-editor-wrapper #vbx-context-menu .vbx-menu-items-right a.link-button {
+	margin: 0 0 0 10px;
+}
+
+.flow-editor-wrapper #vbx-context-menu .menu-item a.link-button:hover {
+    background-position: right -128px;
+}
+
+.flow-editor-wrapper #vbx-context-menu .menu-item a.link-button:active {
+    background-position: right -160px;
+}
+
+.flow-editor-wrapper #vbx-context-menu .menu-item a.link-button span {
+    display: block;
+    line-height: 32px;
+    padding-left: 15px;
+    background: url(../i/button-bg.png) no-repeat left top;
+}
+
+.flow-editor-wrapper #vbx-context-menu .menu-item a.link-button:hover span {
+    background-position: left -32px;
+}
+
+.flow-editor-wrapper #vbx-context-menu .menu-item a.link-button:active span {
+    background-position: left -64px;
+}
+
+
+
+
+
+
+
+
+/* Notifications */
+
+.notify {
+    width: 600px;
+    margin: 0 auto;
+    background-color: #FFC;
+    border: 1px solid #555;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+.notify .message {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    text-align: center;
+}
+
+.notify .close {
+    float: right;
+    margin-top: 3px;
+}
+
+
+
+.flow-editor-wrapper .notify {
+	position: absolute;
+	left: 25%;
+    width: 600px;
+    background-color: #FFC;
+    border: 1px solid #555;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+.flow-editor-wrapper .notify .message {
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    text-align: center;
+}
+
+.flow-editor-wrapper .notify .close {
+    float: right;
+    margin-top: 3px;
+}
+

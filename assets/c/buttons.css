@@ -1,0 +1,376 @@
+/* Buttons */
+
+button {
+    position: relative;
+    height: 32px;
+    line-height: 32px;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    overflow: visible; /* removes extra side padding in IE */
+}
+
+button::-moz-focus-inner {
+    border: none;  /* overrides extra padding in Firefox */
+}
+
+button span {
+    position: relative;
+    display: block;
+    white-space: nowrap;
+}
+
+/* Safari and Google Chrome only - fix margins */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    button span {
+        margin-top: -1px;
+    }
+}
+
+button.normal-button {
+    margin: 10px 0;
+    padding: 0 8px 0 0;
+    text-align: center;
+    background: transparent url(../i/normal-button-bg.png) no-repeat right -96px;
+}
+
+button.normal-button span {
+    height: 32px;
+    line-height: 32px;
+    padding-left: 10px;
+    margin-left: -2px;
+    background: transparent url(../i/normal-button-bg.png) no-repeat left top;
+    color: #444;
+}
+
+button.normal-button:hover, button.normal-button-hover { /* the redundant class is used to apply the hover state with a script */
+    background-position: right -128px;
+}
+
+button.normal-button:hover span, button.normal-button-hover span {
+    background-position: left -32px;
+    color: #222;
+}
+
+button.normal-button:active, button.normal-button-active { /* the redundant class is used to apply the active/down state with a script */
+    background-position: right -160px;
+}
+
+button.normal-button:active span, button.normal-button-active span {
+    background-position: left -64px;
+    color: #222;
+}
+
+
+button.call-button {
+    padding: 0 30px 0 0;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    background: transparent url(../i/call-button-bg.png) no-repeat right -96px;
+}
+
+button.call-button span {
+    height: 32px;
+    line-height: 32px;
+    padding-left: 10px;
+    margin-left: -2px;
+    background: transparent url(../i/call-button-bg.png) no-repeat left top;
+    color: #444;
+}
+
+button.call-button:hover, button.call-button-hover { /* the redundant class is used to apply the hover state with a script */
+    background-position: right -128px;
+}
+
+button.call-button:hover span, button.call-button-hover span {
+    background-position: left -32px;
+    color: #222;
+}
+
+button.call-button:active, button.call-button-active { /* the redundant class is used to apply the active/down state with a script */
+    background-position: right -160px;
+}
+
+button.call-button:active span, button.call-button-active span {
+    background-position: left -64px;
+    color: #222;
+}
+
+
+
+button.sms-button, button.send-sms-button {
+    padding: 0 33px 0 0;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    background: transparent url(../i/sms-button-bg.png) no-repeat right -96px;
+}
+
+button.sms-button span, button.send-sms-button span {
+    height: 32px;
+    line-height: 32px;
+    padding-left: 10px;
+    margin-left: -2px;
+    background: transparent url(../i/sms-button-bg.png) no-repeat left top;
+    color: #444;
+}
+
+button.sms-button:hover, button.sms-button-hover { /* the redundant class is used to apply the hover state with a script */
+    background-position: right -128px;
+}
+
+button.sms-button:hover span, button.sms-button-hover span {
+    background-position: left -32px;
+    color: #222;
+}
+
+button.sms-button:active, button.sms-button-active { /* the redundant class is used to apply the active/down state with a script */
+    background-position: right -160px;
+}
+
+button.sms-button:active span, button.sms-button-active span {
+    background-position: left -64px;
+    color: #222;
+}
+
+
+
+button.submit-button {
+    margin: 10px 0;
+    padding: 0 8px 0 0;
+    text-align: center;
+    background: transparent url(../i/submit-button-bg.png) no-repeat right -96px;
+}
+
+button.submit-button span {
+    height: 32px;
+    line-height: 32px;
+    padding-left: 10px;
+    margin-left: -2px;
+    background: transparent url(../i/submit-button-bg.png) no-repeat left top;
+    color: #444;
+}
+
+button.submit-button:hover, button.submit-button-hover { /* the redundant class is used to apply the hover state with a script */
+    background-position: right -128px;
+}
+
+button.submit-button:hover span, button.submit-button-hover span {
+    background-position: left -32px;
+    color: #222;
+}
+
+button.submit-button:active, button.submit-button-active { /* the redundant class is used to apply the active/down state with a script */
+    background-position: right -160px;
+}
+
+button.submit-button:active span, button.submit-button-active span {
+    background-position: left -64px;
+    color: #222;
+}
+
+
+button.add-button {
+    margin: 10px 0;
+    padding: 0 8px 0 0;
+    text-align: center;
+    background: transparent url(../i/add-button-bg.png) no-repeat right -96px;
+}
+
+button.add-button span {
+    height: 32px;
+    line-height: 32px;
+    padding-left: 35px;
+    margin-left: -2px;
+    background: transparent url(../i/add-button-bg.png) no-repeat left top;
+    color: #EEE;
+}
+
+button.add-button:hover {
+    background-position: right -128px;
+}
+
+button.add-button:hover span {
+    background-position: left -32px;
+    color: #FFF;
+}
+
+button.add-button:active {
+    background-position: right -160px;
+}
+
+button.add-button:active span {
+    background-position: left -64px;
+    color: #FFF;
+}
+
+
+
+
+button.inline-button {
+    float: left;
+    margin: 0 10px 0 0 !important;
+}
+
+
+.quick-call-button {
+    display: block;
+    height: 24px;
+    width: 21px;
+    background: url(../i/quick-call-button-bg.png) no-repeat center top;
+    overflow: hidden;
+}
+
+.quick-call-button:hover {
+    background-position: center -24px;
+}
+
+.quick-call-button:active {
+    background-position: center -48px;
+}
+
+.quick-sms-button {
+    display: block;
+    height: 24px;
+    width: 21px;
+    background: url(../i/quick-sms-button-bg.png) no-repeat center top;
+    overflow: hidden;
+}
+
+.quick-sms-button:hover {
+    background-position: center -24px;
+}
+
+.quick-sms-button:active {
+    background-position: center -48px;
+}
+
+
+
+.playback-button {
+    display: block;
+    height: 22px;
+    line-height: 22px;
+    padding: 0 5px 0 26px;
+    background: url(../i/play-pause-stop-bg.png) no-repeat left top;
+    text-decoration: none;
+}
+
+.playback-button:hover {
+    background-position: left -22px;
+}
+
+.playback-button:active {
+    background-position: left -44px;
+}
+
+.pause {
+    background-position: left -66px;
+}
+
+.pause:hover {
+    background-position: left -88px;
+}
+
+.pause:active {
+    background-position: left -110px;
+}
+
+.stop {
+    background-position: left -132px;
+}
+
+.stop:hover {
+    background-position: left -154px;
+}
+
+.stop:active {
+    background-position: left -176px;
+}
+
+.assign-button {
+    display: block;
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+    padding-right: 6px;
+    background: url(../i/assign-owner-button-bg.png) no-repeat right top;
+}
+
+.assign-button:hover {
+    background-position: right -24px;
+}
+
+.assign-button:active {
+    background-position: right -48px;
+}
+
+/* Action Icons */
+
+.action {
+    display: block;
+    height: 24px;
+    width: 24px;
+    background: url(../i/action-icons-sprite.png) no-repeat;
+}
+
+.action-mini {
+    display: block;
+    height: 16px;
+    width: 16px;
+    background: url(../i/action-icons-mini-sprite.png) no-repeat;
+}
+
+.add {
+    background-position: 0px center;
+}
+
+.add-mini {
+    background-position: 0px center;
+}
+
+.remove {
+    background-position: -34px center;
+}
+
+.remove-mini {
+    background-position: -21px center;
+}
+
+.trash {
+    background-position: -68px center;
+}
+
+.trash-mini {
+    background-position: -42px center;
+}
+
+.edit {
+    background-position: -102px center;
+}
+
+.edit-mini {
+    background-position: -63px center;
+}
+
+.close {
+    background-position: -136px center;
+}
+
+.close-mini {
+    background-position: -74px center;
+}
+
+.minimize {
+    background-position: -170px center;
+}
+
+.choose {
+    background-position: -204px center;
+}
+
+.flow {
+    background-position: -238px center;
+}
+
