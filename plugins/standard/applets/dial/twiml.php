@@ -10,6 +10,7 @@ define('DIAL_COOKIE', 'state-'.AppletInstance::getInstanceId());
 define('DIAL_STATE_DIAL', 'dialStateDial');
 define('DIAL_STATE_NO_ANSWER', 'dialStateNoAnswer');
 define('DIAL_STATE_RECORDING', 'dialStateRecording');
+define('DIAL_STATE_HANGUP', 'dialStateHangup');
 
 $response = new Response();
 
@@ -17,7 +18,6 @@ $response = new Response();
 $state = array();
 $state[DIAL_ACTION] = DIAL_STATE_DIAL;
 $state[DIAL_NUMBER_INDEX] = 0;
-
 $version = AppletInstance::getValue('version', null);
 
 /* Get current instance	 */
@@ -90,6 +90,20 @@ if(isset($_COOKIE[DIAL_COOKIE]))
 	}
 }
 
+
+$dial_status = isset($_REQUEST['DialStatus'])? $_REQUEST['DialStatus'] : null;
+if($dial_status)
+{
+	switch($dial_status)
+	{
+		case 'answered':
+			$state[DIAL_ACTION] = DIAL_STATE_HANGUP;
+			break;
+		default:
+			break;
+	}
+}
+
 // This loop exists only so that we can quickly make state transitions by
 // setting a new DIAL_ACTION and jumping to the top of the loop.
 
@@ -98,8 +112,6 @@ while($keepLooping)
 {
 	// By default we'll only go once through the loop.
 	$keepLooping = false;
-				error_log(var_export($state, true));
-		error_log($state[DIAL_ACTION]);
 	switch($state[DIAL_ACTION])
 	{
 		case DIAL_STATE_DIAL:
@@ -108,7 +120,7 @@ while($keepLooping)
 			{
 				// There are still more numbers left to try
 			
-				$dial = $response->addDial();
+				$dial = $response->addDial(array('action' => current_url()));
 
 				if ($dial_whom_selector === 'user-or-group')
 				{
@@ -142,7 +154,6 @@ while($keepLooping)
 				}
 
 				$state[DIAL_NUMBER_INDEX] = $state[DIAL_NUMBER_INDEX] + 1;
-				$response->addRedirect();
 			}
 			else
 			{
@@ -152,6 +163,9 @@ while($keepLooping)
 				// Note that we'd like to go through the machine again with our new state
 				$keepLooping = true;
 			}
+			break;
+		case DIAL_STATE_HANGUP:
+			$response->addHangup();
 			break;
 		case DIAL_STATE_NO_ANSWER:
 			if ($dial_whom_selector == 'number')
