@@ -27,7 +27,7 @@ $config['base_url']= "http"
 | Used for js versioning.
 |
 */
-$config['site_rev'] = 1002;
+$config['site_rev'] = 1003;
 
 /*
 |--------------------------------------------------------------------------
