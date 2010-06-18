@@ -453,7 +453,7 @@ Flows.events = {
 				var template = $('#prototypes #prototype-'+ link.type).html();
 				template = template
 					.replace(/prototype/g, link.id);
-				$('#instance-row').append('<td class="instance-cell"><div id="'
+				$('#instance-row').append('<td class="instance-cell"><form><div id="'
 									   + link.id
 									   + '" class="flow-instance '
 									   + link.type
@@ -461,7 +461,7 @@ Flows.events = {
 									   + link.type
 									   + '" style="display: none">'
 									   + template
-									   + '</div></td>');
+									   + '</div></form></td>');
 
 				$('#'+link.id + ' textarea').text('');
 				$('#'+link.id + ' input[type=text]').val('');
