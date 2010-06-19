@@ -48,8 +48,8 @@ class VBX_Incoming_numbers extends Model
 			$data = apc_fetch($this->cache_key.'sandbox', $success);
 
 			if($data AND $success) {
-				$numbers = @unserialize($data);
-				if(is_array($numbers)) return $numbers;
+				$sandbox = simplexml_load_string($data);
+				return $sandbox;
 			}
 		}
 		
@@ -69,7 +69,7 @@ class VBX_Incoming_numbers extends Model
 		}
 
 		if(function_exists('apc_store')) {
-			$success = apc_store($this->cache_key.'sandbox', serialize($sandbox), self::CACHE_TIME_SEC);
+			$success = apc_store($this->cache_key.'sandbox', $sandbox->asXML(), self::CACHE_TIME_SEC);
 		}
 
 		return $sandbox;
