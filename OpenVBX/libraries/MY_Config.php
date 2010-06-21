@@ -46,7 +46,15 @@ function real_site_url($uri)
 
 function asset_url($uri)
 {
-	return real_site_url($uri);
+	$CI = &get_instance();
+	$url = $CI->config->real_site_url($uri);
+	$index_page = $CI->config->item('index_page');
+	if(strlen($index_page))
+	{
+		return str_replace($index_page, '', $url);
+	}
+	
+	return $url;
 }
 
 function tenant_url($uri, $tenant_id)
