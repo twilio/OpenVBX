@@ -13,7 +13,7 @@
 
 	<div id="install-container">
 
-	<h1 id="openvbx-logo"><a href="http://openvbx.org/"><span class="replace">OpenVBX</span></a></h1>
+	<h1 id="openvbx-logo"><a href="<?php echo site_url() ?>/"><span class="replace">OpenVBX</span></a></h1>
 
 	<form id="install-form" method="post" action="<?php echo site_url('install/setup'); ?>">
 
@@ -189,8 +189,8 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-            OpenVBX.home = '<?php echo site_url(''); ?>';
-            OpenVBX.assets = '<?php echo real_site_url(''); ?>';
+            OpenVBX.home = '<?php echo site_url(''); ?>/';
+            OpenVBX.assets = '<?php echo asset_url(''); ?>';
 	    <?php if(isset($step)): ?>
             OpenVBX.Installer.gotoStep(<?php echo $step ?>);
 	    <?php endif; ?>
