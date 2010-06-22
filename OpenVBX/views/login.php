@@ -1,19 +1,3 @@
-<script type="text/javascript">
-$().ready(function() {
-	$('#iEmail').focus();
-	$("form").validate({
-		rules: {
-			email: {required: true,	minlength: 2},
-			pw: {required: true,	minlength: 2}
-		},
-		messages: {
-			email: {required: " ",	minlength: " "},
-			pw: {required: " ",	minlength: " "}
-		}
-	});
-});
-</script>
-
 <div class="vbx-content-container">
 
 	<div id="login">

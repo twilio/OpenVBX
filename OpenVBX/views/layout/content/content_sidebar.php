@@ -56,18 +56,6 @@
 						</ul>
 						<?php endif; ?>
 
-						<?php if(!empty($site_admin_links)): ?>
-						<h3 class="vbx-nav-title">Admin</h3>
-						<ul id="site-nav" class="vbx-main-nav-items">
-						<?php foreach($site_admin_links as $link => $name):
-								$class = (isset($section) && $section == $link)? 'selected vbx-nav-item' :'vbx-nav-item' ?>
-								<li class="<?php echo $class ?>">
-										<a title="<?php echo $name ?>" href="<?php echo site_url($link) ?>"><?php echo $name?></a>
-								</li>
-						<?php endforeach; ?>
-						</ul>
-						<?php endif; ?>
-
                         <?php if(!empty($plugin_menus)): ?>
                         <?php foreach($plugin_menus as $name => $links): ?>
                         <h3 class="vbx-nav-title"><?php echo $name ?></h3>

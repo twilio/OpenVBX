@@ -303,7 +303,7 @@ class Install extends Controller {
 					}
 					else
 					{
-						$config .= '$'.$group."[\"$field_group\"][\"$key\"] = ".($value? 'TRUE' : 'FALSE').";\n";
+						$config .= '$'.$group."['$field_group']['$key'] = ".($value? 'TRUE' : 'FALSE').";\n";
 					}
 				}
 				else
@@ -314,7 +314,7 @@ class Install extends Controller {
 					}
 					else
 					{
-						$config .= '$'.$group."[\"$field_group\"][\"$key\"] = \"$value\";\n";
+						$config .= '$'.$group."['$field_group']['$key'] = '$value';\n";
 					}
 				}
 			}

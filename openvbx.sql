@@ -301,7 +301,7 @@ INSERT INTO settings
 	   ('from_email' , '', 1),
 	   ('dash_rss', '', 1),
 	   ('theme', '', 1),
-	   ('version', '0.74', 1),
+	   ('version', '0.76', 1),
 	   ('iphone_theme', '', 1),
 	   ('enable_sandbox_number', 1, 1),
 	   ('twilio_endpoint', 'https://api.twilio.com/2008-08-01', 1);
