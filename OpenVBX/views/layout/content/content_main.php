@@ -10,7 +10,7 @@
 									</div><!-- .vbx-banner -->
 
                                 <?php echo $content ?>
-                                </div><!--#vbx-main -->
+                                </div><!-- #vbx-main -->
                         </div><!-- .yui-b -->
                 </div><!-- #yui-main -->
 

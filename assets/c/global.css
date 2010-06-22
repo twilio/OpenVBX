@@ -61,6 +61,51 @@
 }
 
 
+
+/* Error Pages */
+
+
+.error-page {
+	min-height: 600px;
+	border-top: 3px solid #666;
+}
+
+.error-page .vbx-content-main {
+	padding: 20px;
+}
+
+.error-page .error-title {
+	margin: 0 0 1em 0;
+	font-size: 28px;
+	color: #444;
+}
+
+.error-page .error-code {
+	padding: 5px;
+	font-size: 11px;
+	font-weight: bold;
+	color: #888;
+}
+
+.error-page .error-message {
+	margin: 0 0 0.5em 0;
+	font-size: 17px;
+	color: #444;
+}
+
+.error-page .error-url {
+	font-size: 16px;
+	color: #C00;
+}
+
+.error-page .vbx-sidebar {
+	padding: 20px;
+}
+
+
+
+
+
 /* Misc */
 
 .yui-override-main-margin {
