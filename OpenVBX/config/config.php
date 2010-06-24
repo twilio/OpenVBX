@@ -101,10 +101,13 @@ $config['enable_profiler'] = FALSE;
 | variable so that it is blank.
 |
 */
-/* For mod_rewrite */
-$config['index_page'] = '';
-/* For non mod_rewrite users - experimental */
-//$config['index_page'] = "index.php";
+if(isset($_REQUEST['vbxsite'])) {
+	/* For mod_rewrite */
+	$config['index_page'] = '';
+} else {
+	/* For non mod_rewrite users - experimental */
+	$config['index_page'] = "index.php";
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -122,11 +125,13 @@ $config['index_page'] = '';
 | 'ORIG_PATH_INFO'	Uses the ORIG_PATH_INFO
 |
 */
-/* For mod_rewrite  */
-$config['uri_protocol'] = 'REQUEST_URI';
-/* For non mod_rewrite users - experimental */
-//$config['uri_protocol']	= "PATH_INFO";
-
+if(isset($_REQUEST['vbxsite'])) {
+	/* For mod_rewrite  */
+	$config['uri_protocol'] = 'REQUEST_URI';
+} else {
+	/* For non mod_rewrite users - experimental */
+	$config['uri_protocol']	= "PATH_INFO";
+}
 /*
 |--------------------------------------------------------------------------
 | URL suffix
