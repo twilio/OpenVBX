@@ -182,10 +182,12 @@
 			// get result code
 			$responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 			// unlink tmpfiles
-			if($fp)
-				fclose($fp);
-			if(strlen($tmpfile))
-				unlink($tmpfile);
+			if($method == 'PUT') {
+				if($fp)
+					fclose($fp);
+				if(strlen($tmpfile))
+					unlink($tmpfile);
+			}
 			
 			return new TwilioRestResponse($url, $result, $responseCode);
 		}
