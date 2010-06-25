@@ -32,6 +32,13 @@ class OpenVBX {
 		return PluginData::one($sql);
     }
 
+	public static function isAdmin() {
+		$ci = &get_instance();
+		$is_admin = $ci->session->userdata('is_admin');
+
+		return ($is_admin == 1);
+	}
+
 	public static function getTwilioAccountType()
 	{
 		$ci = &get_instance();

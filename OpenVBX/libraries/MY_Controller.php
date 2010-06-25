@@ -262,14 +262,7 @@ class MY_Controller extends Controller
 
 				$nav['log_links'] = array(
 										  );
-
-				if(!empty($plugin_links['admin_links']))
-				{
-					$nav['admin_links'] = array_merge($nav['admin_links'],
-												$plugin_links['admin_links']);
-					
-				}
-
+				
 				if(!empty($plugin_links['log_links']))
 				{
 					$nav['log_links'] = array_merge($nav['log_links'],
@@ -277,17 +270,25 @@ class MY_Controller extends Controller
 					
 				}
 			
-				$nav['site_admin_links'] = array(
+				$nav['admin_links'] = array(
 										   'flows' => 'Flows',
 										   'numbers' => 'Numbers',
 										   'accounts' => 'Users',
 										   'settings/site' => 'Settings',
 										   );
 
+				/* Support plugins that used site_admin */
 				if(!empty($plugin_links['site_admin_links']))
 				{
-					$nav['site_admin_links'] = array_merge($nav['site_admin_links'],
-														   $plugin_links['site_admin_links']);
+					$nav['admin_links'] = array_merge($nav['admin_links'],
+													  $plugin_links['site_admin_links']);
+				}
+
+				/* Include plugins that refer to 'admin' menu */
+				if(!empty($plugin_links['admin_links']))
+				{
+					$nav['admin_links'] = array_merge($nav['admin_links'],
+													  $plugin_links['admin_links']);
 				}
 			}
 		}

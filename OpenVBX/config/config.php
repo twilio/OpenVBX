@@ -27,7 +27,7 @@ $config['base_url']= "http"
 | Used for js versioning.
 |
 */
-$config['site_rev'] = 1002;
+$config['site_rev'] = 1003;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,7 +101,10 @@ $config['enable_profiler'] = FALSE;
 | variable so that it is blank.
 |
 */
-$config['index_page'] = "";
+/* For mod_rewrite */
+$config['index_page'] = '';
+/* For non mod_rewrite users - experimental */
+//$config['index_page'] = "index.php";
 
 /*
 |--------------------------------------------------------------------------
@@ -119,7 +122,10 @@ $config['index_page'] = "";
 | 'ORIG_PATH_INFO'	Uses the ORIG_PATH_INFO
 |
 */
-$config['uri_protocol']	= "REQUEST_URI";
+/* For mod_rewrite  */
+$config['uri_protocol'] = 'REQUEST_URI';
+/* For non mod_rewrite users - experimental */
+//$config['uri_protocol']	= "PATH_INFO";
 
 /*
 |--------------------------------------------------------------------------
