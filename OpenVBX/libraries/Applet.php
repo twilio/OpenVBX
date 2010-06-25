@@ -272,11 +272,11 @@ class Applet
 		$object->applet_dir_name = $applet_dir_name;
 		$object->css_class_name = empty($applet_config->css_class_name)? $applet_dir_name : $applet_config->css_class_name;
 		$object->plugin_path = PLUGIN_PATH . '/' . $plugin_dir_name;
-		$object->icon_url = real_site_url( $rel_applet_path . '/icon.png');
+		$object->icon_url = asset_url( $rel_applet_path . '/icon.png');
 		$object->icon_file = $object->plugin_path .'/applets/'. $applet_dir_name . '/icon.png';
 		if(!is_file( $object->icon_file )) {
 			$object->icon_file = null;
-			$object->icon_url = real_site_url( 'assets/i/icon.png' );
+			$object->icon_url = asset_url( 'assets/i/icon.png' );
 		}
 		
 		$object->style_url = "";
@@ -292,7 +292,7 @@ class Applet
 		if(is_file( $applet_path . '/script.js' ))
 		{
 			// We'll use add_js later to add this to the page, and add_js expects absolute URLs
-			$object->script_url = real_site_url( $rel_applet_path . '/script.js');
+			$object->script_url = asset_url( $rel_applet_path . '/script.js');
 		}
 		$object->script_file = $applet_path . '/script.js';
 		

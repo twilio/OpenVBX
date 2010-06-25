@@ -34,9 +34,18 @@ class OpenVBX {
 
 	public static function getTwilioAccountType()
 	{
-		$ci = &get_instance();
-		$ci->load->model('vbx_accounts');
-		return $ci->vbx_accounts->getAccountType();
+		try
+		{
+			$ci = &get_instance();
+			$ci->load->model('vbx_accounts');
+			return $ci->vbx_accounts->getAccountType();
+		}
+		catch(VBX_AccountsException $e)
+		{
+			error_log($e->getMessage());
+			self::setNotificationMessage($e->getMessage());
+			return 'Full';
+		}
 	}
 	
 	public static function getCurrentUser()

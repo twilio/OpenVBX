@@ -51,7 +51,8 @@ function asset_url($uri)
 	$index_page = $CI->config->item('index_page');
 	if(strlen($index_page))
 	{
-		return str_replace($index_page, '', $url);
+		$test = str_replace($index_page, '', $url);
+		return $test;
 	}
 	
 	return $url;

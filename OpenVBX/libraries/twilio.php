@@ -186,7 +186,9 @@
 				if($fp)
 					fclose($fp);
 				if(strlen($tmpfile))
-					unlink($tmpfile);
+					@unlink($tmpfile);
+				if(is_file($tmpfile))
+					error_log("Failed to delete cache: $tmpfile");
 			}
 			
 			return new TwilioRestResponse($url, $result, $responseCode);
