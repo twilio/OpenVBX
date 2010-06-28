@@ -67,6 +67,8 @@ class Install extends Controller {
 		$this->openvbx_settings['iphone_theme'] = '';
 		$this->openvbx_settings['trial_number'] = '(415) 599-2671';
 		$this->openvbx_settings['schema-version'] = OpenVBX::getLatestSchemaVersion();
+
+		$this->openvbx_settings['rewrite_enabled'] = !strlen($this->input->post('rewrite_enabled'))? 0 : $this->input->post('rewrite_enabled');
 		
 		$this->user = array();
 		$this->user['email'] = trim($this->input->post('admin_email'));
