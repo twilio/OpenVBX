@@ -101,13 +101,7 @@ $config['enable_profiler'] = FALSE;
 | variable so that it is blank.
 |
 */
-if(isset($_REQUEST['vbxsite'])) {
-	/* For mod_rewrite */
-	$config['index_page'] = '';
-} else {
-	/* For non mod_rewrite users - experimental */
-	$config['index_page'] = "index.php";
-}
+$config['index_page'] = 'index.php';
 
 /*
 |--------------------------------------------------------------------------

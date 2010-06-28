@@ -1,10 +1,5 @@
-<IfModule mod_rewrite.c>
-RewriteEngine on
-
-RewriteCond %{REQUEST_URI} !(\.¦/$) 
-
-# Hide SVN files
-RewriteRule \.svn - [F]
+RewriteEngine ON
+RewriteBase /
 
 # By default always use SSL
 #RewriteCond %{HTTPS} !=on
@@ -15,8 +10,5 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^(.*) index.php?vbxsite=$1 [L,QSA]
 #RewriteRule ^(.*) index.php/$1 [L,QSA]
-</IfModule>
 
-<IfModule !mod_rewrite.c>
-    ErrorDocument 404 /fallback/rewrite.php
-</IfModule>
+ErrorDocument 404 /fallback/rewrite.php

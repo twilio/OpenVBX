@@ -66,12 +66,13 @@ class MY_Controller extends Controller
 			error_reporting(E_ALL);
 		else
 			error_reporting(E_ALL & ~E_NOTICE);
-
+		
 		if(!file_exists(APPPATH . 'config/openvbx.php')
 		   || !file_exists(APPPATH . 'config/database.php'))
 		{
 			redirect('install');
 		}
+		
 		$this->config->load('openvbx');
 
 		// check for required configuration values
@@ -85,6 +86,15 @@ class MY_Controller extends Controller
 		$this->load->helper('file');
 
 		$this->settings = new VBX_Settings();
+
+		$rewrite_mode = intval($this->settings->get('rewrite_mode', VBX_PARENT_TENANT));
+		if($rewrite_mode) {
+			/* For mod_rewrite */
+			$this->config->set_item('index_page', '');
+		}
+
+
+		
 		$this->tenant = $this->settings->get_tenant($this->router->tenant);
 		if($this->tenant === false)
 		{
