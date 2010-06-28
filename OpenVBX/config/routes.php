@@ -44,6 +44,7 @@ $route['default_controller'] = "messages/message_index";
 $route['scaffolding_trigger'] = "";
 
 $route['install'] = "install";
+$route['upgrade'] = "upgrade";
 $route['messages'] = "messages/message_index";
 $route['messages/inbox/(:num)'] = "messages/inbox/index/$1";
 $route['messages/scripts/(:num)'] = "messages/inbox/scripts/$1";

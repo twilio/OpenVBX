@@ -19,8 +19,8 @@
 #openvbx-logo a {
     display: block;
     float: left;
-    height: 54px;
-    width: 208px;
+    height: 60px;
+    width: 224px;
     margin: 15px 10px;
     background: #FFF url(../i/openvbx-header-logo.png) no-repeat left top;
 	outline: none;
@@ -59,6 +59,51 @@
 .voicemail-icon {
     background-position: -68px center;
 }
+
+
+
+/* Error Pages */
+
+
+.error-page {
+	min-height: 600px;
+	border-top: 3px solid #666;
+}
+
+.error-page .vbx-content-main {
+	padding: 20px;
+}
+
+.error-page .error-title {
+	margin: 0 0 1em 0;
+	font-size: 28px;
+	color: #444;
+}
+
+.error-page .error-code {
+	padding: 5px;
+	font-size: 11px;
+	font-weight: bold;
+	color: #888;
+}
+
+.error-page .error-message {
+	margin: 0 0 0.5em 0;
+	font-size: 17px;
+	color: #444;
+}
+
+.error-page .error-url {
+	font-size: 16px;
+	color: #C00;
+}
+
+.error-page .vbx-sidebar {
+	padding: 20px;
+}
+
+
+
 
 
 /* Misc */

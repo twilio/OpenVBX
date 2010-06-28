@@ -255,6 +255,7 @@ button.inline-button {
     padding: 0 5px 0 26px;
     background: url(../i/play-pause-stop-bg.png) no-repeat left top;
     text-decoration: none;
+	outline: none;
 }
 
 .playback-button:hover {
