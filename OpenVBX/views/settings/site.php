@@ -9,10 +9,30 @@
 				<li><a href="#multi-tenant">Tenants</a></li>
                 <?php endif; ?>
 				<li><a href="#twilio-account">Twilio Account</a></li>
+                <?php if($tenant_mode == Site::MODE_MULTI): ?>
+				<li><a href="#system-config">System Config</a></li>
+                <?php endif; ?>
                 <li><a href="#about">About</a></li>
 			</ul>
 		</div><!-- .vbx-content-tabs -->
 
+	    <div id="settings-system-config" class="vbx-tab-view">
+			<h3>System Config</h3>
+			<form name="vbx-system" action="<?php echo site_url('settings/site') ?>" method="POST" class="vbx-system-form vbx-form">
+				<fieldset class="vbx-input-container">
+					<label for="rewrite">Do you want to enable mod_rewrite support?
+						<select id="rewrite" class="medium" name="site[rewrite_enabled]">
+							<?php foreach(array(0 => "No", 1 => "Yes" ) as $value => $option): ?>
+							<option value="<?php echo $value ?>" <?php echo ($value == $rewrite_enabled['value'])? 'selected="selected"' : ''?>><?php echo $option ?></option>
+							<?php endforeach; ?>
+						</select>
+					</label>
+				</fieldset>
+				<button class="submit-button"><span>Update</span></button>
+			</form>
+
+		</div>
+		 
 		<div id="settings-theme" class="vbx-tab-view">
 			<h3>Theme</h3>
 			<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#theme" method="POST" class="vbx-settings-form vbx-form">
@@ -121,6 +141,8 @@
 				<li>Current Version: <?php echo OpenVBX::version() ?></li>
 				<li>Schema Version: <?php echo OpenVBX::schemaVersion() ?></li>
 				<li>Latest Schema Available: <?php echo OpenVBX::getLatestSchemaVersion(); ?></li>
+				<li>Database configuration: <?php echo "mysql://{$this->db->username}@{$this->db->hostname}/{$this->db->database}" ?></li>
+				<li>Rewrite enabled: <?php echo $rewrite_enabled['value']? 'Yes' : 'No' ?></li>
 			</ul>
 			
 			<p>Thanks to everyone involved, you made it better than envisioned!</p>

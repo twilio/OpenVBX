@@ -87,8 +87,8 @@ class MY_Controller extends Controller
 
 		$this->settings = new VBX_Settings();
 
-		$rewrite_mode = intval($this->settings->get('rewrite_mode', VBX_PARENT_TENANT));
-		if($rewrite_mode) {
+		$rewrite_enabled = intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT));
+		if($rewrite_enabled) {
 			/* For mod_rewrite */
 			$this->config->set_item('index_page', '');
 		}
