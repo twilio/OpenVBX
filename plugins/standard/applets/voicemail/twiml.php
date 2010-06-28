@@ -31,7 +31,7 @@ else
 	$response->append($verb);
 
 	// add a <Record>, and use VBX's default transcription handler
-	$response->addRecord(array('transcribe'=>'true', 'transcribeCallback' => site_url('/twiml/transcribe') ));
+	$response->addRecord(array('transcribeCallback' => site_url('/twiml/transcribe') ));
 }
 
 $response->Respond(); // send response

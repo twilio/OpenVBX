@@ -183,7 +183,6 @@ while($keepLooping)
 				{
 					$response->append(AudioSpeechPickerWidget::getVerbForValue($voicemail, new Say("Please leave a message.")));
 					$response->addRecord(array(
-											   'transcribe' => true,
 											   'transcribeCallback' => site_url('twiml/transcribe'),
 											   ));
 					$state[DIAL_ACTION] = DIAL_STATE_RECORDING;
