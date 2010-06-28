@@ -2,7 +2,6 @@
 $response = new Response();
 
 /* Fetch all the data to operate the menu */
-$keys = AppletInstance::getValue('keys');
 $digits = isset($_REQUEST['Digits'])? $_REQUEST['Digits'] : false;
 $prompt = AppletInstance::getAudioSpeechPickerValue('prompt');
 $invalid_option = AppletInstance::getAudioSpeechPickerValue('invalid-option');
