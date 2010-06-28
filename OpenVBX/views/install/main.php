@@ -118,6 +118,7 @@
 					</label>
 
 				<input type="hidden" name="theme" value="<?php echo htmlspecialchars($theme)?>" />
+				<input type="hidden" name="rewrite_enabled" value="0" />
 			</fieldset>
 		</div>
 

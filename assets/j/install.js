@@ -225,4 +225,18 @@ $(document).ready(function() {
 			e.preventDefault();
 		last_key = e.which;
 	});
+
+	setTimeout(function() {
+		$.ajax({ 
+			url : OpenVBX.home.replace('index.php', 'support/rewrite'), 
+			success : function(data, code) {
+				$('input[name=rewrite_enabled]').attr("value", 1);
+			}, 
+			error : function(data) { 
+				$('input[name=rewrite_enabled]').attr("value", 0);
+			} 
+		});
+	}, 1000);
+
+
 });
