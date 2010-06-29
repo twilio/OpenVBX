@@ -13,7 +13,7 @@ $responses = AppletInstance::getValue('responses[]');
 		</fieldset>
 
 		<h2>Menu Options</h2>
-		<table class="vbx-menu-grid">
+		<table class="vbx-menu-grid options-table">
 			<thead>
 				<tr>
 					<td>Keyword</td>

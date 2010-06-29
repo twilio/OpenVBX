@@ -101,7 +101,7 @@ class AudioSpeechPickerWidget extends AppletUIWidget
 		{
 			// This is a locally hosted file, and we need to return the correct
 			// absolute URL for the file.
-			return new Play(site_url("audio-uploads/" . $matches[1]));
+			return new Play(real_site_url("audio-uploads/" . $matches[1]));
 		}
 		else if (preg_match('/^http(s)?:\/\/(.*)/i', $value))
 		{

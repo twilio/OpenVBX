@@ -2,24 +2,9 @@ $(document).ready(function() {
 	// Disable all the template row inputs
 	$('.query-applet tr.hide input').attr('disabled', 'disabled');
 
-	var app = $('.flow-instance.standard---menu');
-	$('.query-applet .menu-prompt .audio-choice', app).live('save', function(event, mode, value) {
-		var text = '';
-		if(mode == 'say') {
-			text = value;
-		} else {
-			text = 'Play';
-		}
-		
-		var instance = $(event.target).parents('.flow-instance.standard---menu');
-		if(text.length > 0) {
-			$(instance).trigger('set-name', 'Menu: ' + text.substr(0, 6) + '...');
-		}
-	});
-
 	$('.query-applet input.keypress').live('change', function(event) {
 		var row = $(this).parents('tr');
-		$('input[name=^choices]', row).attr('name', 'keys['+$(this).val()+']');
+		$('input[name=^responses]', row).attr('name', 'keys['+$(this).val()+']');
 	});
 
 	$('.query-applet .action.add').live('click', function(event) {
