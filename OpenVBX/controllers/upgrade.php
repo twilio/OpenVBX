@@ -77,7 +77,7 @@ class Upgrade extends User_Controller {
 		
 		try
 		{
-			$currentSchemaVersion = '32';//OpenVBX::schemaVersion();
+			$currentSchemaVersion = OpenVBX::schemaVersion();
 			$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
 
 			$sqlPath = VBX_ROOT.'/sql-updates/';
