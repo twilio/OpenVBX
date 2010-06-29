@@ -127,6 +127,24 @@ a {
 	background-color: #528D1D;
 }
 
+#goto-openvbx {
+	display: block;
+	width: 300px;
+	margin: 60px auto 20px auto;
+	padding: 12px 20px;
+	font-size: 26px;
+	font-weight: bold;
+	color: #FFF;
+	text-align: center;
+	text-decoration: none;
+	background-color: #74C729;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+#goto-openvbx:active {
+	background-color: #528D1D;
+}
 
 
 strong {

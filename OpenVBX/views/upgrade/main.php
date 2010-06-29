@@ -37,6 +37,8 @@
 				<p>Your database is now ready!</p>
 			</div><!-- .step-desc -->
 
+			<a id="goto-openvbx" href="<?php echo site_url() ?>">Continue to Inbox</a>
+
 		</div><!-- .step -->
 
 
