@@ -155,12 +155,26 @@ class User_Controller extends MY_Controller
 				/* Handle this gracefully, but report the error. */
 				error_log($e->getMessage());
 			}
+
+			/* Check for updates if an admin */
+			if($this->session->userdata('is_admin') && $this->uri->segment(1) != "upgrade")
+			{
+				$this->upgrade_check();
+			}
 		}
 	}
 
 	protected function redirect($url)
 	{
 		redirect($url);
+	}
+
+	private function upgrade_check()
+	{
+		$currentSchemaVersion = OpenVBX::schemaVersion();
+		$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
+		if($currentSchemaVersion != $upgradingToSchemaVersion)
+			redirect('upgrade');
 	}
 
 	function digest_parse($digest)

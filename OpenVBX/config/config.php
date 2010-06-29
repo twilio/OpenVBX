@@ -79,7 +79,7 @@ $config['enable_log'] = TRUE;
 | Turning this on could cause breakage in TwiML code, which will destroy calls.
 |
 */
-$config['display_errors'] = FALSE;
+$config['display_errors'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------

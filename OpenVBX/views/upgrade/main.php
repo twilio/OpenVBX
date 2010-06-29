@@ -6,7 +6,7 @@
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url() ?>/assets/c/install.css" />
 	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/frameworks/jquery-1.4.2.js"></script>
 	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/plugins/jquery.validate.js"></script>
-	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/install.js"></script>
+	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/upgrade.js"></script>
 
 </head>
 <body>
@@ -44,6 +44,7 @@
 
     <div class="navigation">
         <button class="next">Continue &raquo;</button>
+        <button class="submit">Upgrade &raquo;</button>
     </div>
 
 

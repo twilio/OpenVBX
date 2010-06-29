@@ -19,13 +19,109 @@
  * Contributor(s):
  **/
 
+require_once APPPATH. '/libraries/OpenVBX.php';
+
 class UpgradeException extends Exception {}
 
-class Upgrade extends Controller {
+class Upgrade extends User_Controller {
 
+	public function __construct()
+	{
+		parent::__construct();
+		$this->section = 'upgrade';
+		$this->admin_only($this->section);
+	}
+	
 	public function index()
-	{		 
+	{
+		$currentSchemaVersion = OpenVBX::schemaVersion();
+		$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
+		if($currentSchemaVersion == $upgradingToSchemaVersion)
+			redirect('/');
+		
 		$this->load->view('upgrade/main');
 	}
 
+	public function validate()
+	{
+		$step = $this->input->post('step');
+		$json = array('success' => true);
+		if($step == 1) {
+			echo json_encode($json);
+			return;
+		}
+		
+		$tplvars = $this->input_args();
+		switch($step)
+		{
+			case 2:
+				$json = $this->validate_step2();
+				break;
+		}
+		
+		$json['tplvars'] = $tplvars;
+		echo json_encode($json);
+	}
+
+	private function input_args()
+	{
+		$tplvars = array();
+
+		return $tplvars;
+	}
+	
+	public function setup()
+	{
+		$json['success'] = true;
+		$json['message'] = '';
+		
+		try
+		{
+			$currentSchemaVersion = '32';//OpenVBX::schemaVersion();
+			$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
+
+			$sqlPath = VBX_ROOT.'/sql-updates/';
+			$updates = scandir($sqlPath);
+			$files = array();
+			foreach($updates as $i => $update)
+			{
+				if(preg_match('/^(\d+).sql$/', $update) )
+				{
+					$rev = intval(str_replace('.sql', '', $update));
+					$files[$rev] = $update;
+				}
+			}
+
+			ksort($files);
+			$files = array_slice($files, $currentSchemaVersion);
+			$tplvars = array('originalVersion' => $currentSchemaVersion,
+							 'version' => $upgradingToSchemaVersion,
+							 'updates' => $files );
+			
+			foreach($files as $file)
+			{
+				$sql = @file_get_contents($sqlPath.$file);
+				if(empty($sql))
+				{
+					throw new UpgradeException("Unable to read update: $file", 1);
+				}
+
+				foreach(explode(";", $sql) as $stmt)
+				{
+					if(!empty($stmt))
+					{
+						PluginData::sqlQuery($stmt);
+					}
+				}
+			}
+			
+		} catch(Exception $e) {
+			$json['success'] = false;
+			$json['message'] = $e->getMessage();
+			$json['step'] = $e->getCode();
+		}
+			  
+		$json['tplvars'] = $tplvars;
+		echo json_encode($json);
+	}
 }

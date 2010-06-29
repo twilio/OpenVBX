@@ -142,7 +142,12 @@ class PluginData
 
         $ci = &get_instance();
         
-        return $ci->db->query($sql)->result_array();
+        $result = $ci->db->query($sql);
+		
+		if(is_object($result))
+			return $result->result_array();
+
+		return;
     }
     
     public static function one($sql)
