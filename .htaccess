@@ -1,5 +1,4 @@
 RewriteEngine ON
-RewriteBase /
 
 # By default always use SSL
 #RewriteCond %{HTTPS} !=on
