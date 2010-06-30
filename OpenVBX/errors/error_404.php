@@ -32,7 +32,7 @@ function curPageURL() {
 
 <div id="doc3" class="yui-t6">
 
-<div id="wrapper" class="<?php echo $theme;?>-theme">
+<div id="wrapper">
 
 		<div id="hd">
 		<h1 id="openvbx-logo"><a href="<?php echo real_site_url(''); ?><?php echo ($this->tenant->id > 1)? $this->tenant->name . '/' : '' ?>" class="navigate-away"><span class="replace">OpenVBX</span></a></h1>
@@ -55,7 +55,6 @@ function curPageURL() {
 
 		<div class="yui-b">
 			<div class="vbx-sidebar">
-			<p>Common problems</p>
 			</div><!-- .vbx-sidebar -->
 		</div><!-- .yui-b -->
 
