@@ -44,6 +44,6 @@ function openvbx_mail($recipient, $subject, $template, $maildata = array())
 	{
 		error_log($message);
 	}
-	
-    return mail($recipient, "[$from] " . $subject, $message, $headers);
+
+    return mail($recipient, "[OpenVBX] " . $subject, $message, $headers);
 }
