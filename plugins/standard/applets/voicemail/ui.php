@@ -24,5 +24,5 @@
 		<h2>Take voicemail</h2>
 		<p>Which individual or group should receive the voicemail?</p>
 		<?php echo AppletUI::UserGroupPicker('permissions'); ?>
-
 </div><!-- .vbx-applet -->
+<div style="clear:both;"></div> 
