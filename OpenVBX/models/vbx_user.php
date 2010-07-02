@@ -196,8 +196,10 @@ class VBX_User extends MY_Model {
 		try
 		{
 			$result = $this->save();
-			$message = "Your new password is $password\n\n" . tenant_url('', $this->tenant_id);
-			openvbx_mail($this->email, 'OpenVBX Password', $message);
+			// $message = "Your new password is $password\n\n" . tenant_url('', $this->tenant_id);
+			$maildata = array('password' => $password,
+							  'tenant_url' => tenant_url('', $this->tenant_id));
+			openvbx_mail($this->email, '[OpenVBX] Password', 'password-reset', $maildata);
 		}
 		catch(Exception $e)
 		{
