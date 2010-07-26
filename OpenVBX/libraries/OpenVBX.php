@@ -74,6 +74,18 @@ class OpenVBX {
 		return null;
 	}
 
+	public static function addCSS($file)
+	{
+		$ci = &get_instance();
+		$plugin = OpenVBX::$currentPlugin;
+		$info = $plugin->getInfo();
+		$path = $info['plugin_path'] .'/'. $file;
+		if(!is_file($path))
+			error_log("Warning: CSS file does not exists: {$path}");
+		$url = implode('/', array('plugins', $info['dir_name'], $file));
+		$ci->template->add_css($url);
+	}
+
 	public static function addJS($file)
 	{
 		$ci = &get_instance();
