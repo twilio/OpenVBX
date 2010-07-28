@@ -786,37 +786,71 @@ var Pickers = {
 
 $(document).ready(function() {
 
-	// When someone clicks one of the [read text, upload, record, library] items from
-	// the selector, we should open the editor for that input type.
-	$('.audio-choice-selector a').live('click', Pickers.audio.selectAction);
-	// When someone cancels the editor, we should return to the input type selector
-	$('.audio-choice-editor .audio-choice-close-button').live('click', Pickers.audio.closeEditorsAndShowSelector);
-	// When someone saves their new "read text" setting, we should save and then show the newly saved value
-	$('.audio-choice-editor .audio-choice-read-text button[type=submit]').live('click', Pickers.audio.saveReadText);
-	// When someone wants clicks edit on the current value, we should show the input selector guy
-	$('.audio-choice-current-value .change').live('click', Pickers.audio.showInputSelector);
-	// Whene someone closes the selector, we should go back to the current value
-	$('.audio-choice-selector .audio-choice-close-button').live('click', Pickers.audio.closeSelectorAndShowCurrentValue);
-	// When someone clicks the call & record button, they should get a phone call
-	$('.audio-choice-editor .audio-choice-record button[type=submit]').live('click', Pickers.audio.startDeviceRecording);
-	// When someone is on the library, and they've set one of the recordings to be the active recording, we should save it and go back to the input selector
-	$('.audio-choice-editor .audio-choice-library button[type=submit]').live('click', Pickers.audio.setRecordingFromLibarary);
-	
-	// When someone hovers over the flash upoader, we want to change the background color that's
-	// _behind_ the flash widget 
-	$('.audio-choice-editor .swfupload-control').live('mouseenter', function(e) {
-		$(e.target).closest('.audio-choice').find('.swfupload-container').addClass('hover');
-	});
-	$('.audio-choice-editor .swfupload-control').live('mouseleave', function(e) {
-		$(e.target).closest('.audio-choice').find('.swfupload-container').removeClass('hover');
-	});
+    if($.browser.msie) {
+        // When someone clicks one of the [read text, upload, record, library] items from
+        // the selector, we should open the editor for that input type.
+        $('.audio-choice-selector a').livequery('click', Pickers.audio.selectAction);
+        // When someone cancels the editor, we should return to the input type selector
+        $('.audio-choice-editor .audio-choice-close-button').livequery('click', Pickers.audio.closeEditorsAndShowSelector);
+        // When someone saves their new "read text" setting, we should save and then show the newly saved value
+        $('.audio-choice-editor .audio-choice-read-text button[type=submit]').livequery('click', Pickers.audio.saveReadText);
+        // When someone wants clicks edit on the current value, we should show the input selector guy
+        $('.audio-choice-current-value .change').livequery('click', Pickers.audio.showInputSelector);
+        // Whene someone closes the selector, we should go back to the current value
+        $('.audio-choice-selector .audio-choice-close-button').livequery('click', Pickers.audio.closeSelectorAndShowCurrentValue);
+        // When someone clicks the call & record button, they should get a phone call
+        $('.audio-choice-editor .audio-choice-record button[type=submit]').livequery('click', Pickers.audio.startDeviceRecording);
+        // When someone is on the library, and they've set one of the recordings to be the active recording, we should save it and go back to the input selector
+        $('.audio-choice-editor .audio-choice-library button[type=submit]').livequery('click', Pickers.audio.setRecordingFromLibarary);
+        
+        // When someone hovers over the flash upoader, we want to change the background color that's
+        // _behind_ the flash widget 
+        $('.audio-choice-editor .swfupload-control').livequery('mouseenter', function(e) {
+            $(e.target).closest('.audio-choice').find('.swfupload-container').addClass('hover');
+        });
+        $('.audio-choice-editor .swfupload-control').livequery('mouseleave', function(e) {
+            $(e.target).closest('.audio-choice').find('.swfupload-container').removeClass('hover');
+        });
 
-	$('.usergroup-picker').live('click', Pickers.usergroup.dialog);
-	$('.usergroup-dialog td').live('mouseover', Pickers.usergroup.hoverIn)
-		.live('mouseout', Pickers.usergroup.hoverOut);
-	$('.usergroup-dialog td').live('click', Pickers.usergroup.select);
-	
-	$('.usergroup-dialog a.edit-user').live('click', Pickers.usergroup.editUser);
-	$('.usergroup-dialog a.edit-group').live('click', Pickers.usergroup.editGroup);
+        $('.usergroup-picker').livequery('click', Pickers.usergroup.dialog);
+        $('.usergroup-dialog td').livequery('mouseover', Pickers.usergroup.hoverIn)
+            .livequery('mouseout', Pickers.usergroup.hoverOut);
+        $('.usergroup-dialog td').livequery('click', Pickers.usergroup.select);
+        
+        $('.usergroup-dialog a.edit-user').livequery('click', Pickers.usergroup.editUser);
+        $('.usergroup-dialog a.edit-group').livequery('click', Pickers.usergroup.editGroup);
+    } else {
+        // When someone clicks one of the [read text, upload, record, library] items from
+        // the selector, we should open the editor for that input type.
+        $('.audio-choice-selector a').live('click', Pickers.audio.selectAction);
+        // When someone cancels the editor, we should return to the input type selector
+        $('.audio-choice-editor .audio-choice-close-button').live('click', Pickers.audio.closeEditorsAndShowSelector);
+        // When someone saves their new "read text" setting, we should save and then show the newly saved value
+        $('.audio-choice-editor .audio-choice-read-text button[type=submit]').live('click', Pickers.audio.saveReadText);
+        // When someone wants clicks edit on the current value, we should show the input selector guy
+        $('.audio-choice-current-value .change').live('click', Pickers.audio.showInputSelector);
+        // Whene someone closes the selector, we should go back to the current value
+        $('.audio-choice-selector .audio-choice-close-button').live('click', Pickers.audio.closeSelectorAndShowCurrentValue);
+        // When someone clicks the call & record button, they should get a phone call
+        $('.audio-choice-editor .audio-choice-record button[type=submit]').live('click', Pickers.audio.startDeviceRecording);
+        // When someone is on the library, and they've set one of the recordings to be the active recording, we should save it and go back to the input selector
+        $('.audio-choice-editor .audio-choice-library button[type=submit]').live('click', Pickers.audio.setRecordingFromLibarary);
+        
+        // When someone hovers over the flash upoader, we want to change the background color that's
+        // _behind_ the flash widget 
+        $('.audio-choice-editor .swfupload-control').live('mouseenter', function(e) {
+            $(e.target).closest('.audio-choice').find('.swfupload-container').addClass('hover');
+        });
+        $('.audio-choice-editor .swfupload-control').live('mouseleave', function(e) {
+            $(e.target).closest('.audio-choice').find('.swfupload-container').removeClass('hover');
+        });
 
+        $('.usergroup-picker').live('click', Pickers.usergroup.dialog);
+        $('.usergroup-dialog td').live('mouseover', Pickers.usergroup.hoverIn)
+            .live('mouseout', Pickers.usergroup.hoverOut);
+        $('.usergroup-dialog td').live('click', Pickers.usergroup.select);
+        
+        $('.usergroup-dialog a.edit-user').live('click', Pickers.usergroup.editUser);
+        $('.usergroup-dialog a.edit-group').live('click', Pickers.usergroup.editGroup);
+    }
 });
