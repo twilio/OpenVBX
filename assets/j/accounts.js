@@ -276,7 +276,7 @@ $(document).ready(function() {
 		dlgGoogleAppSync.dialog('open');
 	});
 
-	$('.user-edit, .group-edit').live('click', function(event) {
+	$('.user-edit, .group-edit').livequery('click', function(event) {
 		var container_el = $(this).closest('.group, .user');
 		if(container_el.hasClass('group')) {
 			$.postJSON('accounts/group/get', {	id: container_el.attr('rel') }, showGroupEdit);
@@ -286,7 +286,7 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('.user-remove, .group-remove').live('click',  function(evt) {
+	$('.user-remove, .group-remove').livequery('click',  function(evt) {
 
 		var entity = $(this)
 			.closest('.group, .user')

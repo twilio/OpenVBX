@@ -337,7 +337,7 @@ Flows.events = {
 					.get(0);
 
 				$('#flowline').animate({
-					scrollLeft: cell.offsetLeft - ($('#flowline').css('width').replace('px','') * 0.10),
+                    scrollLeft: cell.offsetLeft - 30,
 					queue : true
 				});
 			}

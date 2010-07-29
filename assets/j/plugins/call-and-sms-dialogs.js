@@ -207,7 +207,7 @@ $(function () {
 		event.preventDefault();
 	};
 
-	$('.call-button', dialog).live('click', callNumber);
+	$('.call-button', dialog).click(callNumber);
 
 	$('.screen').live('click', function(event) {
 		event.preventDefault();
