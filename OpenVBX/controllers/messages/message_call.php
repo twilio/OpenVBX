@@ -19,6 +19,8 @@
  * Contributor(s):
  **/
 
+class Message_CallException extends Exception {}
+
 class Message_Call extends User_Controller
 {
 	function __construct()
@@ -28,25 +30,31 @@ class Message_Call extends User_Controller
 	
 	function index($message_id = false)
 	{
-		$to = $this->input->post('to');
-		$callerid = $this->input->post('callerid');
-		$from = $this->input->post('from');
-		if(empty($from))
-		{
-			$this->load->model('vbx_device');
-			$devices = $this->vbx_device->get_by_user($this->user_id);
-			if(!empty($devices[0]))
-			{
-				$from = $devices[0]->value;
-			}
-		}
-		$rest_access = $this->make_rest_access();
-
-		$this->load->model('vbx_call');
-		$json['error'] = false;
-		$json['message'] = '';
 		try
 		{
+			$to = $this->input->post('to');
+			$callerid = $this->input->post('callerid');
+			$from = $this->input->post('from');
+			
+			$this->load->model('vbx_call');
+			$json['error'] = false;
+			$json['message'] = '';
+			if(empty($from))
+			{
+				$this->load->model('vbx_device');
+				$devices = $this->vbx_device->get_by_user($this->user_id);
+				if(!empty($devices[0]))
+				{
+					$from = $devices[0]->value;
+				}
+				
+				if(empty($from))
+				{
+					throw new Message_CallException('You may not have any devices setup under this user account.  Please see the devices section more information.');
+				}
+			}
+			
+			$rest_access = $this->make_rest_access();
 			$this->vbx_call->make_call($from, $to, $callerid, $rest_access);
 			if($message_id)
 			{
@@ -57,7 +65,7 @@ class Message_Call extends User_Controller
 			}
 			
 		}
-		catch(VBX_CallException $e)
+		catch(Exception $e)
 		{
 			$json['message'] = $e->getMessage();
 			$json['error'] = true;

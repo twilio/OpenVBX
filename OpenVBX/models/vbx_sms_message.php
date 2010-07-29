@@ -106,6 +106,9 @@ class VBX_Sms_message extends Model {
 
 	function send_message($from, $to, $message)
 	{
+		$from = PhoneNumber::normalizePhoneNumberToE164($from);
+		$to = PhoneNumber::normalizePhoneNumberToE164($to);
+
 		$twilio = new TwilioRestClient($this->twilio_sid,
 									   $this->twilio_token,
 									   $this->twilio_endpoint);
