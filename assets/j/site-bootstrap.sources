@@ -9,7 +9,7 @@ plugins/json.js
 plugins/jquery.validate.js
 plugins/call-and-sms-dialogs.js
 plugins/flicker.js
-plugins/jquery.hashchange-1.0.0.js
+plugins/jquery.ba-hashchange.js
 plugins/jquery.livequery.js
 plugins/buttonista.js
 plugins/jquery.animateToClass.js
