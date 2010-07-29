@@ -35,7 +35,7 @@ class Message_Text extends User_Controller
 		try
 		{
 			$content = substr($this->input->post('content'), 0, 160);
-			$to = preg_replace('/[^0-9]*/','', $this->input->post('to'));
+			$to = $this->input->post('to');
 			$from = $this->input->post('from');
 			$numbers = array();
 			

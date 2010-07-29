@@ -28,8 +28,8 @@ class Message_Call extends User_Controller
 	
 	function index($message_id = false)
 	{
-		$to = preg_replace('/[^0-9]*/','', $this->input->post('to'));
-		$callerid = preg_replace('/[^0-9]*/','', $this->input->post('callerid'));
+		$to = $this->input->post('to');
+		$callerid = $this->input->post('callerid');
 		$from = $this->input->post('from');
 		if(empty($from))
 		{

@@ -394,8 +394,8 @@ class Details extends User_Controller
 
 	function call($message_id = false)
 	{
-		$to = preg_replace('/[^0-9]*/','', $this->input->post('to'));
-		$callerid = preg_replace('/[^0-9]*/','', $this->input->post('callerid'));
+		$to = $this->input->post('to');
+		$callerid = $this->input->post('callerid');
 		$from = $this->input->post('from');
 		
 		$rest_access = $this->make_rest_access();

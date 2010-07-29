@@ -153,8 +153,8 @@ class AudioFiles extends User_Controller
 			'message' => ''
 		);
 
-		$to = preg_replace('/[^0-9]*/','', $this->input->post('to'));
-		$callerid = preg_replace('/[^0-9]*/','', $this->input->post('callerid'));
+		$to = $this->input->post('to');
+		$callerid = $this->input->post('callerid');
 
 		if (strlen($to) == 0)
 		{
