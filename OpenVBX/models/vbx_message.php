@@ -92,6 +92,12 @@ class VBX_Message extends Model {
 														  $user_id,
 														  "Assigned to $assignee->email",
 														  'changed');
+			$annotations = $this->get_annotations($message_id);
+			openvbx_mail($assignee->email,
+						 "Message Assignment ({$message->owner}) {$message->caller}",
+						 'message_assigned',
+						 compact('message', 'annotations'));
+
 		}
 		catch(VBX_MessageException $e)
 		{
