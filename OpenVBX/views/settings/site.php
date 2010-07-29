@@ -28,7 +28,7 @@
 						</select>
 					</label>
 				</fieldset>
-				<button class="submit-button"><span>Update</span></button>
+				<button class="submit-button" type="submit"><span>Update</span></button>
 			</form>
 
 		</div>
@@ -45,7 +45,7 @@
 					</select>
 				</label>
 				</fieldset>
-				<button class="submit-button"><span>Update</span></button>
+				<button class="submit-button" type="submit"><span>Update</span></button>
 			</form>
 		</div><!-- .vbx-tab-view -->
 
@@ -96,7 +96,7 @@
 			            </label>
 		            </fieldset>
 
-				    <button class="add-tenant-button normal-button"><span>Add tenant</span></button>
+				    <button class="add-tenant-button normal-button" type="submit"><span>Add tenant</span></button>
                 </div>
 			</form>
 			<br class="clear" />
@@ -130,7 +130,7 @@
 						<input id="site-from-email" type="text" name="site[from_email]" value="<?php echo @$from_email['value'] ?>" class="medium" />
 					</label>
 				</fieldset>
-				<button class="submit-button"><span>Update</span></button>
+				<button class="submit-button" type="submit"><span>Update</span></button>
 			</form>
 		</div><!-- .vbx-tab-view -->
 
