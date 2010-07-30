@@ -9,7 +9,7 @@
 		<div class="vbx-content-container">
 				<form name="tenant-edit" action="<?php echo site_url('settings/site/tenant/'.$tenant->id) ?>" method="POST" class="vbx-tenant-form vbx-form">
 
-				<div class="vbx-content-section">
+				<div class="vbx-content-section" style="min-height:50px;">
 					<div class="vbx-input-complex vbx-input-container">
 					<label for="tenant-url-prefix" class="field-label-inline"><?php echo site_url('') ?>
 						<input id="tenant-url-prefix" class="inline small" type="text" name="tenant[url_prefix]" value="<?php echo $tenant->url_prefix ?>" />

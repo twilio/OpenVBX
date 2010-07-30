@@ -257,7 +257,7 @@ var Pickers = {
 			if (url != '') {
 				Pickers.audio.saveValue(audioChoice, 'play', null, url);
 
-				Pickers.audio.closeEditorAndShowPlayValue(audioChoice, url, true);
+				Pickers.audio.closeEditorAndShowPlayValue(audioChoice, url, false);
 			} else {
 				// nothing is selected - don't do anything
 			}
