@@ -372,7 +372,7 @@ button.sms-button:active span, button.sms-button-active span {
 
 
 .playback-button {
-    background: url(images/play-message-button-bg.png) no-repeat left top;
+    background: url(images/play-pause-stop-bg.png) no-repeat left top;
 }
 
 .assign-button {
