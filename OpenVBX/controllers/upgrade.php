@@ -108,6 +108,7 @@ class Upgrade extends User_Controller {
 
 				foreach(explode(";", $sql) as $stmt)
 				{
+					$stmt = trim($stmt);
 					if(!empty($stmt))
 					{
 						PluginData::sqlQuery($stmt);
