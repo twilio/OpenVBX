@@ -151,6 +151,10 @@
 					<input id="iAdminPw" class="medium" type="password" name="admin_pw" />
 					</label>
 
+					<label for="iAdminPw">Confirm Password
+					<input id="iAdminPw2" class="medium" type="password" name="admin_pw2" />
+					</label>
+
 			</fieldset>
 		</div>
 

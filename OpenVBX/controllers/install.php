@@ -453,13 +453,13 @@ class Install extends Controller {
 		$twilio_token = $this->openvbx_settings['twilio_token'];
 
 		require_once(APPPATH . 'libraries/twilio.php');
-
+		
 		try
 		{
 			$twilio = new TwilioRestClient($twilio_sid,
 										   $twilio_token);
 			
-			$response = $twilio->request("Accounts/{$twilio_sid}/Calls",
+			$response = $twilio->request("Accounts/{$twilio_sid}",
 										 'GET',
 										 array());
 			
@@ -514,11 +514,15 @@ class Install extends Controller {
 		
 		$this->user['email'] = $this->input->post('admin_email');
 		$this->user['password'] = $this->input->post('admin_pw');
+		$this->user['password2'] = $this->input->post('admin_pw2');
 		$this->user['firstname'] = $this->input->post('admin_firstname');
 		$this->user['lastname'] = $this->input->post('admin_lastname');
 		
 		try
 		{
+			if($this->user['password2'] != $this->user['password'])
+				throw new InstallException('Your administrative password was not typed correctly.');
+			
 			foreach(array('email' => 'Email Address',
 						  'password' => 'Password',
 						  'firstname' => 'First Name') as $required_field => $label)
