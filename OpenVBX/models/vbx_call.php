@@ -124,8 +124,8 @@ class VBX_Call extends Model {
 									   $this->twilio_token,
 									   $this->twilio_endpoint);
 		
-		$recording_url = site_url("twiml/dial/$callerid/$to/$rest_access");
-
+		$recording_url = site_url("twiml/dial").'?'.http_build_query(compact('callerid', 'to', 'rest_access'));
+		
 		$response = $twilio->request("Accounts/{$this->twilio_sid}/Calls",
 									 'POST',
 									 array( "Caller" => $callerid,

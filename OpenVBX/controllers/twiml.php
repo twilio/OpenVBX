@@ -283,10 +283,14 @@ class Twiml extends MY_Controller {
 		$this->response->Respond();
 	}
 
-	function dial($callerid, $phone, $singlepass = false)
+	function dial()
 	{
+		$rest_access = $this->input->get_post('rest_access');
+		$to = $this->input->get_post('to');
+		$callerid = $this->input->get_post('callerid');
+		
 		if(!$this->session->userdata('loggedin')
-		   && !$this->login_call($singlepass))
+		   && !$this->login_call($rest_access))
 		{
 			$this->response->addSay("Unable to authenticate this call.	Goodbye");
 			$this->response->addHangup();
@@ -294,7 +298,7 @@ class Twiml extends MY_Controller {
 			return;
 		}
 		/* Response */
-		log_message('info', $singlepass. ':: Session for phone call: '.var_export($this->session->userdata('user_id'), true));
+		log_message('info', $rest_access. ':: Session for phone call: '.var_export($this->session->userdata('user_id'), true));
 		$user = VBX_User::get($this->session->userdata('user_id'));
 		$name = '';
 		if(empty($user))
@@ -308,26 +312,26 @@ class Twiml extends MY_Controller {
 		
 		if($this->request->Digits !== false
 		   && $this->request->Digits == 1) {
-			$options = array('action' => site_url("twiml/dial_status/$phone"),
+			$options = array('action' => site_url("twiml/dial_status").'?'.http_build_query(compact('to')),
 							 'callerId' => $callerid);
 			
-			$this->response->addDial($phone, $options);
+			$this->response->addDial($to, $options);
 			
 		} else {
 			$gather = $this->response->addGather(array('numDigits' => 1));
 			$gather->addSay("Hello {$name}, this is a call from v b x".
 							", to accept, press 1.");
 		}
-		
+
 		$this->response->Respond();
 	}
 
-	function dial_status($phone)
+	function dial_status()
 	{
 		if($this->request->DialStatus == 'failed')
 		{
 			$this->response
-				->addSay('The number you have dialed is incorrect.	Goodbye.');
+				->addSay('The number you have dialed is invalid. Goodbye.');
 		}
 		$this->response->addHangup();
 		$this->response->Respond();
