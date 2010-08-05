@@ -107,7 +107,12 @@ class AppletUI {
             $type_parts = explode("---", $type);
             $plugin_name = $type_parts[0];
             $applet_name = $type_parts[1];
-            $icon_url = asset_url('plugins/' . $plugin_name . '/applets/' . $applet_name . '/icon.png');
+
+            if(is_file('plugins/'.$plugin_name.'/applets'.$applet_name.'/icon.png')) {
+                $icon_url = asset_url('plugins/' . $plugin_name . '/applets/' . $applet_name . '/icon.png');
+            } else {
+                $icon_url = asset_url('assets/i/icon.png');
+            }
         }
         else if(!isset(Applet::$flow_data[$applet_id])
              && !empty($applet_id))
