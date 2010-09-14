@@ -195,7 +195,7 @@ class AppletInstance
 			{
 				// This is a locally hosted file, and we need to return the correct
 				// absolute URL for the file.
-				return real_site_url("audio-uploads/" . $matches[1]);
+				return asset_url("audio-uploads/" . $matches[1]);
 			}
 			else
 			{
