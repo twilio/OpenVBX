@@ -154,6 +154,12 @@ class OpenVBX {
         {
             $ci = &get_instance();
             $ci->load->model('vbx_message');
+
+				$recording_host = $ci->settings->get('recording_host',$ci->tenant->tenant_id);
+				if (isset($recording_host)) {
+					$recording_url = preg_replace("api.twilio.com",$recording_host,$recording_url);
+				}
+
             if(!is_object($owner))
             {
                 throw new VBX_MessageException('owner is invalid');
@@ -163,7 +169,7 @@ class OpenVBX {
             $owner_type = str_replace('vbx_', '', strtolower($owner_type));
             $owner_id = $owner->id;
 
-        
+
             $message = new VBX_Message();
             $message->owner_type = $owner_type;
             $message->owner_id = $owner_id;
