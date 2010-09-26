@@ -30,6 +30,7 @@ class VBX_Settings extends Model
 									'twilio_token',
 									'twilio_endpoint',
 									'from_email',
+									'recording_host',
 									'theme');
 	
 	protected $settings_params = array('name',
@@ -211,6 +212,7 @@ class VBX_Settings extends Model
 
 	function set($name, $value, $tenant_id)
 	{
+		error_log("settings ${name} ${value} ${tenant_id}");
 		$ci =& get_instance();
 
 		if($this->get($name, $tenant_id) === false)

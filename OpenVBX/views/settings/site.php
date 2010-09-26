@@ -19,15 +19,20 @@
 	    <div id="settings-system-config" class="vbx-tab-view">
 			<h3>System Config</h3>
 			<form name="vbx-system" action="<?php echo site_url('settings/site') ?>" method="POST" class="vbx-system-form vbx-form">
-				<fieldset class="vbx-input-container">
-					<label for="rewrite">Do you want to enable mod_rewrite support?
+				<div class="vbx-input-complex vbx-input-container">
+					<label for="rewrite" class="field-label">Do you want to enable mod_rewrite support?
 						<select id="rewrite" class="medium" name="site[rewrite_enabled]">
 							<?php foreach(array(0 => "No", 1 => "Yes" ) as $value => $option): ?>
 							<option value="<?php echo $value ?>" <?php echo ($value == $rewrite_enabled['value'])? 'selected="selected"' : ''?>><?php echo $option ?></option>
 							<?php endforeach; ?>
 						</select>
 					</label>
-				</fieldset>
+				</div>
+
+				<div class="vbx-input-complex vbx-input-container">
+					<label for="override" class="field-label">Hostname to use in recording URLs
+						<input class="medium" id="override" name="site[recording_host]" value="<?php echo @$recording_host["value"]; ?>">
+				</div>
 				<button class="submit-button" type="submit"><span>Update</span></button>
 			</form>
 
