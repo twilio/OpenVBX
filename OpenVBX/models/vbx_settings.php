@@ -212,7 +212,6 @@ class VBX_Settings extends Model
 
 	function set($name, $value, $tenant_id)
 	{
-		error_log("settings ${name} ${value} ${tenant_id}");
 		$ci =& get_instance();
 
 		if($this->get($name, $tenant_id) === false)
