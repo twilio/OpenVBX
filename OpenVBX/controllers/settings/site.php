@@ -94,8 +94,6 @@ class Site extends User_Controller
 		
 		$current_settings = $this->settings->get_all_by_tenant_id($id);
 		
-		//var_dump($current_settings);
-
 		$sorted_settings = array();
 		foreach($current_settings as $setting)
 		{
