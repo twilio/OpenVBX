@@ -154,7 +154,8 @@ class OpenVBX {
         {
             $ci = &get_instance();
             $ci->load->model('vbx_message');
-				$tenant_id = $ci->tenant->id;
+				//$tenant_id = $ci->tenant->id;
+				$tenant_id = 1; // use the master settings for all tenants
 				$recording_host = $ci->settings->get('recording_host',$tenant_id);
 
 				if (isset($recording_host) && !empty($recording_host)) {
