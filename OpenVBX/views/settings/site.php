@@ -30,7 +30,7 @@
 				</div>
 
 				<div class="vbx-input-complex vbx-input-container">
-					<label for="override" class="field-label">Hostname to use in recording URLs
+					<label for="override" class="field-label">Hostname to use in recording URLs (must be a CNAME for api.twilio.com)
 						<input class="medium" id="override" name="site[recording_host]" value="<?php echo @$recording_host["value"]; ?>">
 				</div>
 				<button class="submit-button" type="submit"><span>Update</span></button>
