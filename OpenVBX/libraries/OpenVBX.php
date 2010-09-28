@@ -154,10 +154,13 @@ class OpenVBX {
         {
             $ci = &get_instance();
             $ci->load->model('vbx_message');
+				$recording_host = $ci->settings->get('recording_host',1);
+				//$recording_host = 'api.othernum.com';
 
-				$recording_host = $ci->settings->get('recording_host',$ci->tenant->tenant_id);
-				if (isset($recording_host)) {
-					$recording_url = preg_replace("api.twilio.com",$recording_host,$recording_url);
+				error_log("RECORDING HOST: ${recording_host}");
+
+				if (isset($recording_host) && !empty($recording_host)) {
+					$recording_url = str_replace("api.twilio.com",$recording_host,$recording_url);
 				}
 
             if(!is_object($owner))
