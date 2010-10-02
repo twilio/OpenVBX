@@ -158,7 +158,7 @@ class OpenVBX {
 				$tenant_id = 1; // use the master settings for all tenants
 				$recording_host = $ci->settings->get('recording_host',$tenant_id);
 
-				if (isset($recording_host) && !empty($recording_host)) {
+				if (!empty($recording_host) ) {
 					$recording_url = str_replace("api.twilio.com",$recording_host,$recording_url);
 				}
 
