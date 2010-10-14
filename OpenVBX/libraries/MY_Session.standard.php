@@ -22,7 +22,7 @@
 /* Lazy session handler - Disabled for now */
 class MY_Session extends CI_Session
 {
-    public function persist()
-    {
-    }
+	public function persist()
+	{
+	}
 }

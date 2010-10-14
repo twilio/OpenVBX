@@ -44,25 +44,25 @@
 
 	</div><!-- .steps -->	
 
-    <div class="navigation">
-        <button class="next">Continue &raquo;</button>
-        <button class="submit">Upgrade &raquo;</button>
-    </div>
+	<div class="navigation">
+		<button class="next">Continue &raquo;</button>
+		<button class="submit">Upgrade &raquo;</button>
+	</div>
 
 
 	</form>
 
 	</div><!-- #install-container -->
 
-    <script type="text/javascript">
-        $(document).ready(function() {
-            OpenVBX.home = '<?php echo site_url(''); ?>/';
-            OpenVBX.assets = '<?php echo asset_url(''); ?>';
-        <?php if(isset($step)): ?>
-            OpenVBX.Installer.gotoStep(<?php echo $step ?>);
-        <?php endif; ?>
-        });
-    </script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			OpenVBX.home = '<?php echo site_url(''); ?>/';
+			OpenVBX.assets = '<?php echo asset_url(''); ?>';
+		<?php if(isset($step)): ?>
+			OpenVBX.Installer.gotoStep(<?php echo $step ?>);
+		<?php endif; ?>
+		});
+	</script>
 
 
 </body>

@@ -35,7 +35,7 @@ if(isset($flow_data)) printf('<script type="text/javascript">var flow_data = %s;
 
 				<tr id="instance-row">
 
-                    <?php foreach($flow_data as $instance_id => $instance): ?>
+					<?php foreach($flow_data as $instance_id => $instance): ?>
 					<?php $applet = isset($applets[$instance->type]) ? $applets[$instance->type] : null; ?>
 					<?php if(is_object($applet)): ?>
 					<?php $template = $applet->render($flow->id, $instance); ?>

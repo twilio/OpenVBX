@@ -702,9 +702,9 @@ class CI_DB_driver {
 	 * @param	string
 	 * @return	mixed
 	 */
-    function escape_like_str($str)    
-    {    
-    	return $this->escape_str($str, TRUE);
+	function escape_like_str($str)    
+	{    
+		return $this->escape_str($str, TRUE);
 	}
 
 	// --------------------------------------------------------------------

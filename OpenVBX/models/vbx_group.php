@@ -23,7 +23,7 @@ class VBX_GroupException extends Exception {}
 class VBX_Group extends MY_Model {
 
 	protected static $__CLASS__ = __CLASS__;
-    public $table = 'groups';
+	public $table = 'groups';
 	
 	static public $select = array('groups.*');
 	
@@ -113,7 +113,7 @@ class VBX_Group extends MY_Model {
 
 	function get_user_ids($group_id)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		$user_ids = array();
 		$ci->db->select('gu.user_id');
@@ -131,7 +131,7 @@ class VBX_Group extends MY_Model {
 
 	function get_by_id($group_id)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		return $ci->db
 			->from('groups')
@@ -141,23 +141,23 @@ class VBX_Group extends MY_Model {
 
 	function add_user($user_id)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		return $ci->db
 			->set('user_id', $user_id)
 			->set('group_id', $this->id)
-            ->set('tenant_id', $ci->tenant->id)
+			->set('tenant_id', $ci->tenant->id)
 			->insert('groups_users');
 	}
 	
 	function remove_user($user_id)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		$ci->db
 			->from('groups_users as gu')
 			->where('user_id', $user_id)
-            ->where('tenant_id', $ci->tenant->id)
+			->where('tenant_id', $ci->tenant->id)
 			->where('group_id', $this->id);
 		
 		$result = $ci->db->delete('groups_users');
@@ -172,7 +172,7 @@ class VBX_Group extends MY_Model {
 
 	function remove_all_users($group_id)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		$ci->db
 			->where('tenant_id', $ci->tenant->id)
@@ -184,13 +184,13 @@ class VBX_Group extends MY_Model {
 
 	function get_active_groups()
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		$groups = array();
 		$groups = $ci->db
 			 ->from($this->table . ' as g')
-             ->where('g.tenant_id', $ci->tenant->id)
-             ->where('g.is_active', true)
+			 ->where('g.tenant_id', $ci->tenant->id)
+			 ->where('g.is_active', true)
 			 ->get()->result();
 		
 		$sorted_groups = array();
@@ -207,7 +207,7 @@ class VBX_Group extends MY_Model {
 			 ->from($this->table . ' as g')
 			 ->join('groups_users gu', 'gu.group_id = g.id')
 			 ->join('users u', 'u.id = gu.user_id')
-             ->where('gu.tenant_id', $ci->tenant->id)
+			 ->where('gu.tenant_id', $ci->tenant->id)
 			 ->where('u.is_active', true)
 			 ->where('g.is_active', true);
 		
@@ -222,11 +222,11 @@ class VBX_Group extends MY_Model {
 
 	function set_active($id, $active = true)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		return $ci->db
 			->where('id', $id)
-            ->where('tenant_id', $ci->tenant->id)
+			->where('tenant_id', $ci->tenant->id)
 			->set('is_active', $active)
 			->update('groups');
 	}

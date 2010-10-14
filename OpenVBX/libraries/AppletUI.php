@@ -23,111 +23,111 @@ require_once 'AppletUI/init.php';
 
 class AppletUI {
 
-    public static function userGroupPicker($name = 'userGroupPicker', $label = 'Select a User or Group')
-    {
-        $value = AppletInstance::getUserGroupPickerValue($name);
-        $widget = new UserGroupPickerWidget($name, $label, $value);
-        return $widget->render();
-    }
+	public static function userGroupPicker($name = 'userGroupPicker', $label = 'Select a User or Group')
+	{
+		$value = AppletInstance::getUserGroupPickerValue($name);
+		$widget = new UserGroupPickerWidget($name, $label, $value);
+		return $widget->render();
+	}
 
-    public static function audioPicker($name = 'audioPicker')
-    {
-        $value = AppletInstance::getAudioPickerValue($name);
-        $widget = new AudioPickerWidget($name, $value);
-        return $widget->render();
-    }
-    
-    public static function audioSpeechPicker($name = 'audioSpeechPicker')
-    {
-        $value = AppletInstance::getAudioSpeechPickerValue($name);
+	public static function audioPicker($name = 'audioPicker')
+	{
+		$value = AppletInstance::getAudioPickerValue($name);
+		$widget = new AudioPickerWidget($name, $value);
+		return $widget->render();
+	}
+	
+	public static function audioSpeechPicker($name = 'audioSpeechPicker')
+	{
+		$value = AppletInstance::getAudioSpeechPickerValue($name);
 
-        $mode = null;
-        $say = null;
-        $play = null;
+		$mode = null;
+		$say = null;
+		$play = null;
 
-        if (preg_match('/^http(s)?:\/\//i', $value) ||
-            preg_match('/^vbx-audio-upload:\/\//i', $value))
-        {
-            $mode = 'play';
-            $play = $value;
-        }
-        else if (!empty($value))
-        {
-            $mode = 'say';
-            $say = $value;
-        }
-        
-        $widget = new AudioSpeechPickerWidget($name, $mode, $say, $play);
-        
-        return $widget->render();
-    }
-    
-    public static function speechBox($name = 'speechBox')
-    {
-        $value = AppletInstance::getSpeechBoxValue($name);
-        $widget = new SpeechBoxWidget($name, $value);
-        return $widget->render();
-    }
-    
-    public static function textBox($name = 'textBox')
-    {        
-        $value = AppletInstance::getTextBoxValue($name);
-        $widget = new TextBoxWidget($name, $value);
-        return $widget->render();
-    }
-        
-    public static function smsBox($name = 'smsBox')
-    {
-        $value = AppletInstance::getSmsBoxValue($name);
-        $widget = new SmsBoxWidget($name, $value);
-        return $widget->render();
-    }
+		if (preg_match('/^http(s)?:\/\//i', $value) ||
+			preg_match('/^vbx-audio-upload:\/\//i', $value))
+		{
+			$mode = 'play';
+			$play = $value;
+		}
+		else if (!empty($value))
+		{
+			$mode = 'say';
+			$say = $value;
+		}
+		
+		$widget = new AudioSpeechPickerWidget($name, $mode, $say, $play);
+		
+		return $widget->render();
+	}
+	
+	public static function speechBox($name = 'speechBox')
+	{
+		$value = AppletInstance::getSpeechBoxValue($name);
+		$widget = new SpeechBoxWidget($name, $value);
+		return $widget->render();
+	}
+	
+	public static function textBox($name = 'textBox')
+	{        
+		$value = AppletInstance::getTextBoxValue($name);
+		$widget = new TextBoxWidget($name, $value);
+		return $widget->render();
+	}
+		
+	public static function smsBox($name = 'smsBox')
+	{
+		$value = AppletInstance::getSmsBoxValue($name);
+		$widget = new SmsBoxWidget($name, $value);
+		return $widget->render();
+	}
 
-    public static function dropZone($name = 'dropZone', $label = 'Drop applet here')
-    {
-        $link = AppletInstance::getDropZoneValue($name);
-        $applet_id = null;
-        $type = '';
-        $icon_url = '';
-        
-        if(!empty($link) && is_string($link))
-        {
-            $applet_id = explode('/', $link);
-            $applet_id = $applet_id[count($applet_id)-1];
-        }
-        
-        if(!empty($applet_id) &&
-           isset(Applet::$flow_data[$applet_id]))
-        {
-            $applet = Applet::$flow_data[$applet_id];
-            $type = $applet->type;
-            $icon_url = '';
-            $label = $applet->name;
-            
-            $type_parts = explode("---", $type);
-            $plugin_name = $type_parts[0];
-            $applet_name = $type_parts[1];
+	public static function dropZone($name = 'dropZone', $label = 'Drop applet here')
+	{
+		$link = AppletInstance::getDropZoneValue($name);
+		$applet_id = null;
+		$type = '';
+		$icon_url = '';
+		
+		if(!empty($link) && is_string($link))
+		{
+			$applet_id = explode('/', $link);
+			$applet_id = $applet_id[count($applet_id)-1];
+		}
+		
+		if(!empty($applet_id) &&
+		   isset(Applet::$flow_data[$applet_id]))
+		{
+			$applet = Applet::$flow_data[$applet_id];
+			$type = $applet->type;
+			$icon_url = '';
+			$label = $applet->name;
+			
+			$type_parts = explode("---", $type);
+			$plugin_name = $type_parts[0];
+			$applet_name = $type_parts[1];
 
-            if(is_file('plugins/'.$plugin_name.'/applets'.$applet_name.'/icon.png')) {
-                $icon_url = asset_url('plugins/' . $plugin_name . '/applets/' . $applet_name . '/icon.png');
-            } else {
-                $icon_url = asset_url('assets/i/icon.png');
-            }
-        }
-        else if(!isset(Applet::$flow_data[$applet_id])
-             && !empty($applet_id))
-        {
-            /* handling this gracefully in case of bad programmer */
-            $applet_id = null;
-            $link = null;
-        }
-        
-        $widget = new DropZoneWidget($name, $label, $type, $icon_url, $link);
-        return $widget->render();
-    }
+			if(is_file('plugins/'.$plugin_name.'/applets'.$applet_name.'/icon.png')) {
+				$icon_url = asset_url('plugins/' . $plugin_name . '/applets/' . $applet_name . '/icon.png');
+			} else {
+				$icon_url = asset_url('assets/i/icon.png');
+			}
+		}
+		else if(!isset(Applet::$flow_data[$applet_id])
+			 && !empty($applet_id))
+		{
+			/* handling this gracefully in case of bad programmer */
+			$applet_id = null;
+			$link = null;
+		}
+		
+		$widget = new DropZoneWidget($name, $label, $type, $icon_url, $link);
+		return $widget->render();
+	}
 
-    public static function menu($name = 'menu' )
-    {
-        /* TODO */
-    }
+	public static function menu($name = 'menu' )
+	{
+		/* TODO */
+	}
 }

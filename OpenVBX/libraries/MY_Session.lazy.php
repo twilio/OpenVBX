@@ -23,7 +23,7 @@
 class MY_Session extends CI_Session
 {
 
-    function set_userdata($newdata = array(), $newval = '')
+	function set_userdata($newdata = array(), $newval = '')
 	{
 		if (is_string($newdata))
 		{
@@ -39,8 +39,8 @@ class MY_Session extends CI_Session
 		}
 
 	}
-    
-    function unset_userdata($newdata = array())
+	
+	function unset_userdata($newdata = array())
 	{
 		if (is_string($newdata))
 		{
@@ -57,8 +57,8 @@ class MY_Session extends CI_Session
 
 	}
 
-    public function persist()
-    {
-        $this->sess_write();
-    }
+	public function persist()
+	{
+		$this->sess_write();
+	}
 }

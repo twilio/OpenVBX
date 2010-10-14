@@ -20,12 +20,12 @@ function curPageURL() {
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
 
-    <link type="text/css" rel="stylesheet" href="<?php echo ASSET_ROOT ?>/c/reset-fonts-grids-2.8.css" />
-    <link type="text/css" rel="stylesheet" href="<?php echo ASSET_ROOT ?>/c/global.css" />
-    
-    <!--[if IE 7]>
-        <link type="text/css" rel="stylesheet" href="<?php echo ASSET_ROOT ?>/c/ie.css" />
-    <![endif]-->
+	<link type="text/css" rel="stylesheet" href="<?php echo ASSET_ROOT ?>/c/reset-fonts-grids-2.8.css" />
+	<link type="text/css" rel="stylesheet" href="<?php echo ASSET_ROOT ?>/c/global.css" />
+	
+	<!--[if IE 7]>
+		<link type="text/css" rel="stylesheet" href="<?php echo ASSET_ROOT ?>/c/ie.css" />
+	<![endif]-->
 </head>
 
 <body>

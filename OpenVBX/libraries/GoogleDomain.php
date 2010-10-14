@@ -31,19 +31,19 @@ class GoogleDomain
 {
 	public static function authenticate($api_key, $api_secret, $captcha, $captcha_token)
 	{
-        try
-        {
+		try
+		{
 			$api = new GoogleUtilityClient($api_key,
 										   $api_secret,
 										   'HOSTED_OR_GOOGLE',
 										   $captcha,
 										   $captcha_token);
-            $api->authenticate();
+			$api->authenticate();
 
 			return TRUE;
 		}		
-        catch(GoogleUtilityClientException $e)
-        {
+		catch(GoogleUtilityClientException $e)
+		{
 			switch(GoogleLoginChallenge::get_error($e->getCode())) {
 				case 'CaptchaRequired':
 					$captchaException = new GoogleCaptchaChallengeException($e->getMessage(),
@@ -53,65 +53,65 @@ class GoogleDomain
 					throw $captchaException;
 			}
 
-            throw new GoogleDomainException($e->getMessage(), $e->getCode());
-        }
+			throw new GoogleDomainException($e->getMessage(), $e->getCode());
+		}
 	}
 	
-    public static function get_users($api_key, $api_secret)
-    {
-        try
-        {
+	public static function get_users($api_key, $api_secret)
+	{
+		try
+		{
 			$api = new GoogleUtilityClient($api_key,
 										   $api_secret,
 										   'HOSTED_OR_GOOGLE');
 
-            $api->authenticate();
-            $user_response = $api->get($api->domain . '/user/2.0');
-            
-            $titles = $user_response['list']
-                 ->getElementsByTagName('title');
-            $users = array();
-            foreach($titles as $title)
-            {
-                if($title->parentNode->nodeName == 'entry') {
-                    $users[] = $title->textContent . '@'. $api->domain;
-                }
-            }
-            
-        }
-        catch(GoogleUtilityClientException $e)
-        {
-            throw new GoogleDomainException($e->getMessage());
-        }
-        
-        return $users;
-    }
+			$api->authenticate();
+			$user_response = $api->get($api->domain . '/user/2.0');
+			
+			$titles = $user_response['list']
+				 ->getElementsByTagName('title');
+			$users = array();
+			foreach($titles as $title)
+			{
+				if($title->parentNode->nodeName == 'entry') {
+					$users[] = $title->textContent . '@'. $api->domain;
+				}
+			}
+			
+		}
+		catch(GoogleUtilityClientException $e)
+		{
+			throw new GoogleDomainException($e->getMessage());
+		}
+		
+		return $users;
+	}
 
-    public static function get_groups($api_key, $api_secret)
-    {
-        try
-        {
+	public static function get_groups($api_key, $api_secret)
+	{
+		try
+		{
 			$api = new GoogleUtilityClient($api_key,
 										   $api_secret,
 										   'HOSTED_OR_GOOGLE');
-            $api->authenticate();
-            
-            $groups_response = $api->get('group/2.0/' . $api->domain);
-            $entries = $groups_response['list']->getElementsByTagName('property');
-            $groups = array();
-            foreach($entries as $entry)
-            {
-                if($entry->getAttribute('name') == 'groupName') {
-                    $groups[] = $entry->getAttribute('value');
-                }
-            }
-        }
-        catch(GoogleUtilityClientException $e)
-        {
-            throw new GoogleDomainException($e->getMessage());
-        }
-        
-        return $groups;
-    }
+			$api->authenticate();
+			
+			$groups_response = $api->get('group/2.0/' . $api->domain);
+			$entries = $groups_response['list']->getElementsByTagName('property');
+			$groups = array();
+			foreach($entries as $entry)
+			{
+				if($entry->getAttribute('name') == 'groupName') {
+					$groups[] = $entry->getAttribute('value');
+				}
+			}
+		}
+		catch(GoogleUtilityClientException $e)
+		{
+			throw new GoogleDomainException($e->getMessage());
+		}
+		
+		return $groups;
+	}
 
 }

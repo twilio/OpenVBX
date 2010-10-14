@@ -1,6 +1,6 @@
-                <div id="yui-main">
-                        <div class="<?php echo $layout_override ?> yui-b">
-                                <div id="vbx-main">
+				<div id="yui-main">
+						<div class="<?php echo $layout_override ?> yui-b">
+								<div id="vbx-main">
 									<div class="vbx-content-banner info-banner hide">
 										<a href="" class="close action"><span class="replace">Close</span></a>
 										<div class="info-message">
@@ -9,9 +9,9 @@
 										</div>
 									</div><!-- .vbx-banner -->
 
-                                <?php echo $content ?>
-                                </div><!-- #vbx-main -->
-                        </div><!-- .yui-b -->
-                </div><!-- #yui-main -->
+								<?php echo $content ?>
+								</div><!-- #vbx-main -->
+						</div><!-- .yui-b -->
+				</div><!-- #yui-main -->
 
 

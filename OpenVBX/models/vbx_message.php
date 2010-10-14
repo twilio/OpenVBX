@@ -49,13 +49,13 @@ class VBX_Message extends Model {
 	function mark_read($message_id, $user_id)
 	{
 		$message = $this->get_message($message_id);
-        $ci =& get_instance();
-        
+		$ci =& get_instance();
+		
 		if($message->status = self::STATUS_NEW)
 		{
 			$read_time = date('Y-m-d H:i:s');
 			$ci->db->where('id', $message_id);
-            $ci->db->where('messages.tenant_id', $ci->tenant->id);
+			$ci->db->where('messages.tenant_id', $ci->tenant->id);
 			return $ci->db->update('messages',
 									 array( '`read`' => $read_time,
 											'status' => self::STATUS_READ));
@@ -174,15 +174,15 @@ class VBX_Message extends Model {
 		}
 	}
 	
-    function save($message, $notify = false)
-    {
-        $ci =& get_instance();
+	function save($message, $notify = false)
+	{
+		$ci =& get_instance();
 
 		if(isset($message->id) && intval($message->id) > 0)
 		{
 			$ci->db->trans_start();
 			$result = $ci->db
-                 ->set('messages.tenant_id', $ci->tenant->id)
+				 ->set('messages.tenant_id', $ci->tenant->id)
 				 ->set('updated', 'UTC_TIMESTAMP()', false)
 				 ->set('content_text', $message->content_text)
 				 ->set('content_url', $message->content_url)
@@ -203,7 +203,7 @@ class VBX_Message extends Model {
 		} else {
 			$ci->db->trans_start();
 			$result = $ci->db
-                 ->set('messages.tenant_id', $ci->tenant->id)
+				 ->set('messages.tenant_id', $ci->tenant->id)
 				 ->set('created', 'UTC_TIMESTAMP()', false)
 				 ->set('updated', 'UTC_TIMESTAMP()', false)
 				 ->set('content_text', @$message->content_text)
@@ -251,12 +251,12 @@ class VBX_Message extends Model {
 			throw new VBX_MessageException('Unable to save message');
 		}
 		
-        return $result;
-    }
+		return $result;
+	}
 
 	function get_message($id)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		$user_group_select = "IF(u.email IS NOT NULL , 'user', 'group') as owner_type, IF( u.email IS NOT NULL , u.email , g.name) as owner, IF (u.email IS NOT NULL, u.id, g.id) as owner_id";
 
@@ -277,7 +277,7 @@ class VBX_Message extends Model {
 			 ->join('groups g', 'g.id = gm.group_id', 'LEFT')
 			 ->join('user_messages um', 'um.message_id = messages.id', 'LEFT')
 			 ->join('users u', 'u.id = um.user_id', 'LEFT')
-             ->where('messages.tenant_id', $ci->tenant->id)
+			 ->where('messages.tenant_id', $ci->tenant->id)
 			 ->get()->result();
 
 		if(empty($result))
@@ -290,7 +290,7 @@ class VBX_Message extends Model {
 
 	function get_messages_query($options)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 		$group = isset($options['group'])? $options['group'] : array();
 		$user = isset($options['user'])? $options['user'] : array();
 		$status = isset($options['status'])? $options['status'] : array();
@@ -347,8 +347,8 @@ class VBX_Message extends Model {
 		}
 
 		$ci->db
-             ->where('messages.tenant_id', $ci->tenant->id)
-             ->where('archived', false);
+			 ->where('messages.tenant_id', $ci->tenant->id)
+			 ->where('archived', false);
 
 		// Only show messages that have been transcribed OR if they're older than 5 minutes because
 		// at that point, we can assume the transcription isn't coming.
@@ -380,29 +380,29 @@ class VBX_Message extends Model {
 		return $result;
 	}
 
-    function notify_message($message, $notify = false)
-    {
-        error_log("Notify message: ".($notify? 'true' : 'false') );
-        if($notify === false)
-            return;
-        
-        $ci =& get_instance();
-        $ci->load->model('vbx_user');
-        $ci->load->model('vbx_group');
-            
-        $users = array();
-        if($message->owner_type == 'user')
-        {
-            $user = VBX_User::get($message->owner_id);
-            if(!empty($user->email))
-            {
-                $notify[] = $user->email;
-            }
-        }
+	function notify_message($message, $notify = false)
+	{
+		error_log("Notify message: ".($notify? 'true' : 'false') );
+		if($notify === false)
+			return;
+		
+		$ci =& get_instance();
+		$ci->load->model('vbx_user');
+		$ci->load->model('vbx_group');
+			
+		$users = array();
+		if($message->owner_type == 'user')
+		{
+			$user = VBX_User::get($message->owner_id);
+			if(!empty($user->email))
+			{
+				$notify[] = $user->email;
+			}
+		}
 
-        $group_users = array();
-        if($message->owner_type == 'group')
-        {
+		$group_users = array();
+		if($message->owner_type == 'group')
+		{
 			$user_ids = $ci->vbx_group->get_user_ids($message->owner_id);
 			$group = $ci->vbx_group->get_by_id($message->owner_id);
 			$owner = $group->name;
@@ -438,16 +438,16 @@ class VBX_Message extends Model {
 
 			foreach($numbers as $number)
 			{
-                error_log($number->value);
-                error_log(var_export($number->values, true));
+				error_log($number->value);
+				error_log(var_export($number->values, true));
 				if($number->value && $number->sms)
 				{
 					try
 					{
 						$ci->vbx_sms_message->send_message($message->called,
-                                                           $number->value,
-                                                           $this->tiny_notification_message($message));
-                        error_log("sms queued for {$number->value}");
+														   $number->value,
+														   $this->tiny_notification_message($message));
+						error_log("sms queued for {$number->value}");
 					}
 					catch(Sms_messageException $e)
 					{
@@ -456,15 +456,15 @@ class VBX_Message extends Model {
 				}
 			}
 		}
-    }
+	}
 
 	function tiny_notification_message($message)
-    {
+	{
 		switch($message->type)
 		{
 			case 'sms':
 				$content = $message->caller . ':'. $message->content_text;
-                $content = substr($content, 0, 159);
+				$content = substr($content, 0, 159);
 				break;
 			case 'voice':
 				$content = "New Voicemail from {$message->caller}\n\n";
@@ -474,7 +474,7 @@ class VBX_Message extends Model {
 		
 		return $content;
 	}
-    
+	
 	function message_owner()
 	{
 		$group = new Group();
@@ -492,14 +492,14 @@ class VBX_Message extends Model {
 		$folders = array();
 		$status_fields = array( 'archived' => 0, 'new' => 0, 'read' => 0, 'total' => 0);
 
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		$user_message_count = $ci->db
 			 ->select('status, count(m.status) as count')
 			 ->from('messages m')
 			 ->join('user_messages um', 'um.message_id = m.id')
 			 ->where('um.user_id', $user_id)
-             ->where('m.tenant_id', $ci->tenant->id)
+			 ->where('m.tenant_id', $ci->tenant->id)
 			 ->where('m.archived', 0)
 			 ->group_by('status')
 			 ->get()->result();
@@ -509,7 +509,7 @@ class VBX_Message extends Model {
 			 ->from('messages m')
 			 ->join('user_messages um', 'um.message_id = m.id')
 			 ->where('um.user_id', $user_id)
-             ->where('m.tenant_id', $ci->tenant->id)
+			 ->where('m.tenant_id', $ci->tenant->id)
 			 ->where('m.archived', 0)
 			 ->get()->result();
 
@@ -558,7 +558,7 @@ class VBX_Message extends Model {
 				 ->join('messages m', 'm.id = gm.message_id')
 				 ->where_in('gm.group_id', $group_ids)
 				 ->where('archived', false)
-                 ->where('m.tenant_id', $ci->tenant->id)
+				 ->where('m.tenant_id', $ci->tenant->id)
 				 ->group_by('m.status, g.id')
 				 ->get()->result();
 
@@ -595,7 +595,7 @@ class VBX_Message extends Model {
 
 	function get_annotation($annotation_id)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		$annotation = $ci->db
 			->select('u.email, u.id as user_id, u.first_name, u.last_name, a.*, at.description as annotation_type')
@@ -603,8 +603,8 @@ class VBX_Message extends Model {
 			->join('users u', 'u.id = a.user_id')
 			->join('annotation_types at', 'at.id = a.annotation_type')
 			->where('a.id', $annotation_id)
-            ->where('a.tenant_id', $ci->tenant->id)
-            ->order_by('a.created DESC')
+			->where('a.tenant_id', $ci->tenant->id)
+			->order_by('a.created DESC')
 			->get()->result();
 		
 		if(!empty($annotation))
@@ -617,7 +617,7 @@ class VBX_Message extends Model {
 
 	function get_user_annotations($message_id, $user_id, $annotation_type = null)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		$user_annotations = $ci->db
 			->select('a.*, u.email, u.id as user_id, u.first_name, u.last_name')
@@ -625,8 +625,8 @@ class VBX_Message extends Model {
 			->join('annotation_types at', 'at.id = a.annotation_type')
 			->join('users u', 'u.id = a.user_id')
 			->where('a.message_id', $message_id)
-            ->where('a.tenant_id', $ci->tenant->id)
-            ->where('a.user_id', $user_id);
+			->where('a.tenant_id', $ci->tenant->id)
+			->where('a.user_id', $user_id);
 
 		if($annotation_type)
 		{
@@ -642,7 +642,7 @@ class VBX_Message extends Model {
 
 	function get_message_annotations($message_id, $annotation_type = null)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		$message_annotations = $ci->db
 			->select('a.*, u.email, u.id as user_id, u.first_name, u.last_name, at.description as annotation_type')
@@ -651,7 +651,7 @@ class VBX_Message extends Model {
 			->join('users u', 'u.id = a.user_id')
 			->order_by('a.created DESC')
 			->where('a.message_id', $message_id)
-            ->where('a.tenant_id', $ci->tenant->id)
+			->where('a.tenant_id', $ci->tenant->id)
 			->get()->result();
 
 		return $message_annotations;
@@ -659,7 +659,7 @@ class VBX_Message extends Model {
 
 	function annotate($message_id, $user_id, $description, $annotation_type)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		if(!($annotation_type = $this->get_annotation_type($annotation_type)))
 		{
@@ -672,7 +672,7 @@ class VBX_Message extends Model {
 			 ->set('description', $description)
 			 ->set('annotation_type', $annotation_type)
 			 ->set('created', 'UTC_TIMESTAMP()', false)
-             ->set('tenant_id', $ci->tenant->id)
+			 ->set('tenant_id', $ci->tenant->id)
 			 ->insert('annotations');
 		return $ci->db->insert_id();
 	}
@@ -681,7 +681,7 @@ class VBX_Message extends Model {
 	{
 		$ci =& get_instance();
 
-        $annotation = $ci->db
+		$annotation = $ci->db
 			->from('annotation_types')
 			->where('description', $annotation_type)
 			->or_where('id', $annotation_type)

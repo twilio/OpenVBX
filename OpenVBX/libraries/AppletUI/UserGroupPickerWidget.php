@@ -21,74 +21,74 @@
 	
 class UserGroupPickerWidget extends AppletUIWidget
 {
-    protected $template = 'UserGroupPicker';
-    protected $name;
-    protected $label;
-    protected $value;
-        
-    public function __construct($name, $label, $value = null)
-    {
-        $this->name = $name;
-        $this->label = $this->buildLabel($label, $value);
-        $this->value = $value;
-        $this->owner_type = $this->buildOwnerType($value);
-        $this->owner_id = $this->buildOwnerId($value);
-        
-        parent::__construct($this->template);
-    }
+	protected $template = 'UserGroupPicker';
+	protected $name;
+	protected $label;
+	protected $value;
+		
+	public function __construct($name, $label, $value = null)
+	{
+		$this->name = $name;
+		$this->label = $this->buildLabel($label, $value);
+		$this->value = $value;
+		$this->owner_type = $this->buildOwnerType($value);
+		$this->owner_id = $this->buildOwnerId($value);
+		
+		parent::__construct($this->template);
+	}
 
-    private function buildLabel($label, $value)
-    {
-        if(!empty($value))
-        {
-            if(get_class($value) == 'VBX_User')
-            {
-                return $value->full_name() . " (" . $value->email . ")";
-            }
-            else
-            {
-                return $value->name;
-            }
-        }
-        
-        return $label;
-    }
+	private function buildLabel($label, $value)
+	{
+		if(!empty($value))
+		{
+			if(get_class($value) == 'VBX_User')
+			{
+				return $value->full_name() . " (" . $value->email . ")";
+			}
+			else
+			{
+				return $value->name;
+			}
+		}
+		
+		return $label;
+	}
 
-    private function buildOwnerType($value)
-    {
-        $owner_type = '';
-        if(!empty($value))
-        {
-            $owner_type = get_class($value);
-            $owner_type = strtolower($owner_type);
-            $owner_type = str_replace('vbx_', '', $owner_type);
-        }
+	private function buildOwnerType($value)
+	{
+		$owner_type = '';
+		if(!empty($value))
+		{
+			$owner_type = get_class($value);
+			$owner_type = strtolower($owner_type);
+			$owner_type = str_replace('vbx_', '', $owner_type);
+		}
 
-        return $owner_type;
-    }
+		return $owner_type;
+	}
 
-    private function buildOwnerId($value)
-    {
-        $owner_id = '';
-        if(!empty($value))
-        { 
-            $owner_id = $value->id;
-        }
+	private function buildOwnerId($value)
+	{
+		$owner_id = '';
+		if(!empty($value))
+		{ 
+			$owner_id = $value->id;
+		}
 
-        return $owner_id;
-    }
-    
-    public function render($data = array())
-    {
-        
-        $defaults = array('name' => $this->name,
-                          'label' => $this->label,
-                          'owner_id' => $this->owner_id,
-                          'owner_type' => $this->owner_type,
-                          );
+		return $owner_id;
+	}
+	
+	public function render($data = array())
+	{
+		
+		$defaults = array('name' => $this->name,
+						  'label' => $this->label,
+						  'owner_id' => $this->owner_id,
+						  'owner_type' => $this->owner_type,
+						  );
 
-        $data = array_merge($defaults, $data);
+		$data = array_merge($defaults, $data);
 
-        return parent::render($data);
-    }
+		return parent::render($data);
+	}
 }

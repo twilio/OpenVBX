@@ -139,10 +139,10 @@ class MY_Controller extends Controller
 			$this->template->add_js("assets/j/$script");
 		}
 
-        foreach ($styles as $style) {
+		foreach ($styles as $style) {
 			$this->template->add_css("assets/c/$style");
 		}
-    }
+	}
 	
 	protected function set_request_method($method = null)
 	{
@@ -394,15 +394,15 @@ class MY_Controller extends Controller
 	
 	protected function respond($title, $section, $payload, $layout = 'yui-t2', $layout_dir = 'layout/content')
 	{
-        if(!headers_sent())
-        {
-            $this->session->persist();
-        }
-        else
-        {
-            error_log('Unable to write session, headers already sent');
-        }
-        
+		if(!headers_sent())
+		{
+			$this->session->persist();
+		}
+		else
+		{
+			error_log('Unable to write session, headers already sent');
+		}
+		
 		switch($this->response_type)
 		{
 			case 'json':

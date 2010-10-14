@@ -21,15 +21,15 @@
 	
 class MY_URI extends CI_URI {
 
-    function uri_string()
+	function uri_string()
 	{
-        $uri = parent::uri_string();
-        $ci = &get_instance();
-        if($ci->tenant && $ci->tenant->id > 1)
-        {
-            $uri = preg_replace('/^\/'.$ci->tenant->url_prefix.'/', '', $uri);
-        }
-        return $uri;
+		$uri = parent::uri_string();
+		$ci = &get_instance();
+		if($ci->tenant && $ci->tenant->id > 1)
+		{
+			$uri = preg_replace('/^\/'.$ci->tenant->url_prefix.'/', '', $uri);
+		}
+		return $uri;
 	}
 
 	function _explode_segments()

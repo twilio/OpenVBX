@@ -22,8 +22,8 @@
 class Connect extends User_Controller
 {
 	private $new_number = null;
-    
-    public function __construct()
+	
+	public function __construct()
 	{
 		parent::__construct();
 		$this->load->library('applet');
@@ -32,16 +32,16 @@ class Connect extends User_Controller
 	}
 
 
-    public function index()
-    {
-        $data = $this->init_view_data();
-        $flows = VBX_Flow::search();
+	public function index()
+	{
+		$data = $this->init_view_data();
+		$flows = VBX_Flow::search();
    
 		$numbers = array();
 		try
 		{
 			$numbers = $this->vbx_incoming_numbers->get_numbers();
-        }
+		}
 		catch (VBX_IncomingNumberException $e)
 		{
 			$this->error_message = ErrorMessages::message('twilio_api', $e->getCode());
@@ -84,7 +84,7 @@ class Connect extends User_Controller
 
 		}
 		$data['numbers'] = $incoming_numbers;
-        $data['flows'] = $flows;
+		$data['flows'] = $flows;
 		$data['twilio_sid'] = $this->twilio_sid;
 		
 		if(empty($this->error_message))
@@ -103,7 +103,7 @@ class Connect extends User_Controller
 
 		$data['counts'] = $this->message_counts();
 
-        
-        return $this->respond('', 'connect', $data);
-    }
+		
+		return $this->respond('', 'connect', $data);
+	}
 }

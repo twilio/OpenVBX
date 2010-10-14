@@ -44,7 +44,7 @@ class Numbers extends User_Controller
 		try
 		{
 			$numbers = $this->vbx_incoming_numbers->get_numbers();
-        }
+		}
 		catch (VBX_IncomingNumberException $e)
 		{
 			$this->error_message = ErrorMessages::message('twilio_api', $e->getCode());
@@ -144,8 +144,8 @@ class Numbers extends User_Controller
 	{
 		$confirmed = $this->input->post('confirmed');
 		$data['confirmed'] = $confirmed;
-        $data['error'] = false;
-        $data['message'] = '';
+		$data['error'] = false;
+		$data['message'] = '';
 		try
 		{
 			if(!$confirmed)
@@ -158,14 +158,14 @@ class Numbers extends User_Controller
 				throw new NumberException('Malformed Phone identifier.');
 			}
 
-            try
-            {
-                $this->vbx_incoming_numbers->delete_number($phone_id);
-            }
-            catch(VBX_IncomingNumberException $e)
-            {
-                throw new NumberException($e->getMessage());
-            }
+			try
+			{
+				$this->vbx_incoming_numbers->delete_number($phone_id);
+			}
+			catch(VBX_IncomingNumberException $e)
+			{
+				throw new NumberException($e->getMessage());
+			}
 		}
 		catch(NumberException $e)
 		{
@@ -265,7 +265,7 @@ class Numbers extends User_Controller
 		try
 		{
 			$numbers = $this->vbx_incoming_numbers->get_numbers();
-        }
+		}
 		catch (VBX_IncomingNumberException $e)
 		{
 			$this->error_message = ErrorMessages::message('twilio_api', $e->getCode());

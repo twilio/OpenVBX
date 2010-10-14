@@ -8,4 +8,4 @@
 	<?php endif; ?>
 	<?php echo AppletUI::dropZone('next'); ?>
 </div><!-- .vbx-applet -->
-    
+	

@@ -121,16 +121,16 @@ class Devices extends User_Controller {
 		else
 		{
 			$user->password = VBX_User::salt_encrypt($new_pw);
-            try
-            {
-                $user->save();
+			try
+			{
+				$user->save();
 				$message = 'Password changed';
 			}
 			catch(VBX_UserException $e)
 			{
 				$this->data['error'] = true;
 				$message = 'Unable to set password, please try again later.';
-                error_log($e->getMessage());
+				error_log($e->getMessage());
 			}
 		}
 		$this->data['message'] = $message;
@@ -199,7 +199,7 @@ class Devices extends User_Controller {
 		}
 		catch(VBX_DeviceException $e)
 		{
-            error_log($e->getMessage());
+			error_log($e->getMessage());
 			$device['json']['error'] = true;
 			$device['json']['message'] = 'Unable to update device settings';
 		}

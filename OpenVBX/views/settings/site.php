@@ -5,14 +5,14 @@
 			<ul>
 				<li><a href="#theme">Theme</a></li>
 				<li><a href="#plugins">Plugins</a></li>
-                <?php if($tenant_mode == Site::MODE_MULTI): ?>
+				<?php if($tenant_mode == Site::MODE_MULTI): ?>
 				<li><a href="#multi-tenant">Tenants</a></li>
-                <?php endif; ?>
+				<?php endif; ?>
 				<li><a href="#twilio-account">Twilio Account</a></li>
-                <?php if($tenant_mode == Site::MODE_MULTI): ?>
+				<?php if($tenant_mode == Site::MODE_MULTI): ?>
 				<li><a href="#system-config">System Config</a></li>
-                <?php endif; ?>
-                <li><a href="#about">About</a></li>
+				<?php endif; ?>
+				<li><a href="#about">About</a></li>
 			</ul>
 		</div><!-- .vbx-content-tabs -->
 
@@ -83,8 +83,8 @@
 			<form name="tenants" action="<?php echo site_url('settings/site/tenant') ?>#multi-tenant" method="POST" class="add-tenant-form vbx-form">
 				<div class="vbx-input-complex vbx-input-container">
 					<label for="tenant-admin-email" class="field-label">Adminstrator email:
-                        <input id="tenant-admin-email" type="text" name="tenant[admin_email]" value="" class="medium" />
-                    </label>
+						<input id="tenant-admin-email" type="text" name="tenant[admin_email]" value="" class="medium" />
+					</label>
 				</div>
 				<div class="vbx-input-complex vbx-input-container">
 					<label for"tenant-url-prefix" class="field-label">Tenant Name:
@@ -97,7 +97,7 @@
 		            </fieldset>
 
 				    <button class="add-tenant-button normal-button" type="submit"><span>Add tenant</span></button>
-                </div>
+				</div>
 			</form>
 			<br class="clear" />
 			
