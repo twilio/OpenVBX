@@ -222,8 +222,9 @@ class Flows extends User_Controller {
 				$this->template->add_css($applet->style_url, 'link');
 			}
 		}
-		
+
 		$this->template->add_js('flows/scripts', 'dynamic');
+		$this->template->add_css('flows/styles', 'dynamic');
 		$flow = VBX_Flow::get($id);
 		
 		if(empty($flow))

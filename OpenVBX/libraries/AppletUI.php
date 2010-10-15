@@ -23,6 +23,12 @@ require_once 'AppletUI/init.php';
 
 class AppletUI {
 
+	public static function timeRange($name, $from, $to)
+	{
+		$widget = new TimeRangeWidget($name, $from, $to);
+		return $widget->render();
+	}
+
 	public static function userGroupPicker($name = 'userGroupPicker', $label = 'Select a User or Group')
 	{
 		$value = AppletInstance::getUserGroupPickerValue($name);

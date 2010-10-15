@@ -140,3 +140,20 @@ em {
     display: block;
 }
 
+.float-left {
+  float: left;
+  margin-right: 1em !important;
+}
+
+.float-right {
+  float: right;
+  margin-left: 1em !important;
+}
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}

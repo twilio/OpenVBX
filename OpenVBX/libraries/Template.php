@@ -562,8 +562,18 @@ class CI_Template {
 	  $this->CI->load->helper('url');
 	  $filepath = base_url() . $style;
 	  
-	  switch ($type)
-	  {
+		switch ($type)
+		{
+			case 'dynamic':
+				$filepath = site_url() .'/'. $style;
+				$css = '<link type="text/css" rel="stylesheet" href="'. $filepath . '"';
+				if ($media)
+				{
+					$css .= ' media="'. $media .'"';
+				}
+				$css .= ' />';
+			break;
+
 		 case 'link':
 			
 			$css = '<link type="text/css" rel="stylesheet" href="'. $filepath .'"';

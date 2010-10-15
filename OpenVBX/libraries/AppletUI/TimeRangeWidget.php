@@ -19,9 +19,27 @@
  * Contributor(s):
  **/
 
-require_once 'AppletUIWidget.php';
-require_once 'DropZoneWidget.php';
-require_once 'UserGroupPickerWidget.php';
-require_once 'AudioSpeechPickerWidget.php';
-require_once 'TimeRangeWidget.php';
+class TimeRangeWidget extends AppletUIWidget
+{
+	protected $template = 'TimeRange';
+	
+	public function __construct($name, $from, $to)
+	{
+		$this->name = $name;
+		$this->from = $from;
+		$this->to = $to;
+		parent::__construct($this->template);
+	}
 
+	public function render($data = array())
+	{
+		$defaults = array(
+			'name' => $this->name,
+			'from' => $this->from,
+			'to' => $this->to,
+		);
+
+		$data = array_merge($defaults, $data);
+		return parent::render($data);
+	}
+}
