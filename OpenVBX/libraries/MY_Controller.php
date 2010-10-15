@@ -136,11 +136,11 @@ class MY_Controller extends Controller
 
 
 		foreach ($scripts as $script) {
-			$this->template->add_js("assets/j/$script");
+			if ($script) $this->template->add_js("assets/j/$script");
 		}
 
 		foreach ($styles as $style) {
-			$this->template->add_css("assets/c/$style");
+			if ($style) $this->template->add_css("assets/c/$style");
 		}
 	}
 	
