@@ -209,19 +209,17 @@ class Flows extends User_Controller {
 		$this->template->add_js('assets/j/accounts.js');
 		$this->template->add_js('assets/j/plugins/jquery.address-1.0.min.js');
 
-		if($this->config->item('use_unminimized_js'))
+		foreach($applets as $applet)
 		{
-			foreach($applets as $applet)
+			if ($this->config->item('use_unminimized_js')
+				&& !empty($applet->script_url))
 			{
-				if(!empty($applet->script_url))
-				{
-					$this->template->add_js($applet->script_url, 'absolute');
-				}
-				
-				if(!empty($applet->style_url))
-				{
-					$this->template->add_css($applet->style_url, 'link');
-				}
+				$this->template->add_js($applet->script_url, 'absolute');
+			}
+			if ($this->config->item('use_unminimized_css')
+				&& !empty($applet->style_url))
+			{
+				$this->template->add_css($applet->style_url, 'link');
 			}
 		}
 		
