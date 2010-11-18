@@ -174,10 +174,6 @@ class VBX_Incoming_numbers extends Model
 		{
 			$num->flow_id = intval($matches[2]);
 		}
-		else
-		{
-			error_log("Skipping unexpected URL pattern: '" . $num->url . "'");
-		}
 
 		return $num;
 	}
