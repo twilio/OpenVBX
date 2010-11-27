@@ -29,7 +29,7 @@ class Accounts extends User_Controller {
 		$this->template->write('title', 'Users');
 		$this->load->model('vbx_device');
 	}
-    
+	
 	public function index()
 	{
 		$this->template->add_js('assets/j/accounts.js');

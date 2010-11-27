@@ -18,8 +18,10 @@
 
  * Contributor(s):
  **/
-	
+
 require_once 'AppletUIWidget.php';
 require_once 'DropZoneWidget.php';
 require_once 'UserGroupPickerWidget.php';
 require_once 'AudioSpeechPickerWidget.php';
+require_once 'TimeRangeWidget.php';
+

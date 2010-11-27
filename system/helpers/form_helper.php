@@ -311,18 +311,18 @@ if ( ! function_exists('form_dropdown'))
 		{
 			$key = (string) $key;
 
-            $key = htmlspecialchars($key);
-            $val = htmlspecialchars($val);
-            
+			$key = htmlspecialchars($key);
+			$val = htmlspecialchars($val);
+			
 			if (is_array($val))
 			{
 				$form .= '<optgroup label="'.$key.'">'."\n";
 
 				foreach ($val as $optgroup_key => $optgroup_val)
 				{
-                    $optgroup_key = htmlspecialchars($optgroup_key);
-                    $optgroup_val = htmlspecialchars($optgroup_val);
-                    
+					$optgroup_key = htmlspecialchars($optgroup_key);
+					$optgroup_val = htmlspecialchars($optgroup_val);
+					
 					$sel = (in_array($optgroup_key, $selected)) ? ' selected="selected"' : '';
 
 					$form .= '<option value="'.$optgroup_key.'"'.$sel.'>'.(string) $optgroup_val."</option>\n";
@@ -360,8 +360,8 @@ if ( ! function_exists('form_checkbox'))
 {
 	function form_checkbox($data = '', $value = '', $checked = FALSE, $extra = '')
 	{
-        $value = htmlspecialchars($value);
-        
+		$value = htmlspecialchars($value);
+		
 		$defaults = array('type' => 'checkbox', 'name' => (( ! is_array($data)) ? $data : ''), 'value' => $value);
 
 		if (is_array($data) AND array_key_exists('checked', $data))

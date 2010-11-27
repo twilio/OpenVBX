@@ -1,13 +1,13 @@
-        <div id="vbx-context-menu" class="context-menu">
+		<div id="vbx-context-menu" class="context-menu">
 
 			<div id="vbx-call-sms-buttons">
-                <button class="call-button twilio-call" href="<?php echo site_url('messages/call') ?>"><span>Call</span></button>
-                <button class="sms-button twilio-sms" href="<?php echo site_url('messages/sms') ?>"><span>SMS</span></button>
+				<button class="call-button twilio-call" href="<?php echo site_url('messages/call') ?>"><span>Call</span></button>
+				<button class="sms-button twilio-sms" href="<?php echo site_url('messages/sms') ?>"><span>SMS</span></button>
 			</div>
 
-            <div class="call-dialog">
+			<div class="call-dialog">
 				<a href="" class="close action"><span class="replace">close</span></a>
-                <?php if(!empty($user_numbers) && count($user_numbers) < 1):  ?>
+				<?php if(!empty($user_numbers) && count($user_numbers) < 1):  ?>
 
 				<p class="instruct">To use the call feature, <a href="<?php echo site_url('account#devices') ?>">register a phone number</a>.</p>
 
@@ -28,7 +28,7 @@
 							</select>
 						</label>
 					    <?php elseif(!empty($callerid_numbers) && count($callerid_numbers) == 1): ?>
-                        <?php $c = $callerid_numbers[0]; ?>
+						<?php $c = $callerid_numbers[0]; ?>
 						<?php if(isset($c->trial) && $c->trial == 1): ?>
 						<label class="field-label left">From
 							<input type="text" name="callerid" value="" class="small" />
@@ -36,7 +36,7 @@
 						<?php else: ?>
 						<input type="hidden" name="callerid" value="<?php echo $c->phone ?>" />
 						<?php endif; ?>
-                    <?php else: ?>
+					<?php else: ?>
 						<?php if(OpenVBX::getTwilioAccountType() == 'Trial'): ?>
 						<p>You're using a Twilio trial account, please upgrade to dial using a virtual phone number.</p>
 						<?php else: ?>
@@ -51,7 +51,7 @@
 					
 				</form>
 
-            </div><!-- .call-dialog  -->
+			</div><!-- .call-dialog  -->
 			<div class="sms-dialog">
 				<a class="close action" href=""><span class="replace">close</span></a>
 				<h3>Send a Text Message</h3>
@@ -82,7 +82,7 @@
 					<img class="sms-sending hide" src="<?php echo asset_url('assets/i/ajax-loader.gif'); ?>" alt="loading" />
 				</form>
 			</div> <!-- .sms-dialog -->
-            <?php endif; ?>
+			<?php endif; ?>
 
 			<div class="notify <?php echo (isset($error) && !empty($error))? '' : 'hide' ?>">
 
@@ -95,5 +95,5 @@
 				
 			</div><!-- .notify -->
 
-        </div><!-- #vbx-context-menu .context-menu -->
+		</div><!-- #vbx-context-menu .context-menu -->
 

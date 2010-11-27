@@ -118,48 +118,48 @@ class PluginData
 		}
 	}
 
-    // Returns all key/value pairs for plugin
-    public static function getKeyValues()
-    {
+	// Returns all key/value pairs for plugin
+	public static function getKeyValues()
+	{
 		try
 		{
 			return VBX_Plugin_Store::search(array('plugin_id' => self::$plugin_id));
 		}
 		catch(VBX_Plugin_StoreException $e)
-        {
+		{
 			error_log($e->getMessage());
 			error_log("VBX_Plugin_StoreException while retrieving all keys");
 			throw new PluginDataException("Failed to set values in plugin store: ". $e->getMessage());
-        }
-    }
+		}
+	}
 
 	public static function sqlQuery($sql)
-    {
-        if(empty($sql))
-        {
-            throw new PluginDataException('Empty SQL statement');
-        }
+	{
+		if(empty($sql))
+		{
+			throw new PluginDataException('Empty SQL statement');
+		}
 
-        $ci = &get_instance();
-        
-        $result = $ci->db->query($sql);
+		$ci = &get_instance();
+		
+		$result = $ci->db->query($sql);
 		
 		if(is_object($result))
 			return $result->result_array();
 
 		return;
-    }
-    
-    public static function one($sql)
-    {
-        if(empty($sql))
-        {
-            throw new PluginDataException('Empty SQL statement');
-        }
+	}
+	
+	public static function one($sql)
+	{
+		if(empty($sql))
+		{
+			throw new PluginDataException('Empty SQL statement');
+		}
 
-        $ci = &get_instance();
-        return $ci->db->query($sql)->first_row('array');
-    }
+		$ci = &get_instance();
+		return $ci->db->query($sql)->first_row('array');
+	}
 
 
 }

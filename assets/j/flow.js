@@ -634,6 +634,20 @@ Flows.initialize = function() {
 		}
 	});
 
+  $('.timing-timerange-wrap input').timePicker({ show24Hours: false });
+  $('.timing-timerange-wrap .timepicker-widget').each(function() {
+    $this = $(this);
+    if ($this.val() == '') Pickers.timing.setDisabled(
+      $this,
+      $this.find('input').first().val() == ''
+    );
+  });
+  $('.timing-timerange-wrap a').live('click', function() {
+    $widget = $(this).siblings('.timepicker-widget');
+    Pickers.timing.setDisabled($widget, $(this).hasClass("timing-remove"));
+    return false;
+  });
+
 	$('.applet-item').draggable(Flows.events.drag.options);
 	$('.flowline-item').droppable(Flows.events.drop.options);
 	$('.flow-instance').live('show', Flows.events.flow.shown);

@@ -1,0 +1,6 @@
+{
+    "name" : "Timing",
+    "description" : "Redirect to arbitrary applets depending on the time of the call.",
+    "type" : ["voice", "sms"]
+}
+

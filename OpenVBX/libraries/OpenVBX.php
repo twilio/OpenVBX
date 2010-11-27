@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -18,19 +18,19 @@
 
  * Contributor(s):
  **/
-	
+
 class OpenVBXException extends Exception {}
 class OpenVBX {
 	public static $currentPlugin = null;
-	
+
 	public static function query($sql)
-    {
+	{
 		return PluginData::sqlQuery($sql);
-	}    
-    public static function one($sql)
-    {
+	}
+	public static function one($sql)
+	{
 		return PluginData::one($sql);
-    }
+	}
 
 	public static function isAdmin() {
 		$ci = &get_instance();
@@ -54,18 +54,18 @@ class OpenVBX {
 			return 'Full';
 		}
 	}
-	
+
 	public static function getCurrentUser()
 	{
 		$ci = &get_instance();
 		$user_id = $ci->session->userdata('user_id');
 		return VBX_User::get($user_id);
 	}
-	
+
 	public static function getTwilioApiVersion()
 	{
 		$ci = &get_instance();
-        $url = $ci->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
+		$url = $ci->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
 		if(preg_match('/.*\/([0-9]+-[0-9]+-[0-9]+)$/', $url, $matches))
 		{
 			return $matches[1];
@@ -103,125 +103,117 @@ class OpenVBX {
 		$ci = &get_instance();
 		$ci->session->set_flashdata('error', $message);
 	}
-	
-    public static function getUsers($options = array(), $limit = -1, $offset = 0)
-    {
-        return VBX_User::search($options, $limit, $offset);
-    }
 
-    public static function getGroups($options = array(), $limit = -1, $offset = 0)
-    {
-        return VBX_Group::search($options, $limit, $offset);
-    }
-    
-    public static function getFlows($options = array(), $limit = -1, $offset = 0)
-    {
-        return VBX_Flow::search($options, $limit, $offset);
-    }
+	public static function getUsers($options = array(), $limit = -1, $offset = 0)
+	{
+		return VBX_User::search($options, $limit, $offset);
+	}
 
-    public static function addVoiceMessage($owner,
-                                           $guid,
-                                           $caller,
-                                           $called,
-                                           $recording_url,
-                                           $duration)
-    {
-        return self::addMessage($owner, $guid, $caller, $called, $recording_url,
-                                $duration, VBX_Message::TYPE_VOICE, null);
-    }
-    
-    public static function addSmsMessage($owner,
-                                         $guid,
-                                         $to,
-                                         $from,
-                                         $body)
-    {
-        return self::addMessage($owner, $guid, $to, $from, '',
-                                0, VBX_Message::TYPE_SMS, $body, true);
-    }
-    
-    public static function addMessage($owner,
-                                      $guid,
-                                      $caller,
-                                      $called,
-                                      $recording_url,
-                                      $duration,
-                                      $type = VBX_Message::TYPE_VOICE,
-                                      $text = null,
-                                      $notify = false)
-    {
-        try
-        {
-            $ci = &get_instance();
-            $ci->load->model('vbx_message');
-				//$tenant_id = $ci->tenant->id;
-				$tenant_id = 1; // use the master settings for all tenants
-				$recording_host = $ci->settings->get('recording_host',$tenant_id);
+	public static function getGroups($options = array(), $limit = -1, $offset = 0)
+	{
+		return VBX_Group::search($options, $limit, $offset);
+	}
 
-				if (!empty($recording_host) ) {
-					$recording_url = str_replace("api.twilio.com",$recording_host,$recording_url);
-				}
+	public static function getFlows($options = array(), $limit = -1, $offset = 0)
+	{
+		return VBX_Flow::search($options, $limit, $offset);
+	}
 
-            if(!is_object($owner))
-            {
-                throw new VBX_MessageException('owner is invalid');
-            }
-        
-            $owner_type = get_class($owner);
-            $owner_type = str_replace('vbx_', '', strtolower($owner_type));
-            $owner_id = $owner->id;
+	public static function addVoiceMessage($owner,
+										   $guid,
+										   $caller,
+										   $called,
+										   $recording_url,
+										   $duration)
+	{
+		return self::addMessage($owner, $guid, $caller, $called, $recording_url,
+								$duration, VBX_Message::TYPE_VOICE, null);
+	}
+
+	public static function addSmsMessage($owner,
+										 $guid,
+										 $to,
+										 $from,
+										 $body)
+	{
+		return self::addMessage($owner, $guid, $to, $from, '',
+								0, VBX_Message::TYPE_SMS, $body, true);
+	}
+
+	public static function addMessage($owner,
+									  $guid,
+									  $caller,
+									  $called,
+									  $recording_url,
+									  $duration,
+									  $type = VBX_Message::TYPE_VOICE,
+									  $text = null,
+									  $notify = false)
+	{
+		try
+		{
+			$ci = &get_instance();
+			$ci->load->model('vbx_message');
+			if(!is_object($owner))
+			{
+				throw new VBX_MessageException('owner is invalid');
+			}
+
+			$owner_type = get_class($owner);
+			$owner_type = str_replace('vbx_', '', strtolower($owner_type));
+			$owner_id = $owner->id;
 
 
-            $message = new VBX_Message();
-            $message->owner_type = $owner_type;
-            $message->owner_id = $owner_id;
-            $message->call_guid = $guid;
-            $message->caller = $caller;
-            $message->called = $called;
-            if(is_string($text))
-            {
-                $message->content_text = $text;
-            }
-            $message->content_url = $recording_url;
-            $message->size = $duration;
+			$message = new VBX_Message();
+			$message->owner_type = $owner_type;
+			$message->owner_id = $owner_id;
+			$message->call_guid = $guid;
+			$message->caller = $caller;
+			$message->called = $called;
+			if(is_string($text))
+			{
+				$message->content_text = $text;
+			}
+			$message->content_url = $recording_url;
+			$message->size = $duration;
 
-            $message->type = $type;
-            $message->status = VBX_Message::STATUS_NEW;
+			$message->type = $type;
+			$message->status = VBX_Message::STATUS_NEW;
 
-            return $ci->vbx_message->save($message, $notify);
-        }
-        catch(VBX_MessageException $e)
-        {
-            error_log($e->getMessage());
-            return false;
-        }
-    }
+			return $ci->vbx_message->save($message, $notify);
+		}
+		catch(VBX_MessageException $e)
+		{
+			error_log($e->getMessage());
+			return false;
+		}
+	}
 
-    /* Returns the version from the php software on the server */
-    public static function version()
-    {
-        $ci = &get_instance();
-        return $ci->settings->get('version', VBX_PARENT_TENANT);
-    }
+	/* Returns the version from the php software on the server */
+	public static function version()
+	{
+		$ci = &get_instance();
+		return $ci->settings->get('version', VBX_PARENT_TENANT);
+	}
 
-    /* Returns the version of the database schema */
-    public static function schemaVersion()
-    {
-        $ci = &get_instance();
-        return $ci->settings->get('schema-version', VBX_PARENT_TENANT);
-    }
+	/* Returns the version of the database schema */
+	public static function schemaVersion()
+	{
+		$ci = &get_instance();
+		return $ci->settings->get('schema-version', VBX_PARENT_TENANT);
+	}
 
-    /* Returns the latest version of the schema on the server,
-     * regardless if its been imported */
-    public static function getLatestSchemaVersion()
-    {
-        $updates = scandir(VBX_ROOT.'/sql-updates/');
-        foreach($updates as $i => $update)
-        {
-            $updates[$i] = intval(str_replace('.sql', '', $update));
-        }
+	/* Returns the latest version of the schema on the server,
+	 * regardless if its been imported */
+	public static function getLatestSchemaVersion()
+	{
+		$updates = scandir(VBX_ROOT.'/sql-updates/');
+		foreach($updates as $i => $update)
+		{
+			$updates[$i] = intval(str_replace('.sql', '', $update));
+		}
 
-        sort($updates);
-        return $updates[count($updates)-1];
-    }
+		sort($updates);
+		return $updates[count($updates)-1];
+	}
 }

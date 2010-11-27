@@ -76,17 +76,17 @@ class PluginStore {
 		}
 	}
 
-    public static function getKeyValues()
-    {
+	public static function getKeyValues()
+	{
 		error_log('Deprecating in 0.75: '.__FUNCTION__);
 		try
 		{
 			PluginData::getKeyValues();
 		}
 		catch(PluginDataException $e)
-        {
+		{
 			throw new PluginStoreException($e->getMessage());
-        }
-    }
+		}
+	}
 
 }

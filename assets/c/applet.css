@@ -114,8 +114,6 @@
 	width: 48%;
 }
 
-
-
 /* Applet Fieldset */
 
 .vbx-applet-fieldset {
@@ -608,3 +606,20 @@
     margin: 0 auto;
 }
 
+.timing-timerange-wrap .timing-remove {
+  background: url('../i/timepicker-remove.png') no-repeat center right;
+  text-indent: -1000em;
+  width: 30px;
+  float: right;
+}
+
+.timing-timerange-wrap .timing-add {
+  background: url('../i/timepicker-add.png') no-repeat center right;
+  text-indent: -1000em;
+  width: 30px;
+  float: right;
+}
+
+.timing-timerange-wrap .timepicker-widget {
+  float: left;
+}

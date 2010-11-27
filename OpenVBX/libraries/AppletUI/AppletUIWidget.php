@@ -21,52 +21,52 @@
 	
 class AppletUIWidget
 {
-    protected $template = '';
+	protected $template = '';
 
-    public function __construct($template = '')
-    {
-        $this->template = 'OpenVBX/libraries/AppletUI/templates/' . $template . 'Template.php';
-    }
+	public function __construct($template = '')
+	{
+		$this->template = 'OpenVBX/libraries/AppletUI/templates/' . $template . 'Template.php';
+	}
 
-    public function render($data = array())
-    {
-        $template = $this->template;
-        
-        if(empty($template))
-            return '';
+	public function render($data = array())
+	{
+		$template = $this->template;
+		
+		if(empty($template))
+			return '';
 
-        if(!is_file($template))
-        {
-            throw new AppletUIWidgetException("Template does not exist: $template");
-        }
+		if(!is_file($template))
+		{
+			throw new AppletUIWidgetException("Template does not exist: $template");
+		}
 
-        $data = $this->escape($data);
-        
-        ob_start();
-        extract($data);
-        include($template);
-        $view = ob_get_contents();
-        ob_end_clean();
+		$data = $this->escape($data);
+		
+		ob_start();
+		extract($data);
+		include($template);
+		$view = ob_get_contents();
+		ob_end_clean();
 
-        return $view;
-    }
+		return $view;
+	}
 
-    private function escape($data)
-    {
-        if(is_string($data))
-        {
-            return htmlspecialchars($data);
-        }
-        else if(is_array($data))
-        {
-            foreach($data as $key => $v)
-            {
-                $data[$key] = $this->escape($v);
-            }
-        }
-        
-        return $data;
-    }
+	private function escape($data)
+	{
+		if(is_string($data))
+		{
+			return htmlspecialchars($data);
+		}
+		else if(is_array($data))
+		{
+			foreach($data as $key => $v)
+			{
+				$data[$key] = $this->escape($v);
+			}
+		}
+		
+		return $data;
+	}
 }
 
 class AppletUIWidgetException extends Exception {}

@@ -242,8 +242,8 @@ if ( ! function_exists('word_censor'))
 		{
 			return $str;
 		}
-        
-        $str = ' '.$str.' ';
+		
+		$str = ' '.$str.' ';
 
 		// \w, \b and a few others do not match on a unicode character
 		// set for performance reasons. As a result words like über
@@ -263,7 +263,7 @@ if ( ! function_exists('word_censor'))
 			}
 		}
 
-        return trim($str);
+		return trim($str);
 	}
 }
 	

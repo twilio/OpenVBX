@@ -89,7 +89,7 @@ function short_url($string, $max_len = 30)
 
 function random_str($length = 10) {
 	$chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-    
+	
 	$str = '';
 	for($a = 0; $a < $length; $a++)
 	{

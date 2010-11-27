@@ -68,27 +68,27 @@
 						</ul>
 						<?php endif; ?>
 
-                        <?php if(!empty($plugin_menus)): ?>
-                        <?php foreach($plugin_menus as $name => $links): ?>
-                        <h3 class="vbx-nav-title"><?php echo $name ?></h3>
-                        <ul class="vbx-main-nav-items">
-                        <?php foreach($links as $link => $name): 
+						<?php if(!empty($plugin_menus)): ?>
+						<?php foreach($plugin_menus as $name => $links): ?>
+						<h3 class="vbx-nav-title"><?php echo $name ?></h3>
+						<ul class="vbx-main-nav-items">
+						<?php foreach($links as $link => $name): 
 								$class = (isset($section) && $section == $link)? 'selected vbx-nav-item' :'vbx-nav-item' ?>
-                                <?php if(is_array($name)): ?>
-                                    <?php foreach($name as $sub_id => $sub_name): ?>
-                                        <li class="<?php echo $class ?>">
+								<?php if(is_array($name)): ?>
+									<?php foreach($name as $sub_id => $sub_name): ?>
+										<li class="<?php echo $class ?>">
 							                <a title="<?php echo $sub_name ?>" href="<?php echo site_url($link) ?>"><?php echo $sub_id + 1 ?>. <?php echo $sub_name?></a>
-                                        </li>
-                                    <?php endforeach;?>
-                                <?php else: ?>
-                                <li class="<?php echo $class ?>">
+										</li>
+									<?php endforeach;?>
+								<?php else: ?>
+								<li class="<?php echo $class ?>">
 									<a title="<?php echo $name ?>" href="<?php echo site_url($link) ?>"><?php echo $name?></a>
-                                </li>
-                                <?php endif; ?>
-                        <?php endforeach; ?>
-                        </ul>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
+								</li>
+								<?php endif; ?>
+						<?php endforeach; ?>
+						</ul>
+						<?php endforeach; ?>
+						<?php endif; ?>
 					</div><!-- #vbx-main-nav -->
 				<?php endif; ?>
 				</div><!-- #vbx-sidebar -->

@@ -39,8 +39,8 @@ class Login extends MY_Controller
 		
 		if($this->session->userdata('loggedin'))
 		{
-            if(VBX_User::signature($this->user_id) == $this->session->userdata('signature'))
-                return $this->redirect($redirect);
+			if(VBX_User::signature($this->user_id) == $this->session->userdata('signature'))
+				return $this->redirect($redirect);
 		}
 		
 		$this->template->write('title', 'Log In');
@@ -100,7 +100,7 @@ class Login extends MY_Controller
 								  'user_id' => $user->id,
 								  'is_admin' => $user->is_admin,
 								  'loggedin' => TRUE,
-                                  'signature' => VBX_User::signature($user->id),
+								  'signature' => VBX_User::signature($user->id),
 								  );
 				
 				$this->session->set_userdata($userdata);

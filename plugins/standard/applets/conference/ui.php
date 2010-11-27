@@ -2,19 +2,19 @@
 $defaultWaitUrl = 'http://twimlets.com/holdmusic?Bucket=com.twilio.music.classical';
 $waitUrl = AppletInstance::getValue('wait-url', $defaultWaitUrl);
 $musicOptions = array(
-                      array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.classical",
-                            "name" => "Classical"),
-                      array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient",
-                            "name" => "Ambient"),
-                      array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.electronica",
-                            "name" => "Electronica"),
-                      array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.guitars",
-                            "name" => "Guitars"),
-                      array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.rock",
-                            "name" => "Rock"),
-                      array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.soft-rock",
-                            "name" => "Soft Rock"),
-                      );
+					  array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.classical",
+							"name" => "Classical"),
+					  array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient",
+							"name" => "Ambient"),
+					  array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.electronica",
+							"name" => "Electronica"),
+					  array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.guitars",
+							"name" => "Guitars"),
+					  array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.rock",
+							"name" => "Rock"),
+					  array("url" => "http://twimlets.com/holdmusic?Bucket=com.twilio.music.soft-rock",
+							"name" => "Soft Rock"),
+					  );
 ?>
 <div class="vbx-applet">
 		<h2>Moderator</h2>

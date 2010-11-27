@@ -13,7 +13,7 @@
 
 			<div id="numbers-container">
 				<h3>Numbers</h3>
-                <p>Create, modify, and connect numbers to your flows.</p>
+				<p>Create, modify, and connect numbers to your flows.</p>
 				<ul class="numbers-list"> 
 				    <?php if(isset($numbers)) foreach($numbers as $number): ?>
 				    <li class="number" rel="<?php echo $number['id'] ?>">
@@ -62,7 +62,7 @@
 						    <p class="flow-name"><?php echo $flow->name ?></p>
 					    </div>
 					</li>
-                    <?php endforeach; ?>
+					<?php endforeach; ?>
 
 					<li class="flow" rel="prototype" style="display:none;">
 						<div class="flow-utilities">

@@ -16,6 +16,7 @@ plugins/jquery.animateToClass.js
 plugins/static.js
 plugins/jquery.swfupload.js
 plugins/jquery.tabify.js
+plugins/jquery.timePicker.min.js
 global.js
 sound.js
 pickers.js

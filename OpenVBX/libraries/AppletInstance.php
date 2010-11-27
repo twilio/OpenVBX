@@ -274,26 +274,26 @@ class AppletInstance
 		return self::$id;
 	}
 
-    public static function assocKeyValueCombine($keys, $values, $case_insensitive = true)
-    {
-        $result = array();
-        /* Filter values and keys to build assoc item pairs */
-        foreach($keys as $key_id => $key)
-        {
-            /* If using the same key over again - it will clobber so warn the user in the logs */
-            $value = isset($values[$key_id])? $values[$key_id] : '';
-            if($case_insensitive)
-            {
-                $key = strtolower($key);
-            }
-            
-            if(isset($result[$key]))
-            {
-                error_log("Clobbering keys in assocKeyValueCombine, Key: $key, Old: {$result[$key]}, New: $value");
-            }
-            $result[$key] = $value;
-        }
-        
-        return $result;
-    }
+	public static function assocKeyValueCombine($keys, $values, $case_insensitive = true)
+	{
+		$result = array();
+		/* Filter values and keys to build assoc item pairs */
+		foreach($keys as $key_id => $key)
+		{
+			/* If using the same key over again - it will clobber so warn the user in the logs */
+			$value = isset($values[$key_id])? $values[$key_id] : '';
+			if($case_insensitive)
+			{
+				$key = strtolower($key);
+			}
+			
+			if(isset($result[$key]))
+			{
+				error_log("Clobbering keys in assocKeyValueCombine, Key: $key, Old: {$result[$key]}, New: $value");
+			}
+			$result[$key] = $value;
+		}
+		
+		return $result;
+	}
 }

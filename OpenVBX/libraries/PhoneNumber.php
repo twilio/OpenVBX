@@ -95,7 +95,7 @@ class PhoneNumber
 		if(self::isShortPremium($phone)) {
 			return self::TYPE_PREMIUM;
 		}
-            
+			
 		// if it's a north american number
 		if(self::isNorthAmericanDID($phone))  {
 				

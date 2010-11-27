@@ -26,12 +26,12 @@ class VBX_Rest_access extends MY_Model
 {
 	protected static $__CLASS__ = __CLASS__;
 
-    public $fields = array('created', 'key', 'locked', 'user_id', 'id');
+	public $fields = array('created', 'key', 'locked', 'user_id', 'id');
 	public $table = 'rest_access';
 	
 	public function make_key($user_id)
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		$key = md5(rand(10000, 99999).date('mdyhisj'));
 		$ci->db

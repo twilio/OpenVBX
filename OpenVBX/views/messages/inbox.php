@@ -2,14 +2,14 @@
 
 		<?php if(empty($items)): ?>
 
-        <div class="vbx-content-container">
-            <div class="vbx-content-section">
-                <div class="messages-blank">
-                    <h2>No messages in "<?php echo $group_name; ?>"</h2>
+		<div class="vbx-content-container">
+			<div class="vbx-content-section">
+				<div class="messages-blank">
+					<h2>No messages in "<?php echo $group_name; ?>"</h2>
 					<p>When a voicemail or text message is received in "<?php echo $group_name ?>", they will show up here.  You can call them back, reply, listen to the message, read the transcription, archive it, and assign it to a user.</p>
-                </div>
-            </div><!-- .vbx-content-section -->
-        </div><!-- .vbx-content-container -->
+				</div>
+			</div><!-- .vbx-content-section -->
+		</div><!-- .vbx-content-container -->
 
 		<?php else: ?>
 			

@@ -23,7 +23,7 @@ class VBX_UserException extends Exception {}
 class VBX_User extends MY_Model {
 
 	protected static $__CLASS__ = __CLASS__;
-    public $table = 'users';
+	public $table = 'users';
 	
 	static public $joins = array(
 								 'auth_types at' => 'at.id = users.auth_type',
@@ -69,36 +69,36 @@ class VBX_User extends MY_Model {
 							 );
 		$user = new VBX_User();
 		$users = parent::search(self::$__CLASS__,
-                                $user->table,
-                                $search_options,
-                                $sql_options,
-                                $limit,
-                                $offset);
+								$user->table,
+								$search_options,
+								$sql_options,
+								$limit,
+								$offset);
 
-        if(empty($users))
-        {
-            return $users;
-        }
-        
-        if($limit == 1)
-        {
-            $users = array($users);
-        }
+		if(empty($users))
+		{
+			return $users;
+		}
+		
+		if($limit == 1)
+		{
+			$users = array($users);
+		}
 
-        $ci = &get_instance();
-        $ci->load->model('vbx_device');
-        foreach($users as $i => $user)
-        {
-            $users[$i]->devices = VBX_Device::search(array('user_id' => $user->id), 100);
-        }
+		$ci = &get_instance();
+		$ci->load->model('vbx_device');
+		foreach($users as $i => $user)
+		{
+			$users[$i]->devices = VBX_Device::search(array('user_id' => $user->id), 100);
+		}
 
-        if($limit == 1
-           && count($users) == 1)
-        {
-            return $users[0];
-        }
-        
-        return $users;
+		if($limit == 1
+		   && count($users) == 1)
+		{
+			return $users[0];
+		}
+		
+		return $users;
 	}
 
 	static function authenticate($email, $password, $captcha, $captcha_token)
@@ -231,15 +231,15 @@ class VBX_User extends MY_Model {
 		return $group_ids;
 	}
 
-    function get_users($user_ids)
-    {
-        if(empty($user_ids))
-            return array();
+	function get_users($user_ids)
+	{
+		if(empty($user_ids))
+			return array();
 
-        $this->where_in('id', $user_ids);
-        
-        return $this->get();
-    }
+		$this->where_in('id', $user_ids);
+		
+		return $this->get();
+	}
 
 	function get_user($user_id)
 	{
@@ -255,7 +255,7 @@ class VBX_User extends MY_Model {
 
 		return NULL;
 	}
-    
+	
 	/**
 	 * Encrypt (prep)
 	 *
@@ -275,7 +275,7 @@ class VBX_User extends MY_Model {
 
 	function get_active_users()
 	{
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		$ci->db->flush_cache();
 		$result = $ci->db
@@ -330,7 +330,7 @@ class VBX_User extends MY_Model {
 		if(!strlen($this->voicemail))
 			$this->voicemail = '';
 		
-        $ci =& get_instance();
+		$ci =& get_instance();
 
 		if(is_string($this->auth_type))
 		{
@@ -349,10 +349,10 @@ class VBX_User extends MY_Model {
 
 		return parent::save();
 	}
-    
-    public static function signature($user_id)
-    {
-        $user = VBX_User::get($user_id);
+	
+	public static function signature($user_id)
+	{
+		$user = VBX_User::get($user_id);
 		if(!$user)
 			return null;
 		
@@ -362,7 +362,7 @@ class VBX_User extends MY_Model {
 								   $user->tenant_id,
 								   $user->is_admin,
 								   ));
-        
-        return self::salt_encrypt( $list );
-    }
+		
+		return self::salt_encrypt( $list );
+	}
 }

@@ -21,36 +21,36 @@
 	
 class DropZoneWidget extends AppletUIWidget
 {
-    protected $template = 'DropZone';
-    protected $name;
-    protected $label;
-    protected $value;
-    protected $type;
-    
-    public function __construct($name, $label, $applet, $icon_url, $value = null)
-    {
-        $this->name = $name;
-        $this->label = $label;
-        $this->value = $value;
-        $this->type = $applet; // Deprecating
-        $this->applet = $applet;
-        $this->icon_url = $icon_url;
-        
-        parent::__construct($this->template);
-    }
+	protected $template = 'DropZone';
+	protected $name;
+	protected $label;
+	protected $value;
+	protected $type;
+	
+	public function __construct($name, $label, $applet, $icon_url, $value = null)
+	{
+		$this->name = $name;
+		$this->label = $label;
+		$this->value = $value;
+		$this->type = $applet; // Deprecating
+		$this->applet = $applet;
+		$this->icon_url = $icon_url;
+		
+		parent::__construct($this->template);
+	}
 
-    public function render($data = array())
-    {
-        $defaults = array('name' => $this->name,
-                          'label' => $this->label,
-                          'value' => $this->value,
-                          'type' => $this->applet, // Deprecating
-                          'applet' => $this->applet,
-                          'icon_url' => $this->icon_url,
-                          );
+	public function render($data = array())
+	{
+		$defaults = array('name' => $this->name,
+						  'label' => $this->label,
+						  'value' => $this->value,
+						  'type' => $this->applet, // Deprecating
+						  'applet' => $this->applet,
+						  'icon_url' => $this->icon_url,
+						  );
 
-        $data = array_merge($defaults, $data);
-        
-        return parent::render($data);
-    }
+		$data = array_merge($defaults, $data);
+		
+		return parent::render($data);
+	}
 }
