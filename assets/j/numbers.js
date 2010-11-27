@@ -82,7 +82,7 @@ $(document).ready(function() {
 				if(data.success) {
 					$('option[value=0]', select_flow).remove();
 					select_flow.data('old_val', data.id);
-					$.notify($('.incoming-number-phone', row).text() + ' is now conected to '+$('option:selected', row).text());
+					$.notify($('.incoming-number-phone', row).text() + ' is now connected to '+$('option:selected', row).text());
 					$('.incoming-number-flow', row).children('select, p, span').toggle();
 				} else {
 					if(data.message) $.notify(data.message);
@@ -106,7 +106,7 @@ $(document).ready(function() {
 					if(data.success) {
 						$('option[value=0]', select_flow).remove();
 						select_flow.data('old_val', data.id);
-						$.notify($('.incoming-number-phone', row).text() + ' is now conected to '+$('option:selected', row).text());
+						$.notify($('.incoming-number-phone', row).text() + ' is now connected to '+$('option:selected', row).text());
 						$('.incoming-number-flow', row).children('select, p, span').toggle();
 					} else {
 						if(data.message) $.notify(data.message);
