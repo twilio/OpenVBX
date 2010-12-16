@@ -483,7 +483,7 @@
 		protected $AccountSid;
 		protected $AuthToken;
 
-		public $CallGuid;
+		public $CallSid;
 		public $Caller;
 		public $Called;
 		public $CallStatus;
@@ -505,7 +505,7 @@
 			$this->AuthToken = $token;
 			$this->AccountSid = $id;
 
-			foreach(array('CallGuid', 'Caller', 'Called', 'CallStatus', 'DialStatus', 'Digits', 'Duration', 'RecordingUrl', 'TranscriptionText', 'SmsSid', 'To', 'SmsMessageSid', 'From') as $field)
+			foreach(array('CallSid', 'Caller', 'Called', 'CallStatus', 'DialStatus', 'Digits', 'Duration', 'RecordingUrl', 'TranscriptionText', 'SmsSid', 'To', 'SmsMessageSid', 'From') as $field)
 			{
 				$this->$field = (isset($_REQUEST[$field]) ? $_REQUEST[$field] : FALSE);
 			}

@@ -120,28 +120,28 @@ class OpenVBX {
 	}
 
 	public static function addVoiceMessage($owner,
-										   $guid,
+										   $sid,
 										   $caller,
 										   $called,
 										   $recording_url,
 										   $duration)
 	{
-		return self::addMessage($owner, $guid, $caller, $called, $recording_url,
+		return self::addMessage($owner, $sid, $caller, $called, $recording_url,
 								$duration, VBX_Message::TYPE_VOICE, null);
 	}
 
 	public static function addSmsMessage($owner,
-										 $guid,
+										 $sid,
 										 $to,
 										 $from,
 										 $body)
 	{
-		return self::addMessage($owner, $guid, $to, $from, '',
+		return self::addMessage($owner, $sid, $to, $from, '',
 								0, VBX_Message::TYPE_SMS, $body, true);
 	}
 
 	public static function addMessage($owner,
-									  $guid,
+									  $sid,
 									  $caller,
 									  $called,
 									  $recording_url,
@@ -167,7 +167,7 @@ class OpenVBX {
 			$message = new VBX_Message();
 			$message->owner_type = $owner_type;
 			$message->owner_id = $owner_id;
-			$message->call_guid = $guid;
+			$message->call_sid = $sid;
 			$message->caller = $caller;
 			$message->called = $called;
 			if(is_string($text))
