@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `created` datetime default NULL,
   `updated` datetime default NULL,
   `read` datetime default NULL,
-  `call_guid` varchar(40) default NULL,
+  `call_sid` varchar(40) default NULL,
   `caller` varchar(20) default NULL,
   `called` varchar(20) default NULL,
   `type` varchar(10) default NULL,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `ticket_status` ENUM('open', 'closed', 'pending') NOT NULL DEFAULT 'open',
   `tenant_id` BIGINT(20) NOT NULL,
   PRIMARY KEY  (`id`),
-  KEY `call_guid` (`call_guid`),
+  KEY `call_sid` (`call_sid`),
   INDEX(`tenant_id`)
 ) ENGINE=InnoDB CHARSET=UTF8;
 
