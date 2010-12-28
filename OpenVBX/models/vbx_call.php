@@ -90,7 +90,7 @@ class VBX_Call extends Model {
 				$item->status = Call::get_status((string) $record->Status);
 				$item->start = isset($record->StartTime) ? strtotime($record->StartTime) : null;
 				$item->end = isset($record->EndTime) ? strtotime($record->EndTime) : null;
-				$item->seconds = isset($record->Duration) ? (string) $record->Duration : 0;
+				$item->seconds = isset($record->RecordingDuration) ? (string) $record->RecordingDuration : 0;
 
 				$output[] = $item;
 			}

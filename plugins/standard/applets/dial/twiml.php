@@ -215,7 +215,7 @@ while($keepLooping)
 									 $_REQUEST['Caller'],
 									 $_REQUEST['Called'],
 									 $_REQUEST['RecordingUrl'],
-									 $_REQUEST['Duration']
+									 $_REQUEST['RecordingDuration']
 									 );
 			break;
 	}
