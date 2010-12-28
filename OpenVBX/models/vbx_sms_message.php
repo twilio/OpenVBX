@@ -90,7 +90,7 @@ class VBX_Sms_message extends Model {
 				$item->id = (string) $record->Sid;
 				$item->from = format_phone($record->From);
 				$item->to = format_phone($record->To);
-				$item->status = Call::get_status((string) $record->Status);
+				$item->status = (string)$record->Status;
 
 				$output[] = $item;
 			}
