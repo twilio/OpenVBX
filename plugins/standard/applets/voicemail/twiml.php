@@ -7,10 +7,10 @@ if(!empty($_REQUEST['RecordingUrl'])) // if we've got a transcription
 	OpenVBX::addVoiceMessage(
 							 AppletInstance::getUserGroupPickerValue('permissions'),
 							 $_REQUEST['CallSid'],
-							 $_REQUEST['Caller'],
-							 $_REQUEST['Called'], 
+							 $_REQUEST['From'],
+							 $_REQUEST['To'], 
 							 $_REQUEST['RecordingUrl'],
-							 $_REQUEST['Duration']
+							 $_REQUEST['RecordingDuration']
 							 );		
 }
 else
