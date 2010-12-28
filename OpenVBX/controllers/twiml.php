@@ -328,7 +328,7 @@ class Twiml extends MY_Controller {
 
 	function dial_status()
 	{
-		if($this->request->DialStatus == 'failed')
+		if($this->request->DialCallStatus == 'failed')
 		{
 			$this->response
 				->addSay('The number you have dialed is invalid. Goodbye.');

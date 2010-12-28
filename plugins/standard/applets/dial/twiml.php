@@ -91,7 +91,7 @@ if(isset($_COOKIE[DIAL_COOKIE]))
 }
 
 
-$dial_status = isset($_REQUEST['DialStatus'])? $_REQUEST['DialStatus'] : null;
+$dial_status = isset($_REQUEST['DialCallStatus'])? $_REQUEST['DialCallStatus'] : null;
 if($dial_status)
 {
 	switch($dial_status)
