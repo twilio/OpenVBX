@@ -159,8 +159,8 @@ class VBX_Incoming_numbers extends Model
 		$num->phone = format_phone($item->PhoneNumber);
 		$num->pin = isset($item->Pin)? (string)$item->Pin : null;
 		$num->sandbox = isset($item->Pin)? true : false;
-		$num->url = (string) $item->Url;
-		$num->method = (string) $item->Method;
+		$num->url = (string) $item->VoiceUrl;
+		$num->method = (string) $item->VoiceMethod;
 		$num->smsUrl = (string) $item->SmsUrl;
 		$num->smsMethod = (string) $item->SmsMethod;
 		

@@ -259,7 +259,7 @@ class Twiml extends MY_Controller {
 		} else {
 			/* Prompt the user to answer the call */
 			$gather = $this->response->addGather(array('numDigits' => '1'));
-			$say_number = implode(' ', str_split($this->request->Caller));
+			$say_number = implode(' ', str_split($this->request->From));
 			$gather->addSay("This is a call for {$name}. To accept, Press 1.");
 			$this->response->addHangup();
 		}
@@ -328,7 +328,7 @@ class Twiml extends MY_Controller {
 
 	function dial_status()
 	{
-		if($this->request->DialStatus == 'failed')
+		if($this->request->DialCallStatus == 'failed')
 		{
 			$this->response
 				->addSay('The number you have dialed is invalid. Goodbye.');

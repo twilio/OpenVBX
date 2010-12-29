@@ -179,8 +179,8 @@ class AudioFiles extends User_Controller
 
 			$response = $twilio->request("Accounts/{$this->twilio_sid}/Calls",
 										 'POST',
-										 array( "Caller" => $callerid,
-												"Called" => $to,
+										 array( "From" => $callerid,
+												"To" => $to,
 												"Url" => $recording_url
 												)
 										 );

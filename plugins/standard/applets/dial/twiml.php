@@ -91,7 +91,7 @@ if(isset($_COOKIE[DIAL_COOKIE]))
 }
 
 
-$dial_status = isset($_REQUEST['DialStatus'])? $_REQUEST['DialStatus'] : null;
+$dial_status = isset($_REQUEST['DialCallStatus'])? $_REQUEST['DialCallStatus'] : null;
 if($dial_status)
 {
 	switch($dial_status)
@@ -212,10 +212,10 @@ while($keepLooping)
 			OpenVBX::addVoiceMessage(
 									 $dial_whom_user_or_group,
 									 $_REQUEST['CallSid'],
-									 $_REQUEST['Caller'],
-									 $_REQUEST['Called'],
+									 $_REQUEST['From'],
+									 $_REQUEST['To'],
 									 $_REQUEST['RecordingUrl'],
-									 $_REQUEST['Duration']
+									 $_REQUEST['RecordingDuration']
 									 );
 			break;
 	}
