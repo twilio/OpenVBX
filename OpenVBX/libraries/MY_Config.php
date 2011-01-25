@@ -21,6 +21,13 @@
 
 class MY_Config extends CI_Config
 {
+
+	CONST REGEX_REPLACE_DOUBLE_SLASH = '!([^:\s]{1})(//+)!';
+
+	public static function url_trim($url) {
+	    return preg_replace('!([^:\s]{1})(//+)!', '$1/', $url);
+	}
+
 	public function site_url($url)
 	{
 		$ci = &get_instance();
@@ -29,12 +36,12 @@ class MY_Config extends CI_Config
 			$url = $ci->router->tenant . '/' . $url;
 		}
 		
-		return parent::site_url($url);
+		return self::url_trim(parent::site_url($url));
 	}
 
 	public function real_site_url($uri)
 	{
-		return parent::site_url($uri);
+		return self::url_trim(parent::site_url($uri));
 	}
 }
 
@@ -64,6 +71,13 @@ function tenant_url($uri, $tenant_id)
 	$tenant = $CI->settings->get_tenant_by_id($tenant_id);
 	return $CI->config->real_site_url($tenant->url_prefix . '/' . $uri);
 }
+	
+function current_url()
+{
+	$CI =& get_instance();
+	return $CI->config->site_url($CI->uri->uri_string());
+}
+
 
 function redirect($uri = '', $method = 'location', $http_response_code = 302)
 {
@@ -94,6 +108,5 @@ function redirect($uri = '', $method = 'location', $http_response_code = 302)
 	}
 	exit;
 }
-
 
 ?>
