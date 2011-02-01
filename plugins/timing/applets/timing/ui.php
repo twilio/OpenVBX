@@ -1,5 +1,8 @@
-<?php
-
+<?php if (version_compare(PHP_VERSION, '5.2.0', '<=')): ?>
+<div class="vbx-applet">
+    <h1>This applet is not supported in php version <?= PHP_VERSION ?></h1>
+</div>
+<?php else: ?>
 $days = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
 							'Saturday', 'Sunday');
 $ini = "$this->plugin_path/timing.ini";
@@ -52,4 +55,4 @@ $now = new DateTime('now', $tz);
 		<?php echo AppletUI::DropZone('closed', 'Closed'); ?>
 	</div>
 </div>
-
+<?php endif; ?>
