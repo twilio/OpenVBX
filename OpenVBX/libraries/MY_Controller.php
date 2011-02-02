@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -39,40 +39,24 @@ class MY_Controller extends Controller
 	protected $request_method;
 	protected $response_type;
 	public $tenant;
-	
+
 	public $twilio_sid;
 	public $twilio_token;
 	public $twilio_endpoint;
-	
+
 	public $testing_mode = false;
 	public $domain;
-	
+
 	public function __construct()
 	{
 		parent::__construct();
-		if($this->config->item('log_errors')) 
-			ini_set('log_errors', 'On');
-		else 
-			ini_set('log_errors', 'Off');
-		
 
-		if($this->config->item('display_errors')) 
-			ini_set('display_errors', 'On');
-		else 
-			ini_set('display_errors', 'Off');
-		
-
-		if($this->config->item('enable_php_notices')) 
-			error_reporting(E_ALL);
-		else
-			error_reporting(E_ALL & ~E_NOTICE);
-		
 		if(!file_exists(APPPATH . 'config/openvbx.php')
 		   || !file_exists(APPPATH . 'config/database.php'))
 		{
 			redirect('install');
 		}
-		
+
 		$this->config->load('openvbx');
 
 		// check for required configuration values
@@ -94,7 +78,7 @@ class MY_Controller extends Controller
 		}
 
 
-		
+
 		$this->tenant = $this->settings->get_tenant($this->router->tenant);
 		if($this->tenant === false)
 		{
@@ -113,10 +97,10 @@ class MY_Controller extends Controller
 		}
 
 		$this->output->enable_profiler($this->config->item('enable_profiler', false));
-		
+
 		$this->set_response_type();
 		$this->set_request_method();
-		
+
 		$scripts = null;
 		if ($this->config->item('use_unminimized_js'))
 		{
@@ -143,7 +127,7 @@ class MY_Controller extends Controller
 			if ($style) $this->template->add_css("assets/c/$style");
 		}
 	}
-	
+
 	protected function set_request_method($method = null)
 	{
 		$this->request_method = $_SERVER['REQUEST_METHOD'];
@@ -152,11 +136,11 @@ class MY_Controller extends Controller
 			$this->request_method = $method;
 		}
 	}
-	
+
 	protected function set_response_type($type = null)
 	{
 		$version = $this->settings->get('version', 1);
-		
+
 		header("X-OpenVBX-Version: $version");
 		if(isset($_SERVER['HTTP_ACCEPT']))
 		{
@@ -167,7 +151,7 @@ class MY_Controller extends Controller
 				$this->response_type = 'json';
 			}
 		}
-		
+
 		if($type)
 		{
 			$this->response_type = $type;
@@ -211,7 +195,7 @@ class MY_Controller extends Controller
 			$plugins = array();
 			/* TODO: Properly notify user of malfunction of plugin */
 		}
-		
+
 		$plugin_links = array();
 		foreach($plugins as $plugin)
 		{
@@ -226,12 +210,12 @@ class MY_Controller extends Controller
 				$ci->session->set_flashdata('error', 'Failed to fetch link information: '.$e->getMessage());
 			}
 		}
-		
+
 		if(!empty($plugin_links['plugin_menus']))
 		{
 			$nav['plugin_menus'] = $plugin_links['plugin_menus'];
 		}
-		
+
 		if($logged_in)
 		{
 			$nav['util_links'] = array(
@@ -243,9 +227,9 @@ class MY_Controller extends Controller
 			{
 				$nav['util_links'] = array_merge($nav['util_links'],
 												 $plugin_links['util_links']);
-				
+
 			}
-			
+
 			$nav['setup_links'] = array();
 
 		    $nav['setup_links'] = array(
@@ -257,9 +241,9 @@ class MY_Controller extends Controller
 			{
 				$nav['setup_links'] = array_merge($nav['setup_links'],
 												  $plugin_links['setup_links']);
-				
+
 			}
-			
+
 
 			$nav['log_links'] = array();
 
@@ -272,14 +256,14 @@ class MY_Controller extends Controller
 
 				$nav['log_links'] = array(
 										  );
-				
+
 				if(!empty($plugin_links['log_links']))
 				{
 					$nav['log_links'] = array_merge($nav['log_links'],
 												$plugin_links['log_links']);
-					
+
 				}
-			
+
 				$nav['admin_links'] = array(
 										   'flows' => 'Flows',
 										   'numbers' => 'Numbers',
@@ -305,7 +289,7 @@ class MY_Controller extends Controller
 
 		return $nav;
 	}
-	
+
 	protected function template_respond($title, $section, $payload, $layout, $layout_dir = 'content')
 	{
 		$this->template->write('title', $title);
@@ -352,7 +336,7 @@ class MY_Controller extends Controller
 		{
 			$payload['layout_override'] = '';
 		}
-		
+
 		$navigation = $this->get_navigation($this->session->userdata('loggedin'),
 											$this->session->userdata('is_admin'));
 		$payload = array_merge($payload, $navigation);
@@ -384,14 +368,14 @@ class MY_Controller extends Controller
 			echo $this->template->render('content');
 			return;
 		}
-		
+
 		return $this->template->render();
 	}
 
 	protected function json_respond_not_implemented($message) {
 		echo json_encode(compact('message'));
 	}
-	
+
 	protected function respond($title, $section, $payload, $layout = 'yui-t2', $layout_dir = 'layout/content')
 	{
 		if(!headers_sent())
@@ -402,7 +386,7 @@ class MY_Controller extends Controller
 		{
 			error_log('Unable to write session, headers already sent');
 		}
-		
+
 		switch($this->response_type)
 		{
 			case 'json':
