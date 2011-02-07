@@ -207,10 +207,10 @@ class OpenVBX {
 	 * regardless if its been imported */
 	public static function getLatestSchemaVersion()
 	{
-		$updates = scandir(VBX_ROOT.'/sql-updates/');
+		$updates = scandir(VBX_ROOT.'/updates/');
 		foreach($updates as $i => $update)
 		{
-			$updates[$i] = intval(str_replace('.sql', '', $update));
+			$updates[$i] = intval(preg_replace('/.(sql|php)$/', '', $update));
 		}
 
 		sort($updates);
