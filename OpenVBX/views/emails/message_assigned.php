@@ -20,9 +20,11 @@ $content .= "\n\n";
 
 $content .= "-----------------------------------\n\n";
 $content .= "Link to details: ". site_url('/messages/details/'.$message->id). "\n";
+$content .= "iPhone OpenVBX link to details: ".  iphone_handler_url('/message/details'.$message->id). "\n\n";
 if($message->type == 'voice')
 {
-	$content .= "Link to audio: {$message->content_url}\n\n";
+	$content .= "Link to audio: {$message->content_url}\n";
+        $content .= "iPhone OpenVBX link to audio: ". iphone_handler_url($message->content_url). "\n\n"; 
 }
 ?>
 

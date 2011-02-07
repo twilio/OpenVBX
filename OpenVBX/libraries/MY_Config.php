@@ -65,6 +65,12 @@ function asset_url($uri)
 	return $url;
 }
 
+function iphone_handler_url($uri)
+{
+        $CI =& get_instance();
+        return preg_replace("(^http|^https)", "openvbx", $CI->config->site_url($uri)); 
+}
+
 function tenant_url($uri, $tenant_id)
 {
 	$CI = & get_instance();
