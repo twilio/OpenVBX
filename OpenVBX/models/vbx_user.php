@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -18,26 +18,26 @@
 
  * Contributor(s):
  **/
-	
+
 class VBX_UserException extends Exception {}
 class VBX_User extends MY_Model {
 
 	protected static $__CLASS__ = __CLASS__;
 	public $table = 'users';
-	
+
 	static public $joins = array(
 								 'auth_types at' => 'at.id = users.auth_type',
 								 );
-	
+
 	static public $select = array('users.*',
 								  'at.description as auth_type');
-	
+
 	public $fields =  array('id','is_admin', 'is_active', 'first_name',
 							'last_name', 'password', 'invite_code',
 							'email', 'pin', 'notification',
 							'auth_type', 'voicemail', 'tenant_id',
 							'last_login', 'last_seen');
-	
+
 	public $admin_fields = array('');
 
 	public function __construct($object = null)
@@ -79,7 +79,7 @@ class VBX_User extends MY_Model {
 		{
 			return $users;
 		}
-		
+
 		if($limit == 1)
 		{
 			$users = array($users);
@@ -97,7 +97,7 @@ class VBX_User extends MY_Model {
 		{
 			return $users[0];
 		}
-		
+
 		return $users;
 	}
 
@@ -113,7 +113,7 @@ class VBX_User extends MY_Model {
 			/* Check if active */
 			if(!$user->is_active)
 				return FALSE;
-			
+
 			switch($user->auth_type)
 			{
 				case 'google':
@@ -153,10 +153,10 @@ class VBX_User extends MY_Model {
 			$this->error_message('login', $e->getMessage());
 			return FALSE;
 		}
-		
+
 		return $user;
 	}
-	
+
 	function login_openvbx($user, $password)
 	{
 		if ($user->password != self::salt_encrypt($password)) {
@@ -196,7 +196,7 @@ class VBX_User extends MY_Model {
 		try
 		{
 			$result = $this->save();
-			// $message = "Your new password is $password\n\n" . tenant_url('', $this->tenant_id);
+			// Notify the user of their new password...
 			$maildata = array('password' => $password,
 							  'tenant_url' => tenant_url('', $this->tenant_id));
 			openvbx_mail($this->email, 'Your new password', 'password-reset', $maildata);
@@ -206,10 +206,10 @@ class VBX_User extends MY_Model {
 			error_log($e->getMessage());
 			return false;
 		}
-		
+
 		return $result;
 	}
-	
+
 	// return an array of all the ids of the groups this user belongs to
 	static function get_group_ids($user_id)
 	{
@@ -218,7 +218,7 @@ class VBX_User extends MY_Model {
 			->from('groups_users')
 			->where('user_id', $user_id)
 			->get()->result();
-		
+
 		$group_ids = array();
 		if(!empty($result))
 		{
@@ -237,7 +237,7 @@ class VBX_User extends MY_Model {
 			return array();
 
 		$this->where_in('id', $user_ids);
-		
+
 		return $this->get();
 	}
 
@@ -255,7 +255,7 @@ class VBX_User extends MY_Model {
 
 		return NULL;
 	}
-	
+
 	/**
 	 * Encrypt (prep)
 	 *
@@ -265,7 +265,7 @@ class VBX_User extends MY_Model {
 	 * @param	string
 	 * @return	void
 	 */
-	function _encrypt($field)
+	public function _encrypt($field)
 	{
 		if (!empty($this->$field))
 		{
@@ -273,7 +273,7 @@ class VBX_User extends MY_Model {
 		}
 	}
 
-	function get_active_users()
+	public function get_active_users()
 	{
 		$ci =& get_instance();
 
@@ -290,6 +290,21 @@ class VBX_User extends MY_Model {
 		return $result;
 	}
 
+	public function send_reset_notification()
+	{
+
+		/* Set a random invitation code for resetting password */
+		$this->invite_code = substr(self::salt_encrypt(mt_rand()), 0, 20);
+		$this->save();
+
+		/* Email the user the reset url */
+		openvbx_mail($this->email,
+					 'Reset your password',
+					 'password-reset',
+					 $maildata = array('invite_code' => $this->invite_code,
+									   'reset_url' => tenant_url("/auth/reset/{$this->invite_code}", $this->tenant_id)));
+	}
+
 	public static function salt_encrypt($value)
 	{
 		$salt = config_item('salt');
@@ -302,7 +317,7 @@ class VBX_User extends MY_Model {
 		$ci = &get_instance();
 		$ci->db
 			 ->from('auth_types');
-		
+
 		if(is_string($auth_type)) {
 			$ci->db
 				->where('description', $auth_type);
@@ -310,7 +325,7 @@ class VBX_User extends MY_Model {
 			$ci->db
 				->where('id', $auth_type);
 		}
-		
+
 		$auth_types = $ci->db
 			 ->get()->result();
 		if(isset($auth_types[0]))
@@ -326,10 +341,10 @@ class VBX_User extends MY_Model {
 
 		if(!(strpos($this->email, '@') > 0))
 			throw new VBX_UserException('Valid email address is required');
-		
+
 		if(!strlen($this->voicemail))
 			$this->voicemail = '';
-		
+
 		$ci =& get_instance();
 
 		if(is_string($this->auth_type))
@@ -349,20 +364,20 @@ class VBX_User extends MY_Model {
 
 		return parent::save();
 	}
-	
+
 	public static function signature($user_id)
 	{
 		$user = VBX_User::get($user_id);
 		if(!$user)
 			return null;
-		
+
 		$list = implode(',', array(
 								   $user->id,
 								   $user->password,
 								   $user->tenant_id,
 								   $user->is_admin,
 								   ));
-		
+
 		return self::salt_encrypt( $list );
 	}
 }

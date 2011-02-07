@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -38,19 +38,23 @@ class Reset extends MY_Controller
 	{
 		return $this->reset();
 	}
-	
-	private function reset()
+
+	private function reset($invite_code = '')
 	{
 		$this->template->write('title', 'Reset Password');
 		$data = array();
 		$email = $this->input->post('email');
-		
+
+		if(!empty($invite_code)) {
+			$this->password_set_form();
+		}
+
 		if(empty($email))
 		{
 			$data['error'] = $this->session->flashdata('error');
 			return $this->respond('', 'reset', $data, 'login-wrapper', 'layout/login');
 		}
-		
+
 		$user = VBX_User::get(array('email' => $this->input->post('email'),
 									'is_active' => 1,
 									));
@@ -58,12 +62,12 @@ class Reset extends MY_Controller
 		{
 			$this->session->set_flashdata('error',
 										  'No active account found.');
-			
+
 			return redirect('auth/reset');
 		}
-		
+
 		if($user->auth_type == 'google')
-			
+
 		{
 			header('Location: http://www.google.com/support/accounts/bin/answer.py?answer=48598&hl=en&ctx=ch_Login&fpUrl=https%3A%2F%2Fwww.google.com%2Faccounts%2FForgotPasswd%3FfpOnly%3D1%26continue%3Dhttp%253A%252F%252Fwww.google.com%252F%26hl%3Den');
 			return;
@@ -71,12 +75,17 @@ class Reset extends MY_Controller
 		else
 		{
 			$user = new VBX_User($user);
-			$user->set_password();
+			$user->send_reset_notification();
 			$this->session->set_flashdata('error',
-										  'An email has been sent, check your inbox.');
+										  'To complete the password reset, check your inbox.');
 			return redirect('auth/login');
 		}
-		
+
 		return redirect('auth/reset');
+	}
+
+	private function password_set_form() {
+		echo 'testing';
+		return $this->respond('', 'reset', $data, 'login-wrapper', 'layout/login');
 	}
 }
