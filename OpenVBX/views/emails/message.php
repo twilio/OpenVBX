@@ -24,3 +24,4 @@ if($message->type == 'voice')
 	echo "Link to audio: {$message->content_url}\n";
         echo "iPhone OpenVBX link to audio: ". iphone_handler_url($message->content_url). "\n\n";
 }
+?>
