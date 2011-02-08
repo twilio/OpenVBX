@@ -352,7 +352,7 @@ class Twiml extends MY_Controller {
 
 			try
 			{
-				$message = $this->vbx_message->get_message(array('call_guid' => $_REQUEST['CallSid']));
+				$message = $this->vbx_message->get_message(array('call_sid' => $_REQUEST['CallSid']));
 
 				$message->content_text = $this->request->TranscriptionText;
 				$this->vbx_message->save($message, $notify);
