@@ -1,16 +1,26 @@
-/* Upgrade Account */
-
-#upgrade-account {
+/* Shout Out */
+/* Displays the upgrade account message, and the mobile app teaser */
+.shout-out {
 	padding: 10px;
 	color: #4D841A;
 	background-color: #DBF3C5;
 	border-bottom: 2px solid #74C729;
 }
 
-#upgrade-account a {
+.shout-out a {
 	font-weight: bold;
 	color: #4D841A;
 	text-decoration: underline;
+}
+
+.close-shout-out {
+	float: right;
+	margin: -4px 0 0 0;
+	opacity: .2;
+}
+
+.close-shout-out:hover {
+	opacity: 1;
 }
 
 

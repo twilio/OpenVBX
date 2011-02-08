@@ -206,6 +206,39 @@ button.add-button:active span {
 }
 
 
+button.email-button {
+    margin: 10px 0;
+    padding: 0 8px 0 0;
+    text-align: center;
+    background: transparent url(../i/email-button-bg.png) no-repeat right -96px;
+}
+
+button.email-button span {
+    height: 32px;
+    line-height: 32px;
+    padding-left: 35px;
+    margin-left: -2px;
+    background: transparent url(../i/email-button-bg.png) no-repeat left top;
+    color: #444;
+}
+
+button.email-button:hover {
+    background-position: right -128px;
+}
+
+button.email-button:hover span {
+    background-position: left -32px;
+    color: #222;
+}
+
+button.email-button:active {
+    background-position: right -160px;
+}
+
+button.email-button:active span {
+    background-position: left -64px;
+    color: #222;
+}
 
 
 button.inline-button {
