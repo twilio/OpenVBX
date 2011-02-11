@@ -298,7 +298,6 @@ INSERT INTO auth_types (description, tenant_id)
 INSERT INTO settings
 	   (name, value, tenant_id)
 	   VALUES
-	   ('from_email' , '', 1),
 	   ('dash_rss', '', 1),
 	   ('theme', '', 1),
 	   ('version', '0.90', 1),
