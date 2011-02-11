@@ -186,20 +186,18 @@ class VBX_User extends MY_Model {
 		return empty($full_name) ? $this->email : $full_name;
 	}
 
-	function set_password()
+	function set_password($password, $confirmed_password)
 	{
+		if($password != $confirmed_password) {
+			throw(new VBX_UserException("Password typed incorrectly"));
+		}
 		$ci =& get_instance();
 		$ci->load->helper('email');
-		$password = random_str();
 		$this->password = self::salt_encrypt($password);
-
+		$this->invite_code = self::salt_encrypt($password);
 		try
 		{
 			$result = $this->save();
-			// Notify the user of their new password...
-			$maildata = array('password' => $password,
-							  'tenant_url' => tenant_url('', $this->tenant_id));
-			openvbx_mail($this->email, 'Your new password', 'password-reset', $maildata);
 		}
 		catch(Exception $e)
 		{
@@ -298,12 +296,30 @@ class VBX_User extends MY_Model {
 		$this->save();
 
 		/* Email the user the reset url */
+		$maildata = array('invite_code' => $this->invite_code,
+						  'reset_url' => tenant_url("/auth/reset/{$this->invite_code}", $this->tenant_id));
 		openvbx_mail($this->email,
 					 'Reset your password',
 					 'password-reset',
-					 $maildata = array('invite_code' => $this->invite_code,
-									   'reset_url' => tenant_url("/auth/reset/{$this->invite_code}", $this->tenant_id)));
+					 $maildata);
 	}
+
+	public function send_new_user_notification()
+	{
+		/* Set a random invitation code for resetting password */
+		$this->invite_code = substr(self::salt_encrypt(mt_rand()), 0, 20);
+		$this->save();
+
+		/* Email the user the reset url */
+		$maildata = array('invite_code' => $this->invite_code,
+						  'name' => $this->first_name,
+						  'reset_url' => tenant_url("/auth/reset/{$this->invite_code}", $this->tenant_id));
+		openvbx_mail($this->email,
+					 'Welcome aboard',
+					 'welcome-user',
+					 $maildata);
+	}
+
 
 	public static function salt_encrypt($value)
 	{
