@@ -103,7 +103,7 @@ class Upgrade extends User_Controller {
 			$updatesToRun = array_slice($updatesToRun, $currentSchemaVersion);
 			$tplvars = array('originalVersion' => $currentSchemaVersion,
 							 'version' => $upgradingToSchemaVersion,
-							 'updates' => $files );
+							 'updates' => $updatesToRun );
 
 			foreach($updatesToRun as $updateToRun)
 			{
