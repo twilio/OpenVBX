@@ -28,13 +28,11 @@ function runUpdate_45() {
 			  }
 		  }
 
-		  var_export($numberUrls);
 		  foreach($numberUrls as $url) {
 			  error_log("updating $url");
 			  $response = $twilio->request($url,
 										   'POST',
 										   array('ApiVersion' => '2010-04-01'));
-			  echo "<pre>";var_export($response);echo "</pre>";
 		  }
 	  }
 
