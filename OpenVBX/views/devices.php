@@ -78,16 +78,31 @@
 				</fieldset>
 			</li>
 		</ol>
+
 		<div class="no-devices <?php if(!empty($devices)): ?>hide<?php endif; ?>">
 			<p>No devices setup.</p>
 		</div><!-- .no-devices -->
-		</div><!-- .device-container -->
 
+		<a href="#" name="mobile-apps" class="mobile-apps-toggle-link">More for your device</a>
+
+		</div><!-- .device-container -->
 		</form>
+
+
+		<div class="application-container">
+			<div class="application">
+				<img class="app-icon" src="<?php echo ASSET_ROOT ?>/i/iphone-icon-58.png" alt="OpenVBX for iPhone" />
+				<h4 class="app-name">OpenVBX for iPhone</h4>
+				<p class="app-desc">Get the OpenVBX iPhone app and be the coolest kid in your class. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sollicitudin lacus vitae enim.</p>
+				<button class="email-button"><span>Send me the quick install</span></button>
+			</div><!-- .application -->		
+		</div><!-- .application-container -->
 
 		</div><!-- .vbx-content-section -->
 
+
 	</div><!-- .vbx-content-container -->
+
 
 </div><!-- .vbx-content-main -->
 
@@ -109,4 +124,9 @@
 			</fieldset>
 		</div>
 </div>
+
+<div id="dialog-email" style="display: none;" class="email dialog" title="Quick Install">
+	<p>The quick intall guide has been emailed to:</p>
+</div>
+
 

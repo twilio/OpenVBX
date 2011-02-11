@@ -19,6 +19,18 @@
  **/
 
 $(document).ready(function() {
+
+
+	$('#dialog-email').dialog({
+		width: 350,
+		buttons: {
+			'OK' : function() {
+				$(this).dialog('close');
+			}
+		}
+	});
+
+
 	$('#dialog-number').dialog({
 		width: 350,
 		buttons: {
@@ -72,13 +84,22 @@ $(document).ready(function() {
 		}
 	});
 
+	var openEmailDialog = function () {
+		$('#dialog-email').dialog('open');
+
+		return false;
+	};
+	
 	var openNumberDialog = function () {
 		$('#dialog-number').dialog('open');
 
 		return false;
 	};
 	
+	$('.email-button').live('click', openEmailDialog);
+
 	$('.add-device').live('click', openNumberDialog);
+
 	var updateDevice = function(id, params) {
 		$.ajax({
 			url: OpenVBX.home + 'devices/number/' + id,
@@ -253,6 +274,14 @@ $(document).ready(function() {
 	$('.device-list .voicemail.device').addClass('ui-state-disabled');
 	$('button.cancel').live('click', function() {
 		$('.device-table tbody').sortable('cancel');
+	});
+
+
+	$('.mobile-apps-toggle-link').click(function() {
+		$('.application-container').toggle();
+		$(this).hasClass('opened-apps') ? $(this).removeClass('opened-apps') : $(this).addClass('opened-apps'); 
+		$(this).hasClass('opened-apps') ? $(this).text('Hide applications') : $(this).text('More for your device'); 
+		return false;
 	});
 
 });

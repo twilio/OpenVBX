@@ -269,13 +269,20 @@ $(document).ready(function() {
 
 $(document).ready(function() {
 	if($.browser.msie && $.browser.version < 7.0) {
-		
 		$('.error-dialog').attr('title', 'Unsupported Browser');
 		$('.error-dialog .error-code').text('');
 		$('.error-dialog .error-message')
 			.text('Microsoft Internet Explorer is not currently supported.  It is currently under development and will be supported in the near future.  We recommend you use Mozilla Firefox, Safari, or Chrome at this time');
-	
 		$('.error-dialog').dialog('open');
 	}
+
+
+	$('.shout-out .close').click(function() {
+        $('.shout-out').hide();
+		$.cookie("mobile-app","false", { path: '/'});
+    });
+
+	var mobileAppCookie = $.cookie("mobile-app");
+	mobileAppCookie == "false" ? $('.shout-out').hide() : $('.shout-out').show();
 
 });

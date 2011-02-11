@@ -20,7 +20,7 @@
 
 
 .device-container {
-	margin-bottom: 40px;
+	margin-bottom: 20px;
 }
 
 .device-container h3 {
@@ -39,7 +39,7 @@
 
 .device-container .device-list{
     width: 100%;
-    margin: 10px 0 50px 0;
+    margin: 10px 0 20px 0;
 }
 
 .device-container .device-list .device {
@@ -143,7 +143,6 @@
 	background-color: #777;
 }
 
-
 .device-container .device-status .checkbox {
     display: none;
 }
@@ -163,4 +162,52 @@
 
 .device-container .radio {
     margin: 2px 3px 0 0;
+}
+
+.mobile-apps-toggle-link {
+	margin: 0 0 0 2px;
+	padding: 0 0 0 20px;
+	background: url('../i/toggle-arrow-16.png') no-repeat left top;
+}
+
+.opened-apps {
+	background: url('../i/toggle-arrow-16.png') no-repeat left bottom;
+}
+
+/* Applications Container */
+
+.application-container {
+	display: none;
+}
+
+.application-container .application {
+	padding: 15px;
+    border: 1px solid #CCC;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+	overflow: auto;
+	clear: both;
+}
+
+.application-container .app-icon {
+	float: left;
+	margin: 0 10px 10px 0;
+}
+
+.application-container .app-name {
+	width: 500px;
+	margin: 4px 0 3px 0;
+	font-size: 19px;
+	color: #555;
+}
+
+.application-container .app-desc {
+	float: left;
+	width: 500px;
+	color: #666;
+}
+
+.application-container .application .email-button {
+	float: left;
+	margin: 0 0 0 60px;
 }
