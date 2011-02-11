@@ -215,8 +215,6 @@ class VBX_Incoming_numbers extends Model
 		$voice_url = site_url("twiml/start/voice/0");
 		$sms_url = site_url("twiml/start/sms/0");
 
-		$rest_url = "Accounts/{$this->twilio_sid}/IncomingPhoneNumbers/" . ($is_local ? 'Local' : 'TollFree');
-
 		if($is_local
 		   && (
 			   !empty($area_code) &&
@@ -226,20 +224,46 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException('Area code invalid');
 		}
 
-		$params = array('Url' => $voice_url,
-						'SmsUrl' => $sms_url);
+		$params =
+			 array('VoiceUrl' => $voice_url,
+				   'SmsUrl' => $sms_url,
+				   'VoiceFallbackUrl' => base_url().'fallback/voice.php',
+				   'SmsFallbackUrl' => base_url().'fallback/sms.php',
+				   'VoiceFallbackMethod' => 'GET',
+				   'SmsFallbackMethod' => 'GET',
+				   'SmsMethod' => 'POST',
+				   'ApiVersion' => '2010-04-01',
+				   );
 
-		if($is_local && !empty($area_code))
-		{
-			$params['AreaCode'] = $area_code;
+		// purchase tollfree, uses AvailablePhoneNumbers to search first.
+		if(!$is_local) {
+			$response = $this->twilio->request("Accounts/{$this->twilio_sid}/AvailablePhoneNumbers/US/TollFree");
+			if($response->IsError)
+				throw new VBX_IncomingNumberException($response->ErrorMessage);
+
+			$availablePhoneNumbers = $response->ResponseXml->AvailablePhoneNumbers;
+			if(empty($availablePhoneNumbers->AvailablePhoneNumber))
+				throw new VBX_IncomingNumberException("Currently out of TollFree numbers, please try again later.");
+
+			// Grab the first number from the list.
+			$params['PhoneNumber'] = $availablePhoneNumbers->AvailablePhoneNumber->PhoneNumber;
+			$response = $this->twilio->request("Accounts/{$this->twilio_sid}/IncomingPhoneNumbers",
+											   'POST',
+											   $params );
+
+		}  else { // purchase local
+
+			if(!empty($area_code))
+			{
+				$params['AreaCode'] = $area_code;
+			}
+
+			$rest_url = "Accounts/{$this->twilio_sid}/IncomingPhoneNumbers/";
+			$response = $this->twilio->request($rest_url, 'POST', $params);
 		}
-
-		$response = $this->twilio->request($rest_url, 'POST', $params);
 
 		if($response->IsError)
-		{
 			throw new VBX_IncomingNumberException($response->ErrorMessage);
-		}
 
 		$this->clear_cache();
 
