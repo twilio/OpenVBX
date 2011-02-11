@@ -30,13 +30,13 @@ class Numbers extends User_Controller
 	{
 		parent::__construct();
 		$this->section = 'numbers';
-		$this->admin_only($this->section);
 		$this->template->write('title', 'Numbers');
 		$this->load->model('vbx_incoming_numbers');
 	}
 
 	function index()
 	{
+		$this->admin_only($this->section);
 		$this->template->add_js('assets/j/numbers.js');
 
 		$data = $this->init_view_data();
@@ -112,6 +112,7 @@ class Numbers extends User_Controller
 
 	function add()
 	{
+		$this->admin_only($this->section);
 		$json = array( 'error' => false, 'message' => 'Added Number' );
 
 		try
@@ -142,6 +143,7 @@ class Numbers extends User_Controller
 
 	function delete($phone_id)
 	{
+		$this->admin_only($this->section);
 		$confirmed = $this->input->post('confirmed');
 		$data['confirmed'] = $confirmed;
 		$data['error'] = false;
@@ -178,6 +180,7 @@ class Numbers extends User_Controller
 
 	function change($phone_id, $id)
 	{
+		$this->admin_only($this->section);
 		try
 		{
 			$success = $this->vbx_incoming_numbers->assign_flow($phone_id, $id);
