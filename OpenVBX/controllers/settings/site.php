@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -27,7 +27,7 @@ class Site extends User_Controller
 {
 	const MODE_MULTI = 1;
 	const MODE_SINGLE = 2;
-	
+
 	function __construct()
 	{
 		parent::__construct();
@@ -44,7 +44,7 @@ class Site extends User_Controller
 	private function site($action, $id)
 	{
 		$this->section = 'settings/site';
-		
+
 		switch($action)
 		{
 			case 'tenant':
@@ -91,9 +91,9 @@ class Site extends User_Controller
 		{
 			$id = $this->tenant->id;
 		}
-		
+
 		$current_settings = $this->settings->get_all_by_tenant_id($id);
-		
+
 		$sorted_settings = array();
 		foreach($current_settings as $setting)
 		{
@@ -105,11 +105,11 @@ class Site extends User_Controller
 
 		return $sorted_settings;
 	}
-	
+
 	private function get_site()
 	{
 		$this->template->add_js('assets/j/settings.js');
-		
+
 		$data = $this->init_view_data();
 		$current_settings = $this->get_current_settings();
 		$data = array_merge($data, $current_settings);
@@ -126,9 +126,9 @@ class Site extends User_Controller
 		{
 			$data['plugins'][] = $plugin->getInfo();
 		}
-		
+
 		$data['json']['settings'] = $current_settings;
-		
+
 		$this->respond('Site Settings', 'settings/site', $data);
 	}
 
@@ -160,7 +160,7 @@ class Site extends User_Controller
 		{
 			redirect('settings/site');
 		}
-		
+
 		$this->respond('', 'settings/site', $data);
 	}
 
@@ -187,19 +187,19 @@ class Site extends User_Controller
 				try
 				{
 					$user->save();
-					$user->set_password();
+					$user->send_new_user_notification();
 				}
 				catch(VBX_UserException $e)
 				{
 					throw new VBX_SettingsException($e->getMessage());
 				}
-					  
-				
+
+
 				foreach($this->settings->setting_options as $param)
 				{
 					$this->settings->add($param, '', $data['id']);
 				}
-				
+
 				$this->settings->set('from_email', $tenant['admin_email'], $data['id']);
 
 				if($tenant['create_subaccount'])
@@ -228,14 +228,14 @@ class Site extends User_Controller
 								$message = $response->ErrorMessage;
 							throw new VBX_SettingsException($message);
 						}
-						
+
 					}
 					catch(Exception $e) {
 						throw new VBX_SettingsException($e->getMessage());
 					}
 				}
-					  
-				
+
+
 				$this->session->set_flashdata('error', 'Added new tenant');
 			}
 			catch(VBX_SettingsException $e)
@@ -251,12 +251,12 @@ class Site extends User_Controller
 				return redirect('settings/site/tenant/'.$data['id']);
 			}
 		}
-		
+
 		if($this->response_type == 'html')
 		{
 			redirect('settings/site');
 		}
-		
+
 		$this->respond('', 'settings/site', $data);
 	}
 
@@ -265,19 +265,19 @@ class Site extends User_Controller
 		$data = $this->init_view_data();
 		$tenant = $this->settings->get_tenant_by_id($id);
 		$tenant_settings = $this->get_current_settings($id);
-		
+
 		$data['tenant'] = $tenant;
 		$data['tenant_settings'] = $tenant_settings;
 		$data['available_themes'] = $this->vbx_theme->get_all();
 
 		$this->respond('Tenant Settings', 'settings/tenant', $data);
 	}
-	
+
 	private function update_tenant($id)
 	{
 		$tenant = $this->input->post('tenant');
 		$tenant_settings = $this->input->post('tenant_settings');
-		
+
 		$tenant['id'] = $id;
 		try
 		{
@@ -296,12 +296,12 @@ class Site extends User_Controller
 			$data['error'] = true;
 			$data['message'] = $e->getMessage();
 		}
-		
+
 		if($this->response_type == 'html')
 		{
 			redirect('settings/site/tenant/'.$id);
 		}
-		
+
 		$this->respond('', 'settings/tenant', $data);
 	}
 
