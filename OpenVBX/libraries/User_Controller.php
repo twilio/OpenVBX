@@ -213,7 +213,6 @@ class User_Controller extends MY_Controller
 			$password = $_SERVER['PHP_AUTH_PW'];
 		}
 
-
 		if(isset($headers['Authorization'])) {
 			$_SERVER['PHP_AUTH_DIGEST'] = $headers['Authorization'];
 			$data = $this->digest_parse($_SERVER['PHP_AUTH_DIGEST']);
