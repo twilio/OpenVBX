@@ -9,11 +9,11 @@
 	<?php foreach($css as $link): ?>
 	<link type="text/css" rel="stylesheet" href="<?php echo ASSET_ROOT ?>/<?php echo $link ?>.css" />
 	<?php endforeach; ?>
-	
+
 	<!--[if IE 7]>
 		<link type="text/css" rel="stylesheet" href="<?php echo ASSET_ROOT ?>/c/ie.css" />
 	<![endif]-->
-	
+
 </head>
 <body>
 
@@ -24,10 +24,10 @@
 <?php else: ?>
 <div id="mobile-app" class="shout-out hide">
 	<a href="#" class="close-shout-out close action"><span class="replace">Close</span></a>
-	<p>Get the OpenVBX iPhone App and be the coolest kid in your class. <a href="<?php echo site_url(); ?>devices#mobile-apps">Learn more</a></p>
+	<p>Get the OpenVBX iPhone App and be the coolest kid in your class. <a href="<?php echo site_url('devices#mobile-apps') ?>">Learn more</a></p>
 </div><!-- #mobile-app .shout-out -->
 <?php endif; ?>
-		
+
 <!-- wrapper_header -->
 <?php echo $wrapper_header; ?>
 
