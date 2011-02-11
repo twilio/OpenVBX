@@ -39,15 +39,40 @@ class Reset extends MY_Controller
 		return $this->reset();
 	}
 
-	private function reset($invite_code = '')
+	public function set_password($invite_code = '')
+	{
+		if(empty($invite_code))
+			return redirect('auth/login');
+
+
+		$user = VBX_User::get(array('is_active' => 1,
+									'invite_code' => $invite_code));
+
+		if(!$user)
+			return redirect('auth/login');
+
+		$data = array('invite_code' => $invite_code);
+
+		if(isset($_POST['password']))
+		{
+			try
+			{
+				$user->set_password($_POST['password'], $_POST['confirm']);
+				return redirect('auth/login');
+			} catch(VBX_UserException $e) {
+				$data['error'] = $e->getMessage();
+				$this->session->set_flashdata($e->getMessage());
+			}
+		}
+
+		return $this->respond('', 'set-password', $data, 'login-wrapper', 'layout/login');
+	}
+
+	public function reset()
 	{
 		$this->template->write('title', 'Reset Password');
 		$data = array();
 		$email = $this->input->post('email');
-
-		if(!empty($invite_code)) {
-			$this->password_set_form();
-		}
 
 		if(empty($email))
 		{
@@ -84,8 +109,4 @@ class Reset extends MY_Controller
 		return redirect('auth/reset');
 	}
 
-	private function password_set_form() {
-		echo 'testing';
-		return $this->respond('', 'reset', $data, 'login-wrapper', 'layout/login');
-	}
 }
