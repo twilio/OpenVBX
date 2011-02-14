@@ -1,5 +1,6 @@
 RewriteEngine ON
 
+RewriteRule .* - [E=HTTP_AUTHORIZATION:${HTTP:Authorization},L]
 # By default always use SSL
 #RewriteCond %{HTTPS} !=on
 #RewriteRule ^(.*) https://%{SERVER_NAME}%{REQUEST_URI} [L,R]
