@@ -213,6 +213,10 @@ class User_Controller extends MY_Controller
 		// RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
 		// $_SERVER['PHP_AUTH_USER'] = '';
 		// $_SERVER['PHP_AUTH_PW'] = '';
+		if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+			$_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+		}
+
 		if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
 			if(preg_match('/^Authorization: Basic (.*)$/', $_SERVER['HTTP_AUTHORIZATION'], $matches))
 				list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) =
