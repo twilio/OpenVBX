@@ -23,6 +23,10 @@ $(document).ready(function() {
 
 	$('#dialog-email').dialog({
 		width: 350,
+		open: function(event, ui) {
+			var ajaxUrl = OpenVBX.home + 'devices/send_iphone_guide';
+			$.post(ajaxUrl, {});
+		},
 		buttons: {
 			'OK' : function() {
 				$(this).dialog('close');

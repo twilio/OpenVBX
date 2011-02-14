@@ -1,4 +1,4 @@
-<?php 
+<?php
 $message_type = $message->type == 'sms'? 'SMS' : 'Voicemail';
 echo "$message_type from {$message->caller}\n\n";
 if(!empty($message->content_text))
@@ -17,11 +17,9 @@ if($message->type == 'voice')
 }
 
 echo "-----------------------------------\n\n";
-echo "Link to details: ". site_url('/messages/details/'.$message->id). "\n";
-echo "iPhone OpenVBX link to audio: ". iphone_handler_url('/messages/details/'.$message->id). "\n\n";
+echo "Link to details: ". site_url('external/messages/details/'.$message->id). "\n";
 if($message->type == 'voice')
 {
-	echo "Link to audio: {$message->content_url}\n";
-        echo "iPhone OpenVBX link to audio: ". iphone_handler_url($message->content_url). "\n\n";
+	echo "Link to audio: {$message->content_url}.mp3\n";
 }
 ?>
