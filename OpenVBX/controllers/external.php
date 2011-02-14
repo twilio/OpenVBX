@@ -3,7 +3,7 @@
 class External extends MY_Controller {
 
 	public function message_details($id) {
-		return $this->request(site_url('messages/details/'.$id), array('iphone' => site_url('iphone/message/details/'.$id)));
+		return $this->request(site_url('messages/details/'.$id), array('iphone' => site_url('iphone/messages/details/'.$id)));
 	}
 
 	// Handle all external requests detecting if they're a mobile device otherwise pass-thru to target url
