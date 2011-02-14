@@ -218,9 +218,10 @@ class User_Controller extends MY_Controller
 		}
 
 		if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
-			if(preg_match('/^Authorization: Basic (.*)$/', $_SERVER['HTTP_AUTHORIZATION'], $matches))
+			if(preg_match('/Basic (.*)$/', $_SERVER['HTTP_AUTHORIZATION'], $matches))
 				list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) =
 					explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+
 		}
 
 		// Support standard PHP Authorization magic with apache
