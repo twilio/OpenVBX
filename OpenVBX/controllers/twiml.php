@@ -413,7 +413,7 @@ class Twiml extends MY_Controller {
 	private function get_flow($flow_id = 0)
 	{
 		if($flow_id < 1) $flow_id = $this->flow_id;
-		if(is_null($this->flow)) $this->flow = VBX_Flow::get($flow_id);
+		if(is_null($this->flow)) $this->flow = VBX_Flow::get(array( 'id' => $flow_id, 'numbers' => false));
 
 		if($flow_id > 0)
 		{
