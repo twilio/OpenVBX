@@ -12,7 +12,7 @@
 			<h2>Hey, you don't have any phones setup!</h2>
 			<p>If you add devices, like your cell phone or landline, people can reach you on the phone.</p>
 			<button class="add-device add-button"><span>Add Device</span></button>
-		</div>	
+		</div>
 
 
 	<div class="vbx-content-container">
@@ -27,7 +27,7 @@
 			<?php foreach($devices as $device): ?>
 			<li class="phone device enabled ui-state-default" rel="<?php echo $device->id ?>">
 				<fieldset class="vbx-input-complex">
-					
+
 					<label class="field-label-inline left">
 						<div class="device-type phone-type"><span class="replace">Phone</span></div>
 						<p class="device-name"><?php echo htmlentities($device->name); ?></p>
@@ -78,16 +78,36 @@
 				</fieldset>
 			</li>
 		</ol>
+
 		<div class="no-devices <?php if(!empty($devices)): ?>hide<?php endif; ?>">
 			<p>No devices setup.</p>
 		</div><!-- .no-devices -->
-		</div><!-- .device-container -->
 
+		<a href="#" name="mobile-apps" class="mobile-apps-toggle-link">More for your device</a>
+
+		</div><!-- .device-container -->
 		</form>
+
+
+		<div class="application-container">
+			<div class="application">
+				<img class="app-icon" src="<?php echo ASSET_ROOT ?>/i/iphone-icon-58.png" alt="OpenVBX for iPhone" />
+				<h4 class="app-name">OpenVBX for iPhone</h4>
+				<p class="app-desc">Get the OpenVBX iPhone app and be
+				able to access your voicemail, make calls and send text messages on the go. </p>
+				<form>
+					<fieldset class="vbx-input-container">
+						<button class="email-button"><span>Start the Quick Install</span></button>
+					</fieldset>
+				</form>
+			</div><!-- .application -->
+		</div><!-- .application-container -->
 
 		</div><!-- .vbx-content-section -->
 
+
 	</div><!-- .vbx-content-container -->
+
 
 </div><!-- .vbx-content-main -->
 
@@ -101,7 +121,7 @@
 					<input type="text" class="medium" name="number[name]" value="" />
 				</label>
 			</fieldset>
-			
+
 			<fieldset class="vbx-input-container">
 				<label class="field-label">Phone Number
 					<input type="text" class="medium" name="number[value]" value="" />
@@ -109,4 +129,9 @@
 			</fieldset>
 		</div>
 </div>
+
+<div id="dialog-email" style="display: none;" class="email dialog" title="OpenVBX for iPhone Install">
+	<p>We've emailed the quick install guide to <?php echo $user->email ?>.  Open the email on your iPhone to begin.</p>
+</div>
+
 

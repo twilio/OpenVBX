@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -27,7 +27,7 @@ class Devices extends User_Controller {
 	protected $request;
 
 	private $data = array();
-	
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -46,7 +46,7 @@ class Devices extends User_Controller {
 		$data = $this->init_view_data();
 		$user = VBX_user::get(array('id' => $this->user_id));
 		$data['user'] = $user;
-		
+
 		$numbers = $this->vbx_device->get_by_user($this->user_id);
 		$data['numbers'] = $numbers;
 		$data['devices'] = $this->vbx_device->get_by_user($this->user_id);
@@ -57,7 +57,7 @@ class Devices extends User_Controller {
 					   'Add a device below.'
 					   );
 		}
-		
+
 		return $this->respond('', 'devices', $data);
 	}
 
@@ -79,7 +79,7 @@ class Devices extends User_Controller {
 			{
 				if($val) $params[$field] = $val;
 			}
-			
+
 			// The value for some fields should also be saved to the session
 			if ($field === 'email')
 			{
@@ -148,7 +148,21 @@ class Devices extends User_Controller {
 				return $this->number_handler($key);
 		}
 	}
-	
+
+	public function send_iphone_guide() {
+		$user = VBX_user::get(array('id' => $this->user_id));
+		$this->data = array('error' => false, 'message' => 'OK');
+
+
+		openvbx_mail($user->email,
+					 "iPhone installation Guide",
+					 'iphone-guide',
+					 array('email' => $user->email));
+
+
+		echo json_encode($this->data);
+	}
+
 	private function number_handler($id)
 	{
 		switch($this->request_method) {
@@ -175,7 +189,7 @@ class Devices extends User_Controller {
 	{
 		$data['json'] = array('error' => false,
 							  'message' => '');
-		
+
 		$number = $this->input->post('device');
 		$device = VBX_Device::get($device_id);
 		if(isset($number['value']))
@@ -187,12 +201,12 @@ class Devices extends User_Controller {
 		{
 			$device->sms = intval($number['sms']) == 0? 0 : 1;
 		}
-		
+
 		if(isset($number['is_active']))
 		{
 			$device->is_active = intval($number['is_active']) == 0? 0 : 1;
 		}
-		
+
 		try
 		{
 			$device->save();
@@ -208,14 +222,14 @@ class Devices extends User_Controller {
 		{
 			redirect('account#devices');
 		}
-		
+
 		$this->respond('', 'account/number', $data);
 	}
 
 	private function update_order()
 	{
 		$data['json'] = array('error' => false, 'message' => '');
-		
+
 		$order = $this->input->post('order');
 		try
 		{
@@ -231,14 +245,14 @@ class Devices extends User_Controller {
 				$device->sequence = $sequence;
 				$device->save();
 			}
-			
+
 		}
 		catch(VBX_DeviceException $e)
 		{
 			$data['json']['error'] = true;
 			$data['json']['message'] = 'One or more device sequences were not updated';
 		}
-		
+
 		if($this->response_type == 'html')
 		{
 			return redirect('account/number');
@@ -279,14 +293,14 @@ class Devices extends User_Controller {
 							  'message' => $e->getMessage(),
 							  );
 		}
-		
+
 		$data['json'] = $response;
 
 		if($this->response_type == 'html')
 		{
 			redirect('account');
 		}
-		
+
 		return $this->respond('', 'account', $data);
 	}
 
@@ -319,7 +333,7 @@ class Devices extends User_Controller {
 		{
 			echo 'test';exit;
 		}
-		
+
 		$data['json'] = $response;
 		return $this->respond('', 'account', $data);
 	}

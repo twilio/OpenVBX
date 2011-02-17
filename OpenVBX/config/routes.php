@@ -71,7 +71,8 @@ $route['settings'] = 'settings/settings_index';
 $route['settings/site/(:any)/(:num)'] = 'settings/site/index/$1/$2';
 $route['settings/site/(:any)'] = 'settings/site/index/$1';
 $route['settings/site'] = 'settings/site/index';
-$route['auth'] = "";
+$route['auth/reset/(:any)'] = "auth/reset/set_password/$1";
+$route['auth'] = "auth";
 $route['twiml/start/voice/(:any)'] = "twiml/start_voice/$1";
 $route['twiml/start/sms/(:any)'] = "twiml/start_sms/$1";
 $route['twiml/applet/voice/(:any)/(:any)'] = "twiml/voice/$1/$2";
@@ -86,6 +87,10 @@ $route['dialog'] = "dialog";
 $route['client'] = "client";
 $route['devices'] = "devices";
 $route['voicemail'] = "voicemail";
+$route['external/messages/details/(:any)'] = 'external/message_details/$1';
+$route['external'] = "external";
+$route['iphone/messages/details/(:any)'] = 'iphone/message_details/$1';
+$route['iphone'] = "iphone";
 
 /* End of file routes.php */
 /* Location: ./system/application/config/routes.php */

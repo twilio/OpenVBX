@@ -3,7 +3,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -19,17 +19,33 @@
  **/
 
 $(document).ready(function() {
+
+
+	$('#dialog-email').dialog({
+		width: 350,
+		open: function(event, ui) {
+			var ajaxUrl = OpenVBX.home + 'devices/send_iphone_guide';
+			$.post(ajaxUrl, {});
+		},
+		buttons: {
+			'OK' : function() {
+				$(this).dialog('close');
+			}
+		}
+	});
+
+
 	$('#dialog-number').dialog({
 		width: 350,
 		buttons: {
 			'Add' : function() {
 				var ajaxUrl = OpenVBX.home + 'devices/number/add';
 				var params = $('#dialog-number').values();
-				
+
 				$.post(ajaxUrl, params, function(data) {
 
 					$('#dialog-number .error-message').text(data.message).removeClass('hide');
-					
+
 					if(data.error) {
 						$('button').removeAttr('disabled');
 						return false;
@@ -41,9 +57,9 @@ $(document).ready(function() {
 					$('#dialog-number input').val('');
 					$('button').removeAttr('disabled');
 					$('#dialog-number .error-message').addClass('hide');
-					
+
 					$('#dialog-number').dialog('close');
-					
+
 					// Add a new row to the device list
 					var row = $('.device-list .prototype').clone();
 
@@ -72,18 +88,27 @@ $(document).ready(function() {
 		}
 	});
 
+	var openEmailDialog = function () {
+		$('#dialog-email').dialog('open');
+
+		return false;
+	};
+
 	var openNumberDialog = function () {
 		$('#dialog-number').dialog('open');
 
 		return false;
 	};
-	
+
+	$('.email-button').live('click', openEmailDialog);
+
 	$('.add-device').live('click', openNumberDialog);
+
 	var updateDevice = function(id, params) {
 		$.ajax({
 			url: OpenVBX.home + 'devices/number/' + id,
-			data: { 
-				device : params 
+			data: {
+				device : params
 			},
 			success: function(data) {
 				if(!data.error)
@@ -92,15 +117,15 @@ $(document).ready(function() {
 						$.notify('SMS Notifications have been turned ' + (params.sms? 'on' : 'off'));
 					if(typeof params.is_active != "undefined")
 						$.notify('Device has been turned ' + (params.is_active? 'on' : 'off'));
-					
+
 					return;
 				}
-				
-				$('.error-dialog').dialog('option', 'buttons', { 
-					"Ok": function() { 
+
+				$('.error-dialog').dialog('option', 'buttons', {
+					"Ok": function() {
 						/* TODO: reset */
-						$(this).dialog("close"); 
-					} 
+						$(this).dialog("close");
+					}
 				});
 				$('.error-dialog .error-code').text('');
 				$('.error-dialog .error-message').text('Unable to update device.  Please try again or contact your OpenVBX provider.');
@@ -111,14 +136,14 @@ $(document).ready(function() {
 			type: 'POST'
 		});
 	};
-	
+
 	var toggleEnableDeviceValue = function(event, anchor) {
 		event.preventDefault();
 
 		var enableDevice = $('.enable-device', $(anchor).parent());
 		enableDevice.attr('checked', !enableDevice.attr('checked')).trigger('change');
 	};
-	
+
 	$('.device-status a.on').live('click', function(event) {
 		toggleEnableDeviceValue(event, this);
 	});
@@ -128,9 +153,9 @@ $(document).ready(function() {
 
 	$('.enable-sms').live('change', function(event) {
 		event.preventDefault();
-		
-		updateDevice($(this).parents('.device').attr('rel'), 
-					 { 
+
+		updateDevice($(this).parents('.device').attr('rel'),
+					 {
 						 'sms' : $(event.target).attr('checked')? 1 : 0
 					 });
 	});
@@ -154,11 +179,11 @@ $(document).ready(function() {
 			.addClass('disabled')
 			.removeClass('enabled');
 
-		updateDevice($(this).parents('.device').attr('rel'), 
-					 { 
+		updateDevice($(this).parents('.device').attr('rel'),
+					 {
 						 'is_active' : is_active
 					 });
-		
+
 	});
 
 	$('.device .edit').live('click', function(event) {
@@ -172,15 +197,15 @@ $(document).ready(function() {
 		var deviceValue = $(this).closest('.device').find('.device-value').text()
 		var ajaxUrl = 'devices/number/' + id;
 		$.ajax({
-			url: ajaxUrl, 
+			url: ajaxUrl,
 			data: null,
 			success: function(data) {
 				if(!data.error)
 				{
 				    // Remove it from the device list
 					$('.device-list .device[rel=' + id + ']')
-						.fadeOut(function() { 
-							$(this).remove(); 
+						.fadeOut(function() {
+							$(this).remove();
 
 							if(!$('.device-list .device').length) {
 								$('.device-list').addClass('hide');
@@ -192,15 +217,15 @@ $(document).ready(function() {
 
 					// Remove from the <select> element for the Record dialog
 					$("select[name=number] option[value='" + deviceValue + "']").remove();
-                    
+
 					$('.device-list').removeClass('hide');
 					return $('button').removeAttr('disabled');
 				}
 
-				$('.error-dialog').dialog('option', 'buttons', { 
-					"Ok": function() { 
-						$(this).dialog("close"); 
-					} 
+				$('.error-dialog').dialog('option', 'buttons', {
+					"Ok": function() {
+						$(this).dialog("close");
+					}
 				});
 				$('.error-dialog .error-code').text('');
 				$('.error-dialog .error-message').text('Unable to delete number.  Please try again or contact your OpenVBX provider.');
@@ -222,9 +247,9 @@ $(document).ready(function() {
 				});
 
 			$.ajax({
-				url: OpenVBX.home + 'devices/number/order', 
-				data: { 
-					order : sorted 
+				url: OpenVBX.home + 'devices/number/order',
+				data: {
+					order : sorted
 				},
 				success: function(data) {
 					if(!data.error)
@@ -232,11 +257,11 @@ $(document).ready(function() {
 						return $.notify('Dial order has been updated');
 					}
 
-					$('.error-dialog').dialog('option', 'buttons', { 
-						"Ok": function() { 
+					$('.error-dialog').dialog('option', 'buttons', {
+						"Ok": function() {
 							$('.device-list').sortable('cancel');
-							$(this).dialog("close"); 
-						} 
+							$(this).dialog("close");
+						}
 					});
 					$('.error-dialog .error-code').text('');
 					$('.error-dialog .error-message').text('Unable to set sort order.  It will be reset and you will need to try again later.  It appears to be a network issue communicating with the server.');
@@ -247,12 +272,24 @@ $(document).ready(function() {
 				type: 'POST'
 			});
 		}
-		
+
 	});
 	$('.device-list').disableSelection();
 	$('.device-list .voicemail.device').addClass('ui-state-disabled');
 	$('button.cancel').live('click', function() {
 		$('.device-table tbody').sortable('cancel');
 	});
+
+	var toggleApplicationContainer = function() {
+		$('.application-container').toggle();
+		$(this).hasClass('opened-apps') ? $(this).removeClass('opened-apps') : $(this).addClass('opened-apps');
+		$(this).hasClass('opened-apps') ? $(this).text('Hide applications') : $(this).text('More for your device');
+		return false;
+	};
+	$('.mobile-apps-toggle-link').click(toggleApplicationContainer);
+
+	if(document.location.hash == '#mobile-apps')
+		$('.mobile-apps-toggle-link').click();
+
 
 });

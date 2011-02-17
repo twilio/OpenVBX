@@ -1,4 +1,4 @@
-<?php 
+<?php
 $message_type = $message->type == 'sms'? 'SMS' : 'Voicemail';
 $content = "$message_type from {$message->caller}\n\n";
 if(!empty($message->content_text))
@@ -19,10 +19,10 @@ if($message->type == 'voice')
 $content .= "\n\n";
 
 $content .= "-----------------------------------\n\n";
-$content .= "Link to details: ". site_url('/messages/details/'.$message->id). "\n";
+$content .= "Link to details: ". site_url('/external/messages/details/'.$message->id). "\n";
 if($message->type == 'voice')
 {
-	$content .= "Link to audio: {$message->content_url}\n\n";
+	$content .= "Link to audio: {$message->content_url}.mp3\n";
 }
 ?>
 

@@ -2,7 +2,7 @@
 $moderator = AppletInstance::getUserGroupPickerValue('moderator');
 $confId = AppletInstance::getValue('conf-id');
 $confName = AppletInstance::getInstanceId() . $confId;
-$caller = normalize_phone_to_E164( isset($_REQUEST['Caller'])? $_REQUEST['Caller'] : '' );
+$caller = normalize_phone_to_E164( isset($_REQUEST['From'])? $_REQUEST['From'] : '' );
 $isModerator = false;
 $defaultWaitUrl = 'http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient';
 $waitUrl = AppletInstance::getValue('wait-url', $defaultWaitUrl);

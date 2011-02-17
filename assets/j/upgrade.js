@@ -3,7 +3,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -45,7 +45,7 @@ OpenVBX.Upgrader = {
 					if(OpenVBX.Upgrader.currentStep == 1) {
 						OpenVBX.Upgrader.ready = true;
 					}
-					
+
 					afterValidation();
 				}
 				return data.success;
@@ -88,11 +88,11 @@ OpenVBX.Upgrader = {
 			return false;
 
 		var afterValidation = function() {
-			
+
 			OpenVBX.Upgrader.nextStepLock = true;
 			if($('.steps').css('left').replace('px','') <= -3500)
 				return false;
-			
+
 			$('.error').slideUp();
 			OpenVBX.Upgrader.currentStep += 1;
 			if(OpenVBX.Upgrader.currentStep == 2 && OpenVBX.Upgrader.ready) {
@@ -113,7 +113,7 @@ OpenVBX.Upgrader = {
 		} else {
 			$('button.prev').removeAttr('disabled');
 		}
-		
+
 		if($('.steps').css('left').replace('px','') <= -3500) {
 			$('button.next').attr('disabled', 'disabled');
 		} else {
@@ -124,7 +124,7 @@ OpenVBX.Upgrader = {
 				$('button.prev').hide();
 				$('button.next').hide();
 				$('button.submit').show();
-			break;
+			    break;
 			case 2:
 				$('button').hide();
 				break;
@@ -176,10 +176,10 @@ OpenVBX.Upgrader = {
 
 $(document).ready(function() {
 	if($('.error').text() != '') {
-		setTimeout(OpenVBX.Upgrader.toggleError, 
+		setTimeout(OpenVBX.Upgrader.toggleError,
 				   1000);
 	}
-	
+
 	OpenVBX.Upgrader.setButtons();
 	$('button.next').click(OpenVBX.Upgrader.nextStep);
 	$('button.prev').click(OpenVBX.Upgrader.prevStep);
@@ -188,12 +188,12 @@ $(document).ready(function() {
 	$('form').submit(function(e) {
 		e.preventDefault();
 	});
-	
-	$('fieldset').each(function() { 
-		$('input:last', 
+
+	$('fieldset').each(function() {
+		$('input:last',
 		  this).keypress(
 			  function(e) {
-				  var keyCode = e.keyCode || e.which; 
+				  var keyCode = e.keyCode || e.which;
 				  if(keyCode == 9) {
 					  e.preventDefault();
 					  OpenVBX.Upgrader.nextStep();
@@ -203,7 +203,7 @@ $(document).ready(function() {
 
 	var last_key = false;
 	$(window).bind('keydown', function(e) {
-		var tabstops = {iDatabasePassword : '', 
+		var tabstops = {iDatabasePassword : '',
 						iTwilioToken : '',
 						iFromEmail : '',
 						iAdminPw : ''};
@@ -218,16 +218,15 @@ $(document).ready(function() {
 	});
 
 	setTimeout(function() {
-		$.ajax({ 
-			url : OpenVBX.home.replace('index.php', 'support/rewrite'), 
+		$.ajax({
+			url : OpenVBX.home.replace('index.php', 'support/rewrite'),
 			success : function(data, code) {
 				$('input[name=rewrite_enabled]').attr("value", 1);
-			}, 
-			error : function(data) { 
+			},
+			error : function(data) {
 				$('input[name=rewrite_enabled]').attr("value", 0);
-			} 
+			}
 		});
 	}, 1000);
-
 
 });

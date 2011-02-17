@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -30,13 +30,13 @@ class Numbers extends User_Controller
 	{
 		parent::__construct();
 		$this->section = 'numbers';
-		$this->admin_only($this->section);
 		$this->template->write('title', 'Numbers');
 		$this->load->model('vbx_incoming_numbers');
 	}
 
 	function index()
 	{
+		$this->admin_only($this->section);
 		$this->template->add_js('assets/j/numbers.js');
 
 		$data = $this->init_view_data();
@@ -72,7 +72,7 @@ class Numbers extends User_Controller
 						$flow_name = '';
 					}
 				}
-				
+
 				$incoming_numbers[] = array(
 											'id' => $item->id,
 											'name' => $item->name,
@@ -90,7 +90,7 @@ class Numbers extends User_Controller
 		$data['highlighted_numbers'] = array($this->session->flashdata('new-number'));
 		$data['items'] = $incoming_numbers;
 		$data['twilio_sid'] = $this->twilio_sid;
-		
+
 		if(empty($this->error_message))
 		{
 			$error_message = $this->session->flashdata('error');
@@ -106,12 +106,13 @@ class Numbers extends User_Controller
 		}
 
 		$data['counts'] = $this->message_counts();
-		
+
 		$this->respond('', 'numbers', $data);
 	}
 
 	function add()
 	{
+		$this->admin_only($this->section);
 		$json = array( 'error' => false, 'message' => 'Added Number' );
 
 		try
@@ -119,9 +120,9 @@ class Numbers extends User_Controller
 			$is_local = ($this->input->post('type') == 'local');
 			$area_code = $this->input->post('area_code');
 			$this->new_number = $this->vbx_incoming_numbers->add_number($is_local, $area_code);
-			
+
 			$json['number'] = $this->new_number;
-			
+
 			$this->session->set_flashdata('new-number', $this->new_number->id);
 		}
 		catch (VBX_IncomingNumberException $e)
@@ -132,16 +133,17 @@ class Numbers extends User_Controller
 			{
 				$json['message'] = ErrorMessages::message('twilio_api', $code);
 			}
-			
+
 			$json['error'] = true;
 		}
-		
+
 		$data = compact('json');
 		$this->respond('', 'numbers', $data);
 	}
 
 	function delete($phone_id)
 	{
+		$this->admin_only($this->section);
 		$confirmed = $this->input->post('confirmed');
 		$data['confirmed'] = $confirmed;
 		$data['error'] = false;
@@ -150,12 +152,12 @@ class Numbers extends User_Controller
 		{
 			if(!$confirmed)
 			{
-				throw new NumberException('Incoming number is not confirmed');
+				throw new NumbersException('Incoming number is not confirmed');
 			}
-		
+
 			if(empty($phone_id))
 			{
-				throw new NumberException('Malformed Phone identifier.');
+				throw new NumbersException('Malformed Phone identifier.');
 			}
 
 			try
@@ -164,10 +166,10 @@ class Numbers extends User_Controller
 			}
 			catch(VBX_IncomingNumberException $e)
 			{
-				throw new NumberException($e->getMessage());
+				throw new NumbersException($e->getMessage());
 			}
 		}
-		catch(NumberException $e)
+		catch(NumbersException $e)
 		{
 			$data['error'] = true;
 			$data['message'] = $e->getMessage();
@@ -178,6 +180,7 @@ class Numbers extends User_Controller
 
 	function change($phone_id, $id)
 	{
+		$this->admin_only($this->section);
 		try
 		{
 			$success = $this->vbx_incoming_numbers->assign_flow($phone_id, $id);
@@ -199,7 +202,7 @@ class Numbers extends User_Controller
 			redirect('numbers');
 			exit;
 		}
-		
+
 		return $this->token_handler();
 	}
 
@@ -210,7 +213,7 @@ class Numbers extends User_Controller
 			redirect('numbers');
 			exit;
 		}
-		
+
 		return $this->outgoingcallerid_handler();
 	}
 
@@ -227,10 +230,10 @@ class Numbers extends User_Controller
 			case 'DELETE':
 			default:
 				break;
-				
+
 		}
-		
-		
+
+
 		$this->respond('', 'numbers', $data);
 	}
 
@@ -271,10 +274,10 @@ class Numbers extends User_Controller
 			$this->error_message = ErrorMessages::message('twilio_api', $e->getCode());
 			throw new NumbersException($this->error_message, $e->getCode());
 		}
-		
+
 		return $numbers;
 	}
-	
+
 	private function make_token()
 	{
 		return $this->make_rest_access();

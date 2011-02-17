@@ -1,5 +1,8 @@
 RewriteEngine ON
 
+# Set this if you have your installation in a subdirectory
+# RewriteBase /subdir
+
 # By default always use SSL
 #RewriteCond %{HTTPS} !=on
 #RewriteRule ^(.*) https://%{SERVER_NAME}%{REQUEST_URI} [L,R]
@@ -7,7 +10,7 @@ RewriteEngine ON
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-RewriteRule ^(.*) index.php?vbxsite=$1 [L,QSA]
+RewriteRule ^(.*) index.php?vbxsite=$1 [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L,QSA]
 #RewriteRule ^(.*) index.php/$1 [L,QSA]
 
 ErrorDocument 404 /fallback/rewrite.php

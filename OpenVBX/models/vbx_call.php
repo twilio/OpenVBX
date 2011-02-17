@@ -32,8 +32,6 @@ class VBX_Call extends Model {
 
 	public $total = 0;
 
-	private static $call_statuses = array('1' => 'in-progress', '2' => 'complete', '3' => 'busy', '4' => 'error', '5' => 'no-answer');
-
 	const CACHE_TIME_SEC = 180;
 
 	function __construct()
@@ -85,12 +83,12 @@ class VBX_Call extends Model {
 			{
 				$item = new stdClass();
 				$item->id = (string) $record->Sid;
-				$item->caller = format_phone($record->Caller);
-				$item->called = format_phone($record->Called);
-				$item->status = Call::get_status((string) $record->Status);
+				$item->caller = format_phone($record->From);
+				$item->called = format_phone($record->To);
+				$item->status = (string)$record->Status;
 				$item->start = isset($record->StartTime) ? strtotime($record->StartTime) : null;
 				$item->end = isset($record->EndTime) ? strtotime($record->EndTime) : null;
-				$item->seconds = isset($record->Duration) ? (string) $record->Duration : 0;
+				$item->seconds = isset($record->RecordingDuration) ? (string) $record->RecordingDuration : 0;
 
 				$output[] = $item;
 			}
@@ -161,9 +159,4 @@ class VBX_Call extends Model {
 		}
 	}
 
-	static function get_status($id)
-	{
-		if(array_key_exists($id, Call::$call_statuses)) return Call::$call_statuses[$id];
-		return $id;
-	}
 }

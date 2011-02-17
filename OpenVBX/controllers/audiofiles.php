@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -38,26 +38,26 @@ class AudioFiles extends User_Controller
 	{
 		$this->respond('', 'library', $data);
 	}
-	
+
 	function add_file()
 	{
 		$json = array(
 			'error' => false,
 			'message' => ''
 		);
-		
+
 		if (!empty($_FILES) && isset($_FILES["Filedata"]) && $_FILES["Filedata"]["error"] == UPLOAD_ERR_OK)
 		{
 			$file = $_FILES["Filedata"];
-			
+
 			$name_parts = explode('.', $file['name']);
 			$ext = $name_parts[count($name_parts) - 1];
-			
+
 			if (in_array(strtolower($ext), array('wav', 'mp3')))
 			{
 				// Can we write to our audio upload directory?
 				$audioUploadsPath = 'audio-uploads/';
-				
+
 				if (is_writable($audioUploadsPath))
 				{
 					$targetFile = null;
@@ -79,7 +79,7 @@ class AudioFiles extends User_Controller
 
 					// Return the URL for our newly created file
 					$json['url'] = "vbx-audio-upload://" . basename($targetFile);
-					
+
 					$ci =& get_instance();
 
 					// And, make a record in the database
@@ -89,7 +89,7 @@ class AudioFiles extends User_Controller
 					$audioFile->url = $json['url'];
 					$audioFile->tag = $this->input->post('tag');
 					$audioFile->save();
-					
+
 					// We return the label so that this upload can be added the library UI without
 					// refreshing the page.
 					$json['label'] = $audioFile->label;
@@ -167,7 +167,7 @@ class AudioFiles extends User_Controller
 			$json['message'] = "You must have an incoming number to record a greeting. <a href=\"".site_url('numbers')."\">Get a Number</a>";
 		}
 		else
-		{			
+		{
 			$rest_access_token = $this->make_rest_access();
 
 			$twilio = new TwilioRestClient($this->twilio_sid,
@@ -176,15 +176,15 @@ class AudioFiles extends User_Controller
 
 			$path = 'audiofiles!prompt_for_recording_twiml';
 			$recording_url = stripslashes(site_url("twiml/redirect/" . $path . "/$rest_access_token"));
-			
+
 			$response = $twilio->request("Accounts/{$this->twilio_sid}/Calls",
 										 'POST',
-										 array( "Caller" => $callerid,
-												"Called" => $to,
+										 array( "From" => $callerid,
+												"To" => $to,
 												"Url" => $recording_url
 												)
 										 );
-			
+
 			if ($response->IsError)
 			{
 				$json['message'] = $response->ErrorMessage;
@@ -203,7 +203,7 @@ class AudioFiles extends User_Controller
 				$audioFile->recording_call_sid = "$callSid";
 				$audioFile->tag = $this->input->post('tag');
 				$audioFile->save();
-				
+
 				$json['id'] = $audioFile->id;
 			}
 		}
@@ -213,14 +213,14 @@ class AudioFiles extends User_Controller
 		$this->response_type = 'json';
 		$this->respond('', null, $data);
 	}
-	
+
 	function prompt_for_recording_twiml()
 	{
 		$this->request = new TwilioUtils($this->twilio_sid, $this->twilio_token);
 		$this->response = new Response();
-		
-		$audioFile = VBX_Audio_File::get(array('recording_call_sid' => $this->request->CallGuid));
-		
+
+		$audioFile = VBX_Audio_File::get(array('recording_call_sid' => $this->request->CallSid));
+
 		if (!$audioFile->cancelled)
 		{
 			$this->response->addSay("Re-chord your message after the beep, press pound key when finished.");
@@ -228,7 +228,7 @@ class AudioFiles extends User_Controller
 
 			$this->response->addSay("We didn't get a recording from you, try again.");
 			$this->response->addRedirect(site_url('audiofiles/prompt_for_recording_twiml'));
-			
+
 		}
 		else
 		{
@@ -238,12 +238,12 @@ class AudioFiles extends User_Controller
 
 		return $this->response->Respond();
 	}
-	
+
 	function replay_recording_twiml()
 	{
 		$this->request = new TwilioUtils($this->twilio_sid, $this->twilio_token);
 		$this->response = new Response();
-		
+
 		if ($this->request->RecordingUrl)
 		{
 			// Stuff this in our session.  We'll come get it later when it's time to save!
@@ -258,13 +258,13 @@ class AudioFiles extends User_Controller
 												   'action' => site_url('audiofiles/accept_or_reject_recording_twiml')));
 		$gather->addPlay($this->session->userdata('current-recording'));
 		$gather->addSay('If you like this message, press 1.	 To record a different message, press 2.');
-		
+
 		// If they don't enter anything at the prompt, do the replay again.
 		$this->response->addRedirect(site_url('audiofiles/replay_recording_twiml'));
-		
+
 		return $this->response->Respond();
 	}
-	
+
 	function accept_or_reject_recording_twiml()
 	{
 		$this->request = new TwilioUtils($this->twilio_sid, $this->twilio_token);
@@ -273,18 +273,18 @@ class AudioFiles extends User_Controller
 		switch($this->request->Digits)
 		{
 			case 1:
-				$audioFile = VBX_Audio_File::get(array('recording_call_sid' => $this->request->CallGuid));
-				
+				$audioFile = VBX_Audio_File::get(array('recording_call_sid' => $this->request->CallSid));
+
 				if ($audioFile == null)
 				{
-					trigger_error("That's weird - we can't find the place holder audio file that matches this sid (" . $this->request->CallGuid . ")");
+					trigger_error("That's weird - we can't find the place holder audio file that matches this sid (" . $this->request->CallSid . ")");
 				}
 				else
 				{
 					$audioFile->url = $this->session->userdata('current-recording');
 					$audioFile->save();
 				}
-				
+
 				$this->response->addSay('Your recording has been saved.');
 				$this->response->addHangup();
 				break;
@@ -294,29 +294,29 @@ class AudioFiles extends User_Controller
 				$this->response->addRedirect(site_url('audiofiles/replay_recording_twiml'));
 				break;
 		}
-		
+
 		return $this->response->Respond();
 	}
-	
+
 	function hangup_on_cancel()
 	{
 		$this->request = new TwilioUtils($this->twilio_sid, $this->twilio_token);
 		$this->response = new Response();
 
 		$this->response->addHangup();
-		
+
 		return $this->response->Respond();
 	}
-	
+
 	function cancel_recording()
 	{
 		$json = array(
 			'error' => false,
 			'message' => ''
 		);
-		
+
 		$audio_file_id = $this->input->post('id');
-		
+
 		if (strlen($audio_file_id) == 0)
 		{
 			$json['error'] = true;
@@ -325,7 +325,7 @@ class AudioFiles extends User_Controller
 		else
 		{
 			$audioFile = VBX_Audio_File::get($audio_file_id);
-			
+
 			if (is_null($audioFile))
 			{
 				trigger_error("We were given an id for an audio_file, but we can't find the record.	 That's odd.  And, by odd I really mean it should *never* happen.");
@@ -339,13 +339,13 @@ class AudioFiles extends User_Controller
 				$twilio = new TwilioRestClient($this->twilio_sid,
 											   $this->twilio_token,
 											   $this->twilio_endpoint);
-				
+
 				error_log("Redirecting to cancel page!");
 				$response = $twilio->request("Accounts/{$this->twilio_sid}/Calls/" . $audioFile->recording_call_sid,
 											 'POST',
 											 array("CurrentUrl" => site_url('audiofiles/hangup_on_cancel'))
 											 );
-				
+
 				$audioFile->cancelled = true;
 				$audioFile->save();
 			}
@@ -363,9 +363,9 @@ class AudioFiles extends User_Controller
 			'error' => false,
 			'message' => ''
 		);
-		
+
 		$audio_file_id = $this->input->post('id');
-		
+
 		if (strlen($audio_file_id) == 0)
 		{
 			$json['error'] = true;
@@ -374,7 +374,7 @@ class AudioFiles extends User_Controller
 		else
 		{
 			$newAudioFile = VBX_Audio_File::get($audio_file_id);
-			
+
 			if ($newAudioFile == null)
 			{
 				trigger_error("We were given an id for an audio_file, but we can't find the record.	 That's odd.  And, by odd I really mean it should *never* happen.");
@@ -385,7 +385,7 @@ class AudioFiles extends User_Controller
 				{
 					$json['finished'] = true;
 					$json['url'] = $newAudioFile->url;
-					
+
 					// We return the label so that this upload can be added the library UI without
 					// refreshing the page.
 					$json['label'] = $newAudioFile->label;

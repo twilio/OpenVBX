@@ -27,7 +27,7 @@ $config['base_url']= "http"
 | Used for js versioning.
 |
 */
-$config['site_rev'] = 1004;
+$config['site_rev'] = 1005;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,7 +79,7 @@ $config['enable_log'] = TRUE;
 | Turning this on could cause breakage in TwiML code, which will destroy calls.
 |
 */
-$config['display_errors'] = FALSE;
+$config['display_errors'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -266,7 +266,7 @@ $config['directory_trigger'] 	= 'd'; // experimental not currently in use
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = 1;
 
 /*
 |--------------------------------------------------------------------------

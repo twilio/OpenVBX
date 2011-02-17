@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `groups_users` (
   INDEX(`tenant_id`)
 ) ENGINE=InnoDB CHARSET=UTF8;
 
-DROP TABLE IF EXISTS `audio_files`; 
+DROP TABLE IF EXISTS `audio_files`;
 CREATE TABLE IF NOT EXISTS `audio_files` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `label` varchar(255) DEFAULT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `created` datetime default NULL,
   `updated` datetime default NULL,
   `read` datetime default NULL,
-  `call_guid` varchar(40) default NULL,
+  `call_sid` varchar(40) default NULL,
   `caller` varchar(20) default NULL,
   `called` varchar(20) default NULL,
   `type` varchar(10) default NULL,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `ticket_status` ENUM('open', 'closed', 'pending') NOT NULL DEFAULT 'open',
   `tenant_id` BIGINT(20) NOT NULL,
   PRIMARY KEY  (`id`),
-  KEY `call_guid` (`call_guid`),
+  KEY `call_sid` (`call_sid`),
   INDEX(`tenant_id`)
 ) ENGINE=InnoDB CHARSET=UTF8;
 
@@ -125,11 +125,11 @@ CREATE TABLE IF NOT EXISTS `auth_types` (
   INDEX(`tenant_id`)
 ) ENGINE=InnoDB CHARSET=UTF8;
 
-DROP TABLE IF EXISTS `rest_access`; 
-CREATE TABLE IF NOT EXISTS `rest_access` ( 
+DROP TABLE IF EXISTS `rest_access`;
+CREATE TABLE IF NOT EXISTS `rest_access` (
   `key` VARCHAR(32) NOT NULL,
-  `locked` TINYINT NOT NULL DEFAULT 0, 
-  `created` DATETIME NOT NULL, 
+  `locked` TINYINT NOT NULL DEFAULT 0,
+  `created` DATETIME NOT NULL,
   `user_id` INT NOT NULL,
   `tenant_id` BIGINT(20) NOT NULL,
   PRIMARY KEY (`key`),
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `user_annotations` (
   user_id INT(11) NOT NULL,
   annotation_id BIGINT NOT NULL,
   `tenant_id` BIGINT(20) NOT NULL,
-  PRIMARY KEY(user_id, annotation_id),   
+  PRIMARY KEY(user_id, annotation_id),
   INDEX(`tenant_id`)
 ) ENGINE=InnoDB CHARSET=UTF8;
 
@@ -209,9 +209,9 @@ CREATE TABLE IF NOT EXISTS `tenants` (
 
 DROP TABLE IF EXISTS `settings`;
 CREATE TABLE IF NOT EXISTS `settings` (
-  id BIGINT AUTO_INCREMENT,	
-  tenant_id BIGINT NOT NULL, 
-  name VARCHAR(32) NOT NULL, 
+  id BIGINT AUTO_INCREMENT,
+  tenant_id BIGINT NOT NULL,
+  name VARCHAR(32) NOT NULL,
   value VARCHAR(255) NOT NULL,
   PRIMARY KEY(id),
   INDEX(name),
@@ -275,13 +275,13 @@ ALTER TABLE flow_store ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 ALTER TABLE plugin_store ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 
 
-INSERT INTO tenants 
-	   (name, url_prefix, local_prefix) 
-	   VALUES 
+INSERT INTO tenants
+	   (name, url_prefix, local_prefix)
+	   VALUES
 	   ('default', '', '');
 
-INSERT INTO annotation_types (description, tenant_id) 
-	   VALUES 
+INSERT INTO annotation_types (description, tenant_id)
+	   VALUES
 	   ('called', 1),
 	   ('read', 1),
 	   ('noted', 1),
@@ -295,22 +295,21 @@ INSERT INTO auth_types (description, tenant_id)
 	   ('google', 1);
 
 
-INSERT INTO settings 
+INSERT INTO settings
 	   (name, value, tenant_id)
 	   VALUES
-	   ('from_email' , '', 1),
 	   ('dash_rss', '', 1),
 	   ('theme', '', 1),
-	   ('version', '0.85', 1),
+	   ('version', '0.90', 1),
 	   ('iphone_theme', '', 1),
 	   ('enable_sandbox_number', 1, 1),
-	   ('twilio_endpoint', 'https://api.twilio.com/2008-08-01', 1),
-		('recording_host','',1);
-	   
+	   ('twilio_endpoint', 'https://api.twilio.com/2010-04-01', 1),
+	   ('recording_host','',1);
+
 
 INSERT INTO groups
        (name, is_active, tenant_id)
        VALUES
        ('Sales', 1, 1),
        ('Support', 1, 1);
-       
+

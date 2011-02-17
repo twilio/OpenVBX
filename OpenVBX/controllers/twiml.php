@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -34,7 +34,7 @@ class Twiml extends MY_Controller {
 	private $flow;
 	private $flow_id;
 	private $flow_type = 'voice';
-	
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -59,7 +59,7 @@ class Twiml extends MY_Controller {
 		log_message("info", "Calling SMS Flow $flow_id");
 		$body = $this->input->get_post('Body');
 		$this->flow_type = 'sms';
-		
+
 		$this->session->set_userdata('sms-body', $body);
 
 		$flow_id = $this->set_flow_id($flow_id);
@@ -69,7 +69,7 @@ class Twiml extends MY_Controller {
 		{
 			$flow_data = get_object_vars(json_decode($flow->sms_data));
 		}
-		
+
 		$instance = isset($flow_data['start'])? $flow_data['start'] : null;
 		if(is_object($instance))
 		{
@@ -87,7 +87,7 @@ class Twiml extends MY_Controller {
 	{
 		log_message("info", "Calling Voice Flow $flow_id");
 		$this->flow_type = 'voice';
-		
+
 		$flow_id = $this->set_flow_id($flow_id);
 		$flow = $this->get_flow();
 		$flow_data = array();
@@ -95,9 +95,9 @@ class Twiml extends MY_Controller {
 		{
 			$flow_data = get_object_vars(json_decode($flow->data));
 		}
-		
+
 		$instance = isset($flow_data['start'])? $flow_data['start'] : null;
-		
+
 		if(is_object($instance))
 		{
 			$this->applet($flow_id, 'start');
@@ -132,7 +132,7 @@ class Twiml extends MY_Controller {
 	{
 		$plugin = Plugin::get($plugin_dir_name);
 		$plugin_info = ($plugin)? $plugin->getInfo() : false;
-		
+
 		header("X-OpenVBX-Applet-Version: {$applet->version}");
 		if($plugin_info)
 		{
@@ -141,14 +141,14 @@ class Twiml extends MY_Controller {
 		}
 		header("X-OpenVBX-Applet: {$applet->name}");
 	}
-	
+
 	private function applet($flow_id, $inst_id, $type = 'voice')
 	{
 		$flow_id = $this->set_flow_id($flow_id);
 		$flow = $this->get_flow();
 		$instance = null;
 		$applet = null;
-		
+
 		try
 		{
 			switch($type)
@@ -173,13 +173,13 @@ class Twiml extends MY_Controller {
 						$flow_data = get_object_vars(json_decode($sms_data));
 						$instance = isset($flow_data[$inst_id])? $flow_data[$inst_id] : null;
 					}
-					
+
 					if(!is_null($instance))
 					{
 						$plugin_dir_name = '';
 						$applet_dir_name = '';
 						list($plugin_dir_name, $applet_dir_name) = explode('---', $instance->type);
-						
+
 						$applet = Applet::get($plugin_dir_name,
 											  $applet_dir_name,
 											  null,
@@ -192,7 +192,7 @@ class Twiml extends MY_Controller {
 							$_POST['Body'] = $_GET['Body'] = $_REQUEST['Body'] = $sms;
 						}
 						$this->session->unset_userdata('sms-body');
-						
+
 						$applet->currentURI = site_url("twiml/applet/sms/$flow_id/$inst_id");
 
 						$baseURI = site_url("twiml/applet/sms/$flow_id/");
@@ -213,7 +213,7 @@ class Twiml extends MY_Controller {
 						$plugin_dir_name = '';
 						$applet_dir_name = '';
 						list($plugin_dir_name, $applet_dir_name) = explode('---', $instance->type);
-						
+
 						$applet = Applet::get($plugin_dir_name,
 											  $applet_dir_name,
 											  null,
@@ -223,12 +223,12 @@ class Twiml extends MY_Controller {
 						$applet->currentURI = site_url("twiml/applet/voice/$flow_id/$inst_id");
 						$baseURI = site_url("twiml/applet/voice/$flow_id/");
 						$this->applet_headers($applet, $plugin_dir_name);
-						
+
 						echo $applet->twiml($flow, $baseURI, $instance);
 					}
 					break;
 			}
-			
+
 			if(!is_object($applet))
 			{
 				$this->response->addSay("Unknown applet instance in flow $flow_id.");
@@ -240,9 +240,9 @@ class Twiml extends MY_Controller {
 		{
 			$this->response->addSay('Error: ' + $ex->getMessage());
 		}
-		
+
 	}
-	
+
 	function whisper()
 	{
 		$name =	$this->input->get_post('name');
@@ -259,11 +259,11 @@ class Twiml extends MY_Controller {
 		} else {
 			/* Prompt the user to answer the call */
 			$gather = $this->response->addGather(array('numDigits' => '1'));
-			$say_number = implode(' ', str_split($this->request->Caller));
+			$say_number = implode(' ', str_split($this->request->From));
 			$gather->addSay("This is a call for {$name}. To accept, Press 1.");
 			$this->response->addHangup();
 		}
-		
+
 		$this->response->Respond();
 	}
 
@@ -288,7 +288,7 @@ class Twiml extends MY_Controller {
 		$rest_access = $this->input->get_post('rest_access');
 		$to = $this->input->get_post('to');
 		$callerid = $this->input->get_post('callerid');
-		
+
 		if(!$this->session->userdata('loggedin')
 		   && !$this->login_call($rest_access))
 		{
@@ -309,14 +309,14 @@ class Twiml extends MY_Controller {
 		{
 			$name = $user->first_name;
 		}
-		
+
 		if($this->request->Digits !== false
 		   && $this->request->Digits == 1) {
 			$options = array('action' => site_url("twiml/dial_status").'?'.http_build_query(compact('to')),
 							 'callerId' => $callerid);
-			
+
 			$this->response->addDial($to, $options);
-			
+
 		} else {
 			$gather = $this->response->addGather(array('numDigits' => 1));
 			$gather->addSay("Hello {$name}, this is a call from v b x".
@@ -328,7 +328,7 @@ class Twiml extends MY_Controller {
 
 	function dial_status()
 	{
-		if($this->request->DialStatus == 'failed')
+		if($this->request->DialCallStatus == 'failed')
 		{
 			$this->response
 				->addSay('The number you have dialed is invalid. Goodbye.');
@@ -339,20 +339,20 @@ class Twiml extends MY_Controller {
 
 	function transcribe()
 	{
-		error_log("transcribing: {$this->request->CallGuid}");
+		error_log("transcribing: {$this->request->CallSid}");
 		// attatch transcription to the recording
 		$notify = TRUE;
 		$this->load->model('vbx_message');
 		try
 		{
-			if(empty($this->request->CallGuid))
+			if(empty($this->request->CallSid))
 			{
-				throw new TwimlException('CallGuid empty: possible non-twilio client access');
+				throw new TwimlException('CallSid empty: possible non-twilio client access');
 			}
 
 			try
 			{
-				$message = $this->vbx_message->get_message(array('call_guid' => $_REQUEST['CallGuid']));
+				$message = $this->vbx_message->get_message(array('call_sid' => $_REQUEST['CallSid']));
 
 				$message->content_text = $this->request->TranscriptionText;
 				$this->vbx_message->save($message, $notify);
@@ -367,7 +367,7 @@ class Twiml extends MY_Controller {
 			error_log($e->getMessage());
 		}
 	}
-	
+
 	/* Private utility functions here */
 	private function login_call($singlepass)
 	{
@@ -383,13 +383,13 @@ class Twiml extends MY_Controller {
 				$this->session->set_userdata('loggedin', true);
 				$this->session->set_userdata('signature', VBX_User::signature($user_id));
 			}
-			
+
 			return true;
 		}
 
 		return false;
 	}
-	
+
 	private function set_flow_id($id)
 	{
 		$this->session->set_userdata('flow_id', $id);
@@ -413,7 +413,7 @@ class Twiml extends MY_Controller {
 	private function get_flow($flow_id = 0)
 	{
 		if($flow_id < 1) $flow_id = $this->flow_id;
-		if(is_null($this->flow)) $this->flow = VBX_Flow::get($flow_id);
+		if(is_null($this->flow)) $this->flow = VBX_Flow::get(array( 'id' => $flow_id, 'numbers' => false));
 
 		if($flow_id > 0)
 		{

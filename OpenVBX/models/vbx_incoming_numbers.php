@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -18,7 +18,7 @@
 
  * Contributor(s):
  **/
-	
+
 require_once(APPPATH . 'libraries/twilio.php');
 
 class VBX_IncomingNumberException extends Exception {}
@@ -32,11 +32,11 @@ class VBX_Incoming_numbers extends Model
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		$this->twilio = new TwilioRestClient($this->twilio_sid,
 											 $this->twilio_token,
 											 $this->twilio_endpoint);
-		
+
 		$this->cache_key = $this->twilio_sid . '_incoming_numbers';
 
 	}
@@ -52,7 +52,7 @@ class VBX_Incoming_numbers extends Model
 				return $sandbox;
 			}
 		}
-		
+
 		/* Get Sandbox Number */
 		try
 		{
@@ -86,7 +86,7 @@ class VBX_Incoming_numbers extends Model
 				if(is_array($numbers)) return $numbers;
 			}
 		}
-		
+
 		/* Get IncomingNumbers */
 		try
 		{
@@ -101,7 +101,7 @@ class VBX_Incoming_numbers extends Model
 		{
 			throw new VBX_IncomingNumberException($response->ErrorMessage, $response->HttpStatus);
 		}
-		
+
 
 		$items = array();
 		if(isset($response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber))
@@ -114,19 +114,19 @@ class VBX_Incoming_numbers extends Model
 				$items[] = $number;
 			}
 		}
-		
+
 		$ci = &get_instance();
 		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
 		if($enabled_sandbox_number && $retrieve_sandbox) {
 			$sandbox = $this->get_sandbox();
 			$items[] = $sandbox;
 		}
-		
+
 		foreach($items as $item)
 		{
 			$numbers[] = $this->parseIncomingPhoneNumber($item);
 		}
-		
+
 		if(function_exists('apc_store')) {
 			$success = apc_store($this->cache_key.'numbers'.$retrieve_sandbox, serialize($numbers), self::CACHE_TIME_SEC);
 		}
@@ -146,7 +146,7 @@ class VBX_Incoming_numbers extends Model
 			apc_delete($this->cache_key.'sandbox0');
 			return TRUE;
 		}
-		
+
 		return FALSE;
 	}
 
@@ -159,17 +159,17 @@ class VBX_Incoming_numbers extends Model
 		$num->phone = format_phone($item->PhoneNumber);
 		$num->pin = isset($item->Pin)? (string)$item->Pin : null;
 		$num->sandbox = isset($item->Pin)? true : false;
-		$num->url = (string) $item->Url;
-		$num->method = (string) $item->Method;
+		$num->url = (string) $item->VoiceUrl;
+		$num->method = (string) $item->VoiceMethod;
 		$num->smsUrl = (string) $item->SmsUrl;
 		$num->smsMethod = (string) $item->SmsMethod;
-		
+
 		$call_base = site_url('twiml/start') . '/';
 		$base_pos = strpos($num->url, $call_base);
 		$num->installed = ($base_pos !== FALSE);
 
 		$matches = array();
-		
+
 		if (!preg_match('/\/(voice|sms)\/(\d+)$/', $num->url, $matches) == 0)
 		{
 			$num->flow_id = intval($matches[2]);
@@ -188,16 +188,18 @@ class VBX_Incoming_numbers extends Model
 			$rest_url = "Accounts/{$this->twilio_sid}/IncomingPhoneNumbers/$phone_id";
 
 		$response = $this->twilio->request($rest_url,
-										   'PUT',
-										   array('Url' => $voice_url,
+										   'POST',
+										   array('VoiceUrl' => $voice_url,
 												 'SmsUrl' => $sms_url,
 												 'VoiceFallbackUrl' => base_url().'fallback/voice.php',
 												 'SmsFallbackUrl' => base_url().'fallback/sms.php',
 												 'VoiceFallbackMethod' => 'GET',
 												 'SmsFallbackMethod' => 'GET',
-												 'SmsMethod' => 'POST')
+												 'SmsMethod' => 'POST',
+												 'ApiVersion' => '2010-04-01',
+												 )
 										   );
-		
+
 		if($response->IsError)
 		{
 			throw new VBX_IncomingNumberException($response->ErrorMessage);
@@ -212,8 +214,6 @@ class VBX_Incoming_numbers extends Model
 	{
 		$voice_url = site_url("twiml/start/voice/0");
 		$sms_url = site_url("twiml/start/sms/0");
-		
-		$rest_url = "Accounts/{$this->twilio_sid}/IncomingPhoneNumbers/" . ($is_local ? 'Local' : 'TollFree');
 
 		if($is_local
 		   && (
@@ -224,26 +224,52 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException('Area code invalid');
 		}
 
-		$params = array('Url' => $voice_url,
-						'SmsUrl' => $sms_url);
-		
-		if($is_local && !empty($area_code))
-		{
-			$params['AreaCode'] = $area_code;
-		}
+		$params =
+			 array('VoiceUrl' => $voice_url,
+				   'SmsUrl' => $sms_url,
+				   'VoiceFallbackUrl' => base_url().'fallback/voice.php',
+				   'SmsFallbackUrl' => base_url().'fallback/sms.php',
+				   'VoiceFallbackMethod' => 'GET',
+				   'SmsFallbackMethod' => 'GET',
+				   'SmsMethod' => 'POST',
+				   'ApiVersion' => '2010-04-01',
+				   );
 
-		$response = $this->twilio->request($rest_url, 'POST', $params);
+		// purchase tollfree, uses AvailablePhoneNumbers to search first.
+		if(!$is_local) {
+			$response = $this->twilio->request("Accounts/{$this->twilio_sid}/AvailablePhoneNumbers/US/TollFree");
+			if($response->IsError)
+				throw new VBX_IncomingNumberException($response->ErrorMessage);
+
+			$availablePhoneNumbers = $response->ResponseXml->AvailablePhoneNumbers;
+			if(empty($availablePhoneNumbers->AvailablePhoneNumber))
+				throw new VBX_IncomingNumberException("Currently out of TollFree numbers, please try again later.");
+
+			// Grab the first number from the list.
+			$params['PhoneNumber'] = $availablePhoneNumbers->AvailablePhoneNumber->PhoneNumber;
+			$response = $this->twilio->request("Accounts/{$this->twilio_sid}/IncomingPhoneNumbers",
+											   'POST',
+											   $params );
+
+		}  else { // purchase local
+
+			if(!empty($area_code))
+			{
+				$params['AreaCode'] = $area_code;
+			}
+
+			$rest_url = "Accounts/{$this->twilio_sid}/IncomingPhoneNumbers/";
+			$response = $this->twilio->request($rest_url, 'POST', $params);
+		}
 
 		if($response->IsError)
-		{
 			throw new VBX_IncomingNumberException($response->ErrorMessage);
-		}
 
 		$this->clear_cache();
-		
+
 		return $this->parseIncomingPhoneNumber($response->ResponseXml->IncomingPhoneNumber);
 	}
-	
+
 	// purchase a new phone number, return the new number
 	function delete_number($phone_id)
 	{

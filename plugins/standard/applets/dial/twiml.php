@@ -84,14 +84,14 @@ if(isset($_COOKIE[DIAL_COOKIE]))
 {
 	$stateString = str_replace(', $Version=0', '', $_COOKIE[DIAL_COOKIE]);
 	$state = json_decode($stateString, true);
-	if(is_object($state)) 
+	if(is_object($state))
 	{
 		$state = get_object_vars($state);
 	}
 }
 
 
-$dial_status = isset($_REQUEST['DialStatus'])? $_REQUEST['DialStatus'] : null;
+$dial_status = isset($_REQUEST['DialCallStatus'])? $_REQUEST['DialCallStatus'] : null;
 if($dial_status)
 {
 	switch($dial_status)
@@ -119,7 +119,7 @@ while($keepLooping)
 			if ($state[DIAL_NUMBER_INDEX] < count($numbers))
 			{
 				// There are still more numbers left to try
-			
+
 				$dial = $response->addDial(array('action' => current_url()));
 
 				if ($dial_whom_selector === 'user-or-group')
@@ -139,7 +139,7 @@ while($keepLooping)
 						// In practice, this should never ever happen.
 						$name = "Unknown";
 					}
-					
+
 					$dial->addNumber($numbers[$state[DIAL_NUMBER_INDEX]],
 									 array(
 										   'url' => site_url('twiml/whisper?name='.urlencode($name)),
@@ -159,7 +159,7 @@ while($keepLooping)
 			{
 				// We've dialed all the phone numbers and gotten no answer
 				$state[DIAL_ACTION] = DIAL_STATE_NO_ANSWER;
-				
+
 				// Note that we'd like to go through the machine again with our new state
 				$keepLooping = true;
 			}
@@ -174,7 +174,7 @@ while($keepLooping)
 				{
 					$response->addHangup();
 				}
-				
+
 				$response->addRedirect($no_answer_redirect_number);
 			}
 			else
@@ -193,7 +193,7 @@ while($keepLooping)
 					{
 						$response->addHangup();
 					}
-				
+
 					$response->addRedirect($no_answer_redirect);
 				}
 				else if ($no_answer_action === 'hangup')
@@ -211,11 +211,11 @@ while($keepLooping)
 			   break;
 			OpenVBX::addVoiceMessage(
 									 $dial_whom_user_or_group,
-									 $_REQUEST['CallGuid'],
-									 $_REQUEST['Caller'],
-									 $_REQUEST['Called'],
+									 $_REQUEST['CallSid'],
+									 $_REQUEST['From'],
+									 $_REQUEST['To'],
 									 $_REQUEST['RecordingUrl'],
-									 $_REQUEST['Duration']
+									 $_REQUEST['RecordingDuration']
 									 );
 			break;
 	}

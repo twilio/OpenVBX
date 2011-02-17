@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -31,10 +31,10 @@ class User_Controller extends MY_Controller
 	public $twilio_sid;
 	public $twilio_token;
 	public $twilio_endpoint;
-	
+
 	public $testing_mode = false;
 	public $domain;
-	
+
 	public function __construct()
 	{
 		// This is to support SWFUpload.  SWFUpload will scrape all cookies via Javascript and send them
@@ -47,7 +47,7 @@ class User_Controller extends MY_Controller
 				$_COOKIE[$key] = urldecode($_POST[$key]);
 			}
 		}
-		
+
 		parent::__construct();
 
 		if(!file_exists(APPPATH . 'config/openvbx.php')
@@ -55,7 +55,7 @@ class User_Controller extends MY_Controller
 		{
 			redirect('install');
 		}
-		
+
 		$this->config->load('openvbx');
 
 		// check for required configuration values
@@ -63,7 +63,7 @@ class User_Controller extends MY_Controller
 		$this->load->library('ErrorMessages');
 		$this->load->model('vbx_rest_access');
 		$this->load->model('vbx_message');
-		
+
 		$this->tenant = $this->settings->get_tenant($this->router->tenant);
 		if($this->tenant === false)
 		{
@@ -78,7 +78,7 @@ class User_Controller extends MY_Controller
 		$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
 		$this->twilio_token = $this->settings->get('twilio_token', $this->tenant->id);
 		$this->twilio_endpoint = $this->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
-		
+
 		if(!$this->tenant->active)
 		{
 			$this->session->set_userdata('loggedin', 0);
@@ -111,7 +111,7 @@ class User_Controller extends MY_Controller
 				$this->session->set_userdata('signature', VBX_User::signature($user_id));
 			}
 		}
-		
+
 		$user_id = $this->session->userdata('user_id');
 
 		/* Signature check */
@@ -119,7 +119,7 @@ class User_Controller extends MY_Controller
 		{
 			$expected_signature = VBX_User::signature($user_id);
 			$actual_signature = $this->session->userdata('signature');
-			
+
 			if ($expected_signature != $actual_signature)
 			{
 				$this->session->set_flashdata('error', 'Your session has expired');
@@ -131,12 +131,12 @@ class User_Controller extends MY_Controller
 		{
 			$this->attempt_digest_auth();
 		}
-		
+
 		if (!$this->session->userdata('loggedin') && $this->response_type != 'json')
 		{
 			return redirect('auth/login?redirect='.urlencode(uri_string()));
 		}
-		
+
 		$this->user_id = $this->session->userdata('user_id');
 		$this->set_request_method();
 
@@ -182,7 +182,7 @@ class User_Controller extends MY_Controller
 		// protect against missing data
 		$needed_parts = array('nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1, 'username'=>1, 'uri'=>1, 'response'=>1);
 		$data = array();
-		
+
 		preg_match_all('@(\w+)=(?:(?:\'([^\']+)\'|"([^"]+)")|([^\s,]+))@', $digest, $matches, PREG_SET_ORDER);
 
 		foreach ($matches as $m) {
@@ -192,7 +192,7 @@ class User_Controller extends MY_Controller
 
 		return $needed_parts ? false : $data;
 	}
-	
+
 
 	function attempt_digest_auth() {
 		$message = '';
@@ -201,19 +201,36 @@ class User_Controller extends MY_Controller
 			// Just in case they ever fix Apache to send the Authorization header on, the following code is included
 			$headers['Authorization'] = $_SERVER['Authorization'];
 		}
-		
+
 		if(function_exists('apache_request_headers')) {
 			// We are running PHP as an Apache module, so we can get the Authorization header this way
 			$headers = apache_request_headers();
 		}
-		
+
+		// Support cgi based auth via rewrite hack:
+		// ---------------------
+		// RewriteEngine on
+		// RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+		// $_SERVER['PHP_AUTH_USER'] = '';
+		// $_SERVER['PHP_AUTH_PW'] = '';
+		if(isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+			$_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+		}
+
+		if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+			if(preg_match('/Basic (.*)$/', $_SERVER['HTTP_AUTHORIZATION'], $matches))
+				list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) =
+					explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
+
+		}
+
+		// Support standard PHP Authorization magic with apache
 		if(isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
 			// Basic authentication information can be retrieved from these server variables
 			$username = $_SERVER['PHP_AUTH_USER'];
 			$password = $_SERVER['PHP_AUTH_PW'];
 		}
-		
-		
+
 		if(isset($headers['Authorization'])) {
 			$_SERVER['PHP_AUTH_DIGEST'] = $headers['Authorization'];
 			$data = $this->digest_parse($_SERVER['PHP_AUTH_DIGEST']);
@@ -230,12 +247,12 @@ class User_Controller extends MY_Controller
 		{
 			$captcha_token = $headers['CaptchaToken'];
 		}
-		
+
 		if (isset($username)
 			&& isset($password))
 		{
 			log_message('info', 'Authenticating user: '.var_export($username, true));
-			
+
 			$u = VBX_User::authenticate($username,
 										$password,
 										$captcha,
@@ -278,7 +295,7 @@ class User_Controller extends MY_Controller
 	protected function init_view_data($full_view = true)
 	{
 		$data = array();
-		
+
 		if($full_view)
 		{
 			$data['counts'] = $counts = $this->message_counts();
@@ -292,7 +309,7 @@ class User_Controller extends MY_Controller
 			// $this->session->set_flashdata('error', $e->getMessage());
 			error_log($e->getMessage());
 		}
-		
+
 		$data['user_numbers'] = $this->get_user_numbers();
 		$data['error'] = $this->session->flashdata('error');
 		if(!empty($data['error']))
@@ -305,7 +322,7 @@ class User_Controller extends MY_Controller
 
 		$this->load->model('vbx_device');
 		$numbers = $this->vbx_device->get_by_user($this->user_id);
-		
+
 		return $numbers;
 	}
 
@@ -332,7 +349,7 @@ class User_Controller extends MY_Controller
 
 		return $numbers;
 	}
-	
+
 	/* Used to give access to internals via rest-based calls */
 	protected function make_rest_access()
 	{

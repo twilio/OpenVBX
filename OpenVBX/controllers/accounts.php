@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -29,7 +29,7 @@ class Accounts extends User_Controller {
 		$this->template->write('title', 'Users');
 		$this->load->model('vbx_device');
 	}
-	
+
 	public function index()
 	{
 		$this->template->add_js('assets/j/accounts.js');
@@ -62,7 +62,7 @@ class Accounts extends User_Controller {
 				$data['json'] = $json;
 				break;
 		}
-		
+
 		return $this->respond('', 'accounts', $data);
 	}
 
@@ -83,7 +83,7 @@ class Accounts extends User_Controller {
 			$error = true;
 			$message = 'User or Group does not exist.';
 		}
-		
+
 		switch($method)
 		{
 			case 'add':
@@ -110,8 +110,8 @@ class Accounts extends User_Controller {
 
 		$data['json'] = array('error' => !$success,
 							  'message' => $message,);
-							  
-		
+
+
 		$this->respond('', 'accounts', $data);
 	}
 
@@ -136,7 +136,7 @@ class Accounts extends User_Controller {
 				$data['json'] = $json;
 				break;
 		}
-		
+
 		return $this->respond('', 'accounts', $data);
 	}
 
@@ -149,7 +149,7 @@ class Accounts extends User_Controller {
 		$groups = array();
 		$message = '';
 		$error = false;
-		
+
 		try
 		{
 			$users = GoogleDomain::get_users($api_key, $api_secret);
@@ -192,7 +192,7 @@ class Accounts extends User_Controller {
 
 		return $this->respond('', 'accounts', $data);
 	}
-	
+
 	private function save_user()
 	{
 		$errors = array();
@@ -204,6 +204,7 @@ class Accounts extends User_Controller {
 		$shouldGenerateNewPassword = false;
 		$device_id_str = trim($this->input->post('device_id'));
 		$device_number = trim($this->input->post('device_number'));
+                $shouldSendWelcome = false;
 
 		try
 		{
@@ -215,12 +216,12 @@ class Accounts extends User_Controller {
 								  'message' => $e->getMessage());
 			return $this->respond('', 'accounts', $data);
 		}
-		
+
 		if(!empty($auth_type))
 		{
 			$auth_type = $this->vbx_user->get_auth_type($auth_type);
 		}
-		
+
 		if($id > 0)
 		{
 			$user = VBX_User::get($id);
@@ -237,16 +238,16 @@ class Accounts extends User_Controller {
 			{
 				// It's an old account that was made inactive.  By re-adding it, we're
 				// assuming the user wants to re-instate the old account.
-				$shouldGenerateNewPassword = true;
+				$shouldSendWelcome = true;
 			}
 			else
 			{
 				// It's a new user
 				$user = new VBX_User();
-				$shouldGenerateNewPassword = true;
+				$shouldSendWelcome = true;
 			}
 		}
-		
+
 		if (!$error)
 		{
 			$fields = array('first_name',
@@ -265,11 +266,8 @@ class Accounts extends User_Controller {
 			try
 			{
 				$user->save();
-				if ($shouldGenerateNewPassword && !$error && !$user->set_password())
-				{
-					$error = true;
-					$message = "Failed to generate new password.";
-				}
+				if ($shouldSendWelcome)
+					$user->send_new_user_notification();
 			}
 			catch(VBX_UserException $e)
 			{
@@ -277,20 +275,20 @@ class Accounts extends User_Controller {
 				$message = $e->getMessage();
 				error_log($message);
 			}
-			
+
 			if (!$error)
 			{
 				if (strlen($device_number) > 0)
 				{
 					// We're adding or modifying an existing device
-					
+
 					if (strlen($device_id_str) > 0)
-					{	
+					{
 						// We're updating an existing record
-						
+
 						$device_id = intval($device_id_str);
 						$device = VBX_Device::get($device_id);
-						
+
 						$device->value = normalize_phone_to_E164($device_number);
 
 						try
@@ -306,7 +304,7 @@ class Accounts extends User_Controller {
 					else
 					{
 						// We're creating a new device record
-						
+
 						$number = array(
 							"name" => "Primary Device",
 							"value" => normalize_phone_to_E164($device_number),
@@ -325,7 +323,7 @@ class Accounts extends User_Controller {
 							$message = "Failed to add device: " . $e->getMessage();
 						}
 					}
-				} 
+				}
 				else if (strlen($device_number) == 0 && strlen($device_id_str) > 0)
 				{
 					// We're deleting a device
@@ -341,7 +339,7 @@ class Accounts extends User_Controller {
 				}
 			}
 		}
-		
+
 		if ($error)
 		{
 			$json = array(
@@ -366,7 +364,7 @@ class Accounts extends User_Controller {
 		}
 
 		$data['json'] = $json;
-		
+
 		$this->respond('', 'accounts', $data);
 	}
 
@@ -387,11 +385,11 @@ class Accounts extends User_Controller {
 			$success = false;
 			$errors = array($e->getMessage());
 		}
-			
+
 		$json = compact('success', 'errors');
-		
+
 		$data['json'] = $json;
-		
+
 		$this->respond('', 'accounts', $data);
 		// TODO: delete it
 	}
@@ -401,7 +399,7 @@ class Accounts extends User_Controller {
 		$id = $this->input->post('id');
 		$group = VBX_Group::get($id);
 		$json = $group->values;
-		
+
 		$data['json'] = $json;
 		$this->respond('', 'accounts', $data);
 	}
@@ -412,7 +410,7 @@ class Accounts extends User_Controller {
 		$name = $this->input->post('name');
 		$error = false;
 		$message = '';
-		
+
 		if($id > 0)
 		{
 			$group = VBX_Group::get($id);
@@ -431,11 +429,11 @@ class Accounts extends User_Controller {
 				$message = 'Group by that name already exists';
 			}
 		}
-		
+
 		if($group->is_active == 0) {
 			$group->is_active = 1;
 		}
-		
+
 		if(!$error)
 		{
 			try
@@ -454,7 +452,7 @@ class Accounts extends User_Controller {
 					  'id' => $group->id,
 					  'error' => $error,
 					  'message' => $message);
-		
+
 		$data['json'] = $json;
 
 		$this->respond('', 'accounts', $data);
@@ -476,8 +474,8 @@ class Accounts extends User_Controller {
 			$json['message'] = 'Unable to deactivate';
 			$json['error'] = true;
 		}
-		
-		
+
+
 		$data['json'] = $json;
 
 		$this->respond('', 'accounts', $data);

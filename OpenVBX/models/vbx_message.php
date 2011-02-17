@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -18,7 +18,7 @@
 
  * Contributor(s):
  **/
-	
+
 class VBX_MessageException extends Exception {}
 
 /*
@@ -37,10 +37,10 @@ class VBX_Message extends Model {
 	const TYPE_FAX = 'fax';
 	const TYPE_SMS = 'sms';
 	const TYPE_TELEPATHY = 'telepathy';
-	
+
 	const STATUS_NEW = 'new';
 	const STATUS_READ = 'read';
-	
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -50,7 +50,7 @@ class VBX_Message extends Model {
 	{
 		$message = $this->get_message($message_id);
 		$ci =& get_instance();
-		
+
 		if($message->status = self::STATUS_NEW)
 		{
 			$read_time = date('Y-m-d H:i:s');
@@ -60,12 +60,12 @@ class VBX_Message extends Model {
 									 array( '`read`' => $read_time,
 											'status' => self::STATUS_READ));
 		}
-		
+
 		if(!$this->has_read($message_id, $user_id))
 		{
 			$this->annotate($message_id, $user_id, 'Marked as read', 'read');
 		}
-		
+
 		return false;
 	}
 
@@ -80,11 +80,11 @@ class VBX_Message extends Model {
 		if($message->assigned_to == $assignee->id)
 		{
 			return false;
-			
+
 		}
-		
+
 		$message->assigned_to = $assignee->id;
-		
+
 		try
 		{
 			$this->save($message);
@@ -103,7 +103,7 @@ class VBX_Message extends Model {
 		{
 			throw $e;
 		}
-			
+
 	}
 
 	function archive($message_id, $user_id, $archived)
@@ -115,7 +115,7 @@ class VBX_Message extends Model {
 			return false;
 		}
 
-		
+
 		$message->archived = $archived;
 
 		try
@@ -125,7 +125,7 @@ class VBX_Message extends Model {
 			$annotation_id = $this->vbx_message->annotate($message_id,
 														  $user_id,
 														  "$action message",
-														  'archived');			
+														  'archived');
 		}
 		catch(VBX_MessageException $e)
 		{
@@ -159,7 +159,7 @@ class VBX_Message extends Model {
 		}
 
 		$message->ticket_status = $ticket_status;
-		
+
 		try
 		{
 			$this->save($message);
@@ -173,7 +173,7 @@ class VBX_Message extends Model {
 			throw $e;
 		}
 	}
-	
+
 	function save($message, $notify = false)
 	{
 		$ci =& get_instance();
@@ -191,7 +191,7 @@ class VBX_Message extends Model {
 				 ->set('called', $message->called)
 				 ->set('size', $message->size)
 				 ->set('type', $message->type)
-				 ->set('call_guid', $message->call_guid)
+				 ->set('call_sid', $message->call_sid)
 				 ->set('status', $message->status)
 				 ->set('ticket_status', $message->ticket_status)
 				 ->set('assigned_to', $message->assigned_to)
@@ -213,12 +213,12 @@ class VBX_Message extends Model {
 				 ->set('called', $message->called)
 				 ->set('size', $message->size)
 				 ->set('type', $message->type)
-				 ->set('call_guid', $message->call_guid)
+				 ->set('call_sid', $message->call_sid)
 				 ->set('status', $message->status)
 				 ->insert($this->table);
 
 			$message->id = $ci->db->insert_id();
-			
+
 			if($message->owner_type == 'user')
 			{
 				$message_owner_table = 'user_messages';
@@ -237,7 +237,7 @@ class VBX_Message extends Model {
 
 			$ci->db->insert($message_owner_table, $message_owner);
 			$ci->db->trans_complete();
-			
+
 			$result = $ci->db->trans_status();
 		}
 
@@ -250,7 +250,7 @@ class VBX_Message extends Model {
 		{
 			throw new VBX_MessageException('Unable to save message');
 		}
-		
+
 		return $result;
 	}
 
@@ -270,7 +270,7 @@ class VBX_Message extends Model {
 		{
 			$ci->db->where('messages.id', $id);
 		}
-		
+
 		$result = $ci->db
 			 ->select('messages.*, u.email, u.id as user_id, u.first_name, u.last_name')
 			 ->join('group_messages gm', 'gm.message_id = messages.id', 'LEFT')
@@ -294,13 +294,13 @@ class VBX_Message extends Model {
 		$group = isset($options['group'])? $options['group'] : array();
 		$user = isset($options['user'])? $options['user'] : array();
 		$status = isset($options['status'])? $options['status'] : array();
-		$call_guid = isset($options['call_guid'])? $options['call_guid'] : array();
+		$call_sid = isset($options['call_sid'])? $options['call_sid'] : array();
 
 		if(!empty($status))
 		{
 			$ci->db->where_not_in('messages.status', $status);
 		}
-		
+
 		$group_sql = '';
 		if(!empty($group))
 		{
@@ -335,12 +335,12 @@ class VBX_Message extends Model {
 		{
 			$user_group_select = "'user' as owner_type, u.email as owner, u.id as owner_id";
 		}
-		
-		if(!empty($call_guid))
+
+		if(!empty($call_sid))
 		{
-			$ci->db->where_in('call_guid', $call_guid);
+			$ci->db->where_in('call_sid', $call_sid);
 		}
-		
+
 		if(!empty($user_sql))
 		{
 			$ci->db->where($user_sql);
@@ -360,10 +360,10 @@ class VBX_Message extends Model {
 			 ->select("messages.*, $user_group_select", false)
 			 ->order_by('messages.created DESC')
 			 ->from($this->table);
-		
+
 		return $ci->db;
 	}
-	
+
 	function get_messages($options, $offset, $size)
 	{
 		$query = $this->get_messages_query($options);
@@ -376,7 +376,7 @@ class VBX_Message extends Model {
 			 ->limit($size, $offset)
 			 ->get()
 			 ->result();
-		
+
 		return $result;
 	}
 
@@ -385,11 +385,11 @@ class VBX_Message extends Model {
 		error_log("Notify message: ".($notify? 'true' : 'false') );
 		if($notify === false)
 			return;
-		
+
 		$ci =& get_instance();
 		$ci->load->model('vbx_user');
 		$ci->load->model('vbx_group');
-			
+
 		$users = array();
 		if($message->owner_type == 'user')
 		{
@@ -412,7 +412,7 @@ class VBX_Message extends Model {
 			$user_ids = array($message->owner_id);
 			$owner = 'Personal';
 		}
-			
+
 		foreach($user_ids as $user_id)
 		{
 			$user = VBX_User::get($user_id);
@@ -425,8 +425,8 @@ class VBX_Message extends Model {
 				$message_type = 'SMS';
 				$owner = '';
 			}
-			
-			
+
+
 			if($message->type == 'voice')
 			{
 				openvbx_mail($user->email,
@@ -470,16 +470,16 @@ class VBX_Message extends Model {
 				$content = "New Voicemail from {$message->caller}\n\n";
 				break;
 		}
-		
-		
+
+
 		return $content;
 	}
-	
+
 	function message_owner()
 	{
 		$group = new Group();
 		$group->get_by_id($this->group_id);
-		if($group->name) 
+		if($group->name)
 			return $group->name;
 
 		$user = new User();
@@ -517,7 +517,7 @@ class VBX_Message extends Model {
 		$folders[$inbox_id]->id = $inbox_id;
 		$folders[$inbox_id]->name ='Inbox';
 		$folders[$inbox_id]->type = 'inbox';
-		
+
 		foreach($status_fields as $status_key => $status_value)
 		{
 			$folders[$inbox_id]->{$status_key} = $status_value;
@@ -527,7 +527,7 @@ class VBX_Message extends Model {
 		{
 			$folders[$inbox_id]->{$c->status} = $c->count;
 		}
-		
+
 		if(isset($user_message_total[0]))
 			$folders[$inbox_id]->total = $user_message_total[0]->count;
 
@@ -537,7 +537,7 @@ class VBX_Message extends Model {
 				->from('groups g')
 				->where_in('g.id', $group_ids)
 				->get()->result();
-		
+
 			/* Initialize groups */
 			foreach($groups as $i => $g)
 			{
@@ -547,7 +547,7 @@ class VBX_Message extends Model {
 				{
 					$folders[$group_id]->{$status_key} = $status_value;
 				}
-				
+
 				$folders[$group_id]->type = 'group';
 			}
 
@@ -576,21 +576,21 @@ class VBX_Message extends Model {
 					$group_folder_totals[intval($status_count->id)] += $status_count->count;
 				}
 			}
-		
+
 			foreach($group_folder_totals as $i => $total)
 			{
 				$folders[intval($i)]->total = $total;
 				$folders[$inbox_id]->total += $total;
 			}
 		}
-		
+
 		return $folders;
 	}
 
 	function get_annotations($message_id)
 	{
 		return $this->get_message_annotations($message_id);
-		
+
 	}
 
 	function get_annotation($annotation_id)
@@ -606,12 +606,12 @@ class VBX_Message extends Model {
 			->where('a.tenant_id', $ci->tenant->id)
 			->order_by('a.created DESC')
 			->get()->result();
-		
+
 		if(!empty($annotation))
 		{
 			$annotation = $annotation[0];
 		}
-		   
+
 		return $annotation;
 	}
 
@@ -633,7 +633,7 @@ class VBX_Message extends Model {
 			$ci->db
 				->where('at.description', $annotation_type);
 		}
-		
+
 		$ci->db
 			 ->get()->result();
 
@@ -694,6 +694,6 @@ class VBX_Message extends Model {
 
 		return $annotation;
 	}
-		
+
 }
 

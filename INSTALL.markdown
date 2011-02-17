@@ -24,9 +24,16 @@ During the install process, you will be prompted for your Twilio API credentials
 # Step 5: Login
 Navigate to the URL of your OpenVBX installation and login using the account you created during the installation. Once you're logged in you'll be able to add users and groups to your new phone system. You can also add devices, provision phone numbers, configure voicemail, and design call flows.
 
-# Step 6: Profit! 
+# Step 6: Profit!
 __That's it, you're all set.__
 OpenVBX is open source and extensible so feel free to skin it, hack it, and sell it!
+
+# Installing on Godaddy
+
+Add this to the bottom of OpenVBX/config/config.php
+$config['uri_protocol'] = 'REQUEST_URI';
+$config['index_page'] = '';
+
 
 # More Resources
 Now that you've got a working installation you can:
@@ -78,7 +85,7 @@ OpenVBX requires a MySQL database. You should create a database, and a user with
  * The name of your OpenVBX database.
 
 # Connect to your Twilio account
-OpenVBX requires a Twilio account to enable provisioning phone numbers, sending and receiving voice calls, and sending and receiving SMS. If you don't have a Twilio account, [register for a free trial](https://www.twilio.com/try-twilio) and we'll include $30.00 worth of credit to help you get started. 
+OpenVBX requires a Twilio account to enable provisioning phone numbers, sending and receiving voice calls, and sending and receiving SMS. If you don't have a Twilio account, [register for a free trial](https://www.twilio.com/try-twilio) and we'll include $30.00 worth of credit to help you get started.
 
 1. Twilio SID
  * This is your account identifier, it is unique to you and can be shared.
@@ -102,3 +109,4 @@ In order to administer your OpenVBX installation you'll need to create a user ac
  * The first name of your OpenVBX administrator.
 1. Last Name
  * The last name of your OpenVBX administrator.
+

@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -31,14 +31,14 @@ class Upgrade extends User_Controller {
 		$this->section = 'upgrade';
 		$this->admin_only($this->section);
 	}
-	
+
 	public function index()
 	{
 		$currentSchemaVersion = OpenVBX::schemaVersion();
 		$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
 		if($currentSchemaVersion == $upgradingToSchemaVersion)
 			redirect('/');
-		
+
 		$this->load->view('upgrade/main');
 	}
 
@@ -50,7 +50,7 @@ class Upgrade extends User_Controller {
 			echo json_encode($json);
 			return;
 		}
-		
+
 		$tplvars = $this->input_args();
 		switch($step)
 		{
@@ -58,7 +58,7 @@ class Upgrade extends User_Controller {
 				$json = $this->validate_step2();
 				break;
 		}
-		
+
 		$json['tplvars'] = $tplvars;
 		echo json_encode($json);
 	}
@@ -69,59 +69,80 @@ class Upgrade extends User_Controller {
 
 		return $tplvars;
 	}
-	
+
 	public function setup()
 	{
 		$json['success'] = true;
 		$json['message'] = '';
-		
+
 		try
 		{
 			$currentSchemaVersion = OpenVBX::schemaVersion();
 			$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
 
-			$sqlPath = VBX_ROOT.'/sql-updates/';
-			$updates = scandir($sqlPath);
-			$files = array();
+			$upgradeScriptPath = VBX_ROOT.'/updates/';
+			$updates = scandir($upgradeScriptPath);
+			$updatesToRun = array();
+			// Collect all files named numerically in /updates and key sort the list of updates
 			foreach($updates as $i => $update)
 			{
-				if(preg_match('/^(\d+).sql$/', $update) )
+				if(preg_match('/^(\d+).(sql|php)$/', $update, $matches) )
 				{
-					$rev = intval(str_replace('.sql', '', $update));
-					$files[$rev] = $update;
+					$updateExtension = $matches[2];
+					$rev = $matches[1];
+					$updatesToRun[$rev] = array( 'type' => $updateExtension,
+												 'filename' => $update,
+												 'revision' => $rev,
+												 );
 				}
 			}
 
-			ksort($files);
-			$files = array_slice($files, $currentSchemaVersion);
+			ksort($updatesToRun);
+
+			// Cut the updates by the current schema version.
+			$updatesToRun = array_slice($updatesToRun, $currentSchemaVersion);
 			$tplvars = array('originalVersion' => $currentSchemaVersion,
 							 'version' => $upgradingToSchemaVersion,
-							 'updates' => $files );
-			
-			foreach($files as $file)
-			{
-				$sql = @file_get_contents($sqlPath.$file);
-				if(empty($sql))
-				{
-					throw new UpgradeException("Unable to read update: $file", 1);
-				}
+							 'updates' => $updatesToRun );
 
-				foreach(explode(";", $sql) as $stmt)
-				{
-					$stmt = trim($stmt);
-					if(!empty($stmt))
-					{
-						PluginData::sqlQuery($stmt);
-					}
+			foreach($updatesToRun as $updateToRun)
+			{
+				$file = $updateToRun['filename'];
+				$type = $updateToRun['type'];
+				$revision = $updateToRun['revision'];
+				switch($type) {
+					case 'php':
+						require_once($upgradeScriptPath.$file);
+						$runUpdateMethod = "runUpdate_$revision";
+						if(!function_exists($runUpdateMethod))
+							throw(new UpgradeException("runUpdate method missing from $file: $runUpdateMethod"));
+
+						call_user_func($runUpdateMethod);
+						break;
+					case 'sql':
+						$sql = @file_get_contents($upgradeScriptPath.$file);
+						if(empty($sql))
+						{
+							throw new UpgradeException("Unable to read update: $file", 1);
+						}
+						foreach(explode(";", $sql) as $stmt)
+						{
+							$stmt = trim($stmt);
+							if(!empty($stmt))
+							{
+								PluginData::sqlQuery($stmt);
+							}
+						}
+						break;
 				}
 			}
-			
+
 		} catch(Exception $e) {
 			$json['success'] = false;
 			$json['message'] = $e->getMessage();
 			$json['step'] = $e->getCode();
 		}
-			  
+
 		$json['tplvars'] = $tplvars;
 		echo json_encode($json);
 	}
