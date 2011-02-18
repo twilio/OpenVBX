@@ -85,13 +85,6 @@ function current_url()
 	return $CI->config->site_url($CI->uri->uri_string());
 }
 
-
-function current_url()
-{
-	$CI =& get_instance();
-	return $CI->config->site_url($CI->uri->uri_string());
-}
-
 function redirect($uri = '', $method = 'location', $http_response_code = 302)
 {
 	if(!headers_sent())
