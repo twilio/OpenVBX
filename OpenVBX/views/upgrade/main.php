@@ -25,7 +25,17 @@
 			<a target="_blank" class="help" href="http://openvbx.org/install#upgrade" title="Get help at OpenVBX.org">Help</a>
 			<h1>Upgrade Database</h1>
 			<div class="step-desc">
-				<p>Hey, it looks like your OpenVBX database needs to be upgraded before you continue.</p>
+				<p>Hey, it looks like your OpenVBX installation needs to be upgraded before you continue.</p>
+	            <div class="upgrade-warning">
+					<p>If you are using 3rd party plugins, make sure
+						they support the 2010-04-01 Twilio API.</p>
+					<p>Installed Plugins:</p>
+            		<ul class="plugin-list">
+						<?php foreach($plugins as $plugin): ?>
+						<li><?php echo $plugin['name']; ?></li>
+						<?php endforeach; ?>
+					</ul>
+				</div>
 			</div><!-- .step-desc -->
 
 		</div><!-- .step -->
@@ -42,7 +52,7 @@
 		</div><!-- .step -->
 
 
-	</div><!-- .steps -->	
+	</div><!-- .steps -->
 
 	<div class="navigation">
 		<button class="next">Continue &raquo;</button>

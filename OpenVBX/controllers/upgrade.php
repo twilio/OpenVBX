@@ -39,7 +39,13 @@ class Upgrade extends User_Controller {
 		if($currentSchemaVersion == $upgradingToSchemaVersion)
 			redirect('/');
 
-		$this->load->view('upgrade/main');
+		$plugins = Plugin::all();
+		foreach($plugins as $plugin)
+		{
+			$data['plugins'][] = $plugin->getInfo();
+		}
+
+		$this->load->view('upgrade/main', $data);
 	}
 
 	public function validate()
