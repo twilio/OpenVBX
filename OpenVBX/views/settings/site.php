@@ -37,7 +37,7 @@
 			</form>
 
 		</div>
-		 
+
 		<div id="settings-theme" class="vbx-tab-view">
 			<h3>Theme</h3>
 			<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#theme" method="POST" class="vbx-settings-form vbx-form">
@@ -83,7 +83,7 @@
 
 
 		<div id="settings-multi-tenant" class="vbx-tab-view">
-			<?php if(isset($tenants)): ?>			
+			<?php if(isset($tenants)): ?>
 			<h3>Tenants</h3>
 			<form name="tenants" action="<?php echo site_url('settings/site/tenant') ?>#multi-tenant" method="POST" class="add-tenant-form vbx-form">
 				<div class="vbx-input-complex vbx-input-container">
@@ -105,13 +105,13 @@
 				</div>
 			</form>
 			<br class="clear" />
-			
+
 			<table class="vbx-items-grid">
 				<tbody>
 					<?php foreach($tenants as $tenant): ?>
 					<tr class="items-row">
-						<td class="url-tenant"><a href="<?php echo site_url('').$tenant->url_prefix; ?>"><?php echo site_url('').'<strong>'.$tenant->url_prefix.'</strong>'; ?></a></td>
-						<td class="edit-tenant"><a href="<?php echo site_url('').'settings/site/tenant/'.$tenant->id; ?>" class="edit action"><span class="replace">Edit</span></a></td>
+							<td class="url-tenant"><a href="<?php echo tenant_url('', $tenant->id) ?>"><?php echo tenant_url('', $tenant->id) ?></a></td>
+							<td class="edit-tenant"><a href="<?php echo tenant_url('settings/site/tenant', $tenant->id) ?>" class="edit action"><span class="replace">Edit</span></a></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>
@@ -120,7 +120,7 @@
 			<?php endif; ?>
 		</div><!-- .vbx-tab-view -->
 
-		 
+
 		<div id="settings-twilio-account" class="vbx-tab-view">
 			<h3>Twilio Account</h3>
 			<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#twilio-account" method="POST" class="vbx-settings-form vbx-form">
@@ -128,7 +128,7 @@
 					<label for="site-twilio-sid" class="field-label">Twilio SID
 						<input id="site-twilio-sid" type="text" name="site[twilio_sid]" value="<?php echo @$twilio_sid['value'] ?>" class="medium" />
 					</label>
-					<label for="site-twilio-token" class="field-label">Twilio Token 
+					<label for="site-twilio-token" class="field-label">Twilio Token
 						<input id="site-twilio-token" type="password" name="site[twilio_token]" value="<?php echo @$twilio_token['value'] ?>" class="medium" />
 					</label>
 					<label for="site-from-email" class="field-label">From Email
@@ -149,9 +149,9 @@
 				<li>Database configuration: <?php echo "mysql://{$this->db->username}@{$this->db->hostname}/{$this->db->database}" ?></li>
 				<li>Rewrite enabled: <?php echo $rewrite_enabled['value']? 'Yes' : 'No' ?></li>
 			</ul>
-			
+
 			<p>Thanks to everyone involved, you made it better than envisioned!</p>
 			<?php require_once 'license.php' ?>
 		</div>
-					
+
 	</div><!-- .vbx-content-main -->

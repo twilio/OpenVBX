@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -35,7 +35,7 @@ class MY_Config extends CI_Config
 		{
 			$url = $ci->router->tenant . '/' . $url;
 		}
-		
+
 		return self::url_trim(parent::site_url($url));
 	}
 
@@ -61,7 +61,7 @@ function asset_url($uri)
 		$test = str_replace($index_page, '', $url);
 		return $test;
 	}
-	
+
 	return $url;
 }
 
@@ -70,9 +70,11 @@ function iphone_handler_url($uri)
         return "openvbx://{$_SERVER['SERVER_NAME']}/{$uri}";
 }
 
-function tenant_url($uri, $tenant_id)
+function tenant_url($uri, $tenant_id = NULL)
 {
 	$CI = & get_instance();
+	if(!$tenant_id)
+		$tenant_id = $CI->tenant->id;
 	$tenant = $CI->settings->get_tenant_by_id($tenant_id);
 	return $CI->config->real_site_url($tenant->url_prefix . '/' . $uri);
 }
@@ -82,7 +84,6 @@ function current_url()
 	$CI =& get_instance();
 	return $CI->config->site_url($CI->uri->uri_string());
 }
-
 
 function redirect($uri = '', $method = 'location', $http_response_code = 302)
 {
@@ -98,12 +99,12 @@ function redirect($uri = '', $method = 'location', $http_response_code = 302)
 	{
 		error_log('Unable to write session, headers already sent');
 	}
-	
+
 	if ( ! preg_match('#^https?://#i', $uri))
 	{
 		$uri = site_url($uri);
 	}
-		
+
 	switch($method)
 	{
 		case 'refresh'	: header("Refresh:0;url=".$uri);
