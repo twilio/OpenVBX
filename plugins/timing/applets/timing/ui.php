@@ -14,7 +14,7 @@ if (is_readable($ini)) {
 		error_log($e->getMessage());
 	}
 }
-if (empty($tz)) $tz = new DateTimeZone('America/Los_angeles');
+if (empty($tz)) $tz = new DateTimeZone('America/Los_Angeles');
 $now = new DateTime('now', $tz);
 ?>
 <div class="vbx-applet">

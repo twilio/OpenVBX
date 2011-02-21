@@ -9,7 +9,7 @@ if (is_readable($ini)) {
 		error_log($e->getMessage());
 	}
 }
-if (empty($tz)) $tz = new DateTimeZone('America/Los_angeles');
+if (empty($tz)) $tz = new DateTimeZone('America/Los_Angeles');
 $now = date_create('now', $tz); // TODO: get from config
 $today = date_format($now, 'w') - 1;
 $response->addRedirect(AppletInstance::getDropZoneUrl(
