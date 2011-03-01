@@ -241,6 +241,9 @@ class VBX_Message extends Model {
 			$result = $ci->db->trans_status();
 		}
 
+		// refetch the message after persistence completed to update created, updated value
+		$message = $this->get_message(array('call_sid' => $message->call_sid));
+
 		if($result)
 		{
 			$this->notify_message($message, $notify);
