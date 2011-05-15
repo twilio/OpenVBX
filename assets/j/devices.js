@@ -24,7 +24,7 @@ $(document).ready(function() {
 	$('#dialog-email').dialog({
 		width: 350,
 		open: function(event, ui) {
-			var ajaxUrl = OpenVBX.home + 'devices/send_iphone_guide';
+			var ajaxUrl = OpenVBX.home + '/devices/send_iphone_guide';
 			$.post(ajaxUrl, {});
 		},
 		buttons: {
@@ -39,7 +39,7 @@ $(document).ready(function() {
 		width: 350,
 		buttons: {
 			'Add' : function() {
-				var ajaxUrl = OpenVBX.home + 'devices/number/add';
+				var ajaxUrl = OpenVBX.home + '/devices/number/add';
 				var params = $('#dialog-number').values();
 
 				$.post(ajaxUrl, params, function(data) {
@@ -106,7 +106,7 @@ $(document).ready(function() {
 
 	var updateDevice = function(id, params) {
 		$.ajax({
-			url: OpenVBX.home + 'devices/number/' + id,
+			url: OpenVBX.home + '/devices/number/' + id,
 			data: {
 				device : params
 			},
@@ -247,7 +247,7 @@ $(document).ready(function() {
 				});
 
 			$.ajax({
-				url: OpenVBX.home + 'devices/number/order',
+				url: OpenVBX.home + '/devices/number/order',
 				data: {
 					order : sorted
 				},
