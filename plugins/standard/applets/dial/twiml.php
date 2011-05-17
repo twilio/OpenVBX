@@ -19,6 +19,7 @@ $state = array();
 $state[DIAL_ACTION] = DIAL_STATE_DIAL;
 $state[DIAL_NUMBER_INDEX] = 0;
 $version = AppletInstance::getValue('version', null);
+$callerId = AppletInstance::getValue('callerId', null);
 
 /* Get current instance	 */
 $dial_whom_selector = AppletInstance::getValue('dial-whom-selector');
@@ -120,7 +121,7 @@ while($keepLooping)
 			{
 				// There are still more numbers left to try
 
-				$dial = $response->addDial(array('action' => current_url()));
+				$dial = $response->addDial(array('action' => current_url(), 'callerId' => $callerId));
 
 				if ($dial_whom_selector === 'user-or-group')
 				{
