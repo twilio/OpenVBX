@@ -49,7 +49,7 @@ function shutdown()
 | For more info visit:	http://www.php.net/error_reporting
 |
 */
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_NOTICE);
 ini_set('display_errors', 'Off');
 ini_set('log_errors', 'On');
 
