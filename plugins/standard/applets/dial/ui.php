@@ -61,7 +61,7 @@
 	<div class="vbx-full-pane">
 		<fieldset class="vbx-input-container">
 			<select class="medium" name="callerId">
-				<option>Caller's Number</option>
+				<option value="">Caller's Number</option>
 <?php if(count($numbers)) foreach($numbers as $number): $number->phone = normalize_phone_to_E164($number->phone); ?>
 				<option value="<?php echo $number->phone; ?>"<?php echo $number->phone == $callerId ? ' selected="selected" ' : ''; ?>><?php echo $number->name; ?></option>
 <?php endforeach; ?>

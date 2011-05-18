@@ -35,6 +35,9 @@ $no_answer_redirect_number = AppletInstance::getDropZoneUrl('no-answer-redirect-
 $numbers = array();
 $voicemail = null;
 
+if(empty($callerId))
+	$callerID = $_REQUEST['From'];
+
 if ($dial_whom_selector === 'user-or-group')
 {
 	$dial_whom_instance = null;
