@@ -18,6 +18,7 @@
 
  * Contributor(s):
  * Tim Lytle <tim@timlytle.net>
+ * Chad Smith <chad@nospam.me>
  **/
 
 class HookException extends Exception {}
@@ -30,8 +31,9 @@ class Hook extends MY_Controller {
 		parent::__construct();
 	}
 
-	public function index($hook)
+	public function index()
 	{
+		$hook = implode('/', func_get_args());
 		$plugins = Plugin::all();
 		foreach($plugins as $plugin)
 		{
@@ -40,7 +42,7 @@ class Hook extends MY_Controller {
 
 			if(!empty($data['script']))
 			{
-				//include the script
+				// include the script
 				define("HOOK", true);
 				require($data['script']);
 				return;

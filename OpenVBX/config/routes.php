@@ -89,6 +89,7 @@ $route['client'] = "client";
 $route['devices'] = "devices";
 $route['voicemail'] = "voicemail";
 $route['hook/(:any)'] = "hook/index/$1";
+$route['hook/(:any)/(:any)'] = "hook/index/$1/$2";
 $route['external/messages/details/(:any)'] = 'external/message_details/$1';
 $route['external'] = "external";
 $route['iphone/messages/details/(:any)'] = 'iphone/message_details/$1';
