@@ -33,7 +33,8 @@ class Hook extends MY_Controller {
 
 	public function index()
 	{
-		$hook = implode('/', func_get_args());
+		$args = func_get_args();
+		$hook = implode('/', $args);
 		$plugins = Plugin::all();
 		foreach($plugins as $plugin)
 		{
