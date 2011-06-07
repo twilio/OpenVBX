@@ -145,7 +145,45 @@ class Plugin
 			}
 		}
 	}
-	
+
+	public function getHookScript($page)
+	{
+		if(empty($this->config))
+		{
+			throw new PluginException("Plugin has invalid configuration: $this->dir_name");
+		}
+
+		if($page == 'config')
+		{
+			return false;
+		}
+
+		if(!empty($this->config->links))
+		{
+			$found = false;
+			foreach($this->config->links as $index => $link)
+			{
+				if($link->hook == true AND $link->url == $page)
+				{
+					$found = true;
+					break;
+				}
+			}
+
+			if(isset($this->config->links[$index]) && $found)
+			{
+				$page = $this->config->links[$index];
+				$script = $this->plugin_path . '/' . $page->script;
+				if(!is_file($script))
+				{
+					throw new PluginException("Missing file in plugin: $this->dir_name :: $page->script");
+				}
+
+				return $script;
+			}
+		}
+	}
+
 	public function getLinks()
 	{
 		$nav = array();

@@ -10,8 +10,8 @@ $next = AppletInstance::getDropZoneUrl('next');
 $selected_item = false;
 
 /* Build Menu Items */
-$choices = AppletInstance::getDropZoneUrl('choices[]');
-$keys = AppletInstance::getDropZoneValue('keys[]');
+$choices = (array) AppletInstance::getDropZoneUrl('choices[]');
+$keys = (array) AppletInstance::getDropZoneValue('keys[]');
 $menu_items = AppletInstance::assocKeyValueCombine($keys, $choices);
 
 $numDigits = 1;

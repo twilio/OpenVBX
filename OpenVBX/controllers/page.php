@@ -29,8 +29,11 @@ class Page extends User_Controller
 		
 	}
 
-	public function index($page)
+	public function index()
 	{
+		$args = func_get_args();
+		$page = implode('/', $args);
+
 		$this->section = '/p/'.$page;
 		$data = $this->init_view_data();
 
