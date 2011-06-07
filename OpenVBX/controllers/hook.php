@@ -17,51 +17,40 @@
  *  All Rights Reserved.
 
  * Contributor(s):
+ * Tim Lytle <tim@timlytle.net>
+ * Chad Smith <chad@nospam.me>
  **/
-	
-class PageException extends Exception {}
 
-class Page extends User_Controller
-{
+class HookException extends Exception {}
+
+// This controller handles unauthenticated web requests to plugins
+class Hook extends MY_Controller {
+
 	public function __construct()
 	{
 		parent::__construct();
-		
 	}
 
 	public function index()
 	{
 		$args = func_get_args();
-		$page = implode('/', $args);
-
-		$this->section = '/p/'.$page;
-		$data = $this->init_view_data();
-
-		/* Find Plugin matching page */
+		$hook = implode('/', $args);
 		$plugins = Plugin::all();
 		foreach($plugins as $plugin)
 		{
-			try
-			{
-				// First plugin wins
-				$data['script'] = $plugin->getScript($page);
+			// First plugin wins
+			$data['script'] = $plugin->getHookScript($hook);
 
-				if(!empty($data['script']))
-				{
-					PluginData::setPluginId($plugin->getPluginId());
-					OpenVBX::$currentPlugin = $plugin;
-					break;
-				}
-			}
-			catch(PluginException $e)
+			if(!empty($data['script']))
 			{
-				error_log($e->getMessage());
-				$ci = &get_instance();
-				$ci->session->set_flashdata('error', $e->getMessage());
+				// include the script
+				define("HOOK", true);
+				require($data['script']);
+				return;
 			}
-			
 		}
-		
-		$this->respond('', 'page/index', $data);
+
+		redirect('');
 	}
 }
+?>
