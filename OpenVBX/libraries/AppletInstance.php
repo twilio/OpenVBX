@@ -269,6 +269,11 @@ class AppletInstance
 		self::$baseURI = $baseURI;
 	}
 
+	public static function getBaseURI()
+	{
+		return self::$baseURI;
+	}
+
 	public static function getInstanceId()
 	{
 		return self::$id;
