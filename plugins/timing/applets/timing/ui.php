@@ -5,23 +5,13 @@
 <?php else:
 $days = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
 							'Saturday', 'Sunday');
-$ini = "$this->plugin_path/timing.ini";
-if (is_readable($ini)) {
-	$options = parse_ini_file($ini);
-	try {
-		$tz = new DateTimeZone($options['timezone']);
-	} catch (Exception $e) {
-		error_log($e->getMessage());
-	}
-}
-if (empty($tz)) $tz = new DateTimeZone('America/Los_Angeles');
-$now = new DateTime('now', $tz);
+$now = new DateTime('now');
 ?>
 <div class="vbx-applet">
 	<h2>Set your open hours.</h2>
 	<p>Use the table below to set the hours which you are open. Time is based on
 	the server's current time. We use the timezone specified in your
-	<em>timing.ini</em> in the timing plugin directory.</p>
+	<em>index.php</em> in the OpenVBX install directory.</p>
 	<p><em>Your server's current time: <?php echo $now->format('r'); ?></em></p>
 
 	<div class="vbx-full-pane">
