@@ -29,9 +29,9 @@ $now = new DateTime('now', $tz);
 		<div class="timing-timerange-wrap">
 			<label><?php print $day; ?></label>
 <?php
-			$state = AppletInstance::getValue("range_{$index}_from}", '') ? 'remove' : 'add';
+			$state = AppletInstance::getValue("range_{$index}_from", '') ? 'remove' : 'add';
 			$default = $index < 5 ? '09:00AM' : '';
-			echo AppletUI::TimeRange(
+			echo AppletUI::timeRange(
 				"range_$index",
 				AppletInstance::getValue("range_{$index}_from", $default),
 				AppletInstance::getValue("range_{$index}_to", '05:00PM'),
