@@ -32,7 +32,8 @@ var Pickers = {
 				$widget.show().siblings('em').remove();
 				range = [new Date(0, 0, 0, 9, 0, 0), new Date(0, 0, 0, 17, 0, 0)];
 				$widget.find('input').each(function() {
-					$.timePicker($(this)).setTime(range.shift());
+					if(!$(this).val())
+						$.timePicker($(this)).setTime(range.shift());
 				});
 				$control.html("remove").attr({ "class" : "timing-remove" });
 			}
