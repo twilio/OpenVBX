@@ -527,7 +527,7 @@ $(document).ready(function() {
 		$('#reply-sms .loader').show();
 		$.ajax({
 			url : $('#reply-sms').attr('action'),
-			data : $('#reply-sms'),
+			data : $('#reply-sms').serializeArray(),
 			success : function(data) {
 				$('#reply-sms .loader').hide();
 				$.notify('SMS sent');
