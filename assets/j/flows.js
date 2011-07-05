@@ -110,5 +110,44 @@ $(document).ready(function() {
 		$('form', dialogs['copy']).attr('action', this.href);
 		$(':text', dialogs['copy']).focus().val(thisName + ' copy');
 	});
-
+	
+	// edit flow name
+	$('.flow-name-display').live('click', function(event) {
+		event.stopPropagation();
+		$(this).hide().siblings('.flow-name-edit').show();
+	});
+	$('.flow-name-edit-cancel').live('click', function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		var $this = $(this);
+		var $inp = $this.siblings('input[name="flow_name"]');
+		$inp.val($inp.attr('data-orig-value')).closest('span').hide().siblings('.flow-name-display').show();
+	});
+	$('.flow-name-edit button.submit-button').live('click', function(event) {
+		event.stopPropagation();
+		event.preventDefault();
+		var $this = $(this);
+		$this.attr('disabled', 'disabled');
+		var _name = $this.siblings('input[name="flow_name"]').val();
+		$this.addClass('disabled');
+		$.post($this.attr('data-action'),
+			{
+				name: _name
+			},
+			function(data) {
+				$this.removeClass('disabled');
+				if (!data.error) {
+					$.notify('Flow name has been updated.');
+					$('tr#flow-' + data.flow_id).find('input[name="flow_name"]').attr('data-orig-value', _name)
+						.closest('span').hide()
+						.siblings('.flow-name-display').text(_name).show();
+				}
+				else {
+					$.notify('There was an error updating the Flow: ' + data.message);
+				}
+				$this.attr('disabled', false);
+			},
+			'json'
+		);
+	});
 });

@@ -24,16 +24,26 @@
     margin: 0 5px 0 0;
 }
 
-#flows-table .flows-head-row .flow-name {
-    width: 280px;
+#flows-table th.flow-name {
+    width: 30%;
 }
 
-#flows-table .flows-head-row .flow-copy,
-#flows-table .flows-head-row .flow-delete {
-    width: 30px;
+#flows-table tr .flow-copy,
+#flows-table tr .flow-delete {
+    width: 50px;
+	text-align: right;
 }
-
-
+#flows-table .flow-table-actions {
+	text-align: center;
+}
+#flows-table .flow-delete .action {
+	display: inline-block;
+}
+#flows-table .flow-name-edit[disabled="disabled"] {
+	border: none;
+	background: none;
+	color: black;
+}
 
 /* Phone Numbers */
 

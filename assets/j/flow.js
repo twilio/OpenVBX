@@ -708,7 +708,7 @@ Flows.initialize = function() {
 
 	$('.modal-tabs').modalTabs({ attr : 'rel', history : false });
 	$('.vbx-form').live('submit', preventDefault);
-	$(':input', $('.vbx-form')).change(function() {
+	$('.vbx-form :input, .flow-name-edit :input').change(function() {
 		Flows.modified = true;
 	});
 };

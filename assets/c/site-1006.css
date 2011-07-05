@@ -493,6 +493,8 @@ button span {    position: relative;    display: block;    white-space: nowrap;}
 
 /* Safari and Google Chrome only - fix margins */@media screen and (-webkit-min-device-pixel-ratio:0) {    button span {        margin-top: -1px;    }}
 
+button.disabled {	opacity: 0.4;	-moz-opacity: 0.4;	filter:alpha(opacity=40);}
+
 button.normal-button {    margin: 10px 0;    padding: 0 8px 0 0;    text-align: center;    background: transparent url(../i/normal-button-bg.png) no-repeat right -96px;}
 
 button.normal-button span {    height: 32px;    line-height: 32px;    padding-left: 10px;    margin-left: -2px;    background: transparent url(../i/normal-button-bg.png) no-repeat left top;    color: #444;}
@@ -954,11 +956,9 @@ button.inline-button {    float: left;    margin: 0 10px 0 0 !important;}
 
 .flows-menu .menu-item .add-button{    display: block;    float: right;    height: 32px;    margin: 0 5px 0 0;}
 
-#flows-table .flows-head-row .flow-name {    width: 280px;}
+#flows-table th.flow-name {    width: 30%;}
 
-#flows-table .flows-head-row .flow-copy,#flows-table .flows-head-row .flow-delete {    width: 30px;}
-
-
+#flows-table tr .flow-copy,#flows-table tr .flow-delete {    width: 50px;	text-align: right;}#flows-table .flow-table-actions {	text-align: center;}#flows-table .flow-delete .action {	display: inline-block;}#flows-table .flow-name-edit[disabled="disabled"] {	border: none;	background: none;	color: black;}
 
 /* Phone Numbers */
 

@@ -25,7 +25,14 @@
 			<tbody>
 				<?php foreach($items as $item): ?>
 				<tr id="flow-<?php echo $item['id']?>" class="items-row <?php if(in_array($item['id'], $highlighted_flows)): ?>highlight-row<?php endif; ?>">
-					<td><?php echo $item['name'] ?></td>
+					<td>
+						<span class="flow-name-display"><?php echo $item['name']; ?></span>
+						<span class="flow-name-edit" style="display: none;">
+							<input type="text" name="flow_name" value="<?php echo $item['name'] ?>" data-orig-value="<?php echo $item['name']; ?>"/>
+							<button name="save" value="Save" data-action="/flows/edit/<?php echo $item['id']; ?>" class="submit-button"><span>Save</span></button>
+							<span class="sep">|</span> <a href="#cancel" class="flow-name-edit-cancel">cancel</a>
+						</span>
+					</td>
 					<?php if(empty($item['numbers'])): ?>
 					<td>None</td>
 					<?php else: ?>
@@ -33,7 +40,7 @@
 					<?php endif; ?>
 					<td><a href="<?php echo site_url("flows/edit/{$item['id']}"); ?>#flowline/start"><?php echo is_null($item['voice_data'])? 'Create' : 'Edit' ?> Call Flow</a></td>
 					<td><a href="<?php echo site_url("flows/sms/{$item['id']}"); ?>#flowline/start"><?php echo is_null($item['sms_data'])? 'Create' : 'Edit' ?> SMS Flow</a></td>
-					<td><a href="flows/edit/<?php echo $item['id'];?>" class="trash action" title="Delete"><span class="replace">Delete</span></a></td>
+					<td class="flow-delete"><a href="flows/edit/<?php echo $item['id'];?>" class="trash action" title="Delete"><span class="replace">Delete</span></a></td>
 				</tr>
 				<?php endforeach; ?>
 			</tbody>
