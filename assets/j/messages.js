@@ -554,19 +554,19 @@ $(document).ready(function() {
 			var id = [];
 			$('input[name^=message]:checked').each(function(){
 				id.push($(this).val());
-			}).queue(function() {
-				if(!id.length) {
-					return;
-				}
-
-				Message.Detail.archive(id,
-									   function() {
-										   for(var rel in id) {
-											   $('tr[rel='+id[rel]+']').remove();
-										   }
-										   $.notify('Deleted '+ id.length + ' message' + (id.length > 1 ? 's' : ''));
-									   });
 			});
+
+			if(!id.length) {
+				return;
+			}
+
+			Message.Detail.archive(id,
+								   function() {
+									   for(var rel in id) {
+										   $('tr[rel='+id[rel]+']').remove();
+									   }
+									   $.notify('Deleted '+ id.length + ' message' + (id.length > 1 ? 's' : ''));
+								   });
 		}
 		
 		return false;
