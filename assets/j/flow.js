@@ -183,6 +183,14 @@ Flows.events = {
 			var flow_instances = $('#instances .flow-instance');
 			var textareas = $('.audio-choice .audio-choice-read-text textarea:visible', flow_instances);
 				
+			if ($('.flow-name-edit').is(':visible')) {
+				new_name = $('.flow-name-edit input[name="name"]').val();
+				old_name = $('.vbx-form input.flow-name');
+				if (new_name != old_name) {
+					$('.vbx-form input.flow-name').val(new_name);
+				}
+			}
+				
 			if(textareas.length) {
 				textareas.each(function() {
 					Pickers.audio.saveReadText(event, $(this));
@@ -239,10 +247,10 @@ Flows.events = {
 								if(success) {
 									success();
 								}
-
+								$(document).trigger('flow-after-save');
 								return $.notify('Flow has been saved.').flicker();
 							}
-
+							
 							$.notify(data.message);
 						},
 						type : 'POST'
@@ -642,11 +650,33 @@ Flows.initialize = function() {
       $this.find('input').first().val() == ''
     );
   });
-  $('.timing-timerange-wrap a').live('click', function() {
+  $('.timing-timerange-wrap a').live('click', function(e) {
+	e.preventDefault();
     $widget = $(this).siblings('.timepicker-widget');
     Pickers.timing.setDisabled($widget, $(this).hasClass("timing-remove"));
     return false;
   });
+
+	$('#flow-rename, .flow-name, #flow-rename-cancel').live('click', function(e) {
+		e.stopPropagation();
+		e.preventDefault();
+		var $this = $(this);
+		$this.closest('span').hide().siblings('span').show();
+		if ($this.attr('id') == 'flow-rename-cancel') {
+			$input = $('input[name="name"]');
+			$input.val($input.attr('data-orig-value'));
+		}
+	});
+	$('.flow-name').hover(function() {
+		$('#flow-rename').show();
+	}, function() {
+		$('#flow-rename').hide();
+	});
+	$(document).bind('flow-after-save', function() {
+		if ($('.flow-name-title .flow-name-edit').is(':visible')) {
+			$('.flow-name-title .flow-name').text($('.flow-name-title .flow-name-edit input[name="name"]').val()).show().siblings('span').hide();
+		}
+	});
 
 	$('.applet-item').draggable(Flows.events.drag.options);
 	$('.flowline-item').droppable(Flows.events.drop.options);

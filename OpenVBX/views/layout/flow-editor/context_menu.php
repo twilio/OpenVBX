@@ -13,11 +13,14 @@
 
 				<div class="flow-details">
 					<h2 class="flow-name-title">
-						<span class="flow-name"><?php echo $flow->name ?></span>
+						<span class="flow-name"><?php echo $flow->name ?><a href="#flow-rename" id="flow-rename" class="action-mini" style="display: none;">edit</a></span>
+						<span class="flow-name-edit" style="display: none;">
+							<input type="text" name="name" value="<?php echo $flow->name; ?>" data-orig-value="<?php echo $flow->name; ?>" />
+							<a id="flow-rename-cancel" class="action-mini" href="#flow-rename-cancel">cancel</a>
+						</span>
 						<?php echo empty($flow->numbers)? '' : '<span class="flow-number">'.$flow->numbers[0]; ?><?php echo count($flow->numbers) >= 2? ' and '.(count($flow->numbers) - 1).' more</span>': '' ?></h2>
 					
 					<input type="hidden" name="id" value='<?php echo $flow->id; ?>' />
-					<input type="hidden" name="name" value="<?php echo $flow->name; ?>" />
 					<input type="hidden" name="data" value="<?php echo json_encode($flow->data); ?>" />
 				</div><!-- .flow-details -->
 
