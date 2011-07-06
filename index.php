@@ -86,36 +86,36 @@ $application_folder = dirname(__FILE__) . '/OpenVBX';
 date_default_timezone_set('UTC');
 
 
-										/*
-										 |===============================================================
-										 | END OF USER CONFIGURABLE SETTINGS
-										 |===============================================================
-										*/
+/*
+ |===============================================================
+ | END OF USER CONFIGURABLE SETTINGS
+ |===============================================================
+*/
 
 
-										/*
-										 |---------------------------------------------------------------
-										 | SET THE SERVER PATH
-										 |---------------------------------------------------------------
-										 |
-										 | Let's attempt to determine the full-server path to the "system"
-										 | folder in order to reduce the possibility of path problems.
-										 | Note: We only attempt this if the user hasn't specified a
-										 | full server path.
-										 |
-										*/
-										if (strpos($system_folder, '/') === FALSE)
-										{
-											if (function_exists('realpath') AND @realpath(dirname(__FILE__)) !== FALSE)
-											{
-												$system_folder = realpath(dirname(__FILE__)).'/'.$system_folder;
-											}
-										}
-										else
-										{
-											// Swap directory separators to Unix style for consistency
-											$system_folder = str_replace("\\", "/", $system_folder);
-										}
+/*
+ |---------------------------------------------------------------
+ | SET THE SERVER PATH
+ |---------------------------------------------------------------
+ |
+ | Let's attempt to determine the full-server path to the "system"
+ | folder in order to reduce the possibility of path problems.
+ | Note: We only attempt this if the user hasn't specified a
+ | full server path.
+ |
+*/
+if (strpos($system_folder, '/') === FALSE)
+{
+	if (function_exists('realpath') AND @realpath(dirname(__FILE__)) !== FALSE)
+	{
+		$system_folder = realpath(dirname(__FILE__)).'/'.$system_folder;
+	}
+}
+else
+{
+	// Swap directory separators to Unix style for consistency
+	$system_folder = str_replace("\\", "/", $system_folder);
+}
 
 /*
  |---------------------------------------------------------------
