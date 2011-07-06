@@ -100,7 +100,8 @@ if($dial_status)
 {
 	switch($dial_status)
 	{
-		case 'answered':
+		case 'answered': // catch 2008 api
+		case 'completed': // catch 2010 api
 			$state[DIAL_ACTION] = DIAL_STATE_HANGUP;
 			break;
 		default:
