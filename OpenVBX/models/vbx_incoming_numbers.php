@@ -87,34 +87,39 @@ class VBX_Incoming_numbers extends Model
 			}
 		}
 
-		/* Get IncomingNumbers */
-		try
-		{
-			$response = $this->twilio->request("Accounts/{$this->twilio_sid}/IncomingPhoneNumbers");
-		}
-		catch(TwilioException $e)
-		{
-			throw new VBX_IncomingNumberException('Failed to connect to Twilio.', 503);
-		}
-
-		if($response->IsError)
-		{
-			throw new VBX_IncomingNumberException($response->ErrorMessage, $response->HttpStatus);
-		}
-
-
 		$items = array();
-		if(isset($response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber))
-		{
-			$phoneNumbers = $response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber
-				? $response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber
-				: array($response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber);
-			foreach($phoneNumbers as $number)
+		$nextpageuri = "Accounts/{$this->twilio_sid}/IncomingPhoneNumbers";
+		do {
+			/* Get IncomingNumbers */
+			try
 			{
-				$items[] = $number;
+				$response = $this->twilio->request($nextpageuri);
 			}
-		}
+			catch(TwilioException $e)
+			{
+				throw new VBX_IncomingNumberException('Failed to connect to Twilio.', 503);
+			}
 
+			if($response->IsError)
+			{
+				throw new VBX_IncomingNumberException($response->ErrorMessage, $response->HttpStatus);
+			}
+
+			if(isset($response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber))
+			{
+				$phoneNumbers = $response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber
+					? $response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber
+					: array($response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber);
+				foreach($phoneNumbers as $number)
+				{
+					$items[] = $number;
+				}
+			}
+			
+			$nextpageuri = (string) $response->ResponseXml->IncomingPhoneNumbers['nextpageuri'];
+			$nextpageuri = preg_replace('|^/\d{4}-\d{2}-\d{2}/|m', '', $nextpageuri);
+		} while (!empty($nextpageuri));
+		
 		$ci = &get_instance();
 		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
 		if($enabled_sandbox_number && $retrieve_sandbox) {
