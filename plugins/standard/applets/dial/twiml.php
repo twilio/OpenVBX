@@ -36,7 +36,7 @@ $numbers = array();
 $voicemail = null;
 
 if(empty($callerId) && !empty($_REQUEST['From']))
-	$callerID = $_REQUEST['From'];
+	$callerId = $_REQUEST['From'];
 
 if ($dial_whom_selector === 'user-or-group')
 {
