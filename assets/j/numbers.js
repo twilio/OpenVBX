@@ -47,8 +47,10 @@ $(document).ready(function() {
 		select_flow = $(this);
 		
 		if(select_flow.val() == 'new') {
-			$(document).attr('location', OpenVBX.home + 'flows');
+			$(document).attr('location', OpenVBX.home + '/flows');
+			return;
 		}
+		
 		/* Revert if empty value */
 		if(select_flow.val().length < 1) {
 			var value = select_flow.data('old_val');
@@ -152,12 +154,12 @@ $(document).ready(function() {
 						setup_button.append('<img alt="loading" src="'+OpenVBX.assets+'assets/i/ajax-loader.gif" />');
 						e.preventDefault();
 						$.ajax({ 
-							url: OpenVBX.home + 'flows',
+							url: OpenVBX.home + '/flows',
 							success: function(data) { 
 								var flow_id = data.id;
 								var flow_url = data.url;
 								$.ajax({
-									url: OpenVBX.home + 'numbers/change/' + number_id + '/' + flow_id,
+									url: OpenVBX.home + '/numbers/change/' + number_id + '/' + flow_id,
 									success : function(data) {
 										document.location = flow_url;
 									},
