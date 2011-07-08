@@ -186,7 +186,7 @@ while($keepLooping)
 			{
 				if ($no_answer_action === 'voicemail')
 				{
-					$response->append(AudioSpeechPickerWidget::getVerbForValue($voicemail, new Say("Please leave a message.")));
+					$response->append(AudioSpeechPickerWidget::getVerbForValue($voicemail, new Say("Please leave a message. Press the pound key when you are finished.")));
 					$response->addRecord(array(
 											   'transcribeCallback' => site_url('twiml/transcribe'),
 											   ));
