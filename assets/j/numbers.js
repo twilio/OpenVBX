@@ -47,7 +47,7 @@ $(document).ready(function() {
 		select_flow = $(this);
 		
 		if(select_flow.val() == 'new') {
-			$(document).attr('location', OpenVBX.home + '/flows');
+			attach_new_flow(select_flow.closest('tr').attr('rel'));
 			return;
 		}
 		
@@ -125,6 +125,24 @@ $(document).ready(function() {
 		}
 	}).closest('.ui-dialog').addClass('add');
 
+	var attach_new_flow = function(number_id) {
+		$.ajax({
+			url: OpenVBX.home + '/flows',
+			success: function(data) {
+				var flow_id = data.id;
+				var flow_url = data.url;
+				$.ajax({
+					url: OpenVBX.home + '/numbers/change/' + number_id + '/' + flow_id,
+					success : function(data) {
+						document.location = flow_url;
+					},
+					type: 'POST'
+				});
+			},
+			type: 'POST'
+		});
+	};
+
 	var add_number = function() {			
 		var add_button = $('button', $('#dlg_add').parent()).first();
 		var add_button_text = add_button.text();
@@ -153,21 +171,7 @@ $(document).ready(function() {
 					.live('click', function(e) {
 						setup_button.append('<img alt="loading" src="'+OpenVBX.assets+'assets/i/ajax-loader.gif" />');
 						e.preventDefault();
-						$.ajax({ 
-							url: OpenVBX.home + '/flows',
-							success: function(data) { 
-								var flow_id = data.id;
-								var flow_url = data.url;
-								$.ajax({
-									url: OpenVBX.home + '/numbers/change/' + number_id + '/' + flow_id,
-									success : function(data) {
-										document.location = flow_url;
-									},
-									type: 'POST'
-								});
-							},
-							type: 'POST'
-						});
+						attach_new_flow(number_id);
 					});
 				
 				$('.number-order-interface').slideUp('ease-out', function() { 
