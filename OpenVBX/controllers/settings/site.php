@@ -119,6 +119,12 @@ class Site extends User_Controller
 			$data['tenant_mode'] = self::MODE_MULTI;
 			$data['tenants'] = $this->settings->get_all_tenants();
 		}
+		else {
+			// allow tenants to see the rewrite setting
+			$data['rewrite_enabled'] = array(
+				'value' => intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT))
+			);
+		}
 
 		$data['available_themes'] = $this->vbx_theme->get_all();
 		$plugins = Plugin::all();
@@ -269,6 +275,9 @@ class Site extends User_Controller
 		$data['tenant'] = $tenant;
 		$data['tenant_settings'] = $tenant_settings;
 		$data['available_themes'] = $this->vbx_theme->get_all();
+		$data['rewrite_enabled'] = array(
+			'value' => intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT))
+		);
 
 		$this->respond('Tenant Settings', 'settings/tenant', $data);
 	}
