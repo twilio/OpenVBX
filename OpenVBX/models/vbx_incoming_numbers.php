@@ -67,8 +67,8 @@ class VBX_Incoming_numbers extends Model
 		{
 			$sandbox = $response->ResponseXml->TwilioSandbox;
 		}
-
-		if(function_exists('apc_store')) {
+		
+		if($sandbox instanceof SimpleXMLElement && function_exists('apc_store')) {
 			$success = apc_store($this->cache_key.'sandbox', $sandbox->asXML(), self::CACHE_TIME_SEC);
 		}
 
@@ -124,7 +124,9 @@ class VBX_Incoming_numbers extends Model
 		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
 		if($enabled_sandbox_number && $retrieve_sandbox) {
 			$sandbox = $this->get_sandbox();
-			$items[] = $sandbox;
+			if (!empty($sandbox)) {
+				$items[] = $sandbox;
+			}
 		}
 
 		foreach($items as $item)
