@@ -2,6 +2,7 @@
 
 /* runUpdate_45() updates Twilio Account to 2010 */
 function runUpdate_45() {
+	  set_time_limit(3600);
 	  $ci = &get_instance();
 	  $tenants = $ci->db
 		   ->from('tenants')
