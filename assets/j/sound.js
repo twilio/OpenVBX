@@ -35,9 +35,7 @@ $(document).ready(function() {
 	soundManager.debugMode = false;
 	soundManager.consoleOnly = true;
 	soundManager.url = OpenVBX.assets + 'assets/j/soundmanager2/soundmanager2.swf';
-	soundManager.beginDelayedInit();
 	soundManager.onload = function() {
-	
 		// Initialize any a/s widget players might already be onscreen.
 		$('.audio-choice input[name=show_player_with_url]').each(function (index, element) {
 			var audioChoice = $(element).closest('.audio-choice');
@@ -45,4 +43,5 @@ $(document).ready(function() {
 			Pickers.audio.showPlayer(audioChoice, 'current', url, false);
 		});
 	};
+	soundManager.beginDelayedInit();
 });
