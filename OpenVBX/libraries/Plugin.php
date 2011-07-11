@@ -183,6 +183,25 @@ class Plugin
 			}
 		}
 	}
+	
+	public function getPluginPageName($page) {
+		if(empty($this->config)) {
+			throw new PluginException("Plugin has invalid configuration: $this->dir_name");
+		}
+		
+		$name = '';
+		if (empty($this->config->links) || $this->config->disabled) {
+			return $name;
+		}
+		
+		foreach ($this->config->links as $link) {
+			if (!empty($link->url) && $link->url == $page && empty($link->hook)) {
+				$name = $link->label;
+			}
+		}
+		
+		return $name;
+	}
 
 	public function getLinks()
 	{
@@ -201,6 +220,11 @@ class Plugin
 		
 		foreach($this->config->links as $link)
 		{
+			// don't expose API/Ajax hooks to the menu
+			if (!empty($link->hook)) {
+				continue;
+			}
+			
 			$script = isset($link->script)? $link->script : '';
 			$url = isset($link->url)? $link->url : '';
 			$label = isset($link->label)? $link->label : '';

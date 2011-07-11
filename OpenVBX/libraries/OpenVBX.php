@@ -216,4 +216,9 @@ class OpenVBX {
 		sort($updates);
 		return $updates[count($updates)-1];
 	}
+	
+	public static function setPageTitle($title, $overwrite = false) {
+		$ci = &get_instance();
+		return $ci->template->write('title', $title, $overwrite);
+	}
 }
