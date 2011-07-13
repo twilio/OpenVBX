@@ -22,15 +22,16 @@ var dialogs = {};
 var activeAnchor;
 
 $(document).ready(function() {
-	dialogs['add'] = $('#dAddFlow').dialog({
+	dialogs['add'] = $('#dAddFlow').dialog({ 
+		autoOpen: false,
 		width: 340,
 		buttons: {
 			'OK': function() { 
-				$('button', this).attr('disabled', 'disabled'); 
+				$('button', this).prop('disabled', true); 
 				$.ajax({
 					url : $('#dAddFlow form').attr('action'),
 					data : {
-						name : $('#dAddFlow input[name=name]').val()
+						name : $('#dAddFlow input[name="name"]').val()
 					},
 					success : function(data) {
 						if(!data.error) {
@@ -50,7 +51,8 @@ $(document).ready(function() {
 		}
 	});
 	
-	dialogs['delete'] = $('#dDeleteFlow').dialog({
+	dialogs['delete'] = $('#dDeleteFlow').dialog({ 
+		autoOpen: false,
 		width: 480,
 		buttons: {
 			'Delete': function() {
@@ -75,7 +77,8 @@ $(document).ready(function() {
 		}
 	});
 
-	dialogs['copy'] = $('#dCopyFlow').dialog({
+	dialogs['copy'] = $('#dCopyFlow').dialog({ 
+		autoOpen: false,
 		width: 640,
 		buttons: {
 			'OK': function() { 
@@ -114,23 +117,26 @@ $(document).ready(function() {
 	// edit flow name
 	$('.flow-name-display').live('click', function(event) {
 		event.stopPropagation();
-		$(this).hide().siblings('.flow-name-edit').show();
+		$(this).hide()
+			.siblings('.flow-name-edit').show();
 	});
 	$('.flow-name-edit-cancel').live('click', function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		var $this = $(this);
 		var $inp = $this.siblings('input[name="flow_name"]');
-		$inp.val($inp.attr('data-orig-value')).closest('span').hide().siblings('.flow-name-display').show();
+		$inp.val($inp.attr('data-orig-value'))
+			.closest('span').hide()
+			.siblings('.flow-name-display').show();
 	});
 	$('.flow-name-edit button.submit-button').live('click', function(event) {
 		event.stopPropagation();
 		event.preventDefault();
 		var $this = $(this);
-		$this.attr('disabled', 'disabled');
+		$this.prop('disabled', true);
 		var _name = $this.siblings('input[name="flow_name"]').val();
 		$this.addClass('disabled');
-		$.post($this.attr('data-action'),
+		$.post(OpenVBX.home + $this.attr('data-action'),
 			{
 				name: _name
 			},
@@ -145,7 +151,7 @@ $(document).ready(function() {
 				else {
 					$.notify('There was an error updating the Flow: ' + data.message);
 				}
-				$this.attr('disabled', false);
+				$this.prop('disabled', false);
 			},
 			'json'
 		);

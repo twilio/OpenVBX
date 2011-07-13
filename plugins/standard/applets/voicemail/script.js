@@ -1,6 +1,5 @@
 
 $(document).ready(function(){
-
     // detect when voicemail applet user or group is chosen
     $(".voicemail-applet .usergroup-container").live('usergroup-selected', function(e, usergroup_label, type) {
 
@@ -11,4 +10,4 @@ $(document).ready(function(){
 		$('.prompt-for-individual', $(e.target).parent())[ type == 'user' ? 'show' : 'hide' ]();
     });
     
-})
+});

@@ -128,8 +128,8 @@ $(function () {
 					link.shown = true;
 				});
 			$('.call-button').data('link', link);
-			$('input[name=to]', dialog).val(phone);
-			$('input[name=target]', dialog).val(target);
+			$('input[name="to"]', dialog).val(phone);
+			$('input[name="target"]', dialog).val(target);
 			$('.screen').show();
 			
 			currentDialogType = 'call';
@@ -174,7 +174,7 @@ $(function () {
 		$('.call-dialing').show();
 
 		var link = $(this).data('link');
-		$(this).attr('disabled', 'disabled');
+		$(this).prop('disabled', true);
 		var button = $(this);
 		$.ajax({
 			url : OpenVBX.home + '/messages/call',
@@ -182,10 +182,10 @@ $(function () {
 			dataType : 'json',
 			type : 'POST',
 			success : function(data) {
-				button.removeAttr('disabled');
+				button.prop('disabled', false);
 				hideDialog(event, link);
 				if(!data.error) {
-					$.notify('You are now being connected to ' + $('input[name=to]', dialog).val());
+					$.notify('You are now being connected to ' + $('input[name="to"]', dialog).val());
 					return;
 				}
 
@@ -234,7 +234,7 @@ $(function () {
 	});
 
 	var hideDialog = function (event, link) {
-		$('.send-sms-button').removeAttr('disabled');
+		$('.send-sms-button').prop('disabled', false);
 
 		// reset the timer if we get fired again - avoids double animations
 		if (hideDelayTimer)
@@ -282,7 +282,7 @@ $(function () {
 		var trigger = $(this);
 		var displayDialog = function (event, link) {
 			$('.send-sms-button').attr('rel', $(link).attr('rel'));
-			$('.send-sms-button').removeAttr('disabled');
+			$('.send-sms-button').prop('disabled', false);
 			
 			
 			if (currentDialogType == 'call') {
@@ -331,8 +331,8 @@ $(function () {
 					link.shown = true;
 				});
 			$('.sms-button').data('link', link);
-			$('input[name=to]', dialog).val(phone);
-			$('input[name=target]', dialog).val(target);
+			$('input[name="to"]', dialog).val(phone);
+			$('input[name="target"]', dialog).val(target);
 			$('.screen').show();
 			
 			currentDialogType = 'sms';
@@ -376,7 +376,7 @@ $(function () {
 		$('.send-sms-button span').text('Sending...');
 		$('.send-sms-button .sms-sending').show();
 		var link = $(this).data('link');
-		$(this).attr('disabled', 'disabled');
+		$(this).prop('disabled', false);
 		var message_id = $(event.target).attr('rel');
 		var button = $(this);
 		$.ajax({
@@ -385,10 +385,10 @@ $(function () {
 			dataType : 'json',
 			type : 'POST',
 			success : function(data) {
-				button.removeAttr('disabled');
+				button.prop('disabled', false);
 				hideDialog(event, link);
 				if(!data.error) {
-					$.notify("SMS sent to "+ $('input[name=to]', dialog).val());
+					$.notify("SMS sent to "+ $('input[name="to"]', dialog).val());
 					$('textarea', dialog).val('');
 					$('input', dialog).val('');
 					return;

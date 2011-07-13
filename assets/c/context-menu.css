@@ -102,6 +102,10 @@
 	background-position: -84px 0;
 }
 
+.flow-name-title .flow-name-edit input {
+	height: 20px;
+}
+
 .flow-name-title .flow-number {
 	padding-left: 5px;
 	font-weight: normal;

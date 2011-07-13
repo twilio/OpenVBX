@@ -147,7 +147,6 @@ Flows.link = {
 							if(typeof data[key] == "undefined") {
 								data[key] = new Array();
 							}
-
 							data[key].push(val);
 						} else {
 							data[this.name] = val;
@@ -176,7 +175,7 @@ Flows.events = {
 			}
 
 			$('h2.applet-name', event.target).text(name.substr(0, 42));
-			$('#instance-row a[href$='+ $(event.target).attr('id') +'] .applet-item-name').text(name.substr(0, 42));
+			$('#instance-row a[href$="'+ $(event.target).attr('id') +'"] .applet-item-name').text(name.substr(0, 42));
 		},
 		beforeSave : function(event, success) {
 			event.preventDefault();
@@ -264,7 +263,7 @@ Flows.events = {
 			$.ajax({
 				url: OpenVBX.home + '/flows/copy/' + Flows.id,
 				data : {
-					name : $('#dialog-save-as input[name=name]').val(),
+					name : $('#dialog-save-as input[name="name"]').val(),
 					data : JSON.stringify(flow_data)
 				},
 				dataType : 'json',
@@ -472,7 +471,7 @@ Flows.events = {
 									   + '</div></form></td>');
 
 				$('#'+link.id + ' textarea').text('');
-				$('#'+link.id + ' input[type=text]').val('');
+				$('#'+link.id + ' input[type="text"]').val('');
 				$('#'+link.id + ' .flowline-item').droppable(Flows.events.drop.options);
 				window.location.hash = '#flowline' + link.href;
 			};
@@ -562,9 +561,10 @@ Flows.initialize = function() {
 	});
 
 	$('#prototypes textarea').text('');
-	$('#prototypes input[type=text]').val('');
+	$('#prototypes input[type="text"]').val('');
 
-	$('#dialog-replace-applet').dialog({
+	$('#dialog-replace-applet').dialog({ 
+		autoOpen: false,
 		width: 480,
 		buttons: {
 			'OK': function() {
@@ -576,7 +576,8 @@ Flows.initialize = function() {
 		}
 	});
 
-	$('#dialog-remove-applet').dialog({
+	$('#dialog-remove-applet').dialog({ 
+		autoOpen: false,
 		width: 480,
 		buttons: {
 			'OK': function() {
@@ -588,7 +589,8 @@ Flows.initialize = function() {
 		}
 	});
 
-	$('#dialog-save-as').dialog({
+	$('#dialog-save-as').dialog({ 
+		autoOpen: false,
 		width: 480,
 		buttons: {
 			'OK': function() {
@@ -601,7 +603,8 @@ Flows.initialize = function() {
 		}
 	});
 	
-	$('#dialog-close').dialog({
+	$('#dialog-close').dialog({ 
+		autoOpen: false,
 		width: 480,
 		buttons : {
 			'Yes': function() {
@@ -642,20 +645,20 @@ Flows.initialize = function() {
 		}
 	});
 
-  $('.timing-timerange-wrap input').timePicker({ show24Hours: false });
-  $('.timing-timerange-wrap .timepicker-widget').each(function() {
-    $this = $(this);
-    if ($this.val() == '') Pickers.timing.setDisabled(
-      $this,
-      $this.find('input').first().val() == ''
-    );
-  });
-  $('.timing-timerange-wrap a').live('click', function(e) {
-	e.preventDefault();
-    $widget = $(this).siblings('.timepicker-widget');
-    Pickers.timing.setDisabled($widget, $(this).hasClass("timing-remove"));
-    return false;
-  });
+	$('.timing-timerange-wrap input').timePicker({ show24Hours: false });
+	$('.timing-timerange-wrap .timepicker-widget').each(function() {
+		$this = $(this);
+		if ($this.val() == '') Pickers.timing.setDisabled(
+			$this,
+			$this.find('input').first().val() == ''
+		);
+	});
+	$('.timing-timerange-wrap a').live('click', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$widget = $(this).siblings('.timepicker-widget');
+		Pickers.timing.setDisabled($widget, $(this).hasClass("timing-remove"));
+	});
 
 	$('#flow-rename, .flow-name, #flow-rename-cancel').live('click', function(e) {
 		e.stopPropagation();
@@ -663,7 +666,7 @@ Flows.initialize = function() {
 		var $this = $(this);
 		$this.closest('span').hide().siblings('span').show();
 		if ($this.attr('id') == 'flow-rename-cancel') {
-			$input = $('input[name="name"]');
+			var $input = $('input[name="name"]');
 			$input.val($input.attr('data-orig-value'));
 		}
 	});
@@ -674,7 +677,8 @@ Flows.initialize = function() {
 	});
 	$(document).bind('flow-after-save', function() {
 		if ($('.flow-name-title .flow-name-edit').is(':visible')) {
-			$('.flow-name-title .flow-name').text($('.flow-name-title .flow-name-edit input[name="name"]').val()).show().siblings('span').hide();
+			$('.flow-name-title .flow-name').text($('.flow-name-title .flow-name-edit input[name="name"]').val()).show()
+				.siblings('span').hide();
 		}
 	});
 
@@ -692,9 +696,10 @@ Flows.initialize = function() {
 	$(document).bind('flow-save', Flows.events.flow.save);
 	$(document).bind('flow-copy', Flows.events.flow.copy);
 	$('.flow-instance').trigger('hide');
-	$('.save-button').click(function() {
+	$('.save-button').click(function(event) {
+		event.stopPropagation();
+		event.preventDefault();
 		$(document).trigger('flow-before-save');
-		return false;
 	});
 
 	$(window).bind('hashchange', Flows.events.flow.change);

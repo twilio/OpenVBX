@@ -13,7 +13,6 @@
 	<!--[if IE 7]>
 		<link type="text/css" rel="stylesheet" href="<?php echo ASSET_ROOT ?>/c/ie.css" />
 	<![endif]-->
-
 </head>
 <body>
 
@@ -63,6 +62,12 @@
 <?php echo $wrapper_footer; ?>
 <?php echo $error_dialog; ?>
 <?php echo $analytics; ?>
+<script type="text/javascript">
+	// global params
+	OpenVBX = {home: null, assets: null};
+	OpenVBX.home = '<?php echo preg_replace("|/$|", "", site_url('')); ?>';
+	OpenVBX.assets = '<?php echo preg_replace("|/$|", "", asset_url('')); ?>';
+</script>
 <?php echo $_scripts; ?>
 </body>
 </html>

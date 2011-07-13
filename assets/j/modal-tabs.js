@@ -56,9 +56,9 @@
 			};
 			
 			if(config.history) {
-				$(window).hashchange( function() { $('a[href=#'+hash()+']', tabs).click(); } );
+				$(window).hashchange( function() { $('a[href="#'+hash()+'"]', tabs).click(); } );
 				$(window).trigger( "hashchange" );
-				$('a[href=#'+hash()+']').click();
+				$('a[href="#'+hash()+'"]').click();
 				history.navigationMode = 'compatible';
 			}
 

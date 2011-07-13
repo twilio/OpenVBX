@@ -72,6 +72,10 @@
     -webkit-border-radius: 4px;
 }
 
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
+	display: none;
+}
+
 .ui-dialog .error-message {
 	margin: 10px 0 20px 0;
 	padding: 10px;

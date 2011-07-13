@@ -223,8 +223,12 @@ class Flows extends User_Controller {
 			}
 		}
 
-		$this->template->add_js('flows/scripts', 'dynamic');
-		$this->template->add_css('flows/styles', 'dynamic');
+		if (!$this->config->item('use_unminimized_js')) {
+			$this->template->add_js('flows/scripts', 'dynamic');
+		}
+		if (!$this->config->item('use_unminimized_css')) {
+			$this->template->add_css('flows/styles', 'dynamic');
+		}
 		$flow = VBX_Flow::get($id);
 		
 		if(empty($flow))
@@ -295,7 +299,7 @@ class Flows extends User_Controller {
 		}
 
 		$flow->name = trim($this->input->post('name'));
-		
+	
 		$voice_data = $this->input->post('data');
 		$sms_data = $this->input->post('sms_data');
 

@@ -110,14 +110,7 @@ function convertTimeToString(time, midnightToday, firstOfTheYear) {
 	}
 }
 
-// global params
-OpenVBX = {home: null, assets: null};
-
 $(document).ready(function() {
-	// set full links to allow for relative paths
-    OpenVBX.home = $('#openvbx-logo a').eq(0).attr('href'); 
-    OpenVBX.assets = $('#openvbx-assets a').eq(0).attr('href');
-
 	$('button').mouseover(function() {
 			$(this).addClass('ui-state-hover');
 		})
@@ -227,14 +220,15 @@ $(document).ready(function() {
 				$(this).siblings('.checked').removeClass('checked');
 			}
 			$(this).addClass('checked');
-			$('label[for=' + this.id + ']').addClass('checked');
+			$('label[for="' + this.id + '"]').addClass('checked');
 		} else if(hasChecked) {
 			$(this).removeClass('checked');
-			$('label[for=' + this.id + ']').removeClass('checked');
+			$('label[for="' + this.id + '"]').removeClass('checked');
 		}
 	});
 
-	$('.error-dialog').dialog({
+	$('.error-dialog').dialog({ 
+		autoOpen: false,
 		bgiframe: true,
 		resizable: false,
 		modal: true,
