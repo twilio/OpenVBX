@@ -192,7 +192,7 @@ $(document).ready(function() {
 		if (value) {
 			$.ajax({
 				type: 'POST',
-				url:  OpenVBX.home + 'voicemail/greeting',
+				url:  OpenVBX.home + '/voicemail/greeting',
 				data: { 'voicemail' : value },
 				success: function() {
 				},

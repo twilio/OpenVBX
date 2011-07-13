@@ -74,7 +74,7 @@
 						<td><?php echo $plugin['author'] ?></td>
 						<td><?php echo $plugin['description'] ?></td>
 						<td><?php echo $plugin['plugin_path'] ?></td>
-						<td><a href="<?php echo site_url('config/'.$plugin['dir_name']); ?>">Configure</a></td>
+						<td><a class="edit action" href="<?php echo site_url('config/'.$plugin['dir_name']); ?>"><span class="replace">Configure</span></a></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>
@@ -111,7 +111,7 @@
 					<?php foreach($tenants as $tenant): ?>
 					<tr class="items-row">
 							<td class="url-tenant"><a href="<?php echo tenant_url('', $tenant->id) ?>"><?php echo tenant_url('', $tenant->id) ?></a></td>
-							<td class="edit-tenant"><a href="<?php echo tenant_url('settings/site/tenant', $tenant->id) ?>" class="edit action"><span class="replace">Edit</span></a></td>
+							<td class="edit-tenant"><a href="<?php echo site_url('settings/site/tenant/'.$tenant->id) ?>" class="edit action"><span class="replace">Edit</span></a></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>

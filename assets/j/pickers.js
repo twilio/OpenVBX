@@ -313,7 +313,7 @@ var Pickers = {
 			pauseButton.hide();
 			loadBar.css('width', '0px');
 			playBar.css('width', '0px');
-			audioPlayTime.html("<img src=\"" + OpenVBX.assets + "assets/i/ajax-loader.gif\" alt=\"...\" />");
+			audioPlayTime.html("<img src=\"" + OpenVBX.assets + "/assets/i/ajax-loader.gif\" alt=\"...\" />");
 			
 			var updatePlayBarAndTimeWithPercent = function(soundObject, percentPlayed) {
 				// If the file was already loaded, then 'whileloading' never gets called and our
@@ -405,7 +405,7 @@ var Pickers = {
 				soundObject.setPosition(msecPosition);
 				updatePlayBarAndTimeWithPercent(soundObject, Math.round((xOffset / width) * 100));
 			});
-			
+
 			if (autoPlay) {
 				soundObject.play();
 			} else {
@@ -484,8 +484,8 @@ var Pickers = {
 					file_types : "*.mp3",
 					file_types_description : "Audio Files",
 					file_upload_limit : "0",
-					flash_url : OpenVBX.assets + "assets/j/swfupload/swfupload.swf",
-					button_image_url : OpenVBX.assets + 'assets/j/swfupload/transparent_538x68.png',
+					flash_url : OpenVBX.assets + "/assets/j/swfupload/swfupload.swf",
+					button_image_url : OpenVBX.assets + '/assets/j/swfupload/transparent_538x68.png',
 					button_width : '100%',
 					button_height : 68,
 					button_placeholder : button[0],
@@ -531,7 +531,7 @@ var Pickers = {
 				})
 				.bind('uploadError', function(event, file, errorCode, message){
 					showErrorDialogWithMessage("Upload failed: " + message);
-				});
+				});				
 			}
 		},
 		

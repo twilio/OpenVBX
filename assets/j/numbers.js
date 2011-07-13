@@ -147,7 +147,7 @@ $(document).ready(function() {
 	var add_number = function() {			
 		var add_button = $('button', $('#dlg_add').parent()).first();
 		var add_button_text = add_button.text();
-		add_button.html('Ordering <img alt="loading" src="'+OpenVBX.assets+'assets/i/ajax-loader.gif" />');
+		add_button.html('Ordering <img alt="loading" src="'+OpenVBX.assets+'/assets/i/ajax-loader.gif" />');
 		$.ajax({
 			type: 'POST',
 			url: $('#dlg_add form').attr('action'),
@@ -170,7 +170,7 @@ $(document).ready(function() {
 				setup_button.unbind('click')
 					.prop('disabled', false)
 					.live('click', function(e) {
-						setup_button.append('<img alt="loading" src="'+OpenVBX.assets+'assets/i/ajax-loader.gif" />');
+						setup_button.append('<img alt="loading" src="'+OpenVBX.assets+'/assets/i/ajax-loader.gif" />');
 						e.preventDefault();
 						attach_new_flow(number_id);
 					});

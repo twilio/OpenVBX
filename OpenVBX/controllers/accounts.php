@@ -204,7 +204,7 @@ class Accounts extends User_Controller {
 		$shouldGenerateNewPassword = false;
 		$device_id_str = trim($this->input->post('device_id'));
 		$device_number = trim($this->input->post('device_number'));
-                $shouldSendWelcome = false;
+		$shouldSendWelcome = false;
 
 		try
 		{

@@ -440,7 +440,7 @@ Flows.events = {
 				);
 
 				$('input', event.target).attr('value', link.href.replace(/^\//, ''));
-				var plugin_path = 'plugins/' + link.type.replace(/---/,'/applets/');
+				var plugin_path = '/plugins/' + link.type.replace(/---/,'/applets/');
 				$('.item-body', event.target).html('<a class="item-box" href="#flowline'
 												   + link.href
 												   + '"><div class="'

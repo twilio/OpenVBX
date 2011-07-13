@@ -93,7 +93,7 @@ $(document).ready(function() {
 			'OK': function() {
 				var entity = $('.pending-deletion');
 				var method = entity.hasClass('group') 
-					? 'accounts/group/delete' : 'accounts/user/delete';
+					? '/accounts/group/delete' : '/accounts/user/delete';
 				var params = { id: entity.attr('rel') };
 
 				$.ajax({
@@ -554,8 +554,7 @@ function hideUserEdit(save) {
 
 function showGroupEdit(data) {
 	var isEdit = (typeof data == 'object' && data != false && data != null);
-	$('#dialog-group-edit').attr("title",
-								 isEdit ? 'Edit Group' : 'Add New Group');
+	$('#dialog-group-edit').dialog({'title': isEdit ? 'Edit Group' : 'Add New Group'});
 	// set the class of the dialog based on edit
 	$($('#dialog-group-edit')).closest('.ui-dialog').addClass(isEdit ? 'manage' : 'add').removeClass(isEdit ? 'add' : 'manage');
 
