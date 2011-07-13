@@ -29,7 +29,7 @@ class Page extends User_Controller
 		
 	}
 
-	public function index($pg)
+	public function index()
 	{
 		$args = func_get_args();
 		$page = implode('/', $args);
