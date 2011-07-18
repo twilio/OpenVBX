@@ -114,7 +114,7 @@ class AppletUI {
 			$plugin_name = $type_parts[0];
 			$applet_name = $type_parts[1];
 
-			if(is_file('plugins/'.$plugin_name.'/applets'.$applet_name.'/icon.png')) {
+			if(is_file('plugins/'.$plugin_name.'/applets/'.$applet_name.'/icon.png')) {
 				$icon_url = asset_url('plugins/' . $plugin_name . '/applets/' . $applet_name . '/icon.png');
 			} else {
 				$icon_url = asset_url('assets/i/icon.png');
