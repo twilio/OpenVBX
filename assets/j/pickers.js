@@ -651,6 +651,9 @@ var Pickers = {
 				Pickers.audio.saveValue(audioChoice, 'say', text, null);
 				Pickers.audio.closeEditorAndShowSayValue(audioChoice, text);
 			}
+			else {
+				$.notify('Text to be read cannot be empty (Hint: insert a space to say nothing).');
+			}
 		}
 	},
 	
