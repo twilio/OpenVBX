@@ -144,7 +144,7 @@ Flows.link = {
 						var matches = this.name.match(/^(.*)\[(.+)\]$/);
 						if( matches && matches.length ) {
 							var key = matches[1] + '[]';
-							if(typeof data[key] == "undefined") {
+							if(typeof data[key] != Array) {
 								data[key] = new Array();
 							}
 							data[key].push(val);
