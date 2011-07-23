@@ -315,7 +315,19 @@ class Twiml extends MY_Controller {
 			$options = array('action' => site_url("twiml/dial_status").'?'.http_build_query(compact('to')),
 							 'callerId' => $callerid);
 
-			$this->response->addDial($to, $options);
+			$to = normalize_phone_to_E164($to);
+			if (empty($to)) {
+				$to = htmlspecialchars($this->input->get_post('to'));
+			}
+			
+			if (is_numeric($to)) {
+				$this->response->addDial($to, $options);
+			}
+			else {
+				$dial = new Dial(NULL, $options);
+				$dial->append(new Client($to));
+				$this->response->append($dial);
+			}
 
 		} else {
 			$gather = $this->response->addGather(array('numDigits' => 1));

@@ -4,14 +4,19 @@
 				<button class="call-button twilio-call" href="<?php echo site_url('messages/call') ?>"><span>Call</span></button>
 				<button class="sms-button twilio-sms" href="<?php echo site_url('messages/sms') ?>"><span>SMS</span></button>
 			</div>
+			
+			<div id="vbx-client-status" class="offline">
+				<span style="display: none;" class="client-status">Offline</span>
+				<button class="client-button twilio-client" href="<?php echo site_url('#client-status'); ?>"><span>Client</span></button>
+			</div>
 
 			<div class="call-dialog">
 				<a href="" class="close action"><span class="replace">close</span></a>
-				<?php if(!empty($user_numbers) && count($user_numbers) < 1):  ?>
+				<?php if(!empty($user_numbers) && count($user_numbers) < 1):  /* has-numbers */ ?>
 
 				<p class="instruct">To use the call feature, <a href="<?php echo site_url('account#devices') ?>">register a phone number</a>.</p>
 
-				<?php else: ?>
+				<?php else: /* has-numbers */ ?>
 
 				<h3>Make a call</h3>
 				<form action="<?php echo site_url('messages/call') ?>" method="POST" class="call-dialog-form vbx-form">
@@ -19,30 +24,44 @@
 						<label class="field-label left">Dial
 							<input id="dial-number" class="small" name="to" type="text" <?php echo empty($callerid_numbers)? 'disabled="disabled"' : '' ?>/>
 						</label>
-						<?php if(!empty($callerid_numbers) && count($callerid_numbers) > 1): ?>
-						<label class="field-label left">From
-							<select name="callerid" class="small">
-								<?php foreach($callerid_numbers as $number): ?>
-								<option value="<?php echo $number->phone ?>"><?php echo $number->phone ?></option>
-								<?php endforeach; ?>
-							</select>
-						</label>
-					    <?php elseif(!empty($callerid_numbers) && count($callerid_numbers) == 1): ?>
-						<?php $c = $callerid_numbers[0]; ?>
-						<?php if(isset($c->trial) && $c->trial == 1): ?>
-						<label class="field-label left">From
-							<input type="text" name="callerid" value="" class="small" />
-						</label>
-						<?php else: ?>
-						<input type="hidden" name="callerid" value="<?php echo $c->phone ?>" />
-						<?php endif; ?>
-					<?php else: ?>
-						<?php if(OpenVBX::getTwilioAccountType() == 'Trial'): ?>
-						<p>You're using a Twilio trial account, please upgrade to dial using a virtual phone number.</p>
-						<?php else: ?>
-						<p>We were unable to connect to Twilio at this time. This feature is disabled.  Try again later.</p>
-						<?php endif; ?>
-					<?php endif; ?>
+						
+						<?php if(!empty($callerid_numbers) && count($callerid_numbers) > 1): /* num-numbers */?>
+							<label class="field-label left">From
+								<select name="callerid" class="small">
+									<?php foreach($callerid_numbers as $number): ?>
+									<option value="<?php echo $number->phone ?>"><?php echo $number->phone ?></option>
+									<?php endforeach; ?>
+								</select>
+							</label>
+					    <?php elseif(!empty($callerid_numbers) && count($callerid_numbers) == 1): /* num-numbers */?>
+							<?php $c = $callerid_numbers[0]; ?>
+							<?php if(isset($c->trial) && $c->trial == 1): /* is-trail */?>
+							<label class="field-label left">From
+								<input type="text" name="callerid" value="" class="small" />
+							</label>
+							<?php else: /* is-trail */ ?>
+							<input type="hidden" name="callerid" value="<?php echo $c->phone ?>" />
+							<?php endif; /* is-trail */ ?>					
+						<?php else: /* num-numbers */ ?>
+							<?php if(OpenVBX::getTwilioAccountType() == 'Trial'): /* trial-notice */ ?>
+							<p>You're using a Twilio trial account, please upgrade to dial using a virtual phone number.</p>
+							<?php else: ?>
+							<p>We were unable to connect to Twilio at this time. This feature is disabled.  Try again later.</p>
+							<?php endif; /* trial-notice */ ?>
+						<?php endif; /* num-numbers */ ?>
+					
+						
+						<?php if (!empty($client_capability)): /* client-dial-select */ ?>
+							<label class="field-label left">Using
+								<select name="device" class="small">
+									<option value="client">Twilio Client</option>
+									<option value="primary-device">Primary Device</option>
+								</select>
+							</label>
+						<?php else: /* client-dial-select */ ?>
+							<input type="hidden" name="primary-device" value="main" />
+						<?php endif; /* client-dial-select */ ?>
+					
 					</fieldset>
 
 					<input name="target" type="hidden" />
@@ -82,7 +101,7 @@
 					<img class="sms-sending hide" src="<?php echo asset_url('assets/i/ajax-loader.gif'); ?>" alt="loading" />
 				</form>
 			</div> <!-- .sms-dialog -->
-			<?php endif; ?>
+			<?php endif; /* has-numbers */ ?>
 
 			<div class="notify <?php echo (isset($error) && !empty($error))? '' : 'hide' ?>">
 

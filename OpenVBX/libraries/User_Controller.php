@@ -34,6 +34,8 @@ class User_Controller extends MY_Controller
 
 	public $testing_mode = false;
 	public $domain;
+	
+	public $capability;
 
 	public function __construct()
 	{
@@ -47,7 +49,7 @@ class User_Controller extends MY_Controller
 				$_COOKIE[$key] = urldecode($_POST[$key]);
 			}
 		}
-
+		
 		parent::__construct();
 
 		if(!file_exists(APPPATH . 'config/openvbx.php')
@@ -162,6 +164,8 @@ class User_Controller extends MY_Controller
 				$this->upgrade_check();
 			}
 		}
+		
+		$this->set_client_support();		
 	}
 
 	protected function redirect($url)
@@ -362,5 +366,42 @@ class User_Controller extends MY_Controller
 	{
 		return $this->tenant;
 	}
+	
+	/**
+	 * Init support for Twilio Client
+	 * This method manually loads in the Twilio Client library due to lack of support
+	 * for multiple parameters passing in CodeIgniters Loader.
+	 *
+	 * Application SID is always set by the parent tenant
+	 *
+	 * @since 0.93
+	 * @return void
+	 */
+	protected function set_client_support() {
+		if (!empty($this->application_sid) && $this->config->item('use_twilio_client')) {
+			$this->template->add_js('http://static.twilio.com/libs/twiliojs/1.0/twilio.js', 'absolute');
+			if (!class_exists('TwilioCapability')) 
+			{
+				include_once(APPPATH.'libraries/TwilioCapability.php');
+				$this->capability = new TwilioCapability($this->twilio_sid, $this->twilio_token);
+			}
+			
+			$user_id = intval($this->session->userdata('user_id'));
+			$user = VBX_user::get(array('id' => $user_id));
+			
+			$params = array(
+				'user_id' => $user->user_id,
+				'rest_access' => $this->make_rest_access()
+			);
 
+			try {
+				$this->capability->allowClientOutgoing($this->application_sid, $params);
+				$this->capability->allowClientIncoming($user->id);
+				// $this->capability->allowClientIncoming(preg_replace('/([^a-zA-Z0-9])/', '', $user->email));
+			}
+			catch (Exception $e) {
+				// TBD
+			}
+		}
+	}
 }

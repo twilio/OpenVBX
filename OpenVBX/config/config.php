@@ -21,13 +21,23 @@ $config['base_url']= "http"
 
 /*
 |--------------------------------------------------------------------------
+| Enable Twilio Client
+|--------------------------------------------------------------------------
+|
+| Enable support for Twilio Client. Defaults to enabled.
+|
+*/
+$config['use_twilio_client'] = TRUE;
+
+/*
+|--------------------------------------------------------------------------
 | Site Revision Number
 |--------------------------------------------------------------------------
 |
 | Used for js versioning.
 |
 */
-$config['site_rev'] = 1007;
+$config['site_rev'] = 1008;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +48,7 @@ $config['site_rev'] = 1007;
 | you're developing, you'll want to see the plain javascript for debugging.
 |
 */
-$config['use_unminimized_js'] = FALSE;
+$config['use_unminimized_js'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,7 +59,7 @@ $config['use_unminimized_js'] = FALSE;
 | you're developing, you'll want to see the plain javascript for debugging.
 |
 */
-$config['use_unminimized_css'] = FALSE;
+$config['use_unminimized_css'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------

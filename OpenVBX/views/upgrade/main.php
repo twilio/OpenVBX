@@ -64,16 +64,6 @@
 
 	</div><!-- #install-container -->
 
-	<script type="text/javascript">
-		$(document).ready(function() {
-			OpenVBX.home = '<?php echo preg_replace("|/$|", "", site_url('')); ?>';
-			OpenVBX.assets = '<?php echo preg_replace("|/$|", "", asset_url('')); ?>';
-		<?php if(isset($step)): ?>
-			OpenVBX.Installer.gotoStep(<?php echo $step ?>);
-		<?php endif; ?>
-		});
-	</script>
-
-
+<?php $this->load->view('js-init'); ?>
 </body>
 </html>

@@ -415,7 +415,7 @@
 		protected $valid = array('action','method','timeout','hangupOnStar',
 			'timeLimit','callerId');
 
-		protected $nesting = array('Number','Conference');
+		protected $nesting = array('Number','Conference', 'Client');
 
 	}
 
@@ -441,9 +441,15 @@
 			parent::__construct(NULL, array());
 		}
 
-
 	}
 
+	class Client extends Verb {
+		
+		function __construct($body) {
+			parent::__construct($body, array());
+		}
+		
+	}
 
 	class Gather extends Verb {
 

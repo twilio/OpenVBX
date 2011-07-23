@@ -55,6 +55,7 @@ $route['messages/details/(:num)/(:any)'] = "messages/details/index/$1/$2";
 $route['messages/details/(:any)'] = "messages/details/index/$1";
 $route['messages/call/(:num)'] = 'messages/message_call/index/$1';
 $route['messages/call'] = 'messages/message_call/index';
+$route['messages/client'] = 'messages/message_call/client';
 $route['messages/sms/(:num)'] = 'messages/message_text/index/$1';
 $route['messages/sms'] = 'messages/message_text/index';
 $route['accounts'] = "accounts";

@@ -72,12 +72,11 @@ class MY_Controller extends Controller
 		$this->settings = new VBX_Settings();
 
 		$rewrite_enabled = intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT));
-		if($rewrite_enabled) {
+		if($rewrite_enabled) 
+		{
 			/* For mod_rewrite */
 			$this->config->set_item('index_page', '');
 		}
-
-
 
 		$this->tenant = $this->settings->get_tenant($this->router->tenant);
 		if($this->tenant === false)
@@ -106,7 +105,8 @@ class MY_Controller extends Controller
 		{
 			$sources_file = APPPATH . 'assets/j/site-bootstrap.sources';
 			$scripts = explode("\n", file_get_contents(APPPATH . '../assets/j/site-bootstrap.sources'));
-		} else {
+		} 
+		else {
 			$scripts = array('site.js');
 		}
 
@@ -118,15 +118,30 @@ class MY_Controller extends Controller
 			$styles = array('site-' . $this->config->item('site_rev') . '.css');
 		}
 
+		if ($this->config->item('use_twilio_client')) 
+		{
+			$this->application_sid = $this->settings->get('application_sid', VBX_PARENT_TENANT);
+			if (!empty($this->application_sid)) 
+			{
+				// look at protocol and serve the appropriate file, https comes from amazon aws
+				$tjs_baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 
+									'https://s3.amazonaws.com/static.twilio.com' : 'http://static.twilio.com';
+				$this->template->add_js($tjs_baseurl.'/libs/twiliojs/1.0/twilio.js', 'absolute');
+			}
+		}
 
-		foreach ($scripts as $script) {
+		foreach ($scripts as $script) 
+		{
 			if ($script) $this->template->add_js("assets/j/$script");
 		}
 
-		foreach ($styles as $style) {
+		foreach ($styles as $style) 
+		{
 			if ($style) $this->template->add_css("assets/c/$style");
-		}
+		}		
 	}
+
+
 
 	protected function set_request_method($method = null)
 	{
@@ -328,6 +343,12 @@ class MY_Controller extends Controller
 		$payload['site_rev'] = $this->config->item('site_rev');
 		$payload['asset_root'] = ASSET_ROOT;
 		$payload['layout'] = $layout;
+
+		if ($this->config->item('use_twilio_client') && !empty($this->capability)) 
+		{
+			$payload['client_capability'] = $this->capability->generateToken();
+		}
+		
 		if($layout == 'yui-t2')
 		{
 			$payload['layout_override'] = 'yui-override-main-margin';
