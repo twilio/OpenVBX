@@ -19,7 +19,7 @@ $(document).ready(function() {
 
 	$('.menu-applet input.keypress').live('change', function(event) {
 		var row = $(this).parents('tr');
-		$('input[name^="choices"]', row).attr('name', 'keys['+$(this).val()+']');
+		$('input[name^="choices"]', row).attr('name', 'choices['+$(this).val()+']');
 	});
 
 	$('.menu-applet .action.add').live('click', function(event) {

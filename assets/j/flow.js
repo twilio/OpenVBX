@@ -133,7 +133,7 @@ Flows.link = {
 					|| /text|hidden|password/i.test(this.type))) {
 				var val = $(this).val();
 				if(val != null) {
-					var type = typeof data[this.name];
+					var type = $.type(data[this.name]);
 					switch(type) {
 					case 'string':
 						data[this.name] = new Array(data[this.name]);
@@ -144,7 +144,7 @@ Flows.link = {
 						var matches = this.name.match(/^(.*)\[(.+)\]$/);
 						if( matches && matches.length ) {
 							var key = matches[1] + '[]';
-							if(typeof data[key] != 'Array') {
+							if(!$.isArray(data[key])) {
 								data[key] = new Array();
 							}
 							data[key].push(val);
