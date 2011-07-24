@@ -285,7 +285,6 @@ class Twiml extends MY_Controller {
 
 	function dial()
 	{
-		ep($_POST);
 		$rest_access = $this->input->get_post('rest_access');
 		$to = $this->input->get_post('to');
 		$callerid = $this->input->get_post('callerid');

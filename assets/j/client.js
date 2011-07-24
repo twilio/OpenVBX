@@ -123,7 +123,6 @@ var Client = {
 	connect: function (conn) {
 		this.ui.startTick();
 		this.ui.show('hangup');
-		this.ui.toggleDialPad();
 		this.status.setCallStatus(true);
 		this.message('Calling');
 	},
@@ -131,7 +130,6 @@ var Client = {
 	disconnect: function (conn) {
 		this.ui.endTick();
 		this.status.setCallStatus(false);
-		this.toggleDialPad();
 		this.message('Call ended');
 		setTimeout('Client.ui.toggleCallView()', 3000);
 	},
@@ -252,7 +250,7 @@ Client.ui = {
 	// show hide the dial tab/status slider
 	toggleCallView: function() {
 		var dialer = $('#dialer'),
-			dialer_offset = $('#dialer').css('width');
+			dialer_offset = parseInt($('#dialer').css('width').replace('px', '')) + parseInt($('#dialer .client-ui-tab').css('width').replace('px', '')) + 'px';
 		
 		if (dialer.hasClass('closed')) {
 			dialer_offset_mod = '+='
@@ -270,12 +268,6 @@ Client.ui = {
 		function() {
 			// TBD?
 		});
-	},
-	
-	toggleDialPad: function() {
-		var dial_pad = $('#dialer client-ui-pad');
-		
-		
 	}
 };
 

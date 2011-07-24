@@ -36,7 +36,7 @@
 						<h2 id="client-ui-message">Initializing...</h2>
 						<h3 class="client-ui-timer">0:00</h3>
 					</div>
-					<div id="client-ui-pad" class="clearfix closed">
+					<div id="client-ui-pad" class="clearfix">
 						<div class="client-ui-button-row">
 							<div class="client-ui-button">
 								<div class="client-ui-button-number">1</div>
@@ -108,6 +108,6 @@
 	</div><!-- /container -->
 
 <?php $this->load->view('js-init'); ?>
-<script type="text/javascript" src="<?php echo asset_url('assets/j/iframe.js') ?>"></script>
+<!-- <script type="text/javascript" src="<?php echo asset_url('assets/j/iframe.js') ?>"></script> -->
 </body>
 </html>
