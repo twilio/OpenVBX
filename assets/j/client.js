@@ -94,6 +94,7 @@ var Client = {
 		if (this.connection) {
 			this.connection.disconnect();
 			this.connection = false;
+			setTimeout('Client.ui.toggleCallView()', 3000);
 		}
 	},
 	
@@ -252,7 +253,7 @@ Client.ui = {
 	// show hide the dial tab/status slider
 	toggleCallView: function() {
 		var dialer = $('#dialer'),
-			dialer_offset = $('#dialer').css('width');
+			dialer_offset = parseInt($('#dialer').css('width').replace('px', '')) + parseInt($('#dialer .client-ui-tab').css('width').replace('px', '')) + 'px';
 		
 		if (dialer.hasClass('closed')) {
 			dialer_offset_mod = '+='
@@ -270,12 +271,6 @@ Client.ui = {
 		function() {
 			// TBD?
 		});
-	},
-	
-	toggleDialPad: function() {
-		var dial_pad = $('#dialer client-ui-pad');
-		
-		
 	}
 };
 
