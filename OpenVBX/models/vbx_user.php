@@ -91,19 +91,19 @@ class VBX_User extends MY_Model {
 		{
 			$users[$i]->devices = VBX_Device::search(array('user_id' => $user->id), 100);
 		}
-		
+
 		if ($users[$i]->online) {
 			array_unshift($users[$i]->devices, new VBX_Device((object) array(
-												'id' => 0, 
-												'name' => 'client', 
-												'value' => 'client:'.$users[$i]->id, 
-												'sms' => 0, 
-												'sequence' => -99, 
-												'is_active' => 1, 
+												'id' => 0,
+												'name' => 'client',
+												'value' => 'client:'.$users[$i]->id,
+												'sms' => 0,
+												'sequence' => -99,
+												'is_active' => 1,
 												'user_id' => $users[$i]->id
 											)));
-		} 
-		
+		}
+
 		if($limit == 1
 		   && count($users) == 1)
 		{
