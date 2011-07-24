@@ -149,81 +149,77 @@ class Site extends User_Controller
 		{
 			try
 			{
-				$process_app_sid = $this->config->item('use_twilio_client');
-				
 				foreach($site as $name => $value)
 				{
-					if ($process_app_sid && $name == 'application_sid') 
+					if ($name == 'application_sid')
 					{
 						$app_sid = $value;
 					}
 					$this->settings->set($name, trim($value), $this->tenant->id);
 				}
-				
-				if ($process_app_sid) {
-					$update_app = false;
-					if (empty($app_sid) && !empty($current_app_sid)) 
-					{
-						// disassociate the current app from this install
-						$update_app[] = array(
-							'app_sid' => $current_app_sid,
-							'params' => array(
-								'VoiceUrl' => '',
-								'VoiceFallbackUrl' => '',
-								'SmsUrl' => '',
-								'SmsFallbackUrl' => ''
-							)
-						);						
-					}
-					elseif (!empty($app_sid)) 
-					{
-						// update the application data
-						$update_app[] = array(
-							'app_sid' => $app_sid,
-							'params' => array(
-								'VoiceUrl' => site_url('/twiml/dial'),
-								'VoiceFallbackUrl' => site_url('/fallback/voice.php'),
-								'VoiceMethod' => 'POST',
-								'SmsUrl' => '',
-								'SmsFallbackUrl' => '',
-								'SmsMethod' => 'POST'
-							)
-						);
-					
-						if ($app_sid != $current_app_sid) {
-							// app sid changed, disassociate the old app from this install
-							$update_app[] = array(
-								'app_sid' => $current_app_sid,
-								'params' => array(
-									'VoiceUrl' => '',
-									'VoiceFallbackUrl' => '',
-									'SmsUrl' => '',
-									'SmsFallbackUrl' => ''
-								)
-							);						
-						}
-					}
-				
-					if (!empty($update_app)) 
-					{
-						$twilio = new TwilioRestClient($this->twilio_sid,
-														$this->twilio_token,
-														$this->twilio_endpoint);
 
-						foreach ($update_app as $app)
+				$update_app = false;
+				if (empty($app_sid) && !empty($current_app_sid))
+				{
+					// disassociate the current app from this install
+					$update_app[] = array(
+										  'app_sid' => $current_app_sid,
+										  'params' => array(
+															'VoiceUrl' => '',
+															'VoiceFallbackUrl' => '',
+															'SmsUrl' => '',
+															'SmsFallbackUrl' => ''
+															)
+										  );
+				}
+				elseif (!empty($app_sid))
+				{
+					// update the application data
+					$update_app[] = array(
+										  'app_sid' => $app_sid,
+										  'params' => array(
+															'VoiceUrl' => site_url('/twiml/dial'),
+															'VoiceFallbackUrl' => site_url('/fallback/voice.php'),
+															'VoiceMethod' => 'POST',
+															'SmsUrl' => '',
+															'SmsFallbackUrl' => '',
+															'SmsMethod' => 'POST'
+															)
+										  );
+
+					if ($app_sid != $current_app_sid) {
+						// app sid changed, disassociate the old app from this install
+						$update_app[] = array(
+											  'app_sid' => $current_app_sid,
+											  'params' => array(
+																'VoiceUrl' => '',
+																'VoiceFallbackUrl' => '',
+																'SmsUrl' => '',
+																'SmsFallbackUrl' => ''
+																)
+											  );
+					}
+				}
+
+				if (!empty($update_app))
+				{
+					$twilio = new TwilioRestClient($this->twilio_sid,
+												   $this->twilio_token,
+												   $this->twilio_endpoint);
+
+					foreach ($update_app as $app)
+					{
+						$response = $twilio->request('Accounts/'.$this->twilio_sid.'/Applications/'.$app['app_sid'],
+													 'POST',
+													 $app['params']);
+
+						if($response && $response->IsError != true)
 						{
-							$response = $twilio->request('Accounts/'.$this->twilio_sid.'/Applications/'.$app['app_sid'], 
-															'POST', 
-															$app['params']);
-												
-							if($response && $response->IsError != true)
-							{
-								throw new SiteException($response->ErrorMessage);
-							}			
+							throw new SiteException($response->ErrorMessage);
 						}
 					}
 				}
-				
+
 				$this->session->set_flashdata('error', 'Settings have been saved');
 			}
 			catch(SiteException $e)
