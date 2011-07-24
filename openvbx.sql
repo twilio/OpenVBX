@@ -111,6 +111,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `tenant_id` BIGINT(20) NOT NULL,
   `last_seen` datetime DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
+  `online` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `email` (`email`, `tenant_id`),
   INDEX(`tenant_id`)
