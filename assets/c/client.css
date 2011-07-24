@@ -25,35 +25,19 @@
 	background-position: 52px -26px;
 }
 
+#vbx-client-status .isonline,
+#vbx-client-status.online .isoffline {
+	display: none;
+}
+
+#vbx-client-status.online .isonline {
+	display: block;
+}
+
+/*
 #client-dialog {
 	padding: 0px;
 	height: 360px;
-}
-
-#client-ui-left-panel {
-	float: left;
-	width: 320px;
-	padding: 20px;
-}
-
-#client-ui-number {
-	border: 1px solid #9D9D9D;
-	-moz-border-radius: 8px; /* FF1+ */
-	-webkit-border-radius: 8px; /* Saf3+, Chrome */
-	-khtml-border-radius: 8px; /* Konqueror */
-	border-radius: 8px; /* Standard. IE9 */
-	/**
-	 * @bugfix border-radius background bleed
-	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
-	 */
-	-webkit-background-clip: padding-box;
-	color: #444;
-	font-size: 28px;
-	height: 32px;
-	margin-top: 6px;
-	padding: 10px;
-	width: 90%;
-
 }
 
 #client-ui-message {
@@ -146,3 +130,4 @@
 	font-size: 12px;
 	margin-top: -3px;
 }
+*/

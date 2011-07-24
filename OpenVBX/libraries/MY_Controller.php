@@ -341,6 +341,12 @@ class MY_Controller extends Controller
 			$payload['layout_override'] = '';
 		}
 
+		if ($this->config->item('use_twilio_client')) {
+			$payload['use_twilio_client'] = true;
+			$user = VBX_User::get($this->session->userdata('user_id'));
+			$payload['user_online'] = ($user->online == 1 ? true : false);
+		}
+
 		$navigation = $this->get_navigation($this->session->userdata('loggedin'),
 											$this->session->userdata('is_admin'));
 		$payload = array_merge($payload, $navigation);

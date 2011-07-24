@@ -5,10 +5,13 @@
 				<button class="sms-button twilio-sms" href="<?php echo site_url('messages/sms') ?>"><span>SMS</span></button>
 			</div>
 			
-			<div id="vbx-client-status" class="offline">
-				<span style="display: none;" class="client-status">Offline</span>
-				<button class="client-button twilio-client" href="<?php echo site_url('#client-status'); ?>"><span>Client</span></button>
-			</div>
+			<?php if ($use_twilio_client): ?>
+				<div id="vbx-client-status" class="<?php echo ($user_online ? 'online' : ''); ?>">
+					<button class="client-button twilio-client" href="#client-status">
+						<span class="isoffline">Offline</span><span class="isonline">Online</span>
+					</button>
+				</div>
+			<?php endif; ?>
 
 			<div class="call-dialog">
 				<a href="" class="close action"><span class="replace">close</span></a>
@@ -51,7 +54,7 @@
 						<?php endif; /* num-numbers */ ?>
 					
 						
-						<?php if (!empty($client_capability)): /* client-dial-select */ ?>
+						<?php if (!empty($use_twilio_client)): /* client-dial-select */ ?>
 							<label class="field-label left">Using
 								<select name="device" class="small">
 									<option value="client">Twilio Client</option>

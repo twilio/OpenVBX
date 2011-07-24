@@ -172,19 +172,21 @@ $(function () {
 		event.preventDefault();
 		var device = $('select[name="device"]', dialog).val();
 		if (device == 'client') {
-			clientDialPopup();
+			clientDialNumber();
 		}
 		else {
 			deviceDialNumber();
 		}
-	}
-	
-	var clientDialPopup = function() {
-		var params = $('form input, form select', dialog).serializeArray();
-		params.push({name: 'outgoing', value: 1});
-		Client.ui.openWindow(params);
+	};
+
+	var clientDialNumber = function() {
+		window.parent.Client.call({
+			'to': $('#dial-number', dialog).val(),
+			'callerid': $('select[name="callerid"]', dialog).val(),
+			'Digits': 1
+		});
 		$('.close', dialog).click();
-	}
+	};
 	
 	var deviceDialNumber = function() {
 		$('.invoke-call-button span').text('Calling...');
@@ -220,8 +222,6 @@ $(function () {
 				$('.error-dialog').dialog('open');
 			}
 		});
-		
-		
 	};
 
 	$('.call-button', dialog).click(callNumber);
@@ -231,7 +231,28 @@ $(function () {
 		if(globalTwilioCallLock) {
 			$('.close', dialog).click();
 		}
-	});	
+	});
+	
+	$('#vbx-client-status .client-button').live('click', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		var parent = $(this).closest('#vbx-client-status'),
+			status = null;
+		
+		if (parent.hasClass('online')) {
+			// go offline
+			status = false;
+			parent.removeClass('online');
+		}
+		else {
+			// go online
+			status = true;
+			parent.addClass('online');
+		}
+		
+		window.parent.Client.status.setWindowStatus(status);
+	});
 });
 
 /////////////////////////////////////////////////////

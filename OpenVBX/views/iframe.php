@@ -9,13 +9,14 @@
 	<link rel="stylesheet" href="/assets/c/iframe.css" type="text/css" media="screen" />
 	<script type="text/javascript" src="/assets/j/frameworks/jquery-1.6.2.min.js"></script>
 	<script type="text/javascript" src="/assets/j/frameworks/jquery-ui-1.8.14.custom.min.js"></script>
+	<script type="text/javascript" src="/assets/j/plugins/jquery.cookie.js"></script>
 	<script type="text/javascript" src="<?php echo $twilio_js; ?>"></script>
 	<script type="text/javascript" src="/assets/j/client.js"></script>
 	
 </head>
 <body>
 	<div id="container">
-		<div id="dialer">
+		<div id="dialer" class="closed">
 			<div class="client-ui-tab open">
 				<div class="client-ui-bg-overlay"><!-- leave me alone! --></div>
 				<div class="client-ui-inset">
@@ -35,7 +36,7 @@
 						<h2 id="client-ui-message">Initializing...</h2>
 						<h3 class="client-ui-timer">0:00</h3>
 					</div>
-					<div id="client-ui-pad" class="clearfix">
+					<div id="client-ui-pad" class="clearfix closed">
 						<div class="client-ui-button-row">
 							<div class="client-ui-button">
 								<div class="client-ui-button-number">1</div>
@@ -92,6 +93,11 @@
 								<div class="client-ui-button-letters"></div>
 							</div>
 						</div>
+					</div><!-- /client-ui-pad -->
+					<div id="client-ui-actions">
+						<button id="client-ui-mute">Mute</button>
+						<button id="client-ui-answer">Answer</button>
+						<button id="client-ui-hangup">Hangup</button>
 					</div>
 				</div>
 			</div>

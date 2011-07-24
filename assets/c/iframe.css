@@ -25,7 +25,7 @@ body,
 #dialer {
 	display: block;
 	position: absolute;
-	right: 0;
+	right: -375px;
 	width: 375px;
 	height: 100%;
 }
@@ -95,7 +95,13 @@ body,
 /* Dialer
 ----------------------------*/
 #client-ui-pad {
-	
+	display: block;
+	overflow: hidden;
+	height: auto;
+}
+
+#client-ui-pad.closed {
+	height: 0;
 }
 
 .client-ui-button-row {

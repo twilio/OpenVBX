@@ -86,7 +86,7 @@ var Client = {
 	},
 	
 	call: function (params) {
-		console.log(params);
+		this.ui.toggleCallView();
 		this.connection = Twilio.Device.connect(params);
 	},
 
@@ -97,10 +97,6 @@ var Client = {
 		}
 	},
 	
-	close: function() {
-		window.close();
-	},
-
 // listeners
 
 	incoming: function (connection) {
@@ -109,6 +105,7 @@ var Client = {
 		if (!this.connection) {
 			this.connection = connection;
 			// notify user of incoming call in future versions
+			Client.ui.toggleCallView();
 			Client.ui.show('answer');	
 		}
 	},
@@ -126,6 +123,7 @@ var Client = {
 	connect: function (conn) {
 		this.ui.startTick();
 		this.ui.show('hangup');
+		this.ui.toggleDialPad();
 		this.status.setCallStatus(true);
 		this.message('Calling');
 	},
@@ -133,8 +131,9 @@ var Client = {
 	disconnect: function (conn) {
 		this.ui.endTick();
 		this.status.setCallStatus(false);
+		this.toggleDialPad();
 		this.message('Call ended');
-		Client.ui.show('dial');
+		setTimeout('Client.ui.toggleCallView()', 3000);
 	},
 
 	offline: function (device) {
@@ -210,38 +209,71 @@ Client.ui = {
 		$('.client-ui-timer').text(minutes + ':' + seconds);
 	},
 	
-	toggleDialer: function(clicked) {
+	// show & hide the dial pad
+	toggleDialer: function() {
+		
+	},
+	
+	// open & close the call tab
+	toggleTab: function(clicked) {
 		var tab = $(clicked).closest('.client-ui-tab'),
 			animate_speed = 500,
-			dialer_offset,
-			tab_status_offset;
+			dialer_offset = $('#dialer .client-ui-content').css('width'),
+			tab_status_offset = $('#dialer .client-ui-tab').css('height')
 		
 		if (tab.hasClass('open')) {
-			dialer_offset = '-=300';
-			tab_status_offset = '-=125';
+			dialer_offset_mod = '-=';
+			tab_status_offset_mod = '-=';
 			tab.removeClass('open');
 		}
 		else {
-			dialer_offset = '+=300';
-			tab_status_offset = '+=125';
+			dialer_offset_mod = '+=';
+			tab_status_offset_mod = '+=';
 			tab.addClass('open');
 		}
 	
 		$('#dialer').animate({
-				right: dialer_offset
+				right: dialer_offset_mod + dialer_offset
 			},
 			animate_speed,
 			function() {
-				// TBD
+				// TBD?
 			});
 			
 		$('#client-ui-tab-status').animate({
-				top: tab_status_offset
+				top: tab_status_offset_mod + tab_status_offset
 			},
 			animate_speed,
 			function() {
-				// TBD
+				// TBD?
 			});
+	},
+	
+	// show hide the dial tab/status slider
+	toggleCallView: function() {
+		var dialer = $('#dialer'),
+			dialer_offset = $('#dialer').css('width');
+		
+		if (dialer.hasClass('closed')) {
+			dialer_offset_mod = '+='
+			dialer.removeClass('closed');
+		}
+		else {
+			dialer_offset_mod = '-='
+			dialer.addClass('closed');
+		}
+
+		dialer.animate({
+			right: dialer_offset_mod + dialer_offset
+		}, 
+		500,
+		function() {
+			// TBD?
+		});
+	},
+	
+	toggleDialPad: function() {
+		var dial_pad = $('#dialer client-ui-pad');
 	}
 };
 
@@ -335,13 +367,14 @@ $(function () {
 	$('#dialer .client-ui-tab-wedge a').live('click', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		Client.ui.toggleDialer(this);
+		Client.ui.toggleTab(this);
 	});
+	
 	$('#dialer .client-ui-tab-status-inner').live('click', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		Client.ui.toggleDialer(this);
-	})
+		Client.ui.toggleTab(this);
+	});
 	
 	Client.init();
 });
