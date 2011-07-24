@@ -378,8 +378,8 @@ class User_Controller extends MY_Controller
 	 * @return void
 	 */
 	protected function set_client_support() {
+		$this->application_sid = $this->settings->get('application_sid', VBX_PARENT_TENANT);
 		if (!empty($this->application_sid) && $this->config->item('use_twilio_client')) {
-			$this->template->add_js('http://static.twilio.com/libs/twiliojs/1.0/twilio.js', 'absolute');
 			if (!class_exists('TwilioCapability')) 
 			{
 				include_once(APPPATH.'libraries/TwilioCapability.php');

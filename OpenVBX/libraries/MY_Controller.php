@@ -118,18 +118,6 @@ class MY_Controller extends Controller
 			$styles = array('site-' . $this->config->item('site_rev') . '.css');
 		}
 
-		if ($this->config->item('use_twilio_client'))
-		{
-			$this->application_sid = $this->settings->get('application_sid', VBX_PARENT_TENANT);
-			if (!empty($this->application_sid)) 
-			{
-				// look at protocol and serve the appropriate file, https comes from amazon aws
-				$tjs_baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 
-									'https://s3.amazonaws.com/static.twilio.com' : 'http://static.twilio.com';
-				$this->template->add_js($tjs_baseurl.'/libs/twiliojs/1.0/twilio.js', 'absolute');
-			}
-		}
-
 		foreach ($scripts as $script) 
 		{
 			if ($script) $this->template->add_js("assets/j/$script");
@@ -343,11 +331,6 @@ class MY_Controller extends Controller
 		$payload['site_rev'] = $this->config->item('site_rev');
 		$payload['asset_root'] = ASSET_ROOT;
 		$payload['layout'] = $layout;
-
-		if ($this->config->item('use_twilio_client') && !empty($this->capability)) 
-		{
-			$payload['client_capability'] = $this->capability->generateToken();
-		}
 		
 		if($layout == 'yui-t2')
 		{

@@ -1,0 +1,160 @@
+html, 
+body {
+	height: 100%;
+	overflow: hidden;
+}
+
+html,
+body,
+#container {
+	margin: 0;
+	padding: 0;
+}
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+/* Flyout
+----------------------------*/
+#dialer {
+	display: block;
+	position: absolute;
+	right: 0;
+	width: 375px;
+	height: 100%;
+}
+
+#dialer .client-ui-tab,
+#dialer .client-ui-content {
+	position: absolute;
+	right: 0;
+	z-index: 1;
+}
+
+#dialer .client-ui-tab,
+#dialer .client-ui-tab .client-ui-bg-overlay {
+	-moz-border-radius-topleft: 8px; /* FF1+ */
+	-webkit-border-top-left-radius: 8px; /* Saf3+, Chrome */
+	-khtml-border-top-left-radius: 8px; /* Konqueror */
+	border-top-left-radius: 8px; /* Standard. IE9 */
+	-moz-border-radius-bottomleft: 8px; /* FF1+ */
+	-webkit-border-bottom-left-radius: 8px; /* Saf3+, Chrome */
+	-khtml-border-bottom-left-radius: 8px; /* Konqueror */
+	border-bottom-left-radius: 8px; /* Standard. IE9 */
+}
+
+#dialer .client-ui-tab {
+	width: 75px;
+	height: 125px;
+	left: 0;
+	top: 50px;
+	text-align: center;
+}
+
+#dialer .client-ui-tab .wedge {
+	color: white;
+	font-size: 80px;
+}
+
+#dialer .client-ui-content {
+	width: 300px;
+	right: 0;
+	height: 100%;
+	text-align: center;
+}
+
+#dialer .client-ui-bg-overlay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: #6BB300;
+	opacity: 0.75;
+	-moz-opacity: 0.75;
+	filter:alpha(opacity=75);
+	z-index: -1;
+}
+
+#dialer .client-ui-inset {
+	padding: 10px;
+}
+
+/* Dialer
+----------------------------*/
+#client-ui-pad {
+}
+.client-ui-button-row {
+	float: left;
+	clear: both;
+}
+.client-ui-button {
+	float: left;
+	padding: 12px;
+	margin: 5px;
+	background: #000;
+	color: #fff;
+	text-align: center;
+	width: 30px;
+	height: 32px;
+	font-size: 24px;
+	font-weight: bold;
+	cursor: pointer;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+.client-ui-button:hover {
+	background: #ef3b37;
+}
+
+.client-ui-button .client-ui-button-number {
+	margin-top: -4px;
+}
+
+.client-ui-button .client-ui-button-number.asterisk {
+	font-size: 40px;
+}
+
+.client-ui-button .client-ui-button-letters {
+	font-weight: normal;
+	font-size: 12px;
+	margin-top: -3px;
+}
+
+#client-ui-message {
+	font-size: 42px;
+	text-align: center;
+	color: #666;
+	font-weight: normal;
+	margin: 40px 0px 0px;
+}
+
+#client-ui-timer {
+	font-size: 84px;
+	text-align: center;
+	color: #ef3b37;
+	font-weight: normal;
+	margin: 0px;
+}
+
+/* Container
+----------------------------*/
+#container {
+	height: 100%;
+	display: block;
+	z-index: 0;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* iFrame
+----------------------------*/
+iframe {
+	z-index: 0;
+}

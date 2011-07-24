@@ -40,7 +40,8 @@
 |
 */
 
-$route['default_controller'] = "messages/message_index";
+#$route['default_controller'] = "messages/message_index";
+$route['default_controller'] = "iframe";
 $route['scaffolding_trigger'] = "";
 
 $route['install'] = "install";
