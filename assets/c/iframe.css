@@ -2,6 +2,7 @@ html,
 body {
 	height: 100%;
 	overflow: hidden;
+	font: 13px/1.231 arial,helvetica,clean,sans-serif;
 }
 
 html,
@@ -52,13 +53,20 @@ body,
 	width: 75px;
 	height: 125px;
 	left: 0;
-	top: 50px;
+	top: 4px;
 	text-align: center;
+	overflow: hidden;
 }
 
-#dialer .client-ui-tab .wedge {
+#dialer .client-ui-tab .client-ui-tab-wedge {
+	height: 125px;
+	width: 100%;
+}
+
+#dialer .client-ui-tab .client-ui-tab-wedge a {
 	color: white;
 	font-size: 80px;
+	text-decoration: none;
 }
 
 #dialer .client-ui-content {
@@ -81,16 +89,20 @@ body,
 
 #dialer .client-ui-inset {
 	padding: 10px;
+	position: relative;
 }
 
 /* Dialer
 ----------------------------*/
 #client-ui-pad {
+	
 }
+
 .client-ui-button-row {
 	float: left;
 	clear: both;
 }
+
 .client-ui-button {
 	float: left;
 	padding: 12px;
@@ -134,12 +146,47 @@ body,
 	margin: 40px 0px 0px;
 }
 
-#client-ui-timer {
-	font-size: 84px;
+.client-ui-timer {
 	text-align: center;
 	color: #ef3b37;
 	font-weight: normal;
-	margin: 0px;
+	margin: 0px;	
+}
+
+.client-ui-content .client-ui-timer {
+	font-size: 84px;
+}
+
+.client-ui-tab .client-ui-timer {
+	font-size: 1em;
+}
+
+/* Status
+----------------------------*/
+
+#client-ui-status {
+	margin-top: 60px;
+	padding: 50px 0 0 0;
+	background: transparent url(../i/mic_big.png) top center no-repeat;
+}
+
+.client-ui-tab-status-inner {
+	width: 82%;
+	height: 85px;
+	padding-top: 30px;
+	overflow: hidden;
+}
+
+#client-ui-tab-status {
+	height: 250px;
+	width: 100%;
+	position: absolute;
+}
+
+#client-ui-tab-status .mic{
+	width: 100%;
+	height: 28px;
+	background: transparent url(../i/vbx-client-status.png) top center no-repeat;
 }
 
 /* Container

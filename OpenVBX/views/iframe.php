@@ -16,10 +16,16 @@
 <body>
 	<div id="container">
 		<div id="dialer">
-			<div class="client-ui-tab">
+			<div class="client-ui-tab open">
 				<div class="client-ui-bg-overlay"><!-- leave me alone! --></div>
 				<div class="client-ui-inset">
-					<span class="wedge">&raquo;</span>
+					<div id="client-ui-tab-status">
+						<div class="client-ui-tab-wedge"><a href="#dialer">&raquo;</a></div>
+						<div class="client-ui-tab-status-inner">
+							<div class="mic"></div>
+							<h3 class="client-ui-timer">0:00</h3>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="client-ui-content">
@@ -27,7 +33,7 @@
 				<div class="client-ui-inset">
 					<div id="client-ui-status" class="clearfix">
 						<h2 id="client-ui-message">Initializing...</h2>
-						<h3 id="client-ui-timer">0:00</h3>
+						<h3 class="client-ui-timer">0:00</h3>
 					</div>
 					<div id="client-ui-pad" class="clearfix">
 						<div class="client-ui-button-row">

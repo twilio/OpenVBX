@@ -34,62 +34,32 @@ var Client = {
 	},
 	
 	init: function () {
-			// only do status checks in the main window(s)
-		if ($('#openvbx-logo').size()) {
-			Client.status.displayOnlineStatus();
-		}
-		else {
-			Twilio.Device.setup(OpenVBX.client_capability);
-	
-			Twilio.Device.ready(function (device) {
-				Client.ready(device);
-			});
-			
-			Twilio.Device.offline(function (device) {
-				Client.offline(device);
-			});
-			
-			Twilio.Device.error(function (error) {
-				Client.error(error);
-			});
-			
-			Twilio.Device.connect(function (conn) {
-				Client.connect(conn);
-			});
-			
-			Twilio.Device.disconnect(function (conn) {
-				Client.disconnect(conn);
-			});
-			
-			Twilio.Device.incoming(function (conn) {
-				console.log(conn);
-				Client.incoming(conn);
-			});
-	
-			$('#client-ui-answer').live('click', function() {
-				Client.accept();
-				Client.ui.show('hangup');
-			});
-	
-			$('#client-ui-dial').live('click', function() {
-				var params = {
-					'to': $('#client-ui-number').val(),
-					'callerid': client_params.callerid,
-					'Digits': 1
-				}
-				Client.call(params);
-			});
-	
-			$('#client-ui-hangup').live('click', function() {
-				Client.hangup();
-			});
-	
-			$('.client-ui-button').live('click', function(event) {
-				event.stopPropagation();
-				var key = $(this).children('.client-ui-button-number').text();
-				Client.ui.pressKey(key);
-			});
-		}
+		Twilio.Device.setup(OpenVBX.client_capability);
+
+		Twilio.Device.ready(function (device) {
+			Client.ready(device);
+		});
+		
+		Twilio.Device.offline(function (device) {
+			Client.offline(device);
+		});
+		
+		Twilio.Device.error(function (error) {
+			Client.error(error);
+		});
+		
+		Twilio.Device.connect(function (conn) {
+			Client.connect(conn);
+		});
+		
+		Twilio.Device.disconnect(function (conn) {
+			Client.disconnect(conn);
+		});
+		
+		Twilio.Device.incoming(function (conn) {
+			console.log(conn);
+			Client.incoming(conn);
+		});
 	}, 
 	
 	translateKeyCode: function (code) {
@@ -237,21 +207,41 @@ Client.ui = {
 			seconds = '0' + seconds;
 		}
 
-		$('#client-ui-timer').text(minutes + ':' + seconds);
+		$('.client-ui-timer').text(minutes + ':' + seconds);
 	},
 	
-// window pop
-	
-	openWindow: function(params) {
-		var paramstring = '';
-		if (params) {
-			paramstring = '?' + $.param(params);
-		}
-		var window_url = OpenVBX.home + '/messages/client' + paramstring;
-		var window_opts = 'location=0,status=0,width=600,height=350,scrollbars=0,menubar=0,resizable=0';
+	toggleDialer: function(clicked) {
+		var tab = $(clicked).closest('.client-ui-tab'),
+			animate_speed = 500,
+			dialer_offset,
+			tab_status_offset;
 		
-		Client.status.setWindowStatus(true);
-		return window.open(window_url, 'client_caller', window_opts);
+		if (tab.hasClass('open')) {
+			dialer_offset = '-=300';
+			tab_status_offset = '-=125';
+			tab.removeClass('open');
+		}
+		else {
+			dialer_offset = '+=300';
+			tab_status_offset = '+=125';
+			tab.addClass('open');
+		}
+	
+		$('#dialer').animate({
+				right: dialer_offset
+			},
+			animate_speed,
+			function() {
+				// TBD
+			});
+			
+		$('#client-ui-tab-status').animate({
+				top: tab_status_offset
+			},
+			animate_speed,
+			function() {
+				// TBD
+			});
 	}
 };
 
@@ -317,29 +307,41 @@ Client.status = {
 	}
 };
 
-var clientCall = function (params) {
-	Client.call(params);
-};
-
-var clientAccept = function () {
-	Client.accept();
-};
-
-var clientHangup = function () {
-	Client.hangup();
-};
-
-var clientAnswer = function() {
-	// TBD
-}
-
-var clientPromptAnswer = function () {
-	Client.incoming();
-};
-
 $(function () {
-	$('button.client-button').live('click', function() {
-		Client.ui.openWindow();
+	$('#client-ui-answer').live('click', function() {
+		Client.accept();
+		Client.ui.show('hangup');
 	});
+
+	$('#client-ui-dial').live('click', function() {
+		var params = {
+			'to': $('#client-ui-number').val(),
+			'callerid': client_params.callerid,
+			'Digits': 1
+		}
+		Client.call(params);
+	});
+
+	$('#client-ui-hangup').live('click', function() {
+		Client.hangup();
+	});
+
+	$('.client-ui-button').live('click', function(event) {
+		event.stopPropagation();
+		var key = $(this).children('.client-ui-button-number').text();
+		Client.ui.pressKey(key);
+	});
+	
+	$('#dialer .client-ui-tab-wedge a').live('click', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		Client.ui.toggleDialer(this);
+	});
+	$('#dialer .client-ui-tab-status-inner').live('click', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		Client.ui.toggleDialer(this);
+	})
+	
 	Client.init();
 });
