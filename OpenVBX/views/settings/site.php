@@ -131,11 +131,9 @@
 					<label for="site-twilio-token" class="field-label">Twilio Token
 						<input id="site-twilio-token" type="password" name="site[twilio_token]" value="<?php echo @$twilio_token['value'] ?>" class="medium" />
 					</label>
-					<?php if ($this->config->item('use_twilio_client')): ?>
-						<label for="site-twilio-application-sid" class="field-label">Twilio Client Application SID
-							<input id="site-twilio-application-sid" type="text" name="site[application_sid]" value="<?php echo @$application_sid['value']; ?>" class="medium" /> 
-						</label>
-					<?php endif; ?>
+					<label for="site-twilio-application-sid" class="field-label">Twilio Client Application SID
+						<input id="site-twilio-application-sid" type="text" name="site[application_sid]" value="<?php echo @$application_sid['value']; ?>" class="medium" />
+					</label>
 					<label for="site-from-email" class="field-label">From Email
 						<input id="site-from-email" type="text" name="site[from_email]" value="<?php echo @$from_email['value'] ?>" class="medium" />
 					</label>
