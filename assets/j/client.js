@@ -94,7 +94,6 @@ var Client = {
 		if (this.connection) {
 			this.connection.disconnect();
 			this.connection = false;
-			setTimeout('Client.ui.toggleCallView()', 3000);
 		}
 	},
 	
@@ -124,7 +123,6 @@ var Client = {
 	connect: function (conn) {
 		this.ui.startTick();
 		this.ui.show('hangup');
-		this.ui.toggleDialPad();
 		this.status.setCallStatus(true);
 		this.message('Calling');
 	},
@@ -132,7 +130,6 @@ var Client = {
 	disconnect: function (conn) {
 		this.ui.endTick();
 		this.status.setCallStatus(false);
-		this.toggleDialPad();
 		this.message('Call ended');
 		setTimeout('Client.ui.toggleCallView()', 3000);
 	},
