@@ -274,6 +274,8 @@ Client.ui = {
 	
 	toggleDialPad: function() {
 		var dial_pad = $('#dialer client-ui-pad');
+		
+		
 	}
 };
 

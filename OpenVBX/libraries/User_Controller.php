@@ -385,7 +385,7 @@ class User_Controller extends MY_Controller
 				include_once(APPPATH.'libraries/TwilioCapability.php');
 				$this->capability = new TwilioCapability($this->twilio_sid, $this->twilio_token);
 			}
-			
+
 			$user_id = intval($this->session->userdata('user_id'));
 			$user = VBX_user::get(array('id' => $user_id));
 			
