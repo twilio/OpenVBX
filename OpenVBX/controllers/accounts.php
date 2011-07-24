@@ -359,7 +359,8 @@ class Accounts extends User_Controller {
 				'auth_type' => isset($auth_type->description) ? $auth_type->description : 'openvbx',
 				'email' => $user->email,
 				'error' => false,
-				'message' => ''
+				'message' => '',
+				'online' => $user->online
 			);
 		}
 

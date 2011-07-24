@@ -3,7 +3,7 @@ jQuery(function($) {
 		Client.status.setWindowStatus(false);
 	});
 	
-	var client_params = <?php echo $client_params; ?>;
+	client_params = <?php echo $client_params; ?>;
 	if (client_params.to) {
 		// outgoing
 		Client.onready = function() {

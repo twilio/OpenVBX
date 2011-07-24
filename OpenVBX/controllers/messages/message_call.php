@@ -87,22 +87,31 @@ class Message_Call extends User_Controller
 	 * @return void
 	 */
 	public function client() 
-	{
+	{	
+		$caller_id = $this->input->get('callerid');
+		if (empty($caller_id)) {
+			// grab user's default device
+			$user = VBX_User::get($this->session->userdata['user_id']);
+			$devices = $this->vbx_device->get_by_user($this->user_id);
+			if (!empty($devices)) {
+				$caller_id = $devices[0]->value;
+			}
+		}
+		
 		$client_params = array(
-			'callerid' => normalize_phone_to_E164($this->input->get('callerid')),
+			'callerid' => normalize_phone_to_E164($caller_id),
 			'application_id' => 'client'
 		);
 		
 		if ($this->input->get('outgoing')) 
 		{
-			
+			// functionality for using the "dial" modal to initiate a call
 			$to = normalize_phone_to_E164($this->input->get('to'));
 			if (empty($to)) {
 				$to = htmlspecialchars($this->input->get('to'));
 			}
 			$client_params = array_merge($client_params, array(
 				'to' => $to, // if this is empty then the window will not auto dial
-				'Digits' => 1 // tell the VBX dial twiml that the user has already accepted the call
 			));
 		}
 		elseif ($this->input->get('incoming')) {

@@ -295,6 +295,10 @@
 		function addNumber($body=NULL, $attr = array()){
 			return self::append(new Number($body, $attr));
 		}
+		
+		function addClient($body=NULL, $attr = array()){
+			return self::append(new Client($body, $attr));
+		}
 
 		function addGather($attr = array()){
 			return self::append(new Gather($attr));

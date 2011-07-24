@@ -30,7 +30,7 @@ var currentDialogType = null;
 var Client = {
 	connection: false,
 	
-	onready: null,
+	onready: function(){},
 		
 	options: {
 		cookie_name: 'vbx_client_call',
@@ -43,22 +43,61 @@ var Client = {
 	},
 	
 	init: function () {
-		// capture "button" clicks
-		$('.client-ui-button').live('click', function(event) {
-			event.stopPropagation();
-			var key = $(this).children('.client-ui-button-number').text();
-			Client.ui.pressKey(key);
-		});
-		
-		// treat cookie as source of truth
-		var cookieval = this.status.getCookie();
-		if (typeof cookieval == 'object') {
-			if (cookieval.window_open) {
-				this.status.window_open = cookieval.window_open;
-			}
-			if (cookieval.on_call) {
-				this.status.on_call = cookieval.on_call;
-			}
+			// only do status checks in the main window(s)
+		if ($('#openvbx-logo').size()) {
+			Client.status.displayOnlineStatus();
+		}
+		else {
+			Twilio.Device.setup(OpenVBX.client_capability);
+	
+			Twilio.Device.ready(function (device) {
+				Client.ready(device);
+			});
+			
+			Twilio.Device.offline(function (device) {
+				Client.offline(device);
+			});
+			
+			Twilio.Device.error(function (error) {
+				Client.error(error);
+			});
+			
+			Twilio.Device.connect(function (conn) {
+				Client.connect(conn);
+			});
+			
+			Twilio.Device.disconnect(function (conn) {
+				Client.disconnect(conn);
+			});
+			
+			Twilio.Device.incoming(function (conn) {
+				console.log(conn);
+				Client.incoming(conn);
+			});
+	
+			$('#client-ui-answer').live('click', function() {
+				Client.accept();
+				Client.ui.show('hangup');
+			});
+	
+			$('#client-ui-dial').live('click', function() {
+				var params = {
+					'to': $('#client-ui-number').val(),
+					'callerid': client_params.callerid,
+					'Digits': 1
+				}
+				Client.call(params);
+			});
+	
+			$('#client-ui-hangup').live('click', function() {
+				Client.hangup();
+			});
+	
+			$('.client-ui-button').live('click', function(event) {
+				event.stopPropagation();
+				var key = $(this).children('.client-ui-button-number').text();
+				Client.ui.pressKey(key);
+			});
 		}
 	}, 
 	
@@ -104,10 +143,12 @@ var Client = {
 // listeners
 
 	incoming: function (connection) {
+		window.focus();
 		this.message('Incoming call from: ' + connection.parameters.From);
 		if (!this.connection) {
 			this.connection = connection;
-			// notify user of incoming call in future versions	
+			// notify user of incoming call in future versions
+			Client.ui.show('answer');	
 		}
 	},
 
@@ -130,9 +171,9 @@ var Client = {
 
 	disconnect: function (conn) {
 		this.ui.endTick();
-		this.ui.hide('hangup');
 		this.status.setCallStatus(false);
 		this.message('Call ended');
+		Client.ui.show('dial');
 	},
 
 	offline: function (device) {
@@ -160,11 +201,11 @@ Client.ui = {
 	},
 	
 	show: function(element) {
-		$('#client-ui-' + element).show();
+		$('#client-ui-actions #client-ui-' + element).show().siblings().hide();
 	},
 	
 	hide: function(element) {
-		$('#client-ui-' + element).hide();
+		$('#client-ui-actions #client-ui-' + element).hide().siblings().hide();
 	},
 	
 // Timer
@@ -234,6 +275,16 @@ Client.status = {
 	
 	setWindowStatus: function (status) {
 		this.setCookieVal('window_open', status);
+		$.ajax({
+			url: OpenVBX.home + '/account/edit',
+			data: {
+				'online': (status ? 1 : 0).toString()
+			},
+			success: function(r) {},
+			async: false,
+			type : 'POST',
+			dataType : 'json'
+		});
 	},
 	
 	getWindowStatus: function () {
@@ -287,48 +338,18 @@ var clientHangup = function () {
 	Client.hangup();
 };
 
+var clientAnswer = function() {
+	// TBD
+}
+
 var clientPromptAnswer = function () {
 	Client.incoming();
 };
 
-Twilio.Device.setup(OpenVBX.client_capability);
-
-Twilio.Device.ready(function (device) {
-	Client.ready(device);
-});
-
-Twilio.Device.offline(function (device) {
-	Client.offline(device);
-});
-
-Twilio.Device.error(function (error) {
-	Client.error(error);
-});
-
-Twilio.Device.connect(function (conn) {
-	Client.connect(conn);
-});
-
-Twilio.Device.disconnect(function (conn) {
-	Client.disconnect(conn);
-});
-
-Twilio.Device.incoming(function (conn) {
-	console.log(conn);
-	Client.incoming(conn);
-});
-
 $(function () {
-	$('#client-ui-hangup').live('click', function() {
-		Client.hangup();
-	});
 	$('button.client-button').live('click', function() {
 		Client.ui.openWindow();
 	});
-	// only do status checks in the main window(s)
-	if ($('#openvbx-logo').size()) {
-		Client.status.displayOnlineStatus();
-	}
 	Client.init();
 });
 

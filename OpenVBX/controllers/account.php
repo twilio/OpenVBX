@@ -107,26 +107,38 @@ class Account extends User_Controller {
 			/* Disallow people from changing certain settings */
 			if(in_array($field, $user->admin_fields))
 			{
-				if($val && $is_admin) $params[$field] = $val;
+				if(($val || $val === '0') && $is_admin) $params[$field] = $val;
 			}
 			else
 			{
-				if($val) $params[$field] = $val;
+				if($val || $val === '0') $params[$field] = $val;
 			}
-			
+
 			// The value for some fields should also be saved to the session
 			if ($field === 'email')
 			{
 				$this->session->set_userdata('email', trim($val));
 			}
 		}
+		
+		$success = $user->update($this->user_id, $params);
 
-		if($user->update($this->user_id, $params)) {
-			$this->session->set_flashdata('message_edit', 'User data changed');
-			redirect('account');
-		} else {
-			$this->data['error_edit'] = '';
-			$this->index();
+		if ($this->response_type == 'json') {
+			$data = array(
+				'error' => !$success,
+				'message' => (!$success ? 'an error occurred while updating the user' : 'user status updated')
+			);
+			$this->respond('', null, $data);
+		}
+		else {
+			if ($success) {
+				$this->session->set_flashdata('message_edit', 'User data changed');
+				redirect('account');
+			}
+			else {
+				$this->data['error_edit'] = '';
+				$this->index();
+			}
 		}
 	}
 

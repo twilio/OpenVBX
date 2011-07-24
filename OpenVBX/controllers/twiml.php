@@ -315,12 +315,21 @@ class Twiml extends MY_Controller {
 			$options = array('action' => site_url("twiml/dial_status").'?'.http_build_query(compact('to')),
 							 'callerId' => $callerid);
 
+			$dial_client = false;
 			$to = normalize_phone_to_E164($to);
-			if (empty($to)) {
-				$to = htmlspecialchars($this->input->get_post('to'));
+			if (!is_numeric($to)) {
+				//$to = htmlspecialchars($this->input->get_post('to'));
+				// look up user by email address
+				$user = VBX_User::get(array(
+					'email' => $this->input->get_post('to')
+				));
+				if (!empty($user)) {
+					$dial_client = true;
+					$to = $user->id;
+				}
 			}
 			
-			if (is_numeric($to)) {
+			if (!$dial_client) {
 				$this->response->addDial($to, $options);
 			}
 			else {

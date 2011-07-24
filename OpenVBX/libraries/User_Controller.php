@@ -397,7 +397,6 @@ class User_Controller extends MY_Controller
 			try {
 				$this->capability->allowClientOutgoing($this->application_sid, $params);
 				$this->capability->allowClientIncoming($user->id);
-				// $this->capability->allowClientIncoming(preg_replace('/([^a-zA-Z0-9])/', '', $user->email));
 			}
 			catch (Exception $e) {
 				// TBD

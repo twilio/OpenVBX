@@ -118,7 +118,7 @@ class MY_Controller extends Controller
 			$styles = array('site-' . $this->config->item('site_rev') . '.css');
 		}
 
-		if ($this->config->item('use_twilio_client')) 
+		if ($this->config->item('use_twilio_client'))
 		{
 			$this->application_sid = $this->settings->get('application_sid', VBX_PARENT_TENANT);
 			if (!empty($this->application_sid)) 

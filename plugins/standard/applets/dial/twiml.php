@@ -145,11 +145,15 @@ while($keepLooping)
 						$name = "Unknown";
 					}
 
-					$dial->addNumber($numbers[$state[DIAL_NUMBER_INDEX]],
-									 array(
+					$number = $numbers[$state[DIAL_NUMBER_INDEX]];
+					if (strpos($number, 'client:') !== false) {
+						$dial->addClient(str_replace('client:', '', $number), array());
+					}
+					else {
+						$dial->addNumber($number, array(
 										   'url' => site_url('twiml/whisper?name='.urlencode($name)),
-										   )
-									 );
+										));
+					}
 				}
 				else
 				{
