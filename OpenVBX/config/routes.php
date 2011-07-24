@@ -96,6 +96,7 @@ $route['external/messages/details/(:any)'] = 'external/message_details/$1';
 $route['external'] = "external";
 $route['iphone/messages/details/(:any)'] = 'iphone/message_details/$1';
 $route['iphone'] = "iphone";
+$route['iframe'] = "iframe";
 
 /* End of file routes.php */
 /* Location: ./system/application/config/routes.php */
