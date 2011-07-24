@@ -6,13 +6,11 @@
 	<title><?php echo empty($title) ? ' ' : "$title | " ?><?php echo $site_title ?> <?php echo (isset($counts))? '('.$counts[0]->new.')' : '' ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
-	<link rel="stylesheet" href="/assets/c/iframe.css" type="text/css" media="screen" />
-	<script type="text/javascript" src="/assets/j/frameworks/jquery-1.6.2.min.js"></script>
-	<script type="text/javascript" src="/assets/j/frameworks/jquery-ui-1.8.14.custom.min.js"></script>
-	<script type="text/javascript" src="/assets/j/plugins/jquery.cookie.js"></script>
+	<link rel="stylesheet" href="<?php echo asset_url('assets/c/iframe.css'); ?>" type="text/css" media="screen" />
+	<script type="text/javascript" src="<?php echo asset_url('assets/j/frameworks/jquery-1.6.2.min.js'); ?>"></script>
+	<script type="text/javascript" src="<?php echo asset_url('assets/j/frameworks/jquery-ui-1.8.14.custom.min.js'); ?>"></script>
+	<script type="text/javascript" src="<?php echo asset_url('assets/j/plugins/jquery.cookie.js'); ?>"></script>
 	<script type="text/javascript" src="<?php echo $twilio_js; ?>"></script>
-	<script type="text/javascript" src="/assets/j/client.js"></script>
-	
 </head>
 <body>
 	<div id="container">
@@ -106,8 +104,8 @@
 			<p>Your browser doesn't support iFrames.</p>
 		</iframe>
 	</div><!-- /container -->
-	
+
 <?php $this->load->view('js-init'); ?>
-	
+<script type="text/javascript" src="<?php echo asset_url('assets/j/iframe.js') ?>"></script>
 </body>
 </html>
