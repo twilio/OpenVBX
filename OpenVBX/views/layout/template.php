@@ -53,5 +53,11 @@
 <?php echo $analytics; ?>
 <?php $this->load->view('js-init'); ?>
 <?php echo $_scripts; ?>
+<script type="text/javascript">
+	if (window == window.top) {
+		$.cookie('last_known_url', window.location, null, '/');
+		window.location = OpenVBX.home;
+	}
+</script>
 </body>
 </html>

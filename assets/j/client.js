@@ -22,6 +22,8 @@ var Client = {
 	connection: false,
 	
 	onready: function(){},
+	
+	incoming_timeout: null,
 		
 	options: {
 		cookie_name: 'vbx_client_call',
@@ -29,7 +31,7 @@ var Client = {
 	},
 	
 	message: function (status) {
-		console.log(status);
+		//console.log(status);
 		$('#client-ui-message').text(status);
 	},
 	
@@ -45,6 +47,7 @@ var Client = {
 		});
 		
 		Twilio.Device.error(function (error) {
+			console.log(error);
 			Client.error(error);
 		});
 		
@@ -53,14 +56,28 @@ var Client = {
 		});
 		
 		Twilio.Device.disconnect(function (conn) {
+			console.log('disconnect');
 			Client.disconnect(conn);
 		});
 		
 		Twilio.Device.incoming(function (conn) {
-			console.log(conn);
+			console.log('incoming');
 			Client.incoming(conn);
 		});
+		
+		Twilio.Device.cancel(function(conn) {
+			console.log('canceled');
+			Client.cancel();
+		});
 	}, 
+	
+	setOnBeforeUnload: function(status) {
+		window.onbeforeunload = (status) ? this.onBeforeUnloadWarning : null;
+	},
+	
+	onBeforeUnloadWarning: function() {
+		return 'You are currently on a call. Refreshing this page will cause the call to drop. Do you really want to leave this page?';
+	},
 	
 	translateKeyCode: function (code) {
 		var number = code - 48;
@@ -97,6 +114,14 @@ var Client = {
 		}
 	},
 	
+	giveUpIncoming: function() {
+		if (this.incoming) {
+			this.connection.cancel();
+		}
+		this.status.setCallStatus(false);
+		setTimeout('Client.ui.toggleCallView()', 1000);
+	},
+	
 // listeners
 
 	incoming: function (connection) {
@@ -104,6 +129,7 @@ var Client = {
 		this.message('Incoming call from: ' + connection.parameters.From);
 		if (!this.connection) {
 			this.connection = connection;
+			this.incoming_timeout = setTimeout('Client.giveUpIncoming()', 15000);
 			// notify user of incoming call in future versions
 			Client.ui.toggleCallView();
 			Client.ui.show('answer');	
@@ -111,6 +137,7 @@ var Client = {
 	},
 
 	accept: function (connection) {
+		clearTimeout(this.incoming_timeout);
 		this.connection.accept();
 	}, 
 
@@ -125,13 +152,22 @@ var Client = {
 		this.ui.show('hangup');
 		this.status.setCallStatus(true);
 		this.message('Calling');
+		this.setOnBeforeUnload(true);
 	},
 
 	disconnect: function (conn) {
 		this.ui.endTick();
 		this.status.setCallStatus(false);
 		this.message('Call ended');
+		this.setOnBeforeUnload(false);
 		setTimeout('Client.ui.toggleCallView()', 3000);
+	},
+	
+	cancel: function(conn) {
+		this.ui.endTick();
+		this.status.setCallStatus(false);
+		this.message('Call cancelled');
+		setTimeout('Client.ui.toggleCallView()', 1000);
 	},
 
 	offline: function (device) {
