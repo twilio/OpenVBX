@@ -274,14 +274,32 @@ iframe {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#000));
 }
 
+#client-ui-actions #client-ui-mute:active {
+	background-color: #000;
+    background: -moz-linear-gradient(100% 100% 90deg, #222, #000);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#000), to(#222));
+}
+
 #client-ui-actions #client-ui-answer {
 	background-color: #53A82B;
     background: -moz-linear-gradient(100% 100% 90deg, #448723, #53A82B);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#53A82B), to(#448723));
 }
 
+#client-ui-actions #client-ui-answer:active {
+	background-color: #316800;
+    background: -moz-linear-gradient(100% 100% 90deg, #53A82B, #316800);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#316800), to(#53A82B));
+}
+
 #client-ui-actions #client-ui-hangup {
 	background-color: #C00;
     background: -moz-linear-gradient(100% 100% 90deg, #900, #C00);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#C00), to(#900));
+}
+
+#client-ui-actions #client-ui-hangup:active {
+	background-color: #900;
+    background: -moz-linear-gradient(100% 100% 90deg, #C00, #650000);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#650000), to(#C00));
 }
