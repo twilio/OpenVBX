@@ -108,6 +108,6 @@
 	</div><!-- /container -->
 
 <?php $this->load->view('js-init'); ?>
-<!-- <script type="text/javascript" src="<?php echo asset_url('assets/j/iframe.js') ?>"></script> -->
+<script type="text/javascript" src="<?php echo asset_url('assets/j/iframe.js') ?>"></script>
 </body>
 </html>
