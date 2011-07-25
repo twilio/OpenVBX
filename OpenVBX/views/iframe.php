@@ -17,18 +17,20 @@
 <body>
 	<div id="container">
 		<div id="dialer" class="closed">
+
 			<div class="client-ui-tab open">
 				<div class="client-ui-bg-overlay"><!-- leave me alone! --></div>
 				<div class="client-ui-inset">
 					<div id="client-ui-tab-status">
-						<div class="client-ui-tab-wedge"><a href="#dialer">&raquo;</a></div>
+						<div class="client-ui-tab-wedge"><a href="#dialer"><span class="symbol">&raquo;</span> Hide</a></div>
 						<div class="client-ui-tab-status-inner">
 							<div class="mic"></div>
 							<h3 class="client-ui-timer">0:00</h3>
-						</div>
-					</div>
-				</div>
-			</div>
+						</div><!-- .client-ui-tab-status-inner -->
+					</div><!-- #client-ui-tab-status -->
+				</div><!-- #client-ui-tab-inset -->
+			</div><!-- .client-ui-tab .open -->
+
 			<div class="client-ui-content">
 				<div class="client-ui-bg-overlay"><!-- leave me alone! --></div>
 				<div class="client-ui-inset">
@@ -95,9 +97,9 @@
 						</div>
 					</div><!-- /client-ui-pad -->
 					<div id="client-ui-actions">
-						<button id="client-ui-mute">Mute</button>
-						<button id="client-ui-answer">Answer</button>
-						<button id="client-ui-hangup">Hangup</button>
+						<button id="client-ui-mute" class="client-ui-action-button">Mute</button>
+						<button id="client-ui-answer" class="client-ui-action-button">Answer</button>
+						<button id="client-ui-hangup" class="client-ui-action-button">Hangup</button>
 					</div>
 				</div>
 			</div>

@@ -1,15 +1,10 @@
 html, 
 body {
 	height: 100%;
-	overflow: hidden;
-	font: 13px/1.231 arial,helvetica,clean,sans-serif;
-}
-
-html,
-body,
-#container {
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
+	font: 13px/1.231 arial,helvetica,clean,sans-serif;
 }
 
 .clearfix:after {
@@ -20,85 +15,177 @@ body,
   visibility: hidden;
 }
 
-/* Flyout
-----------------------------*/
+
+/* Container */
+#container {
+	display: block;
+	height: 100%;
+	z-index: 0;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+/* iFrame */
+iframe {
+	z-index: 0;
+}
+
+
+/* Dialer */
 #dialer {
 	display: block;
 	position: absolute;
-	right: -375px;
-	width: 300px;
+	right: -315px;
+	width: 220px;
 	height: 100%;
 }
 
-#dialer .client-ui-tab,
+
+/* Client UI Content */
 #dialer .client-ui-content {
 	position: absolute;
-	right: 0;
 	z-index: 1;
+	height: 100%;
+	width: 220px;
 }
 
-#dialer .client-ui-tab,
+
+/* Client UI Tab */
+#dialer .client-ui-tab {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	width: 95px;
+	height: 50px;
+	margin-left: -95px;
+	overflow: hidden;
+}
+
 #dialer .client-ui-tab .client-ui-bg-overlay {
-	-moz-border-radius-topleft: 8px; /* FF1+ */
-	-webkit-border-top-left-radius: 8px; /* Saf3+, Chrome */
-	-khtml-border-top-left-radius: 8px; /* Konqueror */
-	border-top-left-radius: 8px; /* Standard. IE9 */
 	-moz-border-radius-bottomleft: 8px; /* FF1+ */
 	-webkit-border-bottom-left-radius: 8px; /* Saf3+, Chrome */
 	-khtml-border-bottom-left-radius: 8px; /* Konqueror */
 	border-bottom-left-radius: 8px; /* Standard. IE9 */
 }
 
-#dialer .client-ui-tab {
-	width: 75px;
-	height: 125px;
-	left: 0;
-	top: 4px;
-	text-align: center;
-	overflow: hidden;
-	margin-left: -75px;
+.client-ui-tab .client-ui-timer {
+	font-size: 1em;
 }
 
-#dialer .client-ui-tab .client-ui-tab-wedge {
-	height: 125px;
-	width: 100%;
-}
 
-#dialer .client-ui-tab .client-ui-tab-wedge a {
-	color: white;
-	font-size: 80px;
-	text-decoration: none;
-}
-
-#dialer .client-ui-content {
-	width: 300px;
-	right: 0;
-	height: 100%;
-	text-align: center;
-}
-
+/* Client UI Overlay */
 #dialer .client-ui-bg-overlay {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background: #6BB300;
-	opacity: 0.75;
-	-moz-opacity: 0.75;
-	filter:alpha(opacity=75);
+	background-color: #222;
+	opacity: 0.95;
+	-moz-opacity: 0.95;
+	filter:alpha(opacity=95);
 	z-index: -1;
 }
 
-#dialer .client-ui-inset {
-	padding: 10px;
+
+/* Client UI Inset */
+#client-ui-inset {
 	position: relative;
 }
 
-/* Dialer
-----------------------------*/
+
+/* Client UI Tab Status */
+#client-ui-tab-status {
+	position: absolute;
+	height: 250px;
+	width: 100%;
+}
+
+.client-ui-tab-status-inner {
+	height: 75px;
+	width: 100%;
+	padding: 10px 0 0 0;
+	cursor: pointer;
+	overflow: hidden;
+}
+
+.client-ui-tab-status-inner .client-ui-timer {
+	line-height: 28px;
+	margin: 0;
+	font-size: 14px;
+	font-weight: normal;
+	color: #FFF;
+	text-align: left;
+}
+
+.client-ui-tab-status-inner .mic {
+	float: left;
+	height: 28px;
+	width: 20px;
+	margin: 0 10px 0 8px;
+	background: transparent url(../i/vbx-client-status.png) center top no-repeat;
+}
+
+
+/* Client UI Tab Wedge */
+#dialer .client-ui-tab .client-ui-tab-wedge {
+	height: 50px;
+}
+
+#dialer .client-ui-tab .client-ui-tab-wedge a {
+	position: absolute;
+	display: block;
+	width: 65px;
+	height: 50px;
+	line-height: 45px;
+	margin: 0;
+	padding: 0 0 0 30px;
+	font-size: 14px;
+	font-weight: normal;
+	color: #666;
+	text-align: left;
+	text-decoration: none;
+	outline: none;
+}
+
+#dialer .client-ui-tab .client-ui-tab-wedge a:hover {
+	color: #FFF;
+}
+
+#dialer .client-ui-tab .client-ui-tab-wedge .symbol {
+	font-size: 19px;
+}
+
+
+/* Client UI Status */
+#client-ui-status {
+	padding: 110px 0 0 0;
+	background: transparent url(../i/mic_big.png) center 15px no-repeat;
+}
+
+#client-ui-message {
+	margin: 0;
+	font-size: 22px;
+	font-weight: normal;
+	color: #FFF;
+	text-align: center;
+}
+
+.client-ui-content .client-ui-timer {
+	margin: 25px 0 0 0;
+	font-size: 32px;
+	color: #FFF;
+	text-align: center;
+}
+
+
+/* Client UI Pad */
 #client-ui-pad {
 	display: block;
 	overflow: hidden;
 	height: auto;
+	width: 180px;
+	margin: 20px auto 0 auto;
 }
 
 .client-ui-button-row {
@@ -109,14 +196,20 @@ body,
 .client-ui-button {
 	float: left;
 	padding: 12px;
-	margin: 5px;
+	margin: 3px;
 	background: #000;
+    background: -moz-linear-gradient(100% 100% 90deg, #000, #222);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#000));
+    background-clip: padding-box;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
 	color: #fff;
 	text-align: center;
-	width: 30px;
-	height: 32px;
+	width: 28px;
+	height: 30px;
 	font-size: 24px;
 	font-weight: bold;
+	border: 1px solid #000;
 	cursor: pointer;
 	border-radius: 8px;
 	-moz-border-radius: 8px;
@@ -124,7 +217,13 @@ body,
 }
 
 .client-ui-button:hover {
-	background: #ef3b37;
+	color: #F7ECB7;
+	border: 1px solid #968F54;
+}
+
+.client-ui-button:active {
+	color: #FFF;
+	border: 1px solid #507B93;
 }
 
 .client-ui-button .client-ui-button-number {
@@ -136,92 +235,52 @@ body,
 }
 
 .client-ui-button .client-ui-button-letters {
+	margin-top: -1px;
 	font-weight: normal;
-	font-size: 12px;
-	margin-top: -3px;
+	font-size: 10px;
+	color: #777;
+	text-transform: uppercase;
+	letter-spacing: 1px;
 }
 
-#client-ui-message {
-	font-size: 42px;
-	text-align: center;
-	color: #666;
-	font-weight: normal;
-	margin: 40px 0px 0px;
-}
 
-.client-ui-timer {
-	text-align: center;
-	color: #ef3b37;
-	font-weight: normal;
-	margin: 0px;	
-}
-
-.client-ui-content .client-ui-timer {
-	font-size: 84px;
-}
-
-.client-ui-tab .client-ui-timer {
-	font-size: 1em;
-}
-
+/* Actions */
 #client-ui-actions button {
-	font-size: 14px;
+	display: block;
+    height: 32px;
+    line-height: 32px;
+	width: 175px;
+	margin: 10px auto;
+    padding: 0;
+	font-size: 15px;
+	color: #FFF;
+	background-color: #222;
+    background: -moz-linear-gradient(100% 100% 90deg, #000, #222);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#000));
+    background-clip: padding-box;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
 	border-radius: 8px;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
-	margin-left: 10px;
-	display: none;
-	padding: 0 5px;
-	font-weight: bold;
-	color: #444444;
+    cursor: pointer;
+    overflow: visible; /* removes extra side padding in IE */
 }
 
-#client-ui-actions button:hover {
-	background-color: #ef3b37;
-	color: white;
+#client-ui-actions #client-ui-mute {
+	background-color: #222;
+    background: -moz-linear-gradient(100% 100% 90deg, #000, #222);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#000));
 }
 
-/* Status
-----------------------------*/
-
-#client-ui-status {
-	margin-top: 60px;
-	padding: 50px 0 0 0;
-	background: transparent url(../i/mic_big.png) top center no-repeat;
+#client-ui-actions #client-ui-answer {
+	background-color: #53A82B;
+    background: -moz-linear-gradient(100% 100% 90deg, #448723, #53A82B);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#53A82B), to(#448723));
 }
 
-.client-ui-tab-status-inner {
-	width: 82%;
-	height: 85px;
-	padding-top: 30px;
-	overflow: hidden;
-}
-
-#client-ui-tab-status {
-	height: 250px;
-	width: 100%;
-	position: absolute;
-}
-
-#client-ui-tab-status .mic{
-	width: 100%;
-	height: 28px;
-	background: transparent url(../i/vbx-client-status.png) top center no-repeat;
-}
-
-/* Container
-----------------------------*/
-#container {
-	height: 100%;
-	display: block;
-	z-index: 0;
-	border: none;
-	margin: 0;
-	padding: 0;
-}
-
-/* iFrame
-----------------------------*/
-iframe {
-	z-index: 0;
+#client-ui-actions #client-ui-hangup {
+	background-color: #C00;
+    background: -moz-linear-gradient(100% 100% 90deg, #900, #C00);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#C00), to(#900));
 }
