@@ -34,7 +34,7 @@ class User_Controller extends MY_Controller
 
 	public $testing_mode = false;
 	public $domain;
-	
+
 	public $capability;
 
 	public function __construct()
@@ -49,7 +49,7 @@ class User_Controller extends MY_Controller
 				$_COOKIE[$key] = urldecode($_POST[$key]);
 			}
 		}
-		
+
 		parent::__construct();
 
 		if(!file_exists(APPPATH . 'config/openvbx.php')
@@ -164,8 +164,8 @@ class User_Controller extends MY_Controller
 				$this->upgrade_check();
 			}
 		}
-		
-		$this->set_client_support();		
+
+		$this->set_client_support();
 	}
 
 	protected function redirect($url)
@@ -366,7 +366,7 @@ class User_Controller extends MY_Controller
 	{
 		return $this->tenant;
 	}
-	
+
 	/**
 	 * Init support for Twilio Client
 	 * This method manually loads in the Twilio Client library due to lack of support
@@ -379,8 +379,8 @@ class User_Controller extends MY_Controller
 	 */
 	protected function set_client_support() {
 		$this->application_sid = $this->settings->get('application_sid', VBX_PARENT_TENANT);
-		if (!empty($this->application_sid) && $this->config->item('use_twilio_client')) {
-			if (!class_exists('TwilioCapability')) 
+		if (!empty($this->application_sid)) {
+			if (!class_exists('TwilioCapability'))
 			{
 				include_once(APPPATH.'libraries/TwilioCapability.php');
 				$this->capability = new TwilioCapability($this->twilio_sid, $this->twilio_token);
@@ -388,7 +388,7 @@ class User_Controller extends MY_Controller
 
 			$user_id = intval($this->session->userdata('user_id'));
 			$user = VBX_user::get(array('id' => $user_id));
-			
+
 			$params = array(
 				'user_id' => $user->user_id,
 				'rest_access' => $this->make_rest_access()

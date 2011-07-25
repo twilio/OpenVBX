@@ -4,14 +4,12 @@
 				<button class="call-button twilio-call" href="<?php echo site_url('messages/call') ?>"><span>Call</span></button>
 				<button class="sms-button twilio-sms" href="<?php echo site_url('messages/sms') ?>"><span>SMS</span></button>
 			</div>
-			
-			<?php if ($use_twilio_client): ?>
-				<div id="vbx-client-status" class="<?php echo ($user_online ? 'online' : ''); ?>">
-					<button class="client-button twilio-client" href="#client-status">
-						<span class="isoffline">Offline</span><span class="isonline">Online</span>
-					</button>
-				</div>
-			<?php endif; ?>
+
+			 <div id="vbx-client-status" class="<?php echo ($user_online ? 'online' : ''); ?>">
+			     <button class="client-button twilio-client" href="#client-status">
+			        <span class="isoffline">Offline</span><span class="isonline">Online</span>
+			     </button>
+			 </div>
 
 			<div class="call-dialog">
 				<a href="" class="close action"><span class="replace">close</span></a>
@@ -27,7 +25,7 @@
 						<label class="field-label left">Dial
 							<input id="dial-number" class="small" name="to" type="text" <?php echo empty($callerid_numbers)? 'disabled="disabled"' : '' ?>/>
 						</label>
-						
+
 						<?php if(!empty($callerid_numbers) && count($callerid_numbers) > 1): /* num-numbers */?>
 							<label class="field-label left">From
 								<select name="callerid" class="small">
@@ -44,7 +42,7 @@
 							</label>
 							<?php else: /* is-trail */ ?>
 							<input type="hidden" name="callerid" value="<?php echo $c->phone ?>" />
-							<?php endif; /* is-trail */ ?>					
+							<?php endif; /* is-trail */ ?>
 						<?php else: /* num-numbers */ ?>
 							<?php if(OpenVBX::getTwilioAccountType() == 'Trial'): /* trial-notice */ ?>
 							<p>You're using a Twilio trial account, please upgrade to dial using a virtual phone number.</p>
@@ -52,25 +50,21 @@
 							<p>We were unable to connect to Twilio at this time. This feature is disabled.  Try again later.</p>
 							<?php endif; /* trial-notice */ ?>
 						<?php endif; /* num-numbers */ ?>
-					
-						
-						<?php if (!empty($use_twilio_client)): /* client-dial-select */ ?>
+
+
 							<label class="field-label left">Using
 								<select name="device" class="small">
 									<option value="client">Twilio Client</option>
 									<option value="primary-device">Primary Device</option>
 								</select>
 							</label>
-						<?php else: /* client-dial-select */ ?>
-							<input type="hidden" name="primary-device" value="main" />
-						<?php endif; /* client-dial-select */ ?>
-					
+
 					</fieldset>
 
 					<input name="target" type="hidden" />
-					
+
 					<button class="call-button invoke-call-button" <?php echo empty($callerid_numbers)? 'disabled="disabled"' : '' ?>><span>Call</span></button>  <img class="call-dialing hide" src="<?php echo asset_url('assets/i/ajax-loader.gif'); ?>" alt="loading" />
-					
+
 				</form>
 
 			</div><!-- .call-dialog  -->
@@ -95,11 +89,11 @@
 						<?php endif; ?>
 						<br class="clear" />
 
-						<label class="field-label">Message 
+						<label class="field-label">Message
 							<textarea class="sms-message" name="content" placeholder="Enter your message, must be 160 characters or less."></textarea><span class="count">160</span>
 						</label>
 					</fieldset>
-					
+
 					<button class="send-sms-button sms-button"><span>Send SMS</span></button>
 					<img class="sms-sending hide" src="<?php echo asset_url('assets/i/ajax-loader.gif'); ?>" alt="loading" />
 				</form>
@@ -114,7 +108,7 @@
 					<?php endif; ?>
 					<a href="" class="close action"><span class="replace">Close</span></a>
 				</p>
-				
+
 			</div><!-- .notify -->
 
 		</div><!-- #vbx-context-menu .context-menu -->
