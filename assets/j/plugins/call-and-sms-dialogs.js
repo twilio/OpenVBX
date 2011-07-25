@@ -212,7 +212,7 @@ $(function () {
 	var clientDialNumber = function() {
 		window.parent.Client.call({
 			'to': $('#dial-number', dialog).val(),
-			'callerid': $('select[name="callerid"]', dialog).val(),
+			'callerid': $(':input[name="callerid"]', dialog).val(),
 			'Digits': 1
 		});
 		$('.close', dialog).click();
