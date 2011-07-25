@@ -160,9 +160,14 @@ class Inbox extends User_Controller {
 		
 		$data = array_merge($data, compact('messageIdsToRecordingURLs'));
 
+		$messageIdsJson = json_encode($messageIdsToRecordingURLs);
+		if (empty($messageIdsJson)) {
+			$messageIdsJson = '{}';
+		}
+
 		/* TODO: implement JS responding */
 		header('content-type: text/javascript');
-		echo "$(document).ready(function(){ Message.Player.messageIdsToRecordingURLs = ".json_encode($messageIdsToRecordingURLs)."; });";
+		echo "$(document).ready(function(){ Message.Player.messageIdsToRecordingURLs = ".$messageIdsJson."; });";
 	}
 
 	function index($group = false)
