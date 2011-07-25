@@ -304,7 +304,7 @@ Client.ui = {
 		}, 
 		500,
 		function() {
-			// TBD?
+			$('.client-ui-timer').text('0:00');
 		});
 	}
 };
