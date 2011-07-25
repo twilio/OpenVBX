@@ -105,7 +105,7 @@ var Client = {
 	},
 	
 	call: function (params) {
-		this.ui.toggleCallView();
+		this.ui.toggleCallView('open');
 		this.connection = Twilio.Device.connect(params);
 	},
 
@@ -121,20 +121,22 @@ var Client = {
 			this.connection.cancel();
 		}
 		this.status.setCallStatus(false);
-		setTimeout('Client.ui.toggleCallView()', 1000);
+		setTimeout(function() { Client.ui.toggleCallView('close'); }, 1000);
 	},
 	
 // listeners
 
 	incoming: function (connection) {
-		window.focus();
 		this.message('Incoming call from: ' + connection.parameters.From);
 		if (!this.connection) {
 			this.connection = connection;
 			this.incoming_timeout = setTimeout('Client.giveUpIncoming()', 15000);
 			// notify user of incoming call in future versions
-			Client.ui.toggleCallView();
+			Client.ui.toggleCallView('open');
 			Client.ui.show('answer');	
+		}
+		else {
+			connection.cancel();
 		}
 	},
 
@@ -147,6 +149,8 @@ var Client = {
 		this.ui.endTick();
 		this.status.setCallStatus(false);
 		this.message(error);
+		clearTimeout(this.incoming_timeout);
+		this.connection = null;
 	},
 
 	connect: function (conn) {
@@ -155,21 +159,26 @@ var Client = {
 		this.status.setCallStatus(true);
 		this.message('Calling');
 		this.setOnBeforeUnload(true);
+		clearTimeout(this.incoming_timeout);
 	},
 
 	disconnect: function (conn) {
+		this.connection = null;
 		this.ui.endTick();
 		this.status.setCallStatus(false);
 		this.message('Call ended');
 		this.setOnBeforeUnload(false);
-		setTimeout('Client.ui.toggleCallView()', 3000);
+		setTimeout(function() { Client.ui.toggleCallView('close'); }, 3000);
+		clearTimeout(this.incoming_timeout);
 	},
 	
 	cancel: function(conn) {
+		this.connection = null;
 		this.ui.endTick();
 		this.status.setCallStatus(false);
 		this.message('Call cancelled');
-		setTimeout('Client.ui.toggleCallView()', 1000);
+		setTimeout(function() { Client.ui.toggleCallView('close'); }, 1000);
+		clearTimeout(this.incoming_timeout);
 	},
 
 	offline: function (device) {
@@ -286,26 +295,29 @@ Client.ui = {
 	},
 	
 	// show hide the dial tab/status slider
-	toggleCallView: function() {
+	toggleCallView: function(status) {
 		var dialer = $('#dialer'),
+			dialer_offset_mod = false,
 			dialer_offset = parseInt($('#dialer').css('width').replace('px', '')) + parseInt($('#dialer .client-ui-tab').css('width').replace('px', '')) + 'px';
 		
-		if (dialer.hasClass('closed')) {
-			dialer_offset_mod = '+='
+		if (status == 'open' && dialer.hasClass('closed')) {
+			dialer_offset_mod = '+=';
 			dialer.removeClass('closed');
 		}
-		else {
-			dialer_offset_mod = '-='
+		else if (status == 'close' && !dialer.hasClass('closed')) {
+			dialer_offset_mod = '-=';
 			dialer.addClass('closed');
 		}
 
-		dialer.animate({
-			right: dialer_offset_mod + dialer_offset
-		}, 
-		500,
-		function() {
-			$('.client-ui-timer').text('0:00');
-		});
+		if (dialer_offset_mod != false) {
+			dialer.animate({
+				right: dialer_offset_mod + dialer_offset
+			}, 
+			500,
+			function() {
+				$('.client-ui-timer').text('0:00');
+			});
+		}
 	}
 };
 
