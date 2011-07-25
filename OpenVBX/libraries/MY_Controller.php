@@ -72,7 +72,7 @@ class MY_Controller extends Controller
 		$this->settings = new VBX_Settings();
 
 		$rewrite_enabled = intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT));
-		if($rewrite_enabled) 
+		if($rewrite_enabled)
 		{
 			/* For mod_rewrite */
 			$this->config->set_item('index_page', '');
@@ -105,7 +105,7 @@ class MY_Controller extends Controller
 		{
 			$sources_file = APPPATH . 'assets/j/site-bootstrap.sources';
 			$scripts = explode("\n", file_get_contents(APPPATH . '../assets/j/site-bootstrap.sources'));
-		} 
+		}
 		else {
 			$scripts = array('site.js');
 		}
@@ -118,15 +118,15 @@ class MY_Controller extends Controller
 			$styles = array('site-' . $this->config->item('site_rev') . '.css');
 		}
 
-		foreach ($scripts as $script) 
+		foreach ($scripts as $script)
 		{
 			if ($script) $this->template->add_js("assets/j/$script");
 		}
 
-		foreach ($styles as $style) 
+		foreach ($styles as $style)
 		{
 			if ($style) $this->template->add_css("assets/c/$style");
-		}		
+		}
 	}
 
 
@@ -331,7 +331,7 @@ class MY_Controller extends Controller
 		$payload['site_rev'] = $this->config->item('site_rev');
 		$payload['asset_root'] = ASSET_ROOT;
 		$payload['layout'] = $layout;
-		
+
 		if($layout == 'yui-t2')
 		{
 			$payload['layout_override'] = 'yui-override-main-margin';
@@ -341,9 +341,7 @@ class MY_Controller extends Controller
 			$payload['layout_override'] = '';
 		}
 
-		if ($this->config->item('use_twilio_client')) {
-			$payload['use_twilio_client'] = true;
-			$user = VBX_User::get($this->session->userdata('user_id'));
+		if($user = VBX_User::get($this->session->userdata('user_id'))) {
 			$payload['user_online'] = ($user->online == 1 ? true : false);
 		}
 
