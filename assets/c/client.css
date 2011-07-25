@@ -3,26 +3,31 @@
 }
 
 #vbx-client-status .client-button {
-	background: #EEE url(../i/vbx-client-status.png) 52px 2px no-repeat;
-	-moz-border-radius: 8px; /* FF1+ */
-	-webkit-border-radius: 8px; /* Saf3+, Chrome */
-	-khtml-border-radius: 8px; /* Konqueror */
-	border-radius: 8px; /* Standard. IE9 */
+	height: 32px;
+	width: 88px;
+	line-height: 32px;
+	padding: 0 28px 0 14px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #999;
+	background: #404040 url(../i/vbx-client-status.png) 65px -32px no-repeat;
+	-moz-border-radius: 5px; /* FF1+ */
+	-webkit-border-radius: 5px; /* Saf3+, Chrome */
+	-khtml-border-radius: 5px; /* Konqueror */
+	border-radius: 5px; /* Standard. IE9 */
 	/**
 	 * @bugfix border-radius background bleed
 	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
 	 */
 	-webkit-background-clip: padding-box;
-	font-size: 14px;
-	font-weight: bold;
-	height: 30px;
-	padding: 0 33px 0 16px;
-	text-align: center;
-	width: 74px;
 }
 
 #vbx-client-status.online .client-button {
-	background-position: 52px -26px;
+	color: #FFF;
+    background-color: #53A82B;
+    background-color: -moz-linear-gradient(100% 100% 90deg, #448723, #53A82B);
+    background-color: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#53A82B), to(#448723));
+	background-position: 65px top;
 }
 
 #vbx-client-status .isonline,
