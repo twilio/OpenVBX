@@ -364,10 +364,8 @@ $(document).ready(function() {
 			from : $('.from', this).text(),
 			to: $('.to', this).text()
 		};
-		
-		
-		
-		if (window.parent.Client.status.getWindowStatus()) {
+				
+		if ($('#vbx-client-status').hasClass('online')) {
 			call_params.Digits = 1;
 			window.parent.Client.call(call_params);
 			$('.quick-call-popup .calling').remove();

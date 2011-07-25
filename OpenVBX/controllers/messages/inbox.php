@@ -161,6 +161,7 @@ class Inbox extends User_Controller {
 		$data = array_merge($data, compact('messageIdsToRecordingURLs'));
 
 		/* TODO: implement JS responding */
+		header('content-type: text/javascript');
 		echo "$(document).ready(function(){ Message.Player.messageIdsToRecordingURLs = ".json_encode($messageIdsToRecordingURLs)."; });";
 	}
 

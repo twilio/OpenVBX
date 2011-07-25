@@ -54,7 +54,7 @@
 <?php $this->load->view('js-init'); ?>
 <?php echo $_scripts; ?>
 <script type="text/javascript">
-	if (window == window.top) {
+	if (window == window.top && !window.location.href.match('\/auth\/login')) {
 		$.cookie('last_known_url', window.location, null, '/');
 		window.location = OpenVBX.home;
 	}

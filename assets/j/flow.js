@@ -151,7 +151,6 @@ Flows.link = {
 						} else {
 							data[this.name] = val;
 						}
-console.log(this.name + ' :: ' + val);
 						break;
 					}
 				}

@@ -47,7 +47,7 @@ var Client = {
 		});
 		
 		Twilio.Device.error(function (error) {
-			console.log(error);
+			//console.log(error);
 			Client.error(error);
 		});
 		
@@ -56,19 +56,21 @@ var Client = {
 		});
 		
 		Twilio.Device.disconnect(function (conn) {
-			console.log('disconnect');
+			//console.log('disconnect');
 			Client.disconnect(conn);
 		});
 		
 		Twilio.Device.incoming(function (conn) {
-			console.log('incoming');
+			//console.log('incoming');
 			Client.incoming(conn);
 		});
 		
 		Twilio.Device.cancel(function(conn) {
-			console.log('canceled');
+			//console.log('canceled');
 			Client.cancel();
 		});
+		
+		$('#dialer #client-ui-actions button').hide();
 	}, 
 	
 	setOnBeforeUnload: function(status) {
