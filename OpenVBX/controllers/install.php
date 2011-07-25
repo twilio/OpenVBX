@@ -369,9 +369,9 @@ class Install extends Controller {
 		{
 			foreach($settings as $key => $val)
 			{
-				if(!($this->vbx_settings->add($key, $val, 1)))
+				if($this->vbx_settings->add($key, $val, 1) === false)
 				{
-					throw new InstallException( 'Unable to setup valid instance. Please re-create database', 0);
+					throw new InstallException( "Failed to create setting for $key. Please re-create database", 0);
 				}
 			}
 		}
