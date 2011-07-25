@@ -131,7 +131,7 @@ class Login extends MY_Controller
 	protected function after_login_completed($user, $redirect)
 	{
 		$last_seen = $user->last_seen;
-		
+	
 		/* Redirect to flows if this is an admin and his inbox is zero (but not if the caller is hitting the REST api)*/
 		if($this->response_type != 'json')
 		{
@@ -153,7 +153,9 @@ class Login extends MY_Controller
 									 0,
 									 '/'.(($this->tenant->id > 1)? $this->tenant->name : '')
 									 );
-						return redirect('numbers');
+						setcookie('last_known_url', real_site_url('/numbers'), null, '/');
+						return redirect('');
+						// return redirect('numbers');
 					}
 				}
 				catch(VBX_IncomingNumberException $e)
@@ -166,10 +168,14 @@ class Login extends MY_Controller
 			$devices = VBX_Device::search(array('user_id' => $user->id));
 			if(empty($devices))
 			{
-				return redirect('devices');
+				setcookie('last_known_url', real_site_url('/devices'), null, '/');
+				return redirect('');
+				// return redirect('devices');
 			}
 		}
-
-		return $this->redirect($redirect);
+		
+		setcookie('last_known_url', $redirect, null, '/');
+		return $this->redirect('');
+		// return $this->redirect($redirect);
 	}
 }
