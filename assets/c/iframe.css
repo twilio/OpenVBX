@@ -246,11 +246,11 @@ iframe {
 
 /* Actions */
 #client-ui-actions button {
-	display: block;
+	display: none;
     height: 32px;
     line-height: 32px;
 	width: 175px;
-	margin: 10px auto;
+	margin: 10px 0 10px 22px;
     padding: 0;
 	font-size: 15px;
 	color: #FFF;
@@ -260,6 +260,7 @@ iframe {
     background-clip: padding-box;
     -moz-background-clip: padding;
     -webkit-background-clip: padding-box;
+	border: none;
 	border-radius: 8px;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
