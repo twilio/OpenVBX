@@ -39,7 +39,7 @@ var currentDialogType = null;
  * @params object
  * @return void 
  */
-clientDial = function(params) {
+OpenVBX.clientDial = function(params) {
 	console.log(params);
 	params = $.extend(params, { 'Digits': 1 });
 	window.parent.Client.call(params);
@@ -50,7 +50,7 @@ clientDial = function(params) {
  * 
  * @return void
  */
-clientHangup = function() {
+OpenVBX.clientHangup = function() {
 	window.parent.Client.hangup();
 };
 	
