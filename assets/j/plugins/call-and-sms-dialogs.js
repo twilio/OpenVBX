@@ -23,7 +23,37 @@
 // sms dialog hides and call shows.
 var currentDialogHideFunction = null;
 var currentDialogType = null;
+	
+/////////////////////////////////////////////////////
+// Client Accessors
 
+/**
+ * Client Dial
+ *
+ * @example: 
+ * 		clientDial({
+ * 			'to': '+14158675309',
+ *			'callerid': '+1415853-5937'
+ * 		});
+ *
+ * @params object
+ * @return void 
+ */
+clientDial = function(params) {
+	console.log(params);
+	params = $.extend(params, { 'Digits': 1 });
+	window.parent.Client.call(params);
+};
+
+/**
+ * Client Hangup
+ * 
+ * @return void
+ */
+clientHangup = function() {
+	window.parent.Client.hangup();
+};
+	
 /////////////////////////////////////////////////////
 // Call Dialog
 
