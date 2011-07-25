@@ -366,10 +366,18 @@ $(document).ready(function() {
 		};
 				
 		if ($('#vbx-client-status').hasClass('online')) {
-			call_params.Digits = 1;
-			window.parent.Client.call(call_params);
-			$('.quick-call-popup .calling').remove();
-			$('.quick-call-popup.open').toggleClass('open');
+			$.post(
+				$(this).attr('href'),
+				$.extend(call_params, { 'log_only': true }),
+				function(data) {
+					if (!data.error) {
+						window.parent.Client.call($.extend(call_params, { 'Digits': 1 }));
+						$('.quick-call-popup .calling').remove();
+						$('.quick-call-popup.open').toggleClass('open');					
+					}
+				},
+				'json'
+			);
 			anchor.show();
 		}
 		else {
