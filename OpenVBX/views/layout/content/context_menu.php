@@ -4,13 +4,8 @@
 				<button class="call-button twilio-call" href="<?php echo site_url('messages/call') ?>"><span>Call</span></button>
 				<button class="sms-button twilio-sms" href="<?php echo site_url('messages/sms') ?>"><span>SMS</span></button>
 			</div>
-
-			 <div id="vbx-client-status" class="<?php echo ($user_online ? 'online' : ''); ?>">
-				 <?php /* if($user_online == 'client-first-run'): ?>
-					<div class="client-first-run">
-						<span>Click here to go online and receive incoming calls to your Phone Number.</span>
-					</div>
-				 <?php endif; */ ?>
+			
+			 <div id="vbx-client-status" class="<?php echo ($user_online == 1 ? 'online' : ''); ?>">
 			     <button class="client-button twilio-client" href="#client-status">
 			        <span class="isoffline">Offline</span><span class="isonline">Online</span>
 			     </button>
@@ -117,4 +112,5 @@
 			</div><!-- .notify -->
 
 		</div><!-- #vbx-context-menu .context-menu -->
-
+		
+		<?php if($user_online === 'client-first-run') { $this->load->view('client-first-run'); } ?>

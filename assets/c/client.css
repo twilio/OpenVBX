@@ -1,5 +1,7 @@
 #vbx-client-status {
 	float: right;
+	position: relative;
+	overflow: visible;
 }
 
 #vbx-client-status .client-button {
@@ -39,100 +41,11 @@
 	display: block;
 }
 
-/*
-#client-dialog {
-	padding: 0px;
-	height: 360px;
+#client-first-run {
+	display: block;
+	padding: 10px;
+	border: 1px solid gray;
+	background: white;
+	margin-bottom: 1px;
+	background: yellow;
 }
-
-#client-ui-message {
-	font-size: 42px;
-	text-align: center;
-	color: #666;
-	font-weight: normal;
-	margin: 40px 0px 0px;
-}
-
-#client-ui-timer {
-	font-size: 84px;
-	text-align: center;
-	color: #ef3b37;
-	font-weight: normal;
-	margin: 0px;
-}
-
-#client-ui-right-panel {
-	float: left;
-	width: 200px;
-	padding: 20px;
-}
-
-#client-ui-bottom {
-	background: #ccc;
-	position: absolute;
-	bottom: 0px;
-	width: 560px;
-	padding: 12px 20px;
-}
-
-#client-ui-actions {
-	height: 35px;
-}
-
-#client-ui-bottom button {
-	float: right;
-	border-radius: 8px;
-	-moz-border-radius: 8px;
-	-webkit-border-radius: 8px;
-	margin-left: 10px;
-	display: none;
-	padding: 0 5px;
-	font-weight: bold;
-	color: #444444;
-}
-
-#client-ui-bottom button:hover {
-	background-color: #ef3b37;
-	color: white;
-}
-
-.client-ui-button-row {
-	float: left;
-	clear: both;
-}
-
-.client-ui-button {
-	float: left;
-	padding: 12px;
-	margin: 5px;
-	background: #9d9d9d;
-	color: #fff;
-	text-align: center;
-	width: 30px;
-	height: 32px;
-	font-size: 24px;
-	font-weight: bold;
-	cursor: pointer;
-	border-radius: 8px;
-	-moz-border-radius: 8px;
-	-webkit-border-radius: 8px;
-}
-
-.client-ui-button:hover {
-	background: #ef3b37;
-}
-
-.client-ui-button .client-ui-button-number {
-	margin-top: -4px;
-}
-
-.client-ui-button .client-ui-button-number.asterisk {
-	font-size: 40px;
-}
-
-.client-ui-button .client-ui-button-letters {
-	font-weight: normal;
-	font-size: 12px;
-	margin-top: -3px;
-}
-*/

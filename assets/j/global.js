@@ -275,6 +275,26 @@ $(document).ready(function() {
         $('.shout-out').hide();
 		$.cookie("mobile-app","false", { path: '/'});
     });
+    
+    $('#client-first-run a.dismiss').live('click', function(e) {
+    	e.preventDefault();
+    	e.stopPropagation();
+    	
+    	var display = $('#client-first-run'),
+    		status = $('#vbx-client-status').hasClass('online');
+    	
+    	$.ajax({
+    		url: OpenVBX.home + '/account/edit',
+    		data: {
+    			'online': (status ? 1 : 0).toString()
+    		},
+    		success: function(response) {
+ 				display.slideUp('3000');
+    		},
+    		type: 'POST',
+    		dataType: 'json'
+    	});
+    });
 
 	var mobileAppCookie = $.cookie("mobile-app");
 	mobileAppCookie == "false" ? $('.shout-out').hide() : $('.shout-out').show();

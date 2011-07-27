@@ -10,7 +10,7 @@ class TwimlDial {
 	 *
 	 * @var bool
 	 */
-	private $use_sessions = true;
+	private $use_sessions = false;
 	
 	static $hangup_stati = array('completed', 'answered');
 	static $default_voicemail_message = 'Please leave a message. Press the pound key when you are finished.';
@@ -196,7 +196,7 @@ class TwimlDial {
 		}
 		else {
 			// check to see if we need to json_decode
-			if (preg_match('|\{.*?\}|', $state)) {
+			if (preg_match('|^\{.*?\}$|', $state)) {
 				$state = json_decode($state);
 				// empty objects don't unserialize to anything, so set an
 				// empty array of nothing unserializes from the json

@@ -346,7 +346,7 @@ class MY_Controller extends Controller
 				$payload['user_online'] = 'client-first-run';
 			}
 			else {
-				$payload['user_online'] = ($user->online == 1 ? true : false);
+				$payload['user_online'] = (bool) $user->online;
 			}
 		}
 
