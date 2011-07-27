@@ -11,6 +11,7 @@
 		$this->dbforge->add_column('users', array(
 			'online' => array(
 				'type' => 'TINYINT(1)',
+				'default' => '0'
 			)
 		));
 	}

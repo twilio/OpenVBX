@@ -380,7 +380,7 @@ class Twiml extends MY_Controller {
 			}
 			catch(VBX_MessageException $e)
 			{
-				throw new TwimlException($e);
+				throw new TwimlException($e->getMessage());
 			}
 		}
 		catch(TwimlException $e)

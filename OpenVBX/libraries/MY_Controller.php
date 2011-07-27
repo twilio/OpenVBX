@@ -342,7 +342,12 @@ class MY_Controller extends Controller
 		}
 
 		if($user = VBX_User::get($this->session->userdata('user_id'))) {
-			$payload['user_online'] = ($user->online == 1 ? true : false);
+			if ($user->online == 9) {
+				$payload['user_online'] = 'client-first-run';
+			}
+			else {
+				$payload['user_online'] = ($user->online == 1 ? true : false);
+			}
 		}
 
 		$navigation = $this->get_navigation($this->session->userdata('loggedin'),

@@ -49,6 +49,7 @@ class Iframe extends User_Controller {
 		}
 
 		$data['client_capability'] = $this->capability->generateToken();
+		$data['capability'] = $this->capability;
 
 		$this->load->view('iframe', $data);
 	}

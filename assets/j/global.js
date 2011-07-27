@@ -278,5 +278,4 @@ $(document).ready(function() {
 
 	var mobileAppCookie = $.cookie("mobile-app");
 	mobileAppCookie == "false" ? $('.shout-out').hide() : $('.shout-out').show();
-
 });

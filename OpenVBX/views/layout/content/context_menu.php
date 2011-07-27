@@ -6,6 +6,11 @@
 			</div>
 
 			 <div id="vbx-client-status" class="<?php echo ($user_online ? 'online' : ''); ?>">
+				 <?php /* if($user_online == 'client-first-run'): ?>
+					<div class="client-first-run">
+						<span>Click here to go online and receive incoming calls to your Phone Number.</span>
+					</div>
+				 <?php endif; */ ?>
 			     <button class="client-button twilio-client" href="#client-status">
 			        <span class="isoffline">Offline</span><span class="isonline">Online</span>
 			     </button>

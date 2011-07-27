@@ -244,6 +244,7 @@ class Accounts extends User_Controller {
 			{
 				// It's a new user
 				$user = new VBX_User();
+				$user->online = 9;
 				$shouldSendWelcome = true;
 			}
 		}
