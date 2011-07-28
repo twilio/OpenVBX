@@ -7,8 +7,8 @@
 		$ci->settings->set('version', '0.93', 1);
 		$ci->settings->set('schema-version', '49', 1);
 		
-		$this->load->dbforge();
-		$this->dbforge->add_column('users', array(
+		$ci->load->dbforge();
+		$ci->dbforge->add_column('users', array(
 			'online' => array(
 				'type' => 'TINYINT(1)',
 				'default' => '0'
