@@ -32,11 +32,6 @@ var Client = {
 		check_timeout: 5000 // how often the parent window should check client window status
 	},
 	
-	message: function (status) {
-		//console.log(status);
-		$('#client-ui-message').text(status);
-	},
-	
 	init: function () {
 		Twilio.Device.setup(OpenVBX.client_capability);
 
@@ -49,7 +44,6 @@ var Client = {
 		});
 		
 		Twilio.Device.error(function (error) {
-			//console.log(error);
 			Client.error(error);
 		});
 		
@@ -58,22 +52,26 @@ var Client = {
 		});
 		
 		Twilio.Device.disconnect(function (conn) {
-			//console.log('disconnect');
 			Client.disconnect(conn);
 		});
 		
 		Twilio.Device.incoming(function (conn) {
-			//console.log('incoming');
 			Client.incoming(conn);
 		});
 		
 		Twilio.Device.cancel(function(conn) {
-			//console.log('canceled');
 			Client.cancel();
 		});
 		
 		$('#dialer #client-ui-actions button').hide();
 	}, 
+
+// Helpers
+	
+	message: function (status) {
+		//console.log(status);
+		$('#client-ui-message').text(status);
+	},
 	
 	setOnBeforeUnload: function(status) {
 		window.onbeforeunload = (status) ? this.onBeforeUnloadWarning : null;
@@ -105,6 +103,13 @@ var Client = {
 		}
 		return null;
 	},
+
+// Actions
+	
+	answer: function() {
+		this.accept();
+		this.ui.show_actions('.mute, .hangup');
+	},
 	
 	call: function (params) {
 		this.ui.toggleCallView('open');
@@ -119,7 +124,7 @@ var Client = {
 	},
 	
 	mute: function() {
-		if (this.connection) {
+		if (this.connection && this.connection.status() == 'open') {
 			this.muted = true;
 			$('#client-ui-mute').addClass('muted').text('Unmute');
 			this.connection.mute();
@@ -127,7 +132,7 @@ var Client = {
 	},
 	
 	unmute: function() {
-		if (this.connection) {
+		if (this.connection && this.connection.status() == 'open') {
 			this.muted = false;
 			$('#client-ui-mute').removeClass('muted').text('Mute');
 			this.connection.unmute();
@@ -135,7 +140,7 @@ var Client = {
 	},
 	
 	togglemute: function() {
-		if (this.connection) {
+		if (this.connection && this.connection.status() == 'open') {
 			if (this.muted) {
 				this.unmute();
 			}
@@ -147,71 +152,102 @@ var Client = {
 	
 	giveUpIncoming: function() {
 		if (this.incoming) {
-			console.log('unmuting');
 			this.connection.cancel();
 		}
-		this.status.setCallStatus(false);
-		setTimeout(function() { Client.ui.toggleCallView('close'); }, 1000);
+		setTimeout(function() { 
+				Client.ui.reset(); 
+			}, 1000);
+	},
+	
+	clear_connection: function() {
+		this.connection = null;
 	},
 	
 // listeners
 
 	incoming: function (connection) {
-		this.message('Incoming call from: ' + connection.parameters.From);
-		if (!this.connection) {
+		if (!this.connection || this.connection.status() == 'closed') {
+			// Notification Message
+			var incoming_message = 'Incoming Call';
+			if (connection.parameters.From) {
+				// From doesn't always get passed
+				incoming_message += ' From: ' + connection.parameters.From;
+			}
+			this.message(incoming_message);
+			
+			// Store connection reference
 			this.connection = connection;
 			this.incoming_timeout = setTimeout('Client.giveUpIncoming()', 15000);
-			// notify user of incoming call in future versions
+			
+			// Show UI
 			Client.ui.toggleCallView('open');
-			Client.ui.show('.answer');	
+			Client.ui.show_actions('.answer');	
 		}
 		else {
-			this.ui.hide('button');
 			connection.cancel();
 		}
 	},
 
-	accept: function (connection) {
+	accept: function () {
+		var connection_message = 'Connected';
+		if (this.connection.parameters.From) {
+			connection_message += ' To: ' + this.connection.parameters.From;
+		}
+		this.message(connection_message);
 		clearTimeout(this.incoming_timeout);
 		this.connection.accept();
+		this.status.setCallStatus(true);
 	}, 
 
 	error: function (error) {
 		this.ui.endTick();
 		this.status.setCallStatus(false);
-		this.message(error);
+		this.message(error.message);
+		
+		// dismiss incoming dial auto-dismiss action
 		clearTimeout(this.incoming_timeout);
-		this.connection = null;
+		
+		// unset connection reference
+		this.clear_connection();
 	},
 
 	connect: function (conn) {
 		this.ui.startTick();
-		this.ui.show('.hangup, .mute');
-		this.ui.hide('.answer');
-		this.status.setCallStatus(true);
+		this.ui.show_actions('.hangup, .mute');
+		this.ui.hide_actions('.answer');
 		this.message('Calling');
-		this.setOnBeforeUnload(true);
+
+		this.status.setCallStatus(true);
+		
+		// dismiss incoming dial auto-dismiss action
 		clearTimeout(this.incoming_timeout);
 	},
 
 	disconnect: function (conn) {
-		this.connection = null;
+		this.clear_connection();
+		
+		// reset ui
 		this.ui.endTick();
-		this.ui.hide('button');
+		this.ui.hide_actions('button');
 		this.status.setCallStatus(false);
 		this.message('Call ended');
-		this.setOnBeforeUnload(false);
-		setTimeout(function() { Client.ui.toggleCallView('close'); }, 3000);
+		
+		setTimeout(function() { 
+				Client.ui.toggleCallView('close'); 
+			}, 3000);
 		clearTimeout(this.incoming_timeout);
 	},
 	
 	cancel: function(conn) {
-		this.connection = null;
+		this.clear_connection();
+		
 		this.ui.endTick();
-		this.ui.hide('button');
+		this.ui.hide_actions('button');
 		this.status.setCallStatus(false);
 		this.message('Call cancelled');
-		setTimeout(function() { Client.ui.toggleCallView('close'); }, 1000);
+		setTimeout(function() { 
+				Client.ui.reset(); 
+			}, 1000);
 		clearTimeout(this.incoming_timeout);
 	},
 
@@ -222,6 +258,7 @@ var Client = {
 
 	ready: function (device) {
 		this.message('Ready');
+		this.status.setCallStatus(false);
 		$('#client-ui-dial').show();	
 		if (typeof this.onready == 'function') {
 			this.onready.call();
@@ -230,6 +267,14 @@ var Client = {
 };
 
 Client.ui = {
+	reset: function() {
+		// force reset all conditions
+		Client.message('Ready');
+		this.toggleCallView('close');
+		this.hide_actions('button');
+		this.ui.endTick();
+	},
+
 // Buttons	
 	pressKey: function(key) {
 		$('#client-ui-number').focus().val($('#client-ui-number').val() + key);
@@ -239,11 +284,11 @@ Client.ui = {
 		Client.connection.sendDigits(key);
 	},
 	
-	show: function(elements) {
+	show_actions: function(elements) {
 		$(elements, $('#client-ui-actions')).show();
 	},
 	
-	hide: function(elements) {
+	hide_actions: function(elements) {
 		$(elements, $('#client-ui-actions')).removeClass('muted').hide();
 	},
 	
@@ -288,11 +333,6 @@ Client.ui = {
 		$('.client-ui-timer').text(minutes + ':' + seconds);
 	},
 	
-	// show & hide the dial pad
-	toggleDialer: function() {
-		
-	},
-	
 	// open & close the call tab
 	toggleTab: function(clicked) {
 		var tab = $(clicked).closest('.client-ui-tab'),
@@ -323,9 +363,7 @@ Client.ui = {
 				top: tab_status_offset_mod + tab_status_offset
 			},
 			animate_speed,
-			function() {
-				// TBD?
-			});
+			function() {});
 	},
 	
 	// show hide the dial tab/status slider
@@ -349,7 +387,7 @@ Client.ui = {
 			}, 
 			500,
 			function() {
-				$('.client-ui-timer').text('0:00');
+				$('.client-ui-timer').text('00:00');
 			});
 		}
 	}
@@ -357,6 +395,8 @@ Client.ui = {
 
 Client.status = {	
 	setCallStatus: function (status) {
+		// set warning message if user tries to refresh the browser
+		Client.setOnBeforeUnload(status);
 		this.setCookieVal('on_call', status);
 	},
 	
@@ -381,10 +421,11 @@ Client.status = {
 	getWindowStatus: function () {
 		return this.getCookieVal('window_open');
 	},
+
+// Cookie Helpers
 	
 	setCookieVal: function (key, val) {
 		var cookie_val = this.getCookie();
-		// set cookie to relevant window status 
 		cookie_val[key] = val;
 		$.cookie(Client.options.cookie_name, JSON.stringify(cookie_val), {path: '/'});
 	},
@@ -403,58 +444,38 @@ Client.status = {
 			cookie_val = JSON.parse(cookie_val);
 		}
 		return cookie_val;
-	},
-	
-	displayOnlineStatus: function() {
-		clearTimeout(this.client_timeout_check);
-		if (this.getWindowStatus()) {
-			$('#vbx-client-status').addClass('online').find('span.client-status').text('Online').show();
-		}
-		else {
-			$('#vbx-client-status').removeClass('online').find('span.client-status').text('Offline').show();
-		}
-		this.client_timeout_check = setTimeout('Client.status.displayOnlineStatus()', Client.options.check_timeout);
 	}
 };
 
 $(function () {
-	$('#client-ui-answer').live('click', function() {
-		Client.accept();
-		Client.ui.show('.mute, .hangup');
+	$('#client-ui-answer').live('click', function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		Client.answer();
 	});
 
-	$('#client-ui-dial').live('click', function() {
-		var params = {
-			'to': $('#client-ui-number').val(),
-			'callerid': client_params.callerid,
-			'Digits': 1
-		}
-		Client.call(params);
-	});
-
-	$('#client-ui-hangup').live('click', function() {
+	$('#client-ui-hangup').live('click', function(event) {
+		event.preventDefault();
+		event.stopPropagation();
 		Client.hangup();
 	});
 	
-	$('#client-ui-mute').live('click', function() {
+	$('#client-ui-mute').live('click', function(event) {
+		event.preventDefault();
+		event.stopPropagation();
 		Client.togglemute();
 	});
 
 	$('.client-ui-button').live('click', function(event) {
+		event.preventDefault();
 		event.stopPropagation();
 		var key = $(this).children('.client-ui-button-number').text();
 		Client.ui.pressKey(key);
 	});
 	
-	$('#dialer .client-ui-tab-wedge a').live('click', function(e) {
-		e.preventDefault();
-		e.stopPropagation();
-		Client.ui.toggleTab(this);
-	});
-	
-	$('#dialer .client-ui-tab-status-inner').live('click', function(e) {
-		e.preventDefault();
-		e.stopPropagation();
+	$('.client-ui-tab-wedge a, .client-ui-tab-status-inner', $('#dialer')).live('click', function(event) {
+		event.preventDefault();
+		event.stopPropagation();
 		Client.ui.toggleTab(this);
 	});
 	
