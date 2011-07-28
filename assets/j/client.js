@@ -24,6 +24,8 @@ var Client = {
 	onready: function(){},
 	
 	incoming_timeout: null,
+	
+	muted: false,
 		
 	options: {
 		cookie_name: 'vbx_client_call',
@@ -116,8 +118,36 @@ var Client = {
 		}
 	},
 	
+	mute: function() {
+		if (this.connection) {
+			this.muted = true;
+			$('#client-ui-mute').addClass('muted').text('Unmute');
+			this.connection.mute();
+		}
+	},
+	
+	unmute: function() {
+		if (this.connection) {
+			this.muted = false;
+			$('#client-ui-mute').removeClass('muted').text('Mute');
+			this.connection.unmute();
+		}
+	},
+	
+	togglemute: function() {
+		if (this.connection) {
+			if (this.muted) {
+				this.unmute();
+			}
+			else {
+				this.mute();
+			}
+		}
+	},
+	
 	giveUpIncoming: function() {
 		if (this.incoming) {
+			console.log('unmuting');
 			this.connection.cancel();
 		}
 		this.status.setCallStatus(false);
@@ -133,9 +163,10 @@ var Client = {
 			this.incoming_timeout = setTimeout('Client.giveUpIncoming()', 15000);
 			// notify user of incoming call in future versions
 			Client.ui.toggleCallView('open');
-			Client.ui.show('answer');	
+			Client.ui.show('.answer');	
 		}
 		else {
+			this.ui.hide('button');
 			connection.cancel();
 		}
 	},
@@ -155,7 +186,8 @@ var Client = {
 
 	connect: function (conn) {
 		this.ui.startTick();
-		this.ui.show('hangup');
+		this.ui.show('.hangup, .mute');
+		this.ui.hide('.answer');
 		this.status.setCallStatus(true);
 		this.message('Calling');
 		this.setOnBeforeUnload(true);
@@ -165,6 +197,7 @@ var Client = {
 	disconnect: function (conn) {
 		this.connection = null;
 		this.ui.endTick();
+		this.ui.hide('button');
 		this.status.setCallStatus(false);
 		this.message('Call ended');
 		this.setOnBeforeUnload(false);
@@ -175,6 +208,7 @@ var Client = {
 	cancel: function(conn) {
 		this.connection = null;
 		this.ui.endTick();
+		this.ui.hide('button');
 		this.status.setCallStatus(false);
 		this.message('Call cancelled');
 		setTimeout(function() { Client.ui.toggleCallView('close'); }, 1000);
@@ -205,12 +239,12 @@ Client.ui = {
 		Client.connection.sendDigits(key);
 	},
 	
-	show: function(element) {
-		$('#client-ui-actions #client-ui-' + element).show().siblings().hide();
+	show: function(elements) {
+		$(elements, $('#client-ui-actions')).show();
 	},
 	
-	hide: function(element) {
-		$('#client-ui-actions #client-ui-' + element).hide().siblings().hide();
+	hide: function(elements) {
+		$(elements, $('#client-ui-actions')).removeClass('muted').hide();
 	},
 	
 // Timer
@@ -386,7 +420,7 @@ Client.status = {
 $(function () {
 	$('#client-ui-answer').live('click', function() {
 		Client.accept();
-		Client.ui.show('hangup');
+		Client.ui.show('.mute, .hangup');
 	});
 
 	$('#client-ui-dial').live('click', function() {
@@ -400,6 +434,10 @@ $(function () {
 
 	$('#client-ui-hangup').live('click', function() {
 		Client.hangup();
+	});
+	
+	$('#client-ui-mute').live('click', function() {
+		Client.togglemute();
 	});
 
 	$('.client-ui-button').live('click', function(event) {

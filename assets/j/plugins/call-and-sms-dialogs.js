@@ -53,6 +53,24 @@ OpenVBX.clientDial = function(params) {
 OpenVBX.clientHangup = function() {
 	window.parent.Client.hangup();
 };
+
+/**
+ * Client Mute
+ *
+ * @return void
+ */
+OpenVBX.clientMute = function() {
+	window.parent.Client.mute();
+};
+
+/**
+ * Client Unmute
+ *
+ * @return void
+ */
+OpenVBX.clientUnMute = function() {
+	window.parent.Client.unmute();
+}
 	
 /////////////////////////////////////////////////////
 // Call Dialog

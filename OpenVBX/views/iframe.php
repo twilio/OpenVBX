@@ -97,9 +97,9 @@
 						</div>
 					</div><!-- /client-ui-pad -->
 					<div id="client-ui-actions">
-						<button id="client-ui-mute" class="client-ui-action-button">Mute</button>
-						<button id="client-ui-answer" class="client-ui-action-button">Answer</button>
-						<button id="client-ui-hangup" class="client-ui-action-button">Hangup</button>
+						<button id="client-ui-mute" class="client-ui-action-button mute">Mute</button>
+						<button id="client-ui-answer" class="client-ui-action-button answer">Answer</button>
+						<button id="client-ui-hangup" class="client-ui-action-button hangup">Hangup</button>
 					</div>
 				</div>
 			</div>

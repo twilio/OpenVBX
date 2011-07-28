@@ -250,7 +250,7 @@ iframe {
     height: 32px;
     line-height: 32px;
 	width: 175px;
-	margin: 10px 0 10px 22px;
+	margin: 12px 0 0 22px;
     padding: 0;
 	font-size: 15px;
 	color: #FFF;
@@ -272,6 +272,12 @@ iframe {
 	background-color: #222;
     background: -moz-linear-gradient(100% 100% 90deg, #000, #222);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#000));
+}
+
+#client-ui-actions #client-ui-mute.muted {
+	background-color: orange;
+	background: -moz-linear-gradient(100% 100% 90deg, #782106, #FF9900);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FF9900), to(#782106));
 }
 
 #client-ui-actions #client-ui-mute:active {
