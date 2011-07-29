@@ -132,6 +132,7 @@ class Site extends User_Controller
 		{
 			$data['plugins'][] = $plugin->getInfo();
 		}
+		$data['error'] = $this->session->flashdata('error');
 
 		$data['json']['settings'] = $current_settings;
 
@@ -213,9 +214,9 @@ class Site extends User_Controller
 													 'POST',
 													 $app['params']);
 
-						if($response && $response->IsError != true)
+						if($response && $response->ResponseXML->IsError)
 						{
-							throw new SiteException($response->ErrorMessage);
+							throw new SiteException($response->ResponseXML->ErrorMessage);
 						}
 					}
 				}
