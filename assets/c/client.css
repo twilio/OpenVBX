@@ -77,7 +77,8 @@
 #client-first-run p {
 	font-size: 13px;
 	color: #999;
-	background-color: #222
+	background-color: #222;
+	margin: 3px 0;
 }
 
 #client-first-run h3 {
