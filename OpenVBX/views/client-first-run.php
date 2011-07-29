@@ -1,9 +1,7 @@
 <div id="client-first-run">
-	<div>
-		<p>OpenVBX now supports Twilio Client. Use the Status button to go online and 
-		make phone calls using Twilio Client. To receive phone calls using Twilio Client
-		use the Dial Applet in a flow to designate yourself or your group as the recipient 
-		of the call.</p>
-		<p><a href="#" class="dismiss">dismiss</a></p>
-	</div>
+	<h3>OpenVBX now supports Twilio Client</h3>
+	<p>Use the status button to go online and 
+	make phone calls. To receive phone calls, use the Dial applet in a flow<br />
+	to designate yourself or your group as the recipient. <a href="#" class="dismiss">hide this message</a></p>
+	<img class="arrow" src="../../assets/i/client-first-run-arrow.png" alt="" />
 </div>

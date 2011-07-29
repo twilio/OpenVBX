@@ -42,10 +42,37 @@
 }
 
 #client-first-run {
+	position: relative;
 	display: block;
-	padding: 10px;
-	border: 1px solid gray;
-	background: white;
-	margin-bottom: 1px;
-	background: yellow;
+	padding: 10px 10px 10px 70px;
+	margin: 0 0 1px 0;
+	background: #222 url(../../assets/i/client-first-run-bg.png) no-repeat 20px center;
+	border: 5px solid #333;
 }
+
+#client-first-run p {
+	font-size: 13px;
+	color: #999;
+	background-color: #222
+}
+
+#client-first-run h3 {
+	margin: 0 0 2px 0;
+	font-size: 16px;
+	color: #FFF;
+}
+
+#client-first-run .dismiss {
+	color: #BBB;
+}
+
+#client-first-run .dismiss:hover {
+	color: #FFF;	
+}
+
+#client-first-run .arrow {
+	position: absolute;
+	top: -15px;
+	right: 30px;
+}
+
