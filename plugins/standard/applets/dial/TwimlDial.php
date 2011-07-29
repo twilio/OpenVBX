@@ -44,12 +44,10 @@ class TwimlDial {
 	
 	public function dial($user) {
 		$dial = new Dial(NULL, array(
-			array(
 				'action' => current_url(), 
 				'callerId' => $callerId, 
 				'timeout' => 5
-			)
-		));
+			));
 		
 		// get users devices and add all active devices to do simultaneous dialing
 		$dialed = false;

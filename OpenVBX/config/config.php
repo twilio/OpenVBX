@@ -38,7 +38,7 @@ $config['site_rev'] = 1008;
 | you're developing, you'll want to see the plain javascript for debugging.
 |
 */
-$config['use_unminimized_js'] = TRUE;
+$config['use_unminimized_js'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,7 +49,7 @@ $config['use_unminimized_js'] = TRUE;
 | you're developing, you'll want to see the plain javascript for debugging.
 |
 */
-$config['use_unminimized_css'] = TRUE;
+$config['use_unminimized_css'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------
