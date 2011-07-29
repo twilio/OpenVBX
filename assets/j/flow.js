@@ -135,24 +135,24 @@ Flows.link = {
 				if(val != null) {
 					var type = $.type(data[this.name]);
 					switch(type) {
-					case 'string':
-						data[this.name] = new Array(data[this.name]);
-					case 'object':
-						data[this.name].push(val);
-						break;
-					default:
-						var matches = this.name.match(/^(.*)\[(.+)\]$/);
-						if( matches && matches.length ) {
-							var key = matches[1] + '[]';
-							if(!$.isArray(data[key])) {
-								data[key] = new Array();
+						case 'string':
+							data[this.name] = new Array(data[this.name]);
+						case 'object':
+							data[this.name].push(val);
+							break;
+						default:
+							var matches = this.name.match(/^(.*)\[(.+)\]$/);
+							if( matches && matches.length ) {
+								var key = matches[1] + '[]';
+								if(!$.isArray(data[key])) {
+									data[key] = new Array();
+								}
+								data[key].push(val);
+							} else {
+								data[this.name] = val;
 							}
-							data[key].push(val);
-						} else {
-							data[this.name] = val;
+							break;
 						}
-						break;
-					}
 				}
 			}
 		});
