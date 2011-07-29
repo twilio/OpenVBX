@@ -216,6 +216,7 @@ class Site extends User_Controller
 
 						if($response && $response->ResponseXML->IsError)
 						{
+							$this->session->set_flashdata('error', $response->ResponseXML->ErrorMessage);
 							throw new SiteException($response->ResponseXML->ErrorMessage);
 						}
 					}
