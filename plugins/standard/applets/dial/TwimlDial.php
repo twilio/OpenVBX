@@ -4,8 +4,9 @@ class TwimlDial {
 	/**
 	 * For testing only. Some proxies and firewalls 
 	 * don't properly pass or set the server name so 
-	 * cookies may not set due to a mismatch. Use
-	 * this in testing as it will break in load-balanced
+	 * cookies may not set due to a mismatch. Use this
+	 * only in testing if you're having trouble setting
+	 * cookies as it will break in load-balanced
 	 * server configurations
 	 *
 	 * @var bool
@@ -42,13 +43,16 @@ class TwimlDial {
 // Actions
 	
 	public function dial($user) {
-		$dial = $this->response->addDial(array(
-									'action' => current_url(), 
-									'callerId' => $callerId, 
-									'timeout' => 5
-								));
-
+		$dial = new Dial(NULL, array(
+			array(
+				'action' => current_url(), 
+				'callerId' => $callerId, 
+				'timeout' => 5
+			)
+		));
+		
 		// get users devices and add all active devices to do simultaneous dialing
+		$dialed = false;
 		if (count($user->devices)) {
 			$call_opts = array(
 							'url' => site_url('twiml/whisper?name='.urlencode($user->first_name)),
@@ -61,11 +65,15 @@ class TwimlDial {
 					else {
 						$dial->addNumber($device->value, $call_opts);
 					}
+					$dialed = true;
 				}
 			}
-			return true;
 		}
-		return false;
+
+		if ($dialed) {
+			$this->response->append($dial);
+		}
+		return $dialed;
 	}
 	
 	/**

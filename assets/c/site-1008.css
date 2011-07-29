@@ -1425,40 +1425,35 @@ button.inline-button {    float: left;    margin: 0 10px 0 0 !important;}
 div.time-picker {  position: absolute;  height: 191px;  width:4em; /* needed for IE */  overflow: auto;  background: #fff;  border: 1px solid #aaa;  z-index: 99;  margin: 0;}div.time-picker-12hours {  width:6em; /* needed for IE */}
 
 div.time-picker ul {  list-style-type: none;  margin: 0;  padding: 0;}div.time-picker li {  cursor: pointer;  height: 10px;  font: 12px/1 Helvetica, Arial, sans-serif;  padding: 4px 3px;}div.time-picker li.selected {  background: #0063CE;  color: #fff;}
-#vbx-client-status {	float: right;}
+#vbx-client-status {	float: right;	position: relative;	overflow: visible;}
 
-#vbx-client-status .client-button {	height: 32px;	width: 88px;	line-height: 32px;	padding: 0 28px 0 14px;	font-size: 14px;	font-weight: bold;	color: #999;	background: #404040 url(../i/vbx-client-status.png) 65px -32px no-repeat;	-moz-border-radius: 5px; /* FF1+ */	-webkit-border-radius: 5px; /* Saf3+, Chrome */	-khtml-border-radius: 5px; /* Konqueror */	border-radius: 5px; /* Standard. IE9 */	/**	 * @bugfix border-radius background bleed	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed	 */	-webkit-background-clip: padding-box;}
+#vbx-client-status .client-button,#vbx-client-status .client-button-wrap {	-moz-border-radius: 5px; /* FF1+ */	-webkit-border-radius: 5px; /* Saf3+, Chrome */	-khtml-border-radius: 5px; /* Konqueror */	border-radius: 5px; /* Standard. IE9 */	/**	 * @bugfix border-radius background bleed	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed	 */	-webkit-background-clip: padding-box;}
 
-#vbx-client-status.online .client-button {	color: #FFF;    background-color: #53A82B;    background-color: -moz-linear-gradient(100% 100% 90deg, #448723, #53A82B);    background-color: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#53A82B), to(#448723));	background-position: 65px top;}
+#vbx-client-status .client-button {	height: 29px;	width: 86px;	line-height: 30px;	padding: 0 26px 0 12px;	font-size: 14px;	font-weight: bold;	color: #999;	background: #404040 url(../i/vbx-client-status.png) 65px -34px no-repeat;	border: 1px solid #505050;}
+
+#vbx-client-status .client-button-wrap {	width: 86px;	height: 29px;	border: 1px solid #404040;}
+
+#vbx-client-status.online .client-button-wrap {	border-color: #448723;}
+
+#vbx-client-status.online .client-button {	color: #FFF;	border-color: #7FCC5A;    background-color: #53A82B;    background-color: -moz-linear-gradient(100% 100% 90deg, #448723, #53A82B);    background-color: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#53A82B), to(#448723));	background-position: 65px -2px;}
+
+#vbx-client-status .client-button:hover {	border-color: #808080;}
+
+#vbx-client-status.online .client-button:hover {	border-color: #9EED77;}
 
 #vbx-client-status .isonline,#vbx-client-status.online .isoffline {	display: none;}
 
 #vbx-client-status.online .isonline {	display: block;}
 
-/*#client-dialog {	padding: 0px;	height: 360px;}
+#client-first-run {	position: relative;	display: block;	padding: 10px 10px 10px 70px;	margin: 0 0 1px 0;	background: #222 url(../../assets/i/client-first-run-bg.png) no-repeat 20px center;	border: 5px solid #333;}
 
-#client-ui-message {	font-size: 42px;	text-align: center;	color: #666;	font-weight: normal;	margin: 40px 0px 0px;}
+#client-first-run p {	font-size: 13px;	color: #999;	background-color: #222}
 
-#client-ui-timer {	font-size: 84px;	text-align: center;	color: #ef3b37;	font-weight: normal;	margin: 0px;}
+#client-first-run h3 {	margin: 0 0 2px 0;	font-size: 16px;	color: #FFF;}
 
-#client-ui-right-panel {	float: left;	width: 200px;	padding: 20px;}
+#client-first-run .dismiss {	color: #BBB;}
 
-#client-ui-bottom {	background: #ccc;	position: absolute;	bottom: 0px;	width: 560px;	padding: 12px 20px;}
+#client-first-run .dismiss:hover {	color: #FFF;	}
 
-#client-ui-actions {	height: 35px;}
+#client-first-run .arrow {	position: absolute;	top: -15px;	right: 30px;}
 
-#client-ui-bottom button {	float: right;	border-radius: 8px;	-moz-border-radius: 8px;	-webkit-border-radius: 8px;	margin-left: 10px;	display: none;	padding: 0 5px;	font-weight: bold;	color: #444444;}
-
-#client-ui-bottom button:hover {	background-color: #ef3b37;	color: white;}
-
-.client-ui-button-row {	float: left;	clear: both;}
-
-.client-ui-button {	float: left;	padding: 12px;	margin: 5px;	background: #9d9d9d;	color: #fff;	text-align: center;	width: 30px;	height: 32px;	font-size: 24px;	font-weight: bold;	cursor: pointer;	border-radius: 8px;	-moz-border-radius: 8px;	-webkit-border-radius: 8px;}
-
-.client-ui-button:hover {	background: #ef3b37;}
-
-.client-ui-button .client-ui-button-number {	margin-top: -4px;}
-
-.client-ui-button .client-ui-button-number.asterisk {	font-size: 40px;}
-
-.client-ui-button .client-ui-button-letters {	font-weight: normal;	font-size: 12px;	margin-top: -3px;}*/

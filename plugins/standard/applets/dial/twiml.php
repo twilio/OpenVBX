@@ -13,16 +13,23 @@ switch ($dialer->state) {
 	case 'hangup':
 		$dialer->hangup();
 		break;
-	case 'new':		
+	case 'new':	
 		if ($dialer->dial_whom_user_or_group instanceof VBX_User || $dialer->dial_whom_user_or_group instanceof VBX_Group) {
 			// create a dial list from the input state
 			$dial_list = DialList::get($dialer->dial_whom_user_or_group);
-			$to_dial = $dial_list->next();
-			if ($to_dial instanceof VBX_User) {
-				$dialer->dial($to_dial);
-				$dialer->state = $dial_list->get_state();
-			}
-			else {
+
+			$dialed = false;
+			do {
+				$to_dial = $dial_list->next();
+				if ($to_dial instanceof VBX_User) {
+					$dialed = $dialer->dial($to_dial);
+					if ($dialed) {
+						$dialer->state = $dial_list->get_state();
+					}
+				}
+			} while(!$dialed && $to_dial instanceof VBX_User);
+
+			if (!$dialed) {
 				// nobody to call, push directly to voicemail
 				$dialer->noanswer();
 			}
@@ -46,14 +53,20 @@ switch ($dialer->state) {
 	default:
 		// rolling through users, populate dial list from state
 		$dial_list = DialList::load($dialer->state);
-		// get the next user
-		$to_dial = $dial_list->next();
-		if ($to_dial instanceof VBX_User) {
-			// we have a user target, dial
-			$dialer->dial($to_dial);
-			$dialer->state = $dial_list->get_state();
-		}
-		else {
+		
+		// get the next valid user
+		$dialed = false;
+		do {
+			$to_dial = $dial_list->next();
+			if ($to_dial instanceof VBX_User) {
+				$dialed = $dialer->dial($to_dial);
+				if ($dialed) {
+					$dialer->state = $dial_list->get_state();
+				}
+			}
+		} while(!$dialed && $to_dial instanceof VBX_User);
+		
+		if (!$dialed) {
 			// no users left see what next action is, or go to voicemail
 			$dialer->noanswer();
 		}
