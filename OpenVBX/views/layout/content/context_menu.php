@@ -6,9 +6,11 @@
 			</div>
 			
 			 <div id="vbx-client-status" class="<?php echo ($user_online == 1 ? 'online' : ''); ?>">
-			     <button class="client-button twilio-client" href="#client-status">
-			        <span class="isoffline">Offline</span><span class="isonline">Online</span>
-			     </button>
+				<div class="client-button-wrap">
+			     	<button class="client-button twilio-client" href="#client-status">
+			        	<span class="isoffline">Offline</span><span class="isonline">Online</span>
+			     	</button>
+				</div>
 			 </div>
 
 			<div class="call-dialog">

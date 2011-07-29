@@ -4,15 +4,8 @@
 	overflow: visible;
 }
 
-#vbx-client-status .client-button {
-	height: 32px;
-	width: 88px;
-	line-height: 32px;
-	padding: 0 28px 0 14px;
-	font-size: 14px;
-	font-weight: bold;
-	color: #999;
-	background: #404040 url(../i/vbx-client-status.png) 65px -32px no-repeat;
+#vbx-client-status .client-button,
+#vbx-client-status .client-button-wrap {
 	-moz-border-radius: 5px; /* FF1+ */
 	-webkit-border-radius: 5px; /* Saf3+, Chrome */
 	-khtml-border-radius: 5px; /* Konqueror */
@@ -24,12 +17,43 @@
 	-webkit-background-clip: padding-box;
 }
 
+#vbx-client-status .client-button {
+	height: 29px;
+	width: 86px;
+	line-height: 30px;
+	padding: 0 26px 0 12px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #999;
+	background: #404040 url(../i/vbx-client-status.png) 65px -34px no-repeat;
+	border: 1px solid #505050;
+}
+
+#vbx-client-status .client-button-wrap {
+	width: 86px;
+	height: 29px;
+	border: 1px solid #404040;
+}
+
+#vbx-client-status.online .client-button-wrap {
+	border-color: #448723;
+}
+
 #vbx-client-status.online .client-button {
 	color: #FFF;
+	border-color: #7FCC5A;
     background-color: #53A82B;
     background-color: -moz-linear-gradient(100% 100% 90deg, #448723, #53A82B);
     background-color: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#53A82B), to(#448723));
-	background-position: 65px top;
+	background-position: 65px -2px;
+}
+
+#vbx-client-status .client-button:hover {
+	border-color: #808080;
+}
+
+#vbx-client-status.online .client-button:hover {
+	border-color: #9EED77;
 }
 
 #vbx-client-status .isonline,
