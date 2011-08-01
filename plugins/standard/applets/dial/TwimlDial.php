@@ -11,7 +11,7 @@ class TwimlDial {
 	 *
 	 * @var bool
 	 */
-	private $use_sessions = false;
+	private $use_sessions = true;
 	
 	static $hangup_stati = array('completed', 'answered');
 	static $default_voicemail_message = 'Please leave a message. Press the pound key when you are finished.';
