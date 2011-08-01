@@ -260,6 +260,7 @@ var Client = {
 			this.status.setCallStatus(false);
 			this.message('Call ended');
 		
+			this.unmute();		
 			this.clear_connection();
 			clearTimeout(this.incoming_timeout);
 		
