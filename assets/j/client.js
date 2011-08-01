@@ -21,10 +21,19 @@
 var Client = {
 	connection: false,
 	
+	// custom onready function for any plugins to extend
+	// not terribly useful until we can accept an array of
+	// callbacks for multiple plugins to extend the behavior
 	onready: function(){},
 	
+	// when an incoming call starts rining, we set a timeout that waits
+	// and auto-cancels after a certain time limit
 	incoming_timeout: null,
 	
+	// after a call ends we set a timeout that waits a little while before
+	// putting the window away
+	close_timeout: null,
+		
 	muted: false,
 		
 	options: {
@@ -69,7 +78,7 @@ var Client = {
 // Helpers
 	
 	message: function (status) {
-		//console.log(status);
+		// console.log(status);
 		$('#client-ui-message').text(status);
 	},
 	
@@ -119,12 +128,11 @@ var Client = {
 	hangup: function () {
 		if (this.connection) {
 			this.connection.disconnect();
-			this.connection = false;
 		}
 	},
 	
 	mute: function() {
-		if (this.connection && this.connection.status() == 'open') {
+		if (this.connection && this.connection.status() == 'open' && !this.muted) {
 			this.muted = true;
 			$('#client-ui-mute').addClass('muted').text('Unmute');
 			this.connection.mute();
@@ -132,7 +140,7 @@ var Client = {
 	},
 	
 	unmute: function() {
-		if (this.connection && this.connection.status() == 'open') {
+		if (this.connection && this.connection.status() == 'open' && this.muted) {
 			this.muted = false;
 			$('#client-ui-mute').removeClass('muted').text('Mute');
 			this.connection.unmute();
@@ -150,10 +158,9 @@ var Client = {
 		}
 	},
 	
-	giveUpIncoming: function() {
-		if (this.incoming) {
-			this.connection.cancel();
-		}
+	giveUpIncoming: function(conn) {
+		conn.cancel();
+		clearTimeout(this.incoming_timeout);
 		setTimeout(function() { 
 				Client.ui.reset(); 
 			}, 1000);
@@ -166,37 +173,48 @@ var Client = {
 // listeners
 
 	incoming: function (connection) {
-		if (!this.connection || this.connection.status() == 'closed') {
-			// Notification Message
-			var incoming_message = 'Incoming Call';
-			if (connection.parameters.From) {
-				// From doesn't always get passed
-				incoming_message += ' From: ' + connection.parameters.From;
-			}
-			this.message(incoming_message);
-			
-			// Store connection reference
-			this.connection = connection;
-			this.incoming_timeout = setTimeout('Client.giveUpIncoming()', 15000);
-			
-			// Show UI
-			Client.ui.toggleCallView('open');
-			Client.ui.show_actions('.answer');	
-		}
-		else {
+		if (this.connection && this.connection.status() != 'closed') {
 			connection.cancel();
+			return;
 		}
+		
+		this.connection = connection;
+		
+		clearTimeout(this.incoming_timeout);
+		clearTimeout(this.close_timeout);
+		this.incoming_timeout = setTimeout(function() {
+				var conn = connection;
+				Client.giveUpIncoming(conn);
+			}, 15000);
+				
+		// Notification Message
+		var incoming_message = 'Incoming Call';
+		if (this.connection.parameters.From) {
+			// From doesn't always get passed
+			incoming_message += ' From: ' + this.connection.parameters.From;
+		}
+		this.message(incoming_message);
+		
+		// Show UI
+		Client.ui.hide_actions('.hangup, .mute');
+		Client.ui.show_actions('.answer');
+		Client.ui.toggleCallView('open');
 	},
 
 	accept: function () {
+		this.connection.accept();
+		this.status.setCallStatus(true);
+		
+		Twilio.Device.sounds.incoming(false);
+		
 		var connection_message = 'Connected';
 		if (this.connection.parameters.From) {
 			connection_message += ' To: ' + this.connection.parameters.From;
 		}
 		this.message(connection_message);
-		clearTimeout(this.incoming_timeout);
-		this.connection.accept();
-		this.status.setCallStatus(true);
+		
+		clearTimeout(this.close_timeout);
+		clearTimeout(this.incoming_timeout);		
 	}, 
 
 	error: function (error) {
@@ -211,44 +229,60 @@ var Client = {
 		this.clear_connection();
 	},
 
-	connect: function (conn) {
+	connect: function (connection) {
+		Twilio.Device.sounds.incoming(false);
+		
 		this.ui.startTick();
-		this.ui.show_actions('.hangup, .mute');
 		this.ui.hide_actions('.answer');
-		this.message('Calling');
+		this.ui.show_actions('.hangup, .mute');
+
+		var message = 'Call in Progress';
+		if (connection.parameters.From) {
+			message += ' with ' + connection.parameters.From;
+		}
+		
+		this.message(message);
 
 		this.status.setCallStatus(true);
 		
 		// dismiss incoming dial auto-dismiss action
 		clearTimeout(this.incoming_timeout);
+		clearTimeout(this.close_timeout);
 	},
 
-	disconnect: function (conn) {
-		this.clear_connection();
+	disconnect: function (connection) {
+		if (connection == this.connection) {
+			Twilio.Device.sounds.incoming(true);
+			
+			// reset ui
+			this.ui.endTick();
+			this.ui.hide_actions('.answer, .hangup, .mute');
+			this.status.setCallStatus(false);
+			this.message('Call ended');
 		
-		// reset ui
-		this.ui.endTick();
-		this.ui.hide_actions('button');
-		this.status.setCallStatus(false);
-		this.message('Call ended');
+			this.clear_connection();
+			clearTimeout(this.incoming_timeout);
 		
-		setTimeout(function() { 
-				Client.ui.toggleCallView('close'); 
-			}, 3000);
-		clearTimeout(this.incoming_timeout);
+			this.close_timeout = setTimeout(function() { 
+					Client.ui.toggleCallView('close');
+				}, 3000);
+		}
 	},
 	
-	cancel: function(conn) {
-		this.clear_connection();
+	cancel: function(connection) {
+		if (connection == this.connection) {
+			this.clear_connection();
 		
-		this.ui.endTick();
-		this.ui.hide_actions('button');
-		this.status.setCallStatus(false);
-		this.message('Call cancelled');
-		setTimeout(function() { 
-				Client.ui.reset(); 
-			}, 1000);
-		clearTimeout(this.incoming_timeout);
+			this.ui.endTick();
+			this.ui.hide_actions('button');
+			this.status.setCallStatus(false);
+			this.message('Call cancelled');
+			
+			clearTimeout(this.incoming_timeout);
+			setTimeout(function() { 
+					Client.ui.reset(); 
+				}, 1000);
+		}
 	},
 
 	offline: function (device) {
@@ -271,8 +305,8 @@ Client.ui = {
 		// force reset all conditions
 		Client.message('Ready');
 		this.toggleCallView('close');
-		this.hide_actions('button');
-		this.ui.endTick();
+		this.hide_actions('.answer, .mute, .hangup');
+		this.endTick();
 	},
 
 // Buttons	
@@ -388,6 +422,9 @@ Client.ui = {
 			500,
 			function() {
 				$('.client-ui-timer').text('00:00');
+				if (status == 'close') {
+					Client.ui.reset();
+				}
 			});
 		}
 	}
