@@ -389,9 +389,7 @@ Client.ui = {
 				right: dialer_offset_mod + dialer_offset
 			},
 			animate_speed,
-			function() {
-				// TBD?
-			});
+			function() {});
 			
 		$('#client-ui-tab-status').animate({
 				top: tab_status_offset_mod + tab_status_offset
