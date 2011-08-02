@@ -1,0 +1,311 @@
+html, 
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	font: 13px/1.231 arial,helvetica,clean,sans-serif;
+}
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+
+/* Container */
+#container {
+	display: block;
+	height: 100%;
+	z-index: 0;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+/* iFrame */
+iframe {
+	z-index: 0;
+}
+
+
+/* Dialer */
+#dialer {
+	display: block;
+	position: absolute;
+	right: -315px;
+	width: 220px;
+	height: 100%;
+}
+
+
+/* Client UI Content */
+#dialer .client-ui-content {
+	position: absolute;
+	z-index: 1;
+	height: 100%;
+	width: 220px;
+}
+
+
+/* Client UI Tab */
+#dialer .client-ui-tab {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	width: 95px;
+	height: 50px;
+	margin-left: -95px;
+	overflow: hidden;
+}
+
+#dialer .client-ui-tab .client-ui-bg-overlay {
+	-moz-border-radius-bottomleft: 8px; /* FF1+ */
+	-webkit-border-bottom-left-radius: 8px; /* Saf3+, Chrome */
+	-khtml-border-bottom-left-radius: 8px; /* Konqueror */
+	border-bottom-left-radius: 8px; /* Standard. IE9 */
+}
+
+.client-ui-tab .client-ui-timer {
+	font-size: 1em;
+}
+
+
+/* Client UI Overlay */
+#dialer .client-ui-bg-overlay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: #222;
+	opacity: 0.95;
+	-moz-opacity: 0.95;
+	filter:alpha(opacity=95);
+	z-index: -1;
+}
+
+
+/* Client UI Inset */
+#client-ui-inset {
+	position: relative;
+}
+
+
+/* Client UI Tab Status */
+#client-ui-tab-status {
+	position: absolute;
+	height: 250px;
+	width: 100%;
+}
+
+.client-ui-tab-status-inner {
+	height: 75px;
+	width: 100%;
+	padding: 10px 0 0 0;
+	cursor: pointer;
+	overflow: hidden;
+}
+
+.client-ui-tab-status-inner .client-ui-timer {
+	line-height: 28px;
+	margin: 0;
+	font-size: 14px;
+	font-weight: normal;
+	color: #FFF;
+	text-align: left;
+}
+
+.client-ui-tab-status-inner .mic {
+	float: left;
+	height: 28px;
+	width: 20px;
+	margin: 0 10px 0 8px;
+	background: transparent url(../i/vbx-client-status.png) center top no-repeat;
+}
+
+
+/* Client UI Tab Wedge */
+#dialer .client-ui-tab .client-ui-tab-wedge {
+	height: 50px;
+}
+
+#dialer .client-ui-tab .client-ui-tab-wedge a {
+	position: absolute;
+	display: block;
+	width: 65px;
+	height: 50px;
+	line-height: 45px;
+	margin: 0;
+	padding: 0 0 0 30px;
+	font-size: 14px;
+	font-weight: normal;
+	color: #666;
+	text-align: left;
+	text-decoration: none;
+	outline: none;
+}
+
+#dialer .client-ui-tab .client-ui-tab-wedge a:hover {
+	color: #FFF;
+}
+
+#dialer .client-ui-tab .client-ui-tab-wedge .symbol {
+	font-size: 19px;
+}
+
+
+/* Client UI Status */
+#client-ui-status {
+	padding: 110px 0 0 0;
+	background: transparent url(../i/mic_big.png) center 15px no-repeat;
+}
+
+#client-ui-message {
+	margin: 0;
+	font-size: 22px;
+	font-weight: normal;
+	color: #FFF;
+	text-align: center;
+}
+
+.client-ui-content .client-ui-timer {
+	margin: 25px 0 0 0;
+	font-size: 32px;
+	color: #FFF;
+	text-align: center;
+}
+
+
+/* Client UI Pad */
+#client-ui-pad {
+	display: block;
+	overflow: hidden;
+	height: auto;
+	width: 180px;
+	margin: 20px auto 0 auto;
+}
+
+.client-ui-button-row {
+	float: left;
+	clear: both;
+}
+
+.client-ui-button {
+	float: left;
+	padding: 12px;
+	margin: 3px;
+	background: #000;
+    background: -moz-linear-gradient(100% 100% 90deg, #000, #222);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#000));
+    background-clip: padding-box;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+	color: #fff;
+	text-align: center;
+	width: 28px;
+	height: 30px;
+	font-size: 24px;
+	font-weight: bold;
+	border: 1px solid #000;
+	cursor: pointer;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+}
+
+.client-ui-button:hover {
+	color: #F7ECB7;
+	border: 1px solid #968F54;
+}
+
+.client-ui-button:active {
+	color: #FFF;
+	border: 1px solid #507B93;
+}
+
+.client-ui-button .client-ui-button-number {
+	margin-top: -4px;
+}
+
+.client-ui-button .client-ui-button-number.asterisk {
+	font-size: 40px;
+}
+
+.client-ui-button .client-ui-button-letters {
+	margin-top: -1px;
+	font-weight: normal;
+	font-size: 10px;
+	color: #777;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+
+/* Actions */
+#client-ui-actions button {
+	display: none;
+    height: 32px;
+    line-height: 32px;
+	width: 175px;
+	margin: 12px 0 0 22px;
+    padding: 0;
+	font-size: 15px;
+	color: #FFF;
+	background-color: #222;
+    background: -moz-linear-gradient(100% 100% 90deg, #000, #222);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#000));
+    background-clip: padding-box;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+	border: none;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+    cursor: pointer;
+    overflow: visible; /* removes extra side padding in IE */
+}
+
+#client-ui-actions #client-ui-mute {
+	background-color: #222;
+    background: -moz-linear-gradient(100% 100% 90deg, #000, #222);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#000));
+}
+
+#client-ui-actions #client-ui-mute.muted {
+	background-color: orange;
+	background: -moz-linear-gradient(100% 100% 90deg, #782106, #FF9900);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FF9900), to(#782106));
+}
+
+#client-ui-actions #client-ui-mute:active {
+	background-color: #000;
+    background: -moz-linear-gradient(100% 100% 90deg, #222, #000);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#000), to(#222));
+}
+
+#client-ui-actions #client-ui-answer {
+	background-color: #53A82B;
+    background: -moz-linear-gradient(100% 100% 90deg, #448723, #53A82B);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#53A82B), to(#448723));
+}
+
+#client-ui-actions #client-ui-answer:active {
+	background-color: #316800;
+    background: -moz-linear-gradient(100% 100% 90deg, #53A82B, #316800);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#316800), to(#53A82B));
+}
+
+#client-ui-actions #client-ui-hangup {
+	background-color: #C00;
+    background: -moz-linear-gradient(100% 100% 90deg, #900, #C00);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#C00), to(#900));
+}
+
+#client-ui-actions #client-ui-hangup:active {
+	background-color: #900;
+    background: -moz-linear-gradient(100% 100% 90deg, #C00, #650000);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#650000), to(#C00));
+}

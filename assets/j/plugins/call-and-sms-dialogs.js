@@ -23,11 +23,59 @@
 // sms dialog hides and call shows.
 var currentDialogHideFunction = null;
 var currentDialogType = null;
+	
+/////////////////////////////////////////////////////
+// Client Accessors
 
+/**
+ * Client Dial
+ *
+ * @example: 
+ * 		clientDial({
+ * 			'to': '+14158675309',
+ *			'callerid': '+1415853-5937'
+ * 		});
+ *
+ * @params object
+ * @return void 
+ */
+OpenVBX.clientDial = function(params) {
+	console.log(params);
+	params = $.extend(params, { 'Digits': 1 });
+	window.parent.Client.call(params);
+};
+
+/**
+ * Client Hangup
+ * 
+ * @return void
+ */
+OpenVBX.clientHangup = function() {
+	window.parent.Client.hangup();
+};
+
+/**
+ * Client Mute
+ *
+ * @return void
+ */
+OpenVBX.clientMute = function() {
+	window.parent.Client.mute();
+};
+
+/**
+ * Client Unmute
+ *
+ * @return void
+ */
+OpenVBX.clientUnMute = function() {
+	window.parent.Client.unmute();
+}
+	
 /////////////////////////////////////////////////////
 // Call Dialog
 
-$(function () {
+$(function () {	
 	// options
 	var globalTwilioCallLock = false;
 	var distance = 35;
@@ -81,7 +129,7 @@ $(function () {
 		
 		var trigger = $(this);
 		var displayDialog = function (event, link) {
-			
+
 			if (currentDialogType == 'sms') {
 				currentDialogHideFunction();
 			}
@@ -168,8 +216,27 @@ $(function () {
 		
 	});
 
-
 	var callNumber = function(event) {
+		event.preventDefault();
+		var device = $('select[name="device"]', dialog).val();
+		if (device == 'client') {
+			clientDialNumber();
+		}
+		else {
+			deviceDialNumber(event);
+		}
+	};
+
+	var clientDialNumber = function() {
+		window.parent.Client.call({
+			'to': $('#dial-number', dialog).val(),
+			'callerid': $(':input[name="callerid"]', dialog).val(),
+			'Digits': 1
+		});
+		$('.close', dialog).click();
+	};
+	
+	var deviceDialNumber = function(event) {
 		$('.invoke-call-button span').text('Calling...');
 		$('.call-dialing').show();
 
@@ -203,8 +270,6 @@ $(function () {
 				$('.error-dialog').dialog('open');
 			}
 		});
-		
-		event.preventDefault();
 	};
 
 	$('.call-button', dialog).click(callNumber);
@@ -214,6 +279,27 @@ $(function () {
 		if(globalTwilioCallLock) {
 			$('.close', dialog).click();
 		}
+	});
+	
+	$('#vbx-client-status .client-button').live('click', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		var parent = $(this).closest('#vbx-client-status'),
+			status = null;
+		
+		if (parent.hasClass('online')) {
+			// go offline
+			status = false;
+			parent.removeClass('online');
+		}
+		else {
+			// go online
+			status = true;
+			parent.addClass('online');
+		}
+		
+		window.parent.Client.status.setWindowStatus(status);
 	});
 });
 

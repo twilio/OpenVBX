@@ -358,33 +358,52 @@ $(document).ready(function() {
 				.parent()
 				.append('<li class="calling">Calling...</li>');
 		}
-		$.ajax({
-			url : $(this).attr('href'),
-			data : {
-				callerid : $('.callerid', this).text(),
-				from : $('.from', this).text(),
-				to: $('.to', this).text()
-			},
-			dataType : 'json',
-			type : 'POST',
-			success : function(data) {
-				if(data.error)
-				{
-					$('.error-dialog')
-						.data('dialog.uiDialog')
-						.uiDialogTitlebar.text('Twilio Sandbox');
-					$('.error-dialog .error-code').text('');
-					$('.error-dialog .error-message')
-						.text(data.message);
-					$('.error-dialog').dialog('open');
-				}
-
-				$('.quick-call-popup .calling').remove();
-				$('.quick-call-popup.open').toggleClass('open');
-				anchor.show();
-			}
-		});
 		
+		var call_params = {
+			callerid : $('.callerid', this).text(),
+			from : $('.from', this).text(),
+			to: $('.to', this).text()
+		};
+				
+		if ($('#vbx-client-status').hasClass('online')) {
+			$.post(
+				$(this).attr('href'),
+				$.extend(call_params, { 'log_only': true }),
+				function(data) {
+					if (!data.error) {
+						window.parent.Client.call($.extend(call_params, { 'Digits': 1 }));
+						$('.quick-call-popup .calling').remove();
+						$('.quick-call-popup.open').toggleClass('open');					
+					}
+				},
+				'json'
+			);
+			anchor.show();
+		}
+		else {
+			$.ajax({
+				url : $(this).attr('href'),
+				data : call_params,
+				dataType : 'json',
+				type : 'POST',
+				success : function(data) {
+					if(data.error)
+					{
+						$('.error-dialog')
+							.data('dialog.uiDialog')
+							.uiDialogTitlebar.text('Twilio Sandbox');
+						$('.error-dialog .error-code').text('');
+						$('.error-dialog .error-message')
+							.text(data.message);
+						$('.error-dialog').dialog('open');
+					}
+
+					$('.quick-call-popup .calling').remove();
+					$('.quick-call-popup.open').toggleClass('open');
+					anchor.show();
+				}
+			});
+		}
 		return false;
 
 	});

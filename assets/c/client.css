@@ -1,0 +1,109 @@
+#vbx-client-status {
+	float: right;
+	position: relative;
+	overflow: visible;
+}
+
+#vbx-client-status .client-button,
+#vbx-client-status .client-button-wrap {
+	-moz-border-radius: 5px; /* FF1+ */
+	-webkit-border-radius: 5px; /* Saf3+, Chrome */
+	-khtml-border-radius: 5px; /* Konqueror */
+	border-radius: 5px; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
+}
+
+#vbx-client-status .client-button {
+	height: 29px;
+	width: 86px;
+	line-height: 30px;
+	padding: 0 26px 0 12px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #999;
+	background: #404040 url(../i/vbx-client-status.png) 65px -34px no-repeat;
+	border: 1px solid #505050;
+}
+
+#vbx-client-status .client-button-wrap {
+	width: 86px;
+	height: 29px;
+	border: 1px solid #404040;
+}
+
+#vbx-client-status.online .client-button-wrap {
+	border-color: #448723;
+}
+
+#vbx-client-status.online .client-button {
+	color: #FFF;
+	border-color: #7FCC5A;
+    background-color: #53A82B;
+    background-color: -moz-linear-gradient(100% 100% 90deg, #448723, #53A82B);
+    background-color: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#53A82B), to(#448723));
+	background-position: 65px -2px;
+}
+
+#vbx-client-status .client-button:hover {
+	border-color: #808080;
+}
+
+#vbx-client-status.online .client-button:hover {
+	border-color: #9EED77;
+}
+
+#vbx-client-status .isonline,
+#vbx-client-status.online .isoffline {
+	display: none;
+}
+
+#vbx-client-status.online .isonline {
+	display: block;
+}
+
+#client-first-run {
+	position: relative;
+	display: block;
+	padding: 10px 10px 10px 70px;
+	margin: 0 0 1px 0;
+	background: #222 url(../../assets/i/client-first-run-bg.png) no-repeat 20px center;
+	border: 5px solid #333;
+}
+
+#client-first-run p {
+	font-size: 13px;
+	color: #999;
+	margin: 3px 0;
+	position: relative;
+	z-index: 1;
+}
+
+#client-first-run h3 {
+	margin: 0 0 2px 0;
+	font-size: 16px;
+	color: #FFF;
+}
+
+#client-first-run a {
+	color: #BBB;
+}
+
+#client-first-run a:hover {
+	color: #FFF;	
+}
+
+#client-first-run .dismiss {
+	float: right;
+}
+
+#client-first-run .arrow {
+	position: absolute;
+	top: -15px;
+	right: 30px;
+	z-index: 0;
+}
+

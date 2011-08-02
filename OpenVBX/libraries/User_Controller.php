@@ -35,6 +35,8 @@ class User_Controller extends MY_Controller
 	public $testing_mode = false;
 	public $domain;
 
+	public $capability;
+
 	public function __construct()
 	{
 		// This is to support SWFUpload.  SWFUpload will scrape all cookies via Javascript and send them
@@ -162,6 +164,8 @@ class User_Controller extends MY_Controller
 				$this->upgrade_check();
 			}
 		}
+
+		$this->set_client_support();
 	}
 
 	protected function redirect($url)
@@ -363,4 +367,42 @@ class User_Controller extends MY_Controller
 		return $this->tenant;
 	}
 
+	/**
+	 * Init support for Twilio Client
+	 * This method manually loads in the Twilio Client library due to lack of support
+	 * for multiple parameters passing in CodeIgniters Loader.
+	 *
+	 * Application SID is always set by the parent tenant
+	 *
+	 * @since 0.93
+	 * @return void
+	 */
+	protected function set_client_support() {
+		$this->application_sid = $this->settings->get('application_sid', VBX_PARENT_TENANT);
+		if (!empty($this->application_sid)) {
+			if (!class_exists('Services_Twilio_Capability'))
+			{
+				include_once(APPPATH.'libraries/Capability.php');
+			}
+			$this->capability = new Services_Twilio_Capability($this->twilio_sid, $this->twilio_token);
+
+			$user_id = intval($this->session->userdata('user_id'));
+			$user = VBX_user::get(array('id' => $user_id));
+
+			$params = array(
+				'user_id' => $user->user_id,
+				'rest_access' => $this->make_rest_access()
+			);
+
+			try {
+				$this->capability->allowClientOutgoing($this->application_sid, $params);
+				$this->capability->allowClientIncoming($user->id);
+			}
+			catch (Exception $e) {
+				//throw new User_ControllerException($e->getMessage());
+				// this shouldn't be fatal, log instead of fail
+				error_log($e->getMessage());
+			}
+		}
+	}
 }

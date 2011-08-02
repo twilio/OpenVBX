@@ -17,21 +17,24 @@
 					</div>
 				</div>
 
-				<div class="vbx-content-section">			
+				<div class="vbx-content-section">
 					<fieldset class="activate-tenant vbx-input-complex vbx-input-container">
 					<label class="field-label-inline"><input id="active" type="radio" name="tenant[active]" value="1" <?php echo ($tenant->active == 1)? 'checked="checked"' : ''?> />Active</label>
 					<label class="field-label-inline"><input id="inactive" type="radio" name="tenant[active]" value="0" <?php echo ($tenant->active == 0)? 'checked="checked"' : ''?> />Inactive</label>
 					</fieldset>
 
 					<fieldset id="tenant-settings" class="vbx-input-container">
-						<label for="tenant-setting-twilio-sid" class="field-label">Twilio SID 
+						<label for="tenant-setting-twilio-sid" class="field-label">Twilio SID
 							<input id="tenant-setting-twilio-sid" class="medium" type="text" name="tenant_settings[twilio_sid]" value="<?php echo @$tenant_settings['twilio_sid']['value'] ?>" />
 						</label>
-						<label for="tenant-setting-twilio-token" class="field-label">Twilio Token 
+						<label for="tenant-setting-twilio-token" class="field-label">Twilio Token
 							<input id="tenant-setting-twilio-token" class="medium" type="text" name="tenant_settings[twilio_token]" value="<?php echo @$tenant_settings['twilio_token']['value'] ?>" />
 						</label>
-						<label for="tenant-setting-from-email" class="field-label">From Email 
+						<label for="tenant-setting-from-email" class="field-label">From Email
 							<input id="tenant-setting-from-email" class="medium" type="text" name="tenant_settings[from_email]" value="<?php echo @$tenant_settings['from_email']['value'] ?>" />
+						</label>
+						<label for="tenant-setting-application-sid" class="field-label">Application SID
+							<input id="tenant-setting-application-sid" class="medium" type="text" name="tenant_settings[application_sid]" value="<?php echo @$tenant_settings['application_sid']['value'] ?>" />
 						</label>
 						<label for="tenant-setting-theme" class="field-label">Theme
 					        <select id="tenant-setting-theme" class="medium" name="tenant_settings[theme]">

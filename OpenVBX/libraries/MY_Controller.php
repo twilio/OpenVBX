@@ -72,12 +72,11 @@ class MY_Controller extends Controller
 		$this->settings = new VBX_Settings();
 
 		$rewrite_enabled = intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT));
-		if($rewrite_enabled) {
+		if($rewrite_enabled)
+		{
 			/* For mod_rewrite */
 			$this->config->set_item('index_page', '');
 		}
-
-
 
 		$this->tenant = $this->settings->get_tenant($this->router->tenant);
 		if($this->tenant === false)
@@ -106,7 +105,8 @@ class MY_Controller extends Controller
 		{
 			$sources_file = APPPATH . 'assets/j/site-bootstrap.sources';
 			$scripts = explode("\n", file_get_contents(APPPATH . '../assets/j/site-bootstrap.sources'));
-		} else {
+		}
+		else {
 			$scripts = array('site.js');
 		}
 
@@ -118,15 +118,18 @@ class MY_Controller extends Controller
 			$styles = array('site-' . $this->config->item('site_rev') . '.css');
 		}
 
-
-		foreach ($scripts as $script) {
+		foreach ($scripts as $script)
+		{
 			if ($script) $this->template->add_js("assets/j/$script");
 		}
 
-		foreach ($styles as $style) {
+		foreach ($styles as $style)
+		{
 			if ($style) $this->template->add_css("assets/c/$style");
 		}
 	}
+
+
 
 	protected function set_request_method($method = null)
 	{
@@ -328,6 +331,7 @@ class MY_Controller extends Controller
 		$payload['site_rev'] = $this->config->item('site_rev');
 		$payload['asset_root'] = ASSET_ROOT;
 		$payload['layout'] = $layout;
+
 		if($layout == 'yui-t2')
 		{
 			$payload['layout_override'] = 'yui-override-main-margin';
@@ -335,6 +339,15 @@ class MY_Controller extends Controller
 		else
 		{
 			$payload['layout_override'] = '';
+		}
+
+		if($user = VBX_User::get($this->session->userdata('user_id'))) {
+			if ($user->online == 9) {
+				$payload['user_online'] = 'client-first-run';
+			}
+			else {
+				$payload['user_online'] = (bool) $user->online;
+			}
 		}
 
 		$navigation = $this->get_navigation($this->session->userdata('loggedin'),

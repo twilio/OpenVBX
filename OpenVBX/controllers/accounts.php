@@ -244,6 +244,7 @@ class Accounts extends User_Controller {
 			{
 				// It's a new user
 				$user = new VBX_User();
+				$user->online = 9;
 				$shouldSendWelcome = true;
 			}
 		}
@@ -359,7 +360,8 @@ class Accounts extends User_Controller {
 				'auth_type' => isset($auth_type->description) ? $auth_type->description : 'openvbx',
 				'email' => $user->email,
 				'error' => false,
-				'message' => ''
+				'message' => '',
+				'online' => $user->online
 			);
 		}
 

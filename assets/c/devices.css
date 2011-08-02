@@ -177,7 +177,7 @@
 /* Applications Container */
 
 .application-container {
-	display: none;
+	display: block;
 }
 
 .application-container .application {
