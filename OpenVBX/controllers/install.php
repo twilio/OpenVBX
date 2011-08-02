@@ -346,6 +346,7 @@ class Install extends Controller {
 		$admin->tenant_id = $user['tenant_id'];
 		$admin->is_admin = true;
 		$admin->voicemail = 'Please leave a message after the beep.';
+		$admin->online = 9;
 
 		try
 		{
