@@ -83,11 +83,8 @@
 			<p>No devices setup.</p>
 		</div><!-- .no-devices -->
 
-		<a href="#" name="mobile-apps" class="mobile-apps-toggle-link">More for your device</a>
-
 		</div><!-- .device-container -->
 		</form>
-
 
 		<div class="application-container">
 			<div class="application">

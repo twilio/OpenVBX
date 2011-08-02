@@ -918,7 +918,7 @@ button.inline-button {    float: left;    margin: 0 10px 0 0 !important;}
 
 /* Applications Container */
 
-.application-container {	display: none;}
+.application-container {	display: block;}
 
 .application-container .application {	padding: 15px;    border: 1px solid #CCC;    -moz-border-radius: 6px;    -webkit-border-radius: 6px;	overflow: auto;	clear: both;}
 

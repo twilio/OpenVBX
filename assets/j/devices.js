@@ -288,7 +288,6 @@ $(document).ready(function() {
 		$(this).hasClass('opened-apps') ? $(this).text('Hide applications') : $(this).text('More for your device');
 		return false;
 	};
-	$('.mobile-apps-toggle-link').click(toggleApplicationContainer);
 
 	if(document.location.hash == '#mobile-apps')
 		$('.mobile-apps-toggle-link').click();
