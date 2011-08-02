@@ -37,8 +37,10 @@ class DialList {
 	 */
 	public static function get($users_or_group) {
 		$users = array();
+		$class = 'DialList';
+		
 		switch(true) {
-			case is_array($users_or_group): 
+			case is_array($users_or_group):
 				if (current($users_or_group) instanceof VBX_User) {
 					// list of users, set as users list and continue
 					$users = $users_or_group;
@@ -56,11 +58,12 @@ class DialList {
 				}
 				break;
 			case $users_or_group instanceof VBX_User:
+				$class = 'DialListUser';
 				// individual user, add to list and continue
 				array_push($users, $users_or_group);
 				break;
 		}
-		return new DialList($users);
+		return new $class($users);
 	}
 	
 	/**
@@ -70,11 +73,11 @@ class DialList {
 	 * @param array $user_ids 
 	 * @return object DialList
 	 */
-	public static function load($user_ids) {
+	public static function load($data) {
 		$users = array();
 		
-		if (!empty($user_ids)) {
-			foreach ($user_ids as $user_id) {
+		if (!empty($data['user_ids'])) {
+			foreach ($data['user_ids'] as $user_id) {
 				array_push($users, VBX_User::get($user_id));
 			}
 		}
@@ -95,7 +98,11 @@ class DialList {
 				array_push($user_ids, $user->id);
 			}
 		}
-		return $user_ids;
+		
+		return array(
+			'type' => get_class($this),
+			'user_ids' => $user_ids
+		);
 	}
 	
 	/**
@@ -106,6 +113,61 @@ class DialList {
 	 */
 	public function next() {
 		return array_shift($this->users);
+	}
+}
+
+/**
+ * Variant of the DialList that iterates over a single VBX_User's devices
+ *
+ * @package default
+ */
+class DialListUser extends DialList {
+	public static function load($data) {
+		$devices = array();
+		$user = VBX_User::get($data['user_id']);
+
+		// load devices (handle device_id 0 as special condition as a Client reference)
+		if (!empty($data['device_ids'])) {
+			foreach ($data['device_ids'] as $device_id) {
+				if ($device_id > 0) {
+					array_push($devices, VBX_Device::get($device_id));
+				}
+				else {
+					array_push($devices, new VBX_Device((object) array(
+														'id' => 0,
+														'name' => 'client',
+														'value' => 'client:'.$user->id,
+														'sms' => 0,
+														'sequence' => -99,
+														'is_active' => 1,
+														'user_id' => $user->id
+													)));
+				}
+			}
+		} 
+				
+		// replace device list
+		$user->devices = $devices;
+		return new DialListUser(array($user));
+	}
+	
+	public function get_state() {
+		// return list of device IDs left in the user
+		$device_ids = array();
+		
+		foreach (current($this->users)->devices as $device) {
+			array_push($device_ids, $device->id);
+		}
+		
+		return array(
+			'type' => get_class($this),
+			'device_ids' => $device_ids,
+			'user_id' => current($this->users)->id
+		);
+	}
+	
+	public function next() {
+		return array_shift(current($this->users)->devices);
 	}
 }
 
