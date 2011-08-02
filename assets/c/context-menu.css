@@ -86,6 +86,26 @@
 	color: #FFF;
 }
 
+.flow-name-title .flow-name {
+	cursor: pointer;
+	padding-right: 20px;
+}
+.flow-name-title .flow-name .action-mini,
+.flow-name-title .flow-name-edit .action-mini {
+	display: inline-block;
+	text-indent: -9999px;
+	background-position: -110px 0;
+	vertical-align: sub;
+	margin-left: 5px;
+}
+.flow-name-title .flow-name-edit .action-mini {
+	background-position: -84px 0;
+}
+
+.flow-name-title .flow-name-edit input {
+	height: 20px;
+}
+
 .flow-name-title .flow-number {
 	padding-left: 5px;
 	font-weight: normal;

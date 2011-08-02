@@ -99,13 +99,13 @@ class MY_Model extends Model
 
 		if(isset($search_options['id']))
 		{
-			$search_options["`{$table}`.id"] = $search_options['id'];
+			$search_options["{$table}.id"] = $search_options['id'];
 			unset($search_options['id']);
 		}
 
 		/* Tenantize */
 		$ci = &get_instance();
-		$search_options["`{$table}`.tenant_id"] = $ci->tenant->id;
+		$search_options["{$table}.tenant_id"] = $ci->tenant->id;
 		
 		foreach($search_options as $option => $value)
 		{
@@ -184,7 +184,7 @@ class MY_Model extends Model
 		/* Tenantize */
 		if(!in_array('tenant_id', array_keys($params)))
 		{
-			$ci->db->set("`{$this->table}`.tenant_id", $this->tenant_id);
+			$ci->db->set("{$this->table}.tenant_id", $this->tenant_id);
 		}
 	}
 	
@@ -202,7 +202,7 @@ class MY_Model extends Model
 			}
 
 			/* Tenantize */
-			$ci->db->where("`{$this->table}`.tenant_id", $this->tenant_id);
+			$ci->db->where("{$this->table}.tenant_id", $this->tenant_id);
 			
 			$ci->db->update($this->table);
 		}
@@ -221,15 +221,15 @@ class MY_Model extends Model
 		if(isset($this->unique)
 		   && !empty($this->unique))
 		{
-			$ci->db->from("`{$this->table}`");
+			$ci->db->from("{$this->table}");
 			
 			foreach($this->unique as $column)
 			{
-				$ci->db->where("`{$this->table}`.`{$column}`", isset($this->values[$column])? $this->values[$column] : '');
+				$ci->db->where("{$this->table}.`{$column}`", isset($this->values[$column])? $this->values[$column] : '');
 			}
 			
 			/* Tenantize */
-			$ci->db->where("`{$this->table}`.tenant_id", $this->tenant_id);
+			$ci->db->where("{$this->table}.tenant_id", $this->tenant_id);
 			if(($result = count($ci->db->get()->result())) > 0)
 			{
 				throw new MY_ModelDuplicateException("Duplicate entry exists - $result");
@@ -266,11 +266,11 @@ class MY_Model extends Model
 					foreach($where as $key => $val)
 					{
 						$ci->db
-							->where("`{$this->table}`.`{$key}`", $val);
+							->where("{$this->table}.`{$key}`", $val);
 					}
 					
 					/* Tenantize */
-					$ci->db->where("`{$this->table}`.tenant_id", $this->tenant_id);
+					$ci->db->where("{$this->table}.tenant_id", $this->tenant_id);
 					
 					$ci->db->delete($this->table);
 					return true;
@@ -282,7 +282,7 @@ class MY_Model extends Model
 
 		$ci = &get_instance();
 		$ci->db
-			 ->where("`{$this->table}`.id", $this->id)
+			 ->where("{$this->table}.id", $this->id)
 			 ->delete($this->table);
 	}
 

@@ -110,14 +110,7 @@ function convertTimeToString(time, midnightToday, firstOfTheYear) {
 	}
 }
 
-// global params
-OpenVBX = {home: null, assets: null};
-
 $(document).ready(function() {
-	// set full links to allow for relative paths
-    OpenVBX.home = $('#openvbx-logo a').eq(0).attr('href'); 
-    OpenVBX.assets = $('#openvbx-assets a').eq(0).attr('href');
-
 	$('button').mouseover(function() {
 			$(this).addClass('ui-state-hover');
 		})
@@ -227,14 +220,15 @@ $(document).ready(function() {
 				$(this).siblings('.checked').removeClass('checked');
 			}
 			$(this).addClass('checked');
-			$('label[for=' + this.id + ']').addClass('checked');
+			$('label[for="' + this.id + '"]').addClass('checked');
 		} else if(hasChecked) {
 			$(this).removeClass('checked');
-			$('label[for=' + this.id + ']').removeClass('checked');
+			$('label[for="' + this.id + '"]').removeClass('checked');
 		}
 	});
 
-	$('.error-dialog').dialog({
+	$('.error-dialog').dialog({ 
+		autoOpen: false,
 		bgiframe: true,
 		resizable: false,
 		modal: true,
@@ -281,8 +275,27 @@ $(document).ready(function() {
         $('.shout-out').hide();
 		$.cookie("mobile-app","false", { path: '/'});
     });
+    
+    $('#client-first-run a.dismiss').live('click', function(e) {
+    	e.preventDefault();
+    	e.stopPropagation();
+    	
+    	var display = $('#client-first-run'),
+    		status = $('#vbx-client-status').hasClass('online');
+    	
+    	$.ajax({
+    		url: OpenVBX.home + '/account/edit',
+    		data: {
+    			'online': (status ? 1 : 0).toString()
+    		},
+    		success: function(response) {
+ 				display.slideUp('3000');
+    		},
+    		type: 'POST',
+    		dataType: 'json'
+    	});
+    });
 
 	var mobileAppCookie = $.cookie("mobile-app");
 	mobileAppCookie == "false" ? $('.shout-out').hide() : $('.shout-out').show();
-
 });

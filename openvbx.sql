@@ -111,6 +111,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `tenant_id` BIGINT(20) NOT NULL,
   `last_seen` datetime DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
+  `online` TINYINT(1) NOT NULL DEFAULT 9,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `email` (`email`, `tenant_id`),
   INDEX(`tenant_id`)
@@ -300,7 +301,7 @@ INSERT INTO settings
 	   VALUES
 	   ('dash_rss', '', 1),
 	   ('theme', '', 1),
-	   ('version', '0.90', 1),
+	   ('version', '1.0', 1),
 	   ('iphone_theme', '', 1),
 	   ('enable_sandbox_number', 1, 1),
 	   ('twilio_endpoint', 'https://api.twilio.com/2010-04-01', 1),

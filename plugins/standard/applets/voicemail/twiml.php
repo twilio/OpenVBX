@@ -27,7 +27,7 @@ else
 		$prompt = AppletInstance::getAudioSpeechPickerValue('prompt');
 	}
 
-	$verb = AudioSpeechPickerWidget::getVerbForValue($prompt, new Say("Please leave a message."));
+	$verb = AudioSpeechPickerWidget::getVerbForValue($prompt, new Say("Please leave a message. Press the pound key when you are finished."));
 	$response->append($verb);
 
 	// add a <Record>, and use VBX's default transcription handler

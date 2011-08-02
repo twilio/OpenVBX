@@ -74,7 +74,7 @@
 						<td><?php echo $plugin['author'] ?></td>
 						<td><?php echo $plugin['description'] ?></td>
 						<td><?php echo $plugin['plugin_path'] ?></td>
-						<td><a href="<?php echo site_url('config/'.$plugin['dir_name']); ?>">Configure</a></td>
+						<td><a class="edit action" href="<?php echo site_url('config/'.$plugin['dir_name']); ?>"><span class="replace">Configure</span></a></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>
@@ -111,7 +111,7 @@
 					<?php foreach($tenants as $tenant): ?>
 					<tr class="items-row">
 							<td class="url-tenant"><a href="<?php echo tenant_url('', $tenant->id) ?>"><?php echo tenant_url('', $tenant->id) ?></a></td>
-							<td class="edit-tenant"><a href="<?php echo tenant_url('settings/site/tenant', $tenant->id) ?>" class="edit action"><span class="replace">Edit</span></a></td>
+							<td class="edit-tenant"><a href="<?php echo site_url('settings/site/tenant/'.$tenant->id) ?>" class="edit action"><span class="replace">Edit</span></a></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>
@@ -130,6 +130,9 @@
 					</label>
 					<label for="site-twilio-token" class="field-label">Twilio Token
 						<input id="site-twilio-token" type="password" name="site[twilio_token]" value="<?php echo @$twilio_token['value'] ?>" class="medium" />
+					</label>
+					<label for="site-twilio-application-sid" class="field-label">Twilio Client Application SID
+						<input id="site-twilio-application-sid" type="text" name="site[application_sid]" value="<?php echo @$application_sid['value']; ?>" class="medium" />
 					</label>
 					<label for="site-from-email" class="field-label">From Email
 						<input id="site-from-email" type="text" name="site[from_email]" value="<?php echo @$from_email['value'] ?>" class="medium" />
@@ -151,6 +154,7 @@
 			</ul>
 
 			<p>Thanks to everyone involved, you made it better than envisioned!</p>
+
 			<?php require_once 'license.php' ?>
 		</div>
 

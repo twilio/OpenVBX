@@ -69,7 +69,10 @@ class Voicemail extends User_Controller {
 
 	public function greeting()
 	{
-		return $this->greeting_handler();
+		// return $this->greeting_handler();
+		print_r($_SERVER);
+		$data = $this->greeting_handler();
+		exit;
 	}
 	
 	private function greeting_handler()
@@ -125,7 +128,7 @@ class Voicemail extends User_Controller {
 
 		$user = VBX_User::get($this->user_id);
 		$user->voicemail = $this->input->post('voicemail');
-		
+
 		try
 		{
 			$user->save();

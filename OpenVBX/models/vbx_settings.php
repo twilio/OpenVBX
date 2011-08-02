@@ -4,7 +4,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -18,7 +18,7 @@
 
  * Contributor(s):
  **/
-	
+
 class VBX_SettingsException extends Exception {}
 
 class VBX_Settings extends Model
@@ -32,18 +32,18 @@ class VBX_Settings extends Model
 									'from_email',
 									'recording_host',
 									'theme');
-	
+
 	protected $settings_params = array('name',
 									   'value',
 									   'tenant_id');
 	protected $tenants_params = array('active',
 									  'name',
 									  'url_prefix');
-	
+
 	private $cache_key;
 
 	const CACHE_TIME_SEC = 1;
-	
+
 	function __construct()
 	{
 		parent::__construct();
@@ -61,7 +61,7 @@ class VBX_Settings extends Model
 
 		return $tenants;
 	}
-	
+
 	function get_tenant($url_prefix)
 	{
 		$ci =& get_instance();
@@ -70,7 +70,7 @@ class VBX_Settings extends Model
 			 ->from($this->tenants_table)
 			 ->where('url_prefix', strtolower($url_prefix))
 			 ->get()->result();
-		
+
 		if(!empty($tenant[0]))
 			return $tenant[0];
 
@@ -85,7 +85,7 @@ class VBX_Settings extends Model
 			 ->from('tenants as i')
 			 ->where('i.name', $name)
 			 ->get()->result();
-		
+
 		if(!empty($tenant[0]))
 			return $tenant[0];
 
@@ -100,20 +100,20 @@ class VBX_Settings extends Model
 			 ->from($this->tenants_table)
 			 ->where('id', $id)
 			 ->get()->result();
-		
+
 		if(!empty($tenant[0]))
 			return $tenant[0];
 
 		return false;
 	}
-	
+
 	function tenant($name, $url_prefix, $local_prefix)
 	{
 		$ci =& get_instance();
 
 		$tenant = $this->get_tenant($url_prefix);
 		$errors = array();
-		
+
 		if(strlen($url_prefix) > 32)
 		{
 			$errors[] = "Tenant name exceeds 32 character limit";
@@ -128,7 +128,7 @@ class VBX_Settings extends Model
 		{
 			throw new VBX_SettingsException(implode(',', $errors));
 		}
-		
+
 		if($tenant === false)
 		{
 			$ci->db
@@ -141,7 +141,7 @@ class VBX_Settings extends Model
 			{
 				throw new VBX_SettingsException('Tenant failed to create');
 			}
-			
+
 			return $tenant_id;
 		}
 
@@ -172,7 +172,7 @@ class VBX_Settings extends Model
 		{
 			$errors[] = "Tenant name contains invalid characters.  Allowed characters: alphanumeric, dashes, and underscores.";
 		}
-		
+
 		foreach($this->tenants_params as $param)
 		{
 			if(isset($tenant[$param]))
@@ -181,12 +181,12 @@ class VBX_Settings extends Model
 					->set($param, $tenant[$param]);
 			}
 		}
-		
+
 		return $ci->db
 			->where('id', $tenant['id'])
 			->update($this->tenants_table);
 	}
-	
+
 	function add($name, $value, $tenant_id)
 	{
 		$ci =& get_instance();
@@ -195,17 +195,25 @@ class VBX_Settings extends Model
 		{
 			return false;
 		}
-	
-		$ci->db
-			 ->set('name', $name)
-			 ->set('value', $value)
-			 ->set('tenant_id', $tenant_id)
-			 ->insert($this->settings_table);
+
+		if($this->get($name, $tenant_id) !== false) {
+			$ci->db
+				->set('value', $value)
+				->where('name', $name)
+				->where('tenant_id', $tenant_id)
+				->update($this->settings_table);
+		} else {
+			$ci->db
+				->set('name', $name)
+				->set('value', $value)
+				->set('tenant_id', $tenant_id)
+				->insert($this->settings_table);
+		}
 
 		if(function_exists('apc_delete')) {
 			apc_delete($this->cache_key.$tenant_id.$name);
 		}
-		
+
 		return $ci->db
 			->insert_id();
 	}
@@ -218,7 +226,7 @@ class VBX_Settings extends Model
 		{
 			return false;
 		}
-		
+
 		$ci->db
 			->set('value', $value)
 			->where('name', $name)
@@ -232,7 +240,7 @@ class VBX_Settings extends Model
 		return ($ci->db
 				->affected_rows() > 0? true : false);
 	}
-	
+
 	function get($name, $tenant_id)
 	{
 		$ci =& get_instance();
@@ -247,7 +255,7 @@ class VBX_Settings extends Model
 			}
 		}
 
-		
+
 		$result = $ci->db
 			->select('value')
 			->from($this->settings_table . ' as s')
@@ -255,14 +263,14 @@ class VBX_Settings extends Model
 			->where('s.tenant_id', $tenant_id)
 			->get()->result();
 
-		
+
 		if(function_exists('apc_store')) {
 			$success = apc_store($this->cache_key.$tenant_id.$name, serialize($result), self::CACHE_TIME_SEC);
 		}
-		
+
 		if(!empty($result[0]))
 			return $result[0]->value;
-		
+
 		return false;
 	}
 

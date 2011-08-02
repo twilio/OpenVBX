@@ -119,9 +119,9 @@ $(document).ready(function() {
 			return _hash;
 		};
 
-		$(window).hashchange( function() { $('a[href=#'+hash()+']').click(); } );
+		$(window).hashchange( function() { $('a[href="#'+hash()+'"]').click(); } );
 		$(window).trigger( "hashchange" );
-		$('a[href=#'+hash()+']').click();
+		$('a[href="#'+hash()+'"]').click();
 		history.navigationMode = 'compatible';
 
 	});
@@ -131,7 +131,7 @@ $(document).ready(function() {
 
 	/* Change Password */
 	var changePassword = function() {
-		$('button').attr('disabled', 'disabled');
+		$('button').prop('disabled', true);
 		var passwordChanged = function(data, status) {
 			$('#dialog-password .error-message').slideUp(function() {
 				$('#dialog-password .error-message').text(data.message);
@@ -140,16 +140,16 @@ $(document).ready(function() {
 			
 			if(data.error)
 			{
-				$('button').removeAttr('disabled');
+				$('button').prop('disabled', false);
 				return false;
 			}
 			
 			setTimeout(function() {
 				$('#dialog-password input').val('');
-				$('button').removeAttr('disabled');
-				$('#dialog-password .error-message').hide();
+				$('button').prop('disabled', false);
+				$('#dialog-password .error-message').hide();				
 				return $('#dialog-password').dialog('close');
-			}, 1000);
+			}, 1000);			
 		};
 		var passwordChangeFailed = function(xhr, status, error) {};
 		$.ajax({
@@ -162,7 +162,8 @@ $(document).ready(function() {
 		});
 	};
 	
-	$('#dialog-password').dialog({
+	$('#dialog-password').dialog({ 
+		autoOpen: false,
 		width: 350,
 		buttons: {
 			'Change' : changePassword,
@@ -191,7 +192,7 @@ $(document).ready(function() {
 		if (value) {
 			$.ajax({
 				type: 'POST',
-				url:  OpenVBX.home + 'voicemail/greeting',
+				url:  OpenVBX.home + '/voicemail/greeting',
 				data: { 'voicemail' : value },
 				success: function() {
 				},
@@ -200,5 +201,5 @@ $(document).ready(function() {
 				dataType: 'json'
 			});
 		}
-	});
+	});	
 });

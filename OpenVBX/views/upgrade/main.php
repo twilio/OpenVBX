@@ -4,8 +4,9 @@
 <head>
 	<title>Upgrade OpenVBX</title>
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url() ?>/assets/c/install.css" />
-	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/frameworks/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/frameworks/jquery-1.6.2.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/plugins/jquery.validate.js"></script>
+	<?php $this->load->view('js-init'); ?>
 	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/upgrade.js"></script>
 
 </head>
@@ -63,17 +64,6 @@
 	</form>
 
 	</div><!-- #install-container -->
-
-	<script type="text/javascript">
-		$(document).ready(function() {
-			OpenVBX.home = '<?php echo site_url(''); ?>/';
-			OpenVBX.assets = '<?php echo asset_url(''); ?>';
-		<?php if(isset($step)): ?>
-			OpenVBX.Installer.gotoStep(<?php echo $step ?>);
-		<?php endif; ?>
-		});
-	</script>
-
 
 </body>
 </html>

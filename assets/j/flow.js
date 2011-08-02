@@ -133,27 +133,26 @@ Flows.link = {
 					|| /text|hidden|password/i.test(this.type))) {
 				var val = $(this).val();
 				if(val != null) {
-					var type = typeof data[this.name];
+					var type = $.type(data[this.name]);
 					switch(type) {
-					case 'string':
-						data[this.name] = new Array(data[this.name]);
-					case 'object':
-						data[this.name].push(val);
-						break;
-					default:
-						var matches = this.name.match(/^(.*)\[(.+)\]$/);
-						if( matches && matches.length ) {
-							var key = matches[1] + '[]';
-							if(typeof data[key] == "undefined") {
-								data[key] = new Array();
+						case 'string':
+							data[this.name] = new Array(data[this.name]);
+						case 'object':
+							data[this.name].push(val);
+							break;
+						default:
+							var matches = this.name.match(/^(.*)\[(.+)\]$/);
+							if( matches && matches.length ) {
+								var key = matches[1] + '[]';
+								if(!$.isArray(data[key])) {
+									data[key] = new Array();
+								}
+								data[key].push(val);
+							} else {
+								data[this.name] = val;
 							}
-
-							data[key].push(val);
-						} else {
-							data[this.name] = val;
+							break;
 						}
-						break;
-					}
 				}
 			}
 		});
@@ -176,12 +175,20 @@ Flows.events = {
 			}
 
 			$('h2.applet-name', event.target).text(name.substr(0, 42));
-			$('#instance-row a[href$='+ $(event.target).attr('id') +'] .applet-item-name').text(name.substr(0, 42));
+			$('#instance-row a[href$="'+ $(event.target).attr('id') +'"] .applet-item-name').text(name.substr(0, 42));
 		},
 		beforeSave : function(event, success) {
 			event.preventDefault();
 			var flow_instances = $('#instances .flow-instance');
 			var textareas = $('.audio-choice .audio-choice-read-text textarea:visible', flow_instances);
+				
+			if ($('.flow-name-edit').is(':visible')) {
+				new_name = $('.flow-name-edit input[name="name"]').val();
+				old_name = $('.vbx-form input.flow-name');
+				if (new_name != old_name) {
+					$('.vbx-form input.flow-name').val(new_name);
+				}
+			}
 				
 			if(textareas.length) {
 				textareas.each(function() {
@@ -239,10 +246,10 @@ Flows.events = {
 								if(success) {
 									success();
 								}
-
+								$(document).trigger('flow-after-save');
 								return $.notify('Flow has been saved.').flicker();
 							}
-
+							
 							$.notify(data.message);
 						},
 						type : 'POST'
@@ -256,7 +263,7 @@ Flows.events = {
 			$.ajax({
 				url: OpenVBX.home + '/flows/copy/' + Flows.id,
 				data : {
-					name : $('#dialog-save-as input[name=name]').val(),
+					name : $('#dialog-save-as input[name="name"]').val(),
 					data : JSON.stringify(flow_data)
 				},
 				dataType : 'json',
@@ -433,7 +440,7 @@ Flows.events = {
 				);
 
 				$('input', event.target).attr('value', link.href.replace(/^\//, ''));
-				var plugin_path = 'plugins/' + link.type.replace(/---/,'/applets/');
+				var plugin_path = '/plugins/' + link.type.replace(/---/,'/applets/');
 				$('.item-body', event.target).html('<a class="item-box" href="#flowline'
 												   + link.href
 												   + '"><div class="'
@@ -464,7 +471,7 @@ Flows.events = {
 									   + '</div></form></td>');
 
 				$('#'+link.id + ' textarea').text('');
-				$('#'+link.id + ' input[type=text]').val('');
+				$('#'+link.id + ' input[type="text"]').val('');
 				$('#'+link.id + ' .flowline-item').droppable(Flows.events.drop.options);
 				window.location.hash = '#flowline' + link.href;
 			};
@@ -554,9 +561,10 @@ Flows.initialize = function() {
 	});
 
 	$('#prototypes textarea').text('');
-	$('#prototypes input[type=text]').val('');
+	$('#prototypes input[type="text"]').val('');
 
-	$('#dialog-replace-applet').dialog({
+	$('#dialog-replace-applet').dialog({ 
+		autoOpen: false,
 		width: 480,
 		buttons: {
 			'OK': function() {
@@ -568,7 +576,8 @@ Flows.initialize = function() {
 		}
 	});
 
-	$('#dialog-remove-applet').dialog({
+	$('#dialog-remove-applet').dialog({ 
+		autoOpen: false,
 		width: 480,
 		buttons: {
 			'OK': function() {
@@ -580,7 +589,8 @@ Flows.initialize = function() {
 		}
 	});
 
-	$('#dialog-save-as').dialog({
+	$('#dialog-save-as').dialog({ 
+		autoOpen: false,
 		width: 480,
 		buttons: {
 			'OK': function() {
@@ -593,7 +603,8 @@ Flows.initialize = function() {
 		}
 	});
 	
-	$('#dialog-close').dialog({
+	$('#dialog-close').dialog({ 
+		autoOpen: false,
 		width: 480,
 		buttons : {
 			'Yes': function() {
@@ -634,19 +645,42 @@ Flows.initialize = function() {
 		}
 	});
 
-  $('.timing-timerange-wrap input').timePicker({ show24Hours: false });
-  $('.timing-timerange-wrap .timepicker-widget').each(function() {
-    $this = $(this);
-    if ($this.val() == '') Pickers.timing.setDisabled(
-      $this,
-      $this.find('input').first().val() == ''
-    );
-  });
-  $('.timing-timerange-wrap a').live('click', function() {
-    $widget = $(this).siblings('.timepicker-widget');
-    Pickers.timing.setDisabled($widget, $(this).hasClass("timing-remove"));
-    return false;
-  });
+	$('.timing-timerange-wrap input').timePicker({ show24Hours: false });
+	$('.timing-timerange-wrap .timepicker-widget').each(function() {
+		$this = $(this);
+		if ($this.val() == '') Pickers.timing.setDisabled(
+			$this,
+			$this.find('input').first().val() == ''
+		);
+	});
+	$('.timing-timerange-wrap a').live('click', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$widget = $(this).siblings('.timepicker-widget');
+		Pickers.timing.setDisabled($widget, $(this).hasClass("timing-remove"));
+	});
+
+	$('#flow-rename, .flow-name, #flow-rename-cancel').live('click', function(e) {
+		e.stopPropagation();
+		e.preventDefault();
+		var $this = $(this);
+		$this.closest('span').hide().siblings('span').show();
+		if ($this.attr('id') == 'flow-rename-cancel') {
+			var $input = $('input[name="name"]');
+			$input.val($input.attr('data-orig-value'));
+		}
+	});
+	$('.flow-name').hover(function() {
+		$('#flow-rename').show();
+	}, function() {
+		$('#flow-rename').hide();
+	});
+	$(document).bind('flow-after-save', function() {
+		if ($('.flow-name-title .flow-name-edit').is(':visible')) {
+			$('.flow-name-title .flow-name').text($('.flow-name-title .flow-name-edit input[name="name"]').val()).show()
+				.siblings('span').hide();
+		}
+	});
 
 	$('.applet-item').draggable(Flows.events.drag.options);
 	$('.flowline-item').droppable(Flows.events.drop.options);
@@ -662,9 +696,10 @@ Flows.initialize = function() {
 	$(document).bind('flow-save', Flows.events.flow.save);
 	$(document).bind('flow-copy', Flows.events.flow.copy);
 	$('.flow-instance').trigger('hide');
-	$('.save-button').click(function() {
+	$('.save-button').click(function(event) {
+		event.stopPropagation();
+		event.preventDefault();
 		$(document).trigger('flow-before-save');
-		return false;
 	});
 
 	$(window).bind('hashchange', Flows.events.flow.change);
@@ -678,7 +713,7 @@ Flows.initialize = function() {
 
 	$('.modal-tabs').modalTabs({ attr : 'rel', history : false });
 	$('.vbx-form').live('submit', preventDefault);
-	$(':input', $('.vbx-form')).change(function() {
+	$('.vbx-form :input, .flow-name-edit :input').change(function() {
 		Flows.modified = true;
 	});
 };

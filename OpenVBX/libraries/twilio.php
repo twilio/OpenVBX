@@ -295,6 +295,10 @@
 		function addNumber($body=NULL, $attr = array()){
 			return self::append(new Number($body, $attr));
 		}
+		
+		function addClient($body=NULL, $attr = array()){
+			return self::append(new Client($body, $attr));
+		}
 
 		function addGather($attr = array()){
 			return self::append(new Gather($attr));
@@ -415,7 +419,7 @@
 		protected $valid = array('action','method','timeout','hangupOnStar',
 			'timeLimit','callerId');
 
-		protected $nesting = array('Number','Conference');
+		protected $nesting = array('Number','Conference', 'Client');
 
 	}
 
@@ -441,9 +445,15 @@
 			parent::__construct(NULL, array());
 		}
 
-
 	}
 
+	class Client extends Verb {
+		
+		function __construct($body) {
+			parent::__construct($body, array());
+		}
+		
+	}
 
 	class Gather extends Verb {
 

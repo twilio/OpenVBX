@@ -4,8 +4,9 @@
 <head>
 	<title>Install OpenVBX</title>
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url() ?>/assets/c/install.css" />
-	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/frameworks/jquery-1.4.2.js"></script>
+	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/frameworks/jquery-1.6.2.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/plugins/jquery.validate.js"></script>
+	<?php $this->load->view('js-init'); ?>
 	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/install.js"></script>
 
 </head>
@@ -55,7 +56,7 @@
 			<?php if(isset($pass) && $pass === true): ?>
 			<fieldset>
 					<input type="hidden" name="step" value="2" />
-				
+
 					<label for="iDatabaseHost">Hostname
 					<input id="iDatabaseHost" class="medium" type="text" name="database_host" value="<?php echo htmlspecialchars($hostname)?>" />
 					<span class="instruction">For example: localhost, or your ip address</span>
@@ -73,7 +74,7 @@
 					<label for="iDatabasePassword">MySQL Password
 					<input id="iDatabasePassword" class="medium" type="password" name="database_password" value="<?php echo htmlspecialchars($password)?>" />
 					</label>
-				
+
 			</fieldset>
 		</div>
 
@@ -165,7 +166,7 @@
 			<h1>Installation Complete!</h1>
 
 			<p class="step-desc">Thanks for choosing OpenVBX, enjoy.</p>
-			
+
 			<a id="login-openvbx" href="<?php echo site_url() ?>">Login &raquo;</a>
 
 			<fieldset>
@@ -186,20 +187,10 @@
 		<button id="bInstall" class="submit">Install</button>
 		<button class="prev">&laquo; Prev</button>
 	</div>
-	
+
 	</form>
 
 	</div><!-- #install-container -->
 
-
-	<script type="text/javascript">
-		$(document).ready(function() {
-			OpenVBX.home = '<?php echo site_url(''); ?>/';
-			OpenVBX.assets = '<?php echo asset_url(''); ?>';
-	    <?php if(isset($step)): ?>
-			OpenVBX.Installer.gotoStep(<?php echo $step ?>);
-	    <?php endif; ?>
-	    });
-	</script>
 </body>
 </html>

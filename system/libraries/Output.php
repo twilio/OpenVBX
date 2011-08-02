@@ -186,7 +186,7 @@ class CI_Output {
 		{
 			$output =& $this->final_output;
 		}
-		
+
 		// --------------------------------------------------------------------
 		
 		// Do we need to write a cache file?

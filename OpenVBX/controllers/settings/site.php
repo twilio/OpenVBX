@@ -119,6 +119,12 @@ class Site extends User_Controller
 			$data['tenant_mode'] = self::MODE_MULTI;
 			$data['tenants'] = $this->settings->get_all_tenants();
 		}
+		else {
+			// allow tenants to see the rewrite setting
+			$data['rewrite_enabled'] = array(
+				'value' => intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT))
+			);
+		}
 
 		$data['available_themes'] = $this->vbx_theme->get_all();
 		$plugins = Plugin::all();
@@ -126,6 +132,7 @@ class Site extends User_Controller
 		{
 			$data['plugins'][] = $plugin->getInfo();
 		}
+		$data['error'] = $this->session->flashdata('error');
 
 		$data['json']['settings'] = $current_settings;
 
@@ -137,13 +144,82 @@ class Site extends User_Controller
 		$data = array('message' => '', 'error' => false);
 		$site = $this->input->post('site');
 
+		$current_app_sid = $this->settings->get('app_sid', VBX_PARENT_TENANT);
+
 		if(!empty($site))
 		{
 			try
 			{
 				foreach($site as $name => $value)
 				{
+					if ($name == 'application_sid')
+					{
+						$app_sid = $value;
+					}
 					$this->settings->set($name, trim($value), $this->tenant->id);
+				}
+
+				$update_app = false;
+				if (empty($app_sid) && !empty($current_app_sid))
+				{
+					// disassociate the current app from this install
+					$update_app[] = array(
+										  'app_sid' => $current_app_sid,
+										  'params' => array(
+															'VoiceUrl' => '',
+															'VoiceFallbackUrl' => '',
+															'SmsUrl' => '',
+															'SmsFallbackUrl' => ''
+															)
+										  );
+				}
+				elseif (!empty($app_sid))
+				{
+					// update the application data
+					$update_app[] = array(
+										  'app_sid' => $app_sid,
+										  'params' => array(
+															'VoiceUrl' => site_url('/twiml/dial'),
+															'VoiceFallbackUrl' => site_url('/fallback/voice.php'),
+															'VoiceMethod' => 'POST',
+															'SmsUrl' => '',
+															'SmsFallbackUrl' => '',
+															'SmsMethod' => 'POST'
+															)
+										  );
+
+					if ($app_sid != $current_app_sid) {
+						// app sid changed, disassociate the old app from this install
+						$update_app[] = array(
+											  'app_sid' => $current_app_sid,
+											  'params' => array(
+																'VoiceUrl' => '',
+																'VoiceFallbackUrl' => '',
+																'SmsUrl' => '',
+																'SmsFallbackUrl' => ''
+																)
+											  );
+					}
+				}
+
+				if (!empty($update_app))
+				{
+					$twilio = new TwilioRestClient($this->twilio_sid,
+												   $this->twilio_token,
+												   $this->twilio_endpoint);
+
+					foreach ($update_app as $app)
+					{
+						$response = $twilio->request('Accounts/'.$this->twilio_sid.'/Applications/'.$app['app_sid'],
+													 'POST',
+													 $app['params']);
+
+						if($response && $response->ResponseXML->IsError)
+						{
+							$this->session->set_flashdata('error', $response->ResponseXML->ErrorMessage);
+							throw new SiteException($response->ResponseXML->ErrorMessage);
+						}
+					}
 				}
 
 				$this->session->set_flashdata('error', 'Settings have been saved');
@@ -164,6 +240,65 @@ class Site extends User_Controller
 		$this->respond('', 'settings/site', $data);
 	}
 
+	private function create_application_for_subaccount($tenant_id, $name, $accountSid) {
+		$appName = "OpenVBX - {$name}";
+		$twilio = new TwilioRestClient($this->twilio_sid,
+									   $this->twilio_token,
+									   $this->twilio_endpoint);
+		$response = $twilio->request("Accounts/{$accountSid}/Applications",
+									 "GET",
+									 array("FriendlyName" => $appName));
+
+		if($response->IsError) {
+			if($response->HttpStatus > 400) {
+				throw(new VBX_SettingsException($response->ErrorMessage));
+			}
+        }
+
+		// If we found an existing application, update the urls.
+        $foundApp = intval($response->ResponseXml->Applications['total']);
+        if($foundApp) {
+			$appSid = (string)$response->ResponseXml->Applications->Application->Sid;
+			$response = $twilio->request("Accounts/{$accountSid}/Applications/{$appSid}",
+										 'POST',
+										 array('FriendlyName' => $appName,
+											   'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
+											   'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
+											   'VoiceMethod' => 'POST',
+											   'SmsUrl' => '',
+											   'SmsFallbackUrl' => '',
+											   'SmsMethod' => 'POST',
+											   ));
+			if($response->IsError) {
+				if($response->HttpStatus > 400) {
+					throw(new VBX_SettingsException("Failed to create application: " . $response->ErrorMessage));
+				}
+			}
+
+			// Otherwise, lets create a new application for openvbx
+        } else {
+			$response = $twilio->request("Accounts/{$accountSid}/Applications",
+										 'POST',
+										 array('FriendlyName' => $appName,
+											   'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
+											   'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
+											   'VoiceMethod' => 'POST',
+											   'SmsUrl' => '',
+											   'SmsFallbackUrl' => '',
+											   'SmsMethod' => 'POST',
+											   ));
+			if($response->IsError) {
+				if($response->HttpStatus > 400) {
+					throw(new VBX_SettingsException("Failed to create application: " . $response->ErrorMessage));
+				}
+			}
+
+			$appSid = (string)$response->ResponseXml->Application->Sid;
+        }
+
+		return $appSid;
+	}
+
 	private function add_tenant()
 	{
 		$tenant = $this->input->post('tenant');
@@ -174,12 +309,14 @@ class Site extends User_Controller
 				$data['id'] = $this->settings->tenant($tenant['url_prefix'],
 													  urlencode($tenant['url_prefix']),
 													  '');
+
+				$this->db->trans_start();
 				$user = new VBX_User();
 				$user->fields[] = 'tenant_id'; // monkey patching to override tenant_id
 				$user->first_name = '';
 				$user->last_name = '';
 				$user->password = '';
-				$user->values['tenant_id'] = $data['id'];
+				$user->values['tenant_id'] = $data['id']; // hidden field not in ORM
 				$user->email = $tenant['admin_email'];
 				$user->is_active = TRUE;
 				$user->is_admin = TRUE;
@@ -201,55 +338,59 @@ class Site extends User_Controller
 				}
 
 				$this->settings->set('from_email', $tenant['admin_email'], $data['id']);
-
-				if($tenant['create_subaccount'])
+				try
 				{
-					try
+					$twilio = new TwilioRestClient($this->twilio_sid,
+												   $this->twilio_token,
+												   $this->twilio_endpoint);
+					$friendlyName = $tenant['url_prefix'] . ' - ' . $tenant['admin_email'];
+					$friendlyName = substr($friendlyName, 0, 32);
+					$response = $twilio->request("Accounts", 'POST', array('FriendlyName' =>
+																		   $friendlyName
+																		   ));
+					if($response
+					   && $response->IsError != true)
 					{
-						$twilio = new TwilioRestClient($this->twilio_sid,
-													   $this->twilio_token,
-													   $this->twilio_endpoint);
-						$friendlyName = $tenant['url_prefix'] . ' - ' . $tenant['admin_email'];
-						$friendlyName = substr($friendlyName, 0, 32);
-						$response = $twilio->request("Accounts", 'POST', array('FriendlyName' =>
-																			   $friendlyName
-																			   ));
-						if($response
-						   && $response->IsError != true)
-						{
-							$account = $response->ResponseXml;
-							$this->settings->set('twilio_sid', (String)$account->Account->Sid, $data['id']);
-							$this->settings->set('twilio_token', (String)$account->Account->AuthToken, $data['id']);
-						}
-						else
-						{
-							$message = 'Failed to create new subaccount';
-							if($response && $response->ErrorMessage)
-								$message = $response->ErrorMessage;
-							throw new VBX_SettingsException($message);
-						}
+						$account = $response->ResponseXml;
+						$tenant_sid = (String)$account->Account->Sid;
+						$tenant_token = (String)$account->Account->AuthToken;
+						$this->settings->add('twilio_sid', $tenant_sid, $data['id']);
+						$this->settings->add('twilio_token', $tenant_token, $data['id']);
+					}
+					else
+					{
+						$message = 'Failed to create new subaccount';
+						if($response && $response->ErrorMessage)
+							$message = $response->ErrorMessage;
+						throw new VBX_SettingsException($message);
+					}
 
-					}
-					catch(Exception $e) {
-						throw new VBX_SettingsException($e->getMessage());
-					}
+					$appSid = $this->create_application_for_subaccount($data['id'], $tenant['url_prefix'], $tenant_sid);
+
+					$this->settings->add('application_sid', $appSid, $data['id']);
+				}
+				catch(Exception $e) {
+					throw new VBX_SettingsException($e->getMessage());
 				}
 
-
+				$this->db->trans_complete();
 				$this->session->set_flashdata('error', 'Added new tenant');
+
+				if(isset($data['id']))
+				{
+					return redirect('settings/site/tenant/'.$data['id']);
+				}
 			}
 			catch(VBX_SettingsException $e)
 			{
 				error_log($e->getMessage());
+				$this->db->trans_rollback();
+				// TODO: rollback in twilio.
 				$this->session->set_flashdata('error', $e->getMessage());
 				$data['error'] = true;
 				$data['message'] = $e->getMessage();
 			}
 
-			if(isset($data['id']))
-			{
-				return redirect('settings/site/tenant/'.$data['id']);
-			}
 		}
 
 		if($this->response_type == 'html')
@@ -269,6 +410,9 @@ class Site extends User_Controller
 		$data['tenant'] = $tenant;
 		$data['tenant_settings'] = $tenant_settings;
 		$data['available_themes'] = $this->vbx_theme->get_all();
+		$data['rewrite_enabled'] = array(
+			'value' => intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT))
+		);
 
 		$this->respond('Tenant Settings', 'settings/tenant', $data);
 	}

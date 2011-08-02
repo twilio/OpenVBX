@@ -223,7 +223,7 @@ class AudioFiles extends User_Controller
 
 		if (!$audioFile->cancelled)
 		{
-			$this->response->addSay("Re-chord your message after the beep, press pound key when finished.");
+			$this->response->addSay("Re-chord your message after the beep, press the pound key when finished.");
 			$this->response->addRecord(array('action' => site_url('audiofiles/replay_recording_twiml')));
 
 			$this->response->addSay("We didn't get a recording from you, try again.");

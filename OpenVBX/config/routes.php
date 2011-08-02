@@ -40,7 +40,8 @@
 |
 */
 
-$route['default_controller'] = "messages/message_index";
+#$route['default_controller'] = "messages/message_index";
+$route['default_controller'] = "iframe";
 $route['scaffolding_trigger'] = "";
 
 $route['install'] = "install";
@@ -55,6 +56,7 @@ $route['messages/details/(:num)/(:any)'] = "messages/details/index/$1/$2";
 $route['messages/details/(:any)'] = "messages/details/index/$1";
 $route['messages/call/(:num)'] = 'messages/message_call/index/$1';
 $route['messages/call'] = 'messages/message_call/index';
+$route['messages/client'] = 'messages/message_call/client';
 $route['messages/sms/(:num)'] = 'messages/message_text/index/$1';
 $route['messages/sms'] = 'messages/message_text/index';
 $route['accounts'] = "accounts";
@@ -94,6 +96,7 @@ $route['external/messages/details/(:any)'] = 'external/message_details/$1';
 $route['external'] = "external";
 $route['iphone/messages/details/(:any)'] = 'iphone/message_details/$1';
 $route['iphone'] = "iphone";
+$route['iframe'] = "iframe";
 
 /* End of file routes.php */
 /* Location: ./system/application/config/routes.php */

@@ -193,14 +193,16 @@ class OpenVBX {
 	public static function version()
 	{
 		$ci = &get_instance();
-		return $ci->settings->get('version', VBX_PARENT_TENANT);
+		$ci->load->model('vbx_settings');
+		return $ci->vbx_settings->get('version', VBX_PARENT_TENANT);
 	}
 
 	/* Returns the version of the database schema */
 	public static function schemaVersion()
 	{
 		$ci = &get_instance();
-		return $ci->settings->get('schema-version', VBX_PARENT_TENANT);
+		$ci->load->model('vbx_settings');
+		return $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
 	}
 
 	/* Returns the latest version of the schema on the server,
@@ -215,5 +217,10 @@ class OpenVBX {
 
 		sort($updates);
 		return $updates[count($updates)-1];
+	}
+
+	public static function setPageTitle($title, $overwrite = false) {
+		$ci = &get_instance();
+		return $ci->template->write('title', $title, $overwrite);
 	}
 }

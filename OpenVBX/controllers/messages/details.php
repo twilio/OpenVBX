@@ -397,6 +397,7 @@ class Details extends User_Controller
 		$to = $this->input->post('to');
 		$callerid = $this->input->post('callerid');
 		$from = $this->input->post('from');
+		$log_only = $this->input->post('log_only');
 		
 		$rest_access = $this->make_rest_access();
 
@@ -406,7 +407,10 @@ class Details extends User_Controller
 		$json['error'] = false;
 		try
 		{
-			$this->vbx_call->make_call($from, $to, $callerid, $rest_access);
+			if (empty($log_only)) {
+				$this->vbx_call->make_call($from, $to, $callerid, $rest_access);
+			}
+			
 			if($message_id)
 			{
 				/* TODO: Move this to after call has been completed. */

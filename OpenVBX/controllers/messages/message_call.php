@@ -80,4 +80,56 @@ class Message_Call extends User_Controller
 		
 		$this->respond('', 'message_call', $data);
 	}
+
+	/**
+	 * Display the popup for making calls with Twilio Client
+	 *
+	 * @return void
+	 */
+	public function client() 
+	{	
+		$caller_id = $this->input->get('callerid');
+		if (empty($caller_id)) {
+			// grab user's default device
+			$user = VBX_User::get($this->session->userdata['user_id']);
+			$devices = $this->vbx_device->get_by_user($this->user_id);
+			if (!empty($devices)) {
+				$caller_id = $devices[0]->value;
+			}
+		}
+		
+		$client_params = array(
+			'callerid' => normalize_phone_to_E164($caller_id),
+			'application_id' => 'client'
+		);
+		
+		if ($this->input->get('outgoing')) 
+		{
+			// functionality for using the "dial" modal to initiate a call
+			$to = normalize_phone_to_E164($this->input->get('to'));
+			if (empty($to)) {
+				$to = htmlspecialchars($this->input->get('to'));
+			}
+			$client_params = array_merge($client_params, array(
+				'to' => $to, // if this is empty then the window will not auto dial
+			));
+		}
+		elseif ($this->input->get('incoming')) {
+			$client_params = array_merge($client_params, array(
+				'incoming' => true
+			));
+		}
+		
+		$client_data = array(
+			'client_params' => json_encode($client_params)
+		);
+		$javascript = $this->load->view('client_js', $client_data, true);
+		$this->template->add_js($javascript, 'embed', true);
+		
+		$data = array(
+			'title' => 'dialer',
+			'client_params' => $client_params
+		);
+		$this->respond('Dialer', 'call', $data, '', 'layout/dialer');
+	}
 }

@@ -27,6 +27,12 @@ button span {
     }
 }
 
+button.disabled {
+	opacity: 0.4;
+	-moz-opacity: 0.4;
+	filter:alpha(opacity=40);
+}
+
 button.normal-button {
     margin: 10px 0;
     padding: 0 8px 0 0;

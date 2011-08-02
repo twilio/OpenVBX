@@ -22,18 +22,18 @@ var Message = {};
 
 Message.Select = {
 	select_all : function(list) {
-		$('input[type=checkbox]', list).attr('checked', 'checked').trigger('checked');
+		$('input[type="checkbox"]', list).prop('checked', true).trigger('checked');
 	},
 	select_none : function(list) {
-		$('input[type=checkbox]', list).removeAttr('checked').trigger('unchecked');
+		$('input[type="checkbox"]', list).prop('checked', false).trigger('unchecked');
 	},
 	select_unread : function(list) {
-		$('input[type=checkbox]', list.filter('.read')).removeAttr('checked').trigger('unchecked');
-		$('input[type=checkbox]', list.filter('.unread')).attr('checked', 'checked').trigger('checked');
+		$('input[type="checkbox"]', list.filter('.read')).prop('checked', false).trigger('unchecked');
+		$('input[type="checkbox"]', list.filter('.unread')).prop('checked', true).trigger('checked');
 	},
 	select_read : function(list) {
-		$('input[type=checkbox]', list.filter('.unread')).removeAttr('checked').trigger('unchecked');
-		$('input[type=checkbox]', list.filter('.read')).attr('checked', 'checked').trigger('checked');
+		$('input[type="checkbox"]', list.filter('.unread')).prop('checked', flase).trigger('unchecked');
+		$('input[type="checkbox"]', list.filter('.read')).prop('checked', true).trigger('checked');
 	}
 };
 
@@ -42,18 +42,18 @@ Message.Detail = {
 	{
 		var detail_id = typeof(id) == 'object' ? id.join(',') : id;
 		$.ajax({
-			url : OpenVBX.home + 'messages/details/' + detail_id,
+			url : OpenVBX.home + '/messages/details/' + detail_id,
 			success : function(data) {
 				if(!data.error) {
 					success(data);
 
 					/* Update the counts */
 					$.ajax({
-						url : OpenVBX.home + 'messages/inbox', 
+						url : OpenVBX.home + '/messages/inbox', 
 						success : function(data) { 
 							if(!data.error) {
 								$.each(data.folders, function(i) {
-									$('.count[rel='+this['id']+']').text(this['new']);
+									$('.count[rel="'+this['id']+'"]').text(this['new']);
 								});
 							}
 						},
@@ -358,33 +358,52 @@ $(document).ready(function() {
 				.parent()
 				.append('<li class="calling">Calling...</li>');
 		}
-		$.ajax({
-			url : $(this).attr('href'),
-			data : {
-				callerid : $('.callerid', this).text(),
-				from : $('.from', this).text(),
-				to: $('.to', this).text()
-			},
-			dataType : 'json',
-			type : 'POST',
-			success : function(data) {
-				if(data.error)
-				{
-					$('.error-dialog')
-						.data('dialog.uiDialog')
-						.uiDialogTitlebar.text('Twilio Sandbox');
-					$('.error-dialog .error-code').text('');
-					$('.error-dialog .error-message')
-						.text(data.message);
-					$('.error-dialog').dialog('open');
-				}
-
-				$('.quick-call-popup .calling').remove();
-				$('.quick-call-popup.open').toggleClass('open');
-				anchor.show();
-			}
-		});
 		
+		var call_params = {
+			callerid : $('.callerid', this).text(),
+			from : $('.from', this).text(),
+			to: $('.to', this).text()
+		};
+				
+		if ($('#vbx-client-status').hasClass('online')) {
+			$.post(
+				$(this).attr('href'),
+				$.extend(call_params, { 'log_only': true }),
+				function(data) {
+					if (!data.error) {
+						window.parent.Client.call($.extend(call_params, { 'Digits': 1 }));
+						$('.quick-call-popup .calling').remove();
+						$('.quick-call-popup.open').toggleClass('open');					
+					}
+				},
+				'json'
+			);
+			anchor.show();
+		}
+		else {
+			$.ajax({
+				url : $(this).attr('href'),
+				data : call_params,
+				dataType : 'json',
+				type : 'POST',
+				success : function(data) {
+					if(data.error)
+					{
+						$('.error-dialog')
+							.data('dialog.uiDialog')
+							.uiDialogTitlebar.text('Twilio Sandbox');
+						$('.error-dialog .error-code').text('');
+						$('.error-dialog .error-message')
+							.text(data.message);
+						$('.error-dialog').dialog('open');
+					}
+
+					$('.quick-call-popup .calling').remove();
+					$('.quick-call-popup.open').toggleClass('open');
+					anchor.show();
+				}
+			});
+		}
 		return false;
 
 	});
@@ -405,11 +424,11 @@ $(document).ready(function() {
 		var popup = $(this).parents('.quick-sms-popup');
 		$('.sending-sms-loader').show();
 		$.ajax({
-			url : OpenVBX.home + 'messages/sms/' + $(this).attr('rel'),
+			url : OpenVBX.home + '/messages/sms/' + $(this).attr('rel'),
 			data : {
 				from : $('.from-phone', popup).text(),
 				to : $('.sms-to-phone', popup).text(),
-				content : $('input[name=content]', popup).val()
+				content : $('input[name="content"]', popup).val()
 			},
 			success : function(data) {
 				$('.sending-sms-loader').hide();
@@ -449,7 +468,7 @@ $(document).ready(function() {
 	
 	$('.message-row td.message-details-link').click(function() {
 		$(this).parent().addClass('clicked');
-		document.location = OpenVBX.home + 'messages/details/' + $(this).parent().attr('rel');
+		document.location = OpenVBX.home + '/messages/details/' + $(this).parent().attr('rel');
 	});
 
 	$('.select').click(function() {
@@ -465,7 +484,7 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('input[type=checkbox]').change(function() {
+	$('input[type="checkbox"]').change(function() {
 		if(this.checked) {
 			$(this).trigger('checked');
 		} else {
@@ -473,7 +492,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$('.message-select input[type=checkbox]').bind('checked', function() {
+	$('.message-select input[type="checkbox"]').bind('checked', function() {
 		$(this).parent().parent().addClass('checked');
 	}).bind('unchecked', function() {
 		$(this).parent().parent().removeClass('checked');
@@ -516,23 +535,23 @@ $(document).ready(function() {
 			.children('.count')
 			.text(160 - length);
 	};
-	$('.quick-sms-popup input[name=content]').live('keypress', updateCount);
-	$('.quick-sms-popup input[name=content]').keypress();
+	$('.quick-sms-popup input[name="content"]').live('keypress', updateCount);
+	$('.quick-sms-popup input[name="content"]').keypress();
 	$('#reply-sms textarea').live('keypress', updateCount);
 	$('#reply-sms textarea').live('change', updateCount);
 	$('#reply-sms textarea').keypress();
 	$('#reply-sms .submit-button').click(function(event) {
 		event.preventDefault();
-		$('#reply-sms button').attr('disabled', 'disabled');
+		$('#reply-sms button').prop('disabled', true);
 		$('#reply-sms .loader').show();
 		$.ajax({
 			url : $('#reply-sms').attr('action'),
-			data : $('#reply-sms'),
+			data : $('#reply-sms').serializeArray(),
 			success : function(data) {
 				$('#reply-sms .loader').hide();
 				$.notify('SMS sent');
 				$('#reply-sms textarea').val('');
-				$('#reply-sms .submit-button').removeAttr('disabled').flicker();
+				$('#reply-sms .submit-button').prop('disabled', false).flicker();
 			},
 			type : 'POST',
 			dataType : 'json'
@@ -544,7 +563,7 @@ $(document).ready(function() {
 
 
 	$('.delete-button').click(function() {
-		if($('.delete-button').attr('id').match('delete-')) {
+		if($('.delete-button').attr('id') && $('.delete-button').attr('id').match('delete-')) {
 			id = $(this).attr('id').replace('delete-','');
 			Message.Detail.archive(id,
 								   function() {
@@ -552,21 +571,21 @@ $(document).ready(function() {
 								   });
 		} else {
 			var id = [];
-			$('input[name^=message]:checked').each(function(){
+			$('input[name^="message"]:checked').each(function(){
 				id.push($(this).val());
-			}).queue(function() {
-				if(!id.length) {
-					return;
-				}
-
-				Message.Detail.archive(id,
-									   function() {
-										   for(var rel in id) {
-											   $('tr[rel='+id[rel]+']').remove();
-										   }
-										   $.notify('Deleted '+ id.length + ' message' + (id.length > 1 ? 's' : ''));
-									   });
 			});
+
+			if(!id.length) {
+				return;
+			}
+
+			Message.Detail.archive(id,
+								   function() {
+									   for(var rel in id) {
+										   $('tr[rel="'+id[rel]+'"]').remove();
+									   }
+									   $.notify('Deleted '+ id.length + ' message' + (id.length > 1 ? 's' : ''));
+								   });
 		}
 		
 		return false;

@@ -165,6 +165,7 @@ class Twiml extends MY_Controller {
 					else
 					{
 						$sms = isset($_COOKIE['sms-body'])? $_COOKIE['sms-body'] : null;
+						set_cookie('sms-body', null, time()-3600);
 					}
 					$sms_data = $flow->sms_data;
 					if(!empty($sms_data))
@@ -314,7 +315,28 @@ class Twiml extends MY_Controller {
 			$options = array('action' => site_url("twiml/dial_status").'?'.http_build_query(compact('to')),
 							 'callerId' => $callerid);
 
-			$this->response->addDial($to, $options);
+			$dial_client = false;
+			$to = normalize_phone_to_E164($to);
+			if (!is_numeric($to)) {
+				//$to = htmlspecialchars($this->input->get_post('to'));
+				// look up user by email address
+				$user = VBX_User::get(array(
+					'email' => $this->input->get_post('to')
+				));
+				if (!empty($user)) {
+					$dial_client = true;
+					$to = $user->id;
+				}
+			}
+			
+			if (!$dial_client) {
+				$this->response->addDial($to, $options);
+			}
+			else {
+				$dial = new Dial(NULL, $options);
+				$dial->append(new Client($to));
+				$this->response->append($dial);
+			}
 
 		} else {
 			$gather = $this->response->addGather(array('numDigits' => 1));
@@ -358,7 +380,7 @@ class Twiml extends MY_Controller {
 			}
 			catch(VBX_MessageException $e)
 			{
-				throw new TwimlException($e);
+				throw new TwimlException($e->getMessage());
 			}
 		}
 		catch(TwimlException $e)

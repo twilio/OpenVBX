@@ -23,11 +23,59 @@
 // sms dialog hides and call shows.
 var currentDialogHideFunction = null;
 var currentDialogType = null;
+	
+/////////////////////////////////////////////////////
+// Client Accessors
 
+/**
+ * Client Dial
+ *
+ * @example: 
+ * 		clientDial({
+ * 			'to': '+14158675309',
+ *			'callerid': '+1415853-5937'
+ * 		});
+ *
+ * @params object
+ * @return void 
+ */
+OpenVBX.clientDial = function(params) {
+	console.log(params);
+	params = $.extend(params, { 'Digits': 1 });
+	window.parent.Client.call(params);
+};
+
+/**
+ * Client Hangup
+ * 
+ * @return void
+ */
+OpenVBX.clientHangup = function() {
+	window.parent.Client.hangup();
+};
+
+/**
+ * Client Mute
+ *
+ * @return void
+ */
+OpenVBX.clientMute = function() {
+	window.parent.Client.mute();
+};
+
+/**
+ * Client Unmute
+ *
+ * @return void
+ */
+OpenVBX.clientUnMute = function() {
+	window.parent.Client.unmute();
+}
+	
 /////////////////////////////////////////////////////
 // Call Dialog
 
-$(function () {
+$(function () {	
 	// options
 	var globalTwilioCallLock = false;
 	var distance = 35;
@@ -81,7 +129,7 @@ $(function () {
 		
 		var trigger = $(this);
 		var displayDialog = function (event, link) {
-			
+
 			if (currentDialogType == 'sms') {
 				currentDialogHideFunction();
 			}
@@ -128,8 +176,8 @@ $(function () {
 					link.shown = true;
 				});
 			$('.call-button').data('link', link);
-			$('input[name=to]', dialog).val(phone);
-			$('input[name=target]', dialog).val(target);
+			$('input[name="to"]', dialog).val(phone);
+			$('input[name="target"]', dialog).val(target);
 			$('.screen').show();
 			
 			currentDialogType = 'call';
@@ -168,24 +216,43 @@ $(function () {
 		
 	});
 
-
 	var callNumber = function(event) {
+		event.preventDefault();
+		var device = $('select[name="device"]', dialog).val();
+		if (device == 'client') {
+			clientDialNumber();
+		}
+		else {
+			deviceDialNumber(event, this);
+		}
+	};
+
+	var clientDialNumber = function() {
+		window.parent.Client.call({
+			'to': $('#dial-number', dialog).val(),
+			'callerid': $(':input[name="callerid"]', dialog).val(),
+			'Digits': 1
+		});
+		$('.close', dialog).click();
+	};
+	
+	var deviceDialNumber = function(event, clicked) {
 		$('.invoke-call-button span').text('Calling...');
 		$('.call-dialing').show();
 
-		var link = $(this).data('link');
-		$(this).attr('disabled', 'disabled');
-		var button = $(this);
+		var link = $(clicked).data('link');
+		$(this).prop('disabled', true);
+		var button = $(clicked);
 		$.ajax({
 			url : OpenVBX.home + '/messages/call',
 			data : $('form input, form select', dialog),
 			dataType : 'json',
 			type : 'POST',
 			success : function(data) {
-				button.removeAttr('disabled');
+				button.prop('disabled', false);
 				hideDialog(event, link);
 				if(!data.error) {
-					$.notify('You are now being connected to ' + $('input[name=to]', dialog).val());
+					$.notify('You are now being connected to ' + $('input[name="to"]', dialog).val());
 					return;
 				}
 
@@ -203,8 +270,6 @@ $(function () {
 				$('.error-dialog').dialog('open');
 			}
 		});
-		
-		event.preventDefault();
 	};
 
 	$('.call-button', dialog).click(callNumber);
@@ -214,6 +279,27 @@ $(function () {
 		if(globalTwilioCallLock) {
 			$('.close', dialog).click();
 		}
+	});
+	
+	$('#vbx-client-status .client-button').live('click', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		var parent = $(this).closest('#vbx-client-status'),
+			status = null;
+		
+		if (parent.hasClass('online')) {
+			// go offline
+			status = false;
+			parent.removeClass('online');
+		}
+		else {
+			// go online
+			status = true;
+			parent.addClass('online');
+		}
+		
+		window.parent.Client.status.setWindowStatus(status);
 	});
 });
 
@@ -234,7 +320,7 @@ $(function () {
 	});
 
 	var hideDialog = function (event, link) {
-		$('.send-sms-button').removeAttr('disabled');
+		$('.send-sms-button').prop('disabled', false);
 
 		// reset the timer if we get fired again - avoids double animations
 		if (hideDelayTimer)
@@ -282,7 +368,7 @@ $(function () {
 		var trigger = $(this);
 		var displayDialog = function (event, link) {
 			$('.send-sms-button').attr('rel', $(link).attr('rel'));
-			$('.send-sms-button').removeAttr('disabled');
+			$('.send-sms-button').prop('disabled', false);
 			
 			
 			if (currentDialogType == 'call') {
@@ -331,8 +417,8 @@ $(function () {
 					link.shown = true;
 				});
 			$('.sms-button').data('link', link);
-			$('input[name=to]', dialog).val(phone);
-			$('input[name=target]', dialog).val(target);
+			$('input[name="to"]', dialog).val(phone);
+			$('input[name="target"]', dialog).val(target);
 			$('.screen').show();
 			
 			currentDialogType = 'sms';
@@ -376,7 +462,7 @@ $(function () {
 		$('.send-sms-button span').text('Sending...');
 		$('.send-sms-button .sms-sending').show();
 		var link = $(this).data('link');
-		$(this).attr('disabled', 'disabled');
+		$(this).prop('disabled', false);
 		var message_id = $(event.target).attr('rel');
 		var button = $(this);
 		$.ajax({
@@ -385,10 +471,10 @@ $(function () {
 			dataType : 'json',
 			type : 'POST',
 			success : function(data) {
-				button.removeAttr('disabled');
+				button.prop('disabled', false);
 				hideDialog(event, link);
 				if(!data.error) {
-					$.notify("SMS sent to "+ $('input[name=to]', dialog).val());
+					$.notify("SMS sent to "+ $('input[name="to"]', dialog).val());
 					$('textarea', dialog).val('');
 					$('input', dialog).val('');
 					return;

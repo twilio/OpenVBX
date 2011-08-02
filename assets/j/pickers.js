@@ -43,9 +43,9 @@ var Pickers = {
 		picker : null,
 
 		saveValue : function(audioChoice, mode, sayValue, playValue) {
-			audioChoice.find('input[name$=_mode]').val(mode);
-			audioChoice.find('input[name$=_say]').val((sayValue == null) ? "" : sayValue);
-			audioChoice.find('input[name$=_play]').val((playValue == null) ? "" : playValue);
+			audioChoice.find('input[name$="_mode"]').val(mode);
+			audioChoice.find('input[name$="_say"]').val((sayValue == null) ? "" : sayValue);
+			audioChoice.find('input[name$="_play"]').val((playValue == null) ? "" : playValue);
 
 			var value;
 			
@@ -74,11 +74,11 @@ var Pickers = {
 			var audioChoice = $(this).closest('.audio-choice');
 			
 			// We'll tag the recording with this value.
-			var tag = audioChoice.find('input[name$=_tag]').val();
+			var tag = audioChoice.find('input[name$="_tag"]').val();
 
 			// We steal our caller ID information from the Call Popup
-			var callerIdAsSelect = $('select[name=callerid] option:first');
-			var callerIdAsInput = $('input[name=callerid]');
+			var callerIdAsSelect = $('select[name="callerid"] option:first');
+			var callerIdAsInput = $('input[name="callerid"]');
 			var callerId;
 
 			if (callerIdAsSelect.length > 0) {
@@ -87,7 +87,7 @@ var Pickers = {
 		        callerId = callerIdAsInput.val();
 			}
 
-			var numberToCall = audioChoice.find('.audio-choice-record').find('input[name=number]').val();
+			var numberToCall = audioChoice.find('.audio-choice-record').find('input[name="number"]').val();
 
 			var showInputView = function() {
 				audioChoice.find('.audio-choice-editor .audio-choice-record .input').show();
@@ -161,7 +161,7 @@ var Pickers = {
 							// it'll get marked as cancelled before they answer.
 
 							$.ajax({
-								url : OpenVBX.home + 'audiofiles/cancel_recording',
+								url : OpenVBX.home + '/audiofiles/cancel_recording',
 								type : 'POST',
 								dataType : 'json',
 								data : {
@@ -250,8 +250,8 @@ var Pickers = {
 		},
 		
 		insertRecordingIntoLibrary : function(audioChoice, url, label) {
-			var librarySelect = audioChoice.find('select[name=library]');
-			$("<option value='" + url + "' title='" + (new Date().getTime() / 1000) + "'>" + label + "</option>").insertAfter(librarySelect.find('option[value=]'));
+			var librarySelect = audioChoice.find('select[name="library"]');
+			$("<option value='" + url + "' title='" + (new Date().getTime() / 1000) + "'>" + label + "</option>").insertAfter(librarySelect.find('option[value=""]'));
 			
 			// If library wasn't visible before, it should be visible now.
 			audioChoice.find('.audio-choice-library .empty-container').hide();
@@ -270,7 +270,7 @@ var Pickers = {
 			event.preventDefault();
 
 			var audioChoice = $(this).closest('.audio-choice');
-			var url = audioChoice.find('select[name=library]').val();
+			var url = audioChoice.find('select[name="library"]').val();
 
 			if (url != '') {
 				Pickers.audio.saveValue(audioChoice, 'play', null, url);
@@ -313,7 +313,7 @@ var Pickers = {
 			pauseButton.hide();
 			loadBar.css('width', '0px');
 			playBar.css('width', '0px');
-			audioPlayTime.html("<img src=\"" + OpenVBX.assets + "assets/i/ajax-loader.gif\" alt=\"...\" />");
+			audioPlayTime.html("<img src=\"" + OpenVBX.assets + "/assets/i/ajax-loader.gif\" alt=\"...\" />");
 			
 			var updatePlayBarAndTimeWithPercent = function(soundObject, percentPlayed) {
 				// If the file was already loaded, then 'whileloading' never gets called and our
@@ -405,7 +405,7 @@ var Pickers = {
 				soundObject.setPosition(msecPosition);
 				updatePlayBarAndTimeWithPercent(soundObject, Math.round((xOffset / width) * 100));
 			});
-			
+
 			if (autoPlay) {
 				soundObject.play();
 			} else {
@@ -433,13 +433,13 @@ var Pickers = {
 
 			if (selection == 'read-text') {
 				// Start with whatever the current value is.
-				var text = audioChoice.find('input[name$=_say]').val();
+				var text = audioChoice.find('input[name$="_say"]').val();
 				audioChoice.find('.audio-choice-editor .audio-choice-' + selection).find('textarea').val(text);
 			} else if (selection == 'library') {
 
 				// Normally we'd register to receive change() events via .live(...) but that apparenlty doesn't
 				// work on IE.  The 'change' events in particular don't bubble up.
-				var select = audioChoice.find('.audio-choice-library').find('select[name=library]');
+				var select = audioChoice.find('.audio-choice-library').find('select[name="library"]');
 				select.unbind('change', Pickers.audio.chooseRecordingFromLibrary);
 				select.change(Pickers.audio.chooseRecordingFromLibrary);
 				
@@ -484,15 +484,15 @@ var Pickers = {
 					file_types : "*.mp3",
 					file_types_description : "Audio Files",
 					file_upload_limit : "0",
-					flash_url : OpenVBX.assets + "assets/j/swfupload/swfupload.swf",
-					button_image_url : OpenVBX.assets + 'assets/j/swfupload/transparent_538x68.png',
+					flash_url : OpenVBX.assets + "/assets/j/swfupload/swfupload.swf",
+					button_image_url : OpenVBX.assets + '/assets/j/swfupload/transparent_538x68.png',
 					button_width : '100%',
 					button_height : 68,
 					button_placeholder : button[0],
 					button_window_mode: 'transparent',
 					debug: false,
 					post_params : {
-						'tag' : audioChoice.find('input[name$=_tag]').val()
+						'tag' : audioChoice.find('input[name$="_tag"]').val()
 					}
 				})
 				.bind('fileQueued', function(event, file){
@@ -531,7 +531,7 @@ var Pickers = {
 				})
 				.bind('uploadError', function(event, file, errorCode, message){
 					showErrorDialogWithMessage("Upload failed: " + message);
-				});
+				});				
 			}
 		},
 		
@@ -550,7 +550,7 @@ var Pickers = {
 			}
 			
 			// Reset the state of the library UI in case it was used
-			audioChoice.find('select[name=library]').attr('selectedIndex', 0);
+			audioChoice.find('select[name="library"]').attr('selectedIndex', 0);
 			Pickers.audio.hidePlayer(audioChoice, 'library');
 			
 			// Hide every editor
@@ -623,7 +623,7 @@ var Pickers = {
 			audioChoice.find('.audio-choice-selector').hide();
 			audioChoice.find('.audio-choice-current-value').show();
 
-			var mode = audioChoice.find('input[name$=_mode]').val();
+			var mode = audioChoice.find('input[name$="_mode"]').val();
 			if (mode == 'say') {
 				audioChoice.find('.audio-choice-current-value .audio-choice-read-text').show();
 			} else if (mode == 'play') {
@@ -651,6 +651,9 @@ var Pickers = {
 				Pickers.audio.saveValue(audioChoice, 'say', text, null);
 				Pickers.audio.closeEditorAndShowSayValue(audioChoice, text);
 			}
+			else {
+				$.notify('Text to be read cannot be empty (Hint: insert a space to say nothing).');
+			}
 		}
 	},
 	
@@ -665,7 +668,8 @@ var Pickers = {
 			
 			$('body').append($(data));
 		
-			$('.usergroup-dialog').dialog({
+			$('.usergroup-dialog').dialog({ 
+				autoOpen: false,
 				bgiframe: true,
 				resizable: false,
 				height:480,
@@ -784,7 +788,7 @@ var Pickers = {
 			Pickers.usergroup.setPickerValue(data.id, 'user', data.first_name + " " + data.last_name + " (" + data.email + ")");
 		},
 		userEdited : function(event, data) {
-			var tr = $('.usergroup-dialog .users-and-groups-table tr[rel=user_' + data.id + ']');
+			var tr = $('.usergroup-dialog .users-and-groups-table tr[rel="user_' + data.id + '"]');
 			var cells = tr.find('td');
 			
 			$(cells[1]).text(data.first_name + ' ' + data.last_name);
@@ -794,7 +798,7 @@ var Pickers = {
 			Pickers.usergroup.setPickerValue(data.id, 'group', data.name);
 		},
 		groupEdited : function(event, data) {
-			var tr = $('.usergroup-dialog .users-and-groups-table tr[rel=group_' + data.id + ']');
+			var tr = $('.usergroup-dialog .users-and-groups-table tr[rel="group_' + data.id + '"]');
 			var cells = tr.find('td');
 			
 			$(cells[1]).text(data.name);
@@ -811,15 +815,15 @@ $(document).ready(function() {
         // When someone cancels the editor, we should return to the input type selector
         $('.audio-choice-editor .audio-choice-close-button').livequery('click', Pickers.audio.closeEditorsAndShowSelector);
         // When someone saves their new "read text" setting, we should save and then show the newly saved value
-        $('.audio-choice-editor .audio-choice-read-text button[type=submit]').livequery('click', Pickers.audio.saveReadText);
+        $('.audio-choice-editor .audio-choice-read-text button[type="submit"]').livequery('click', Pickers.audio.saveReadText);
         // When someone wants clicks edit on the current value, we should show the input selector guy
         $('.audio-choice-current-value .change').livequery('click', Pickers.audio.showInputSelector);
         // Whene someone closes the selector, we should go back to the current value
         $('.audio-choice-selector .audio-choice-close-button').livequery('click', Pickers.audio.closeSelectorAndShowCurrentValue);
         // When someone clicks the call & record button, they should get a phone call
-        $('.audio-choice-editor .audio-choice-record button[type=submit]').livequery('click', Pickers.audio.startDeviceRecording);
+        $('.audio-choice-editor .audio-choice-record button[type="submit"]').livequery('click', Pickers.audio.startDeviceRecording);
         // When someone is on the library, and they've set one of the recordings to be the active recording, we should save it and go back to the input selector
-        $('.audio-choice-editor .audio-choice-library button[type=submit]').livequery('click', Pickers.audio.setRecordingFromLibarary);
+        $('.audio-choice-editor .audio-choice-library button[type="submit"]').livequery('click', Pickers.audio.setRecordingFromLibarary);
         
         // When someone hovers over the flash upoader, we want to change the background color that's
         // _behind_ the flash widget 
@@ -844,15 +848,15 @@ $(document).ready(function() {
         // When someone cancels the editor, we should return to the input type selector
         $('.audio-choice-editor .audio-choice-close-button').live('click', Pickers.audio.closeEditorsAndShowSelector);
         // When someone saves their new "read text" setting, we should save and then show the newly saved value
-        $('.audio-choice-editor .audio-choice-read-text button[type=submit]').live('click', Pickers.audio.saveReadText);
+        $('.audio-choice-editor .audio-choice-read-text button[type="submit"]').live('click', Pickers.audio.saveReadText);
         // When someone wants clicks edit on the current value, we should show the input selector guy
         $('.audio-choice-current-value .change').live('click', Pickers.audio.showInputSelector);
         // Whene someone closes the selector, we should go back to the current value
         $('.audio-choice-selector .audio-choice-close-button').live('click', Pickers.audio.closeSelectorAndShowCurrentValue);
         // When someone clicks the call & record button, they should get a phone call
-        $('.audio-choice-editor .audio-choice-record button[type=submit]').live('click', Pickers.audio.startDeviceRecording);
+        $('.audio-choice-editor .audio-choice-record button[type="submit"]').live('click', Pickers.audio.startDeviceRecording);
         // When someone is on the library, and they've set one of the recordings to be the active recording, we should save it and go back to the input selector
-        $('.audio-choice-editor .audio-choice-library button[type=submit]').live('click', Pickers.audio.setRecordingFromLibarary);
+        $('.audio-choice-editor .audio-choice-library button[type="submit"]').live('click', Pickers.audio.setRecordingFromLibarary);
         
         // When someone hovers over the flash upoader, we want to change the background color that's
         // _behind_ the flash widget 

@@ -1,10 +1,10 @@
 $(document).ready(function() {
 	// Disable all the template row inputs
-	$('.query-applet tr.hide input').attr('disabled', 'disabled');
+	$('.query-applet tr.hide input').prop('disabled', true);
 
 	$('.query-applet input.keypress').live('change', function(event) {
 		var row = $(this).parents('tr');
-		$('input[name=^responses]', row).attr('name', 'keys['+$(this).val()+']');
+		$('input[name^="responses"]', row).attr('name', 'keys['+$(this).val()+']');
 	});
 
 	$('.query-applet .action.add').live('click', function(event) {
@@ -18,7 +18,7 @@ $(document).ready(function() {
 		$('td', newRow).flicker();
 		$('textarea.response', newRow).attr('name', 'responses[]');
 		$('input.keypress', newRow).attr('name', 'keys[]');
-		$('input', newRow).removeAttr('disabled').focus();
+		$('input', newRow).prop('disabled', false).focus();
 		$(event.target).parents('.options-table').trigger('change');
 		return false;
 	});

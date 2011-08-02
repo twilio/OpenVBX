@@ -31,7 +31,7 @@ OpenVBX.Upgrader = {
 		var step = $('#step-'+OpenVBX.Upgrader.currentStep);
 		var params = $('textarea, input, select', step);
 		var result = $.ajax({
-			url : OpenVBX.home + 'upgrade/validate',
+			url : OpenVBX.home + '/upgrade/validate',
 			data : params,
 			success : function(data) {
 				$('.invalid').removeClass('invalid');
@@ -108,16 +108,17 @@ OpenVBX.Upgrader = {
 		return false;
 	},
 	setButtons : function() {
+		
 		if($('.steps').css('left').replace('px','') > -700) {
-			$('button.prev').attr('disabled', 'disabled');
+			$('button.prev').prop('disabled', true);
 		} else {
-			$('button.prev').removeAttr('disabled');
+			$('button.prev').prop('disabled', false);
 		}
 
 		if($('.steps').css('left').replace('px','') <= -3500) {
-			$('button.next').attr('disabled', 'disabled');
+			$('button.next').prop('disabled', true);
 		} else {
-			$('button.next').removeAttr('disabled');
+			$('button.next').prop('disabled', false);
 		}
 		switch(OpenVBX.Upgrader.currentStep) {
 			case 1:
@@ -149,7 +150,7 @@ OpenVBX.Upgrader = {
 		if(OpenVBX.Upgrader.ready)
 		{
 			$.ajax({
-				url : OpenVBX.home + 'upgrade/setup',
+				url : OpenVBX.home + '/upgrade/setup',
 				data : $('form input, form select, form textarea'),
 				success : function(data) {
 					if(!data.success) {
@@ -221,10 +222,10 @@ $(document).ready(function() {
 		$.ajax({
 			url : OpenVBX.home.replace('index.php', 'support/rewrite'),
 			success : function(data, code) {
-				$('input[name=rewrite_enabled]').attr("value", 1);
+				$('input[name="rewrite_enabled"]').attr("value", 1);
 			},
 			error : function(data) {
-				$('input[name=rewrite_enabled]').attr("value", 0);
+				$('input[name="rewrite_enabled"]').attr("value", 0);
 			}
 		});
 	}, 1000);

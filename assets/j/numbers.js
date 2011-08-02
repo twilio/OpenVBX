@@ -19,7 +19,7 @@
  **/
 
 $(document).ready(function() {
-	var select_flow = $('select[name=flow_id]').hide();
+	var select_flow = $('select[name="flow_id"]').hide();
 	select_flow.after('<span class="hide cancel"><a class="action close"><span class="replace">Cancel</span></a></span>');
 	select_flow.each(function() {
 		var flow = $(this);
@@ -42,18 +42,20 @@ $(document).ready(function() {
 		$('#dlg_add').dialog('open');
 	});
 	
-	$('select[name=flow_id]').change(function(e) {
+	$('select[name="flow_id"]').change(function(e) {
 		e.preventDefault();
 		select_flow = $(this);
 		
 		if(select_flow.val() == 'new') {
-			$(document).attr('location', OpenVBX.home + 'flows');
+			attach_new_flow(select_flow.closest('tr').attr('rel'));
+			return;
 		}
+		
 		/* Revert if empty value */
 		if(select_flow.val().length < 1) {
 			var value = select_flow.data('old_val');
-			$('option:selected', select_flow).removeAttr('selected');
-			$('option[value='+value+']', select_flow).attr('selected', 'selected');
+			$('option:selected', select_flow).prop('selected', false);
+			$('option[value="'+value+'"]', select_flow).prop('selected', true);
 			return;
 		}
 
@@ -80,7 +82,7 @@ $(document).ready(function() {
 			var ajaxUrl = 'numbers/change/' + pn + '/' + select_flow.val();
 			$.getJSON(ajaxUrl, function(data) {
 				if(data.success) {
-					$('option[value=0]', select_flow).remove();
+					$('option[value="0"]', select_flow).remove();
 					select_flow.data('old_val', data.id);
 					$.notify($('.incoming-number-phone', row).text() + ' is now connected to '+$('option:selected', row).text());
 					$('.incoming-number-flow', row).children('select, p, span').toggle();
@@ -94,17 +96,18 @@ $(document).ready(function() {
 		$(this).data('old_val', $('option:selected',this).attr('value'));
 	});
 
-	$("#dlg_change").dialog({
+	$("#dlg_change").dialog({ 
+		autoOpen: false,
 		width: 640,
 		buttons: {
 			'OK': function() {
-				$('button').attr('disabled', 'disabled');
+				$('button').prop('disabled', true);
 				var row = select_flow.closest('tr');
 				var pn = row.attr('rel');
 				var ajaxUrl = 'numbers/change/' + pn + '/' + select_flow.val();
 				$.getJSON(ajaxUrl, function(data) {
 					if(data.success) {
-						$('option[value=0]', select_flow).remove();
+						$('option[value="0"]', select_flow).remove();
 						select_flow.data('old_val', data.id);
 						$.notify($('.incoming-number-phone', row).text() + ' is now connected to '+$('option:selected', row).text());
 						$('.incoming-number-flow', row).children('select, p, span').toggle();
@@ -112,7 +115,7 @@ $(document).ready(function() {
 						if(data.message) $.notify(data.message);
 						select_flow.val(select_flow.data('old_val'));
 					}
-					$('button').removeAttr('disabled');
+					$('button').prop('disabled', false);
 				});
 				$(this).dialog('close');
 			},
@@ -123,23 +126,41 @@ $(document).ready(function() {
 		}
 	}).closest('.ui-dialog').addClass('add');
 
+	var attach_new_flow = function(number_id) {
+		$.ajax({
+			url: OpenVBX.home + '/flows',
+			success: function(data) {
+				var flow_id = data.id;
+				var flow_url = data.url;
+				$.ajax({
+					url: OpenVBX.home + '/numbers/change/' + number_id + '/' + flow_id,
+					success : function(data) {
+						document.location = flow_url;
+					},
+					type: 'POST'
+				});
+			},
+			type: 'POST'
+		});
+	};
+
 	var add_number = function() {			
 		var add_button = $('button', $('#dlg_add').parent()).first();
 		var add_button_text = add_button.text();
-		add_button.html('Ordering <img alt="loading" src="'+OpenVBX.assets+'assets/i/ajax-loader.gif" />');
+		add_button.html('Ordering <img alt="loading" src="'+OpenVBX.assets+'/assets/i/ajax-loader.gif" />');
 		$.ajax({
 			type: 'POST',
 			url: $('#dlg_add form').attr('action'),
-			data: $('input[type=text], input[type=radio]:checked', $('#dlg_add form')),
+			data: $('input[type="text"], input[type="radio"]:checked', $('#dlg_add form')),
 			success: function(data) {
-				$('button').attr('disabled', 'disabled');
+				$('button').prop('disabled', true);
 				$('#dlg_add .error-message').slideUp();
 				if(data.error) {
 					$('#dlg_add .error-message')
 						.text(data.message)
 						.slideDown();
 
-					$('button').removeAttr('disabled');
+					$('button').prop('disabled', false);
 					return add_button.text(add_button_text);
 				}
 
@@ -147,25 +168,11 @@ $(document).ready(function() {
 				var number_id = data.number.id;
 				var setup_button = $('#completed-order .setup');
 				setup_button.unbind('click')
-					.removeAttr('disabled')
+					.prop('disabled', false)
 					.live('click', function(e) {
-						setup_button.append('<img alt="loading" src="'+OpenVBX.assets+'assets/i/ajax-loader.gif" />');
+						setup_button.append('<img alt="loading" src="'+OpenVBX.assets+'/assets/i/ajax-loader.gif" />');
 						e.preventDefault();
-						$.ajax({ 
-							url: OpenVBX.home + 'flows',
-							success: function(data) { 
-								var flow_id = data.id;
-								var flow_url = data.url;
-								$.ajax({
-									url: OpenVBX.home + 'numbers/change/' + number_id + '/' + flow_id,
-									success : function(data) {
-										document.location = flow_url;
-									},
-									type: 'POST'
-								});
-							},
-							type: 'POST'
-						});
+						attach_new_flow(number_id);
 					});
 				
 				$('.number-order-interface').slideUp('ease-out', function() { 
@@ -183,7 +190,7 @@ $(document).ready(function() {
 				$('#dlg_add .error-message')
 					.text(status + ' :: ' + error)
 					.slideDown();
-				$('button').removeAttr('disabled');
+				$('button').prop('disabled', false);
 			},
 			dataType: 'json'
 		});
@@ -193,7 +200,8 @@ $(document).ready(function() {
 
 	$("#dlg_add form").submit(add_number);
 
-	$("#dlg_add").dialog({
+	$("#dlg_add").dialog({ 
+		autoOpen: false,
 		width: 490,
 		buttons: {
 			'Add number': add_number,
@@ -204,7 +212,8 @@ $(document).ready(function() {
 		}
 	}).closest('.ui-dialog').addClass('add');
 
-	$("#dlg_delete").dialog({
+	$("#dlg_delete").dialog({ 
+		autoOpen: false,
 		width: 640,
 		buttons: {
 			'Yes': function() {
@@ -241,7 +250,7 @@ $(document).ready(function() {
 		}
 	}).closest('.ui-dialog').addClass('add');
 	
-	$(':radio[name=type]').click(function(){
+	$(':radio[name="type"]').click(function(){
 		if($(this).val() == 'local') {
 			$('#pAreaCode').slideDown(function() {
 				$('#iAreaCode').focus();

@@ -39,11 +39,11 @@ $choices = (array) AppletInstance::getValue('choices[]');
 				</tr>
 			</tfoot>
 			<tbody>
-				<?php foreach($keys as $i=>$key): ?>
+				<?php foreach($keys as $i => $key): ?>
 				<tr>
 					<td>
 						<fieldset class="vbx-input-container">
-							<input class="keypress tiny" type="text" name="keys[]" value="<?php echo $key ?>" autocomplete="off" />
+							<input class="keypress tiny" type="text" name="keys[<?php echo $key; ?>]" value="<?php echo $key ?>" autocomplete="off" />
 						</fieldset>
 					</td>
 					<td>then</td>

@@ -21,10 +21,11 @@
 $(document).ready(function() {
 
 
-	$('#dialog-email').dialog({
+	$('#dialog-email').dialog({ 
+		autoOpen: false,
 		width: 350,
 		open: function(event, ui) {
-			var ajaxUrl = OpenVBX.home + 'devices/send_iphone_guide';
+			var ajaxUrl = OpenVBX.home + '/devices/send_iphone_guide';
 			$.post(ajaxUrl, {});
 		},
 		buttons: {
@@ -35,11 +36,12 @@ $(document).ready(function() {
 	});
 
 
-	$('#dialog-number').dialog({
+	$('#dialog-number').dialog({ 
+		autoOpen: false,
 		width: 350,
 		buttons: {
 			'Add' : function() {
-				var ajaxUrl = OpenVBX.home + 'devices/number/add';
+				var ajaxUrl = OpenVBX.home + '/devices/number/add';
 				var params = $('#dialog-number').values();
 
 				$.post(ajaxUrl, params, function(data) {
@@ -47,7 +49,7 @@ $(document).ready(function() {
 					$('#dialog-number .error-message').text(data.message).removeClass('hide');
 
 					if(data.error) {
-						$('button').removeAttr('disabled');
+						$('button').prop('disabled', false);
 						return false;
 					}
 
@@ -55,7 +57,7 @@ $(document).ready(function() {
 					$('.devices-blank').addClass('hide');
 
 					$('#dialog-number input').val('');
-					$('button').removeAttr('disabled');
+					$('button').prop('disabled', false);
 					$('#dialog-number .error-message').addClass('hide');
 
 					$('#dialog-number').dialog('close');
@@ -69,12 +71,12 @@ $(document).ready(function() {
 
 					$('.device-name', row).text(data.name);
 					$('.device-value', row).text(data.value);
-					$('.enable-sms', row).attr('checked', data.sms ? 'checked' : '');
+					$('.enable-sms', row).prop('checked', data.sms ? true : false);
 					$('.device-list .prototype').before(row);
 
 					// Add to the "Record a Voicemail" device selector
 					var option = $('<option></option>');
-					$('select[name=number]').append(option.text(data.name).attr('value', data.value));
+					$('select[name="number"]').append(option.text(data.name).attr('value', data.value));
 
 					$('.device-list .prototype :input').val('');
 					$('.device-list').removeClass('hide');
@@ -106,7 +108,7 @@ $(document).ready(function() {
 
 	var updateDevice = function(id, params) {
 		$.ajax({
-			url: OpenVBX.home + 'devices/number/' + id,
+			url: OpenVBX.home + '/devices/number/' + id,
 			data: {
 				device : params
 			},
@@ -141,7 +143,7 @@ $(document).ready(function() {
 		event.preventDefault();
 
 		var enableDevice = $('.enable-device', $(anchor).parent());
-		enableDevice.attr('checked', !enableDevice.attr('checked')).trigger('change');
+		enableDevice.prop('checked', !enableDevice.prop('checked')).trigger('change');
 	};
 
 	$('.device-status a.on').live('click', function(event) {
@@ -156,13 +158,13 @@ $(document).ready(function() {
 
 		updateDevice($(this).parents('.device').attr('rel'),
 					 {
-						 'sms' : $(event.target).attr('checked')? 1 : 0
+						 'sms' : $(event.target).prop('checked')? 1 : 0
 					 });
 	});
 
 
 	$('.device-status .enable-device').live('change', function(event) {
-		var is_active = $(this).attr('checked') === true? 1 : 0;
+		var is_active = $(this).prop('checked') === true? 1 : 0;
 		var device_status = $(this).parents('.device-status');
 
 		var activate = '.off';
@@ -192,7 +194,7 @@ $(document).ready(function() {
 
 	$('.device .trash').live('click', function(event) {
 		event.preventDefault();
-		$('button').attr('disabled', 'disabled');
+		$('button').prop('disabled', true);
 		var id = $(this).closest('.device').attr('rel');
 		var deviceValue = $(this).closest('.device').find('.device-value').text()
 		var ajaxUrl = 'devices/number/' + id;
@@ -203,7 +205,7 @@ $(document).ready(function() {
 				if(!data.error)
 				{
 				    // Remove it from the device list
-					$('.device-list .device[rel=' + id + ']')
+					$('.device-list .device[rel="' + id + '"]')
 						.fadeOut(function() {
 							$(this).remove();
 
@@ -216,10 +218,10 @@ $(document).ready(function() {
 						});
 
 					// Remove from the <select> element for the Record dialog
-					$("select[name=number] option[value='" + deviceValue + "']").remove();
+					$('select[name="number"] option[value="' + deviceValue + '"]').remove();
 
 					$('.device-list').removeClass('hide');
-					return $('button').removeAttr('disabled');
+					return $('button').prop('disabled', false);
 				}
 
 				$('.error-dialog').dialog('option', 'buttons', {
@@ -247,7 +249,7 @@ $(document).ready(function() {
 				});
 
 			$.ajax({
-				url: OpenVBX.home + 'devices/number/order',
+				url: OpenVBX.home + '/devices/number/order',
 				data: {
 					order : sorted
 				},
@@ -286,7 +288,6 @@ $(document).ready(function() {
 		$(this).hasClass('opened-apps') ? $(this).text('Hide applications') : $(this).text('More for your device');
 		return false;
 	};
-	$('.mobile-apps-toggle-link').click(toggleApplicationContainer);
 
 	if(document.location.hash == '#mobile-apps')
 		$('.mobile-apps-toggle-link').click();
