@@ -10,7 +10,8 @@
 		$ci->load->dbforge();
 		$ci->dbforge->add_column('users', array(
 			'online' => array(
-				'type' => 'TINYINT(1)',
+				'type' => 'TINYINT',
+				'constraint' => '1',
 				'default' => '9'
 			)
 		));
