@@ -16,8 +16,7 @@ switch ($dialer->state) {
 	case 'new':	
 		if ($dialer->dial_whom_user_or_group instanceof VBX_User || $dialer->dial_whom_user_or_group instanceof VBX_Group) {
 			// create a dial list from the input state
-			$class = ($dialer->dial_whom_user_or_group instanceof VBX_User) ? 'DialListUser' : 'DialList';
-			$dial_list = $class::get($dialer->dial_whom_user_or_group);
+			$dial_list = DialList::get($dialer->dial_whom_user_or_group);
 
 			$dialed = false;
 			do {
@@ -53,9 +52,16 @@ switch ($dialer->state) {
 		break;
 	default:
 		// rolling through users, populate dial list from state
-		$class = $dialer->state['type']; // state tells us wether its a DialList or DialListUser object
-		$dial_list = $class::load($dialer->state);
-		
+		#$class = $dialer->state['type']; // state tells us wether its a DialList or DialListUser object
+		#$dial_list = $class::load($dialer->state);
+		// more verbose to be compatible with older versions of PHP
+        if ($dialer->state['type'] == 'DialList') {
+                $dial_list = DialList::load($dialer->state);
+        }
+        else {
+                $dial_list = DialListUser::load($dialer->state);
+        }
+
 		// get the next valid user
 		$dialed = false;
 		do {
