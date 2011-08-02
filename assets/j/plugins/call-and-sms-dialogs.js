@@ -223,7 +223,7 @@ $(function () {
 			clientDialNumber();
 		}
 		else {
-			deviceDialNumber();
+			deviceDialNumber(event);
 		}
 	};
 
@@ -236,7 +236,7 @@ $(function () {
 		$('.close', dialog).click();
 	};
 	
-	var deviceDialNumber = function() {
+	var deviceDialNumber = function(event) {
 		$('.invoke-call-button span').text('Calling...');
 		$('.call-dialing').show();
 
