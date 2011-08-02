@@ -223,7 +223,7 @@ $(function () {
 			clientDialNumber();
 		}
 		else {
-			deviceDialNumber(event);
+			deviceDialNumber(event, this);
 		}
 	};
 
@@ -236,13 +236,13 @@ $(function () {
 		$('.close', dialog).click();
 	};
 	
-	var deviceDialNumber = function(event) {
+	var deviceDialNumber = function(event, clicked) {
 		$('.invoke-call-button span').text('Calling...');
 		$('.call-dialing').show();
 
-		var link = $(this).data('link');
+		var link = $(clicked).data('link');
 		$(this).prop('disabled', true);
-		var button = $(this);
+		var button = $(clicked);
 		$.ajax({
 			url : OpenVBX.home + '/messages/call',
 			data : $('form input, form select', dialog),
