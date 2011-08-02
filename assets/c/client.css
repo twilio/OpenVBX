@@ -77,8 +77,9 @@
 #client-first-run p {
 	font-size: 13px;
 	color: #999;
-	background-color: #222;
 	margin: 3px 0;
+	position: relative;
+	z-index: 1;
 }
 
 #client-first-run h3 {
@@ -87,17 +88,22 @@
 	color: #FFF;
 }
 
-#client-first-run .dismiss {
+#client-first-run a {
 	color: #BBB;
 }
 
-#client-first-run .dismiss:hover {
+#client-first-run a:hover {
 	color: #FFF;	
+}
+
+#client-first-run .dismiss {
+	float: right;
 }
 
 #client-first-run .arrow {
 	position: absolute;
 	top: -15px;
 	right: 30px;
+	z-index: 0;
 }
 
