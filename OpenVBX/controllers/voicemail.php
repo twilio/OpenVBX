@@ -70,7 +70,6 @@ class Voicemail extends User_Controller {
 	public function greeting()
 	{
 		// return $this->greeting_handler();
-		print_r($_SERVER);
 		$data = $this->greeting_handler();
 		exit;
 	}
