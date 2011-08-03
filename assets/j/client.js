@@ -42,37 +42,43 @@ var Client = {
 	},
 	
 	init: function () {
-		Twilio.Device.setup(OpenVBX.client_capability);
+		try {
+			Twilio.Device.setup(OpenVBX.client_capability);
 
-		Twilio.Device.ready(function (device) {
-			Client.ready(device);
-		});
+			Twilio.Device.ready(function (device) {
+				Client.ready(device);
+			});
 		
-		Twilio.Device.offline(function (device) {
-			Client.offline(device);
-		});
+			Twilio.Device.offline(function (device) {
+				Client.offline(device);
+			});
 		
-		Twilio.Device.error(function (error) {
-			Client.error(error);
-		});
+			Twilio.Device.error(function (error) {
+				Client.error(error);
+			});
 		
-		Twilio.Device.connect(function (conn) {
-			Client.connect(conn);
-		});
+			Twilio.Device.connect(function (conn) {
+				Client.connect(conn);
+			});
 		
-		Twilio.Device.disconnect(function (conn) {
-			Client.disconnect(conn);
-		});
+			Twilio.Device.disconnect(function (conn) {
+				Client.disconnect(conn);
+			});
 		
-		Twilio.Device.incoming(function (conn) {
-			Client.incoming(conn);
-		});
+			Twilio.Device.incoming(function (conn) {
+				Client.incoming(conn);
+			});
 		
-		Twilio.Device.cancel(function(conn) {
-			Client.cancel();
-		});
+			Twilio.Device.cancel(function(conn) {
+				Client.cancel();
+			});
 		
-		$('#dialer #client-ui-actions button').hide();
+			$('#dialer #client-ui-actions button').hide();
+		}
+		catch (e) {
+			// browser most likely doesn't have flash
+			// or is using a flash block application
+		}
 	}, 
 
 // Helpers
