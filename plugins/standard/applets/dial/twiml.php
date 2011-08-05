@@ -13,8 +13,8 @@ switch ($dialer->state) {
 	case 'hangup':
 		$dialer->hangup();
 		break;
-	case 'new':	
-		if ($dialer->dial_whom_user_or_group instanceof VBX_User || $dialer->dial_whom_user_or_group instanceof VBX_Group) {
+	case 'new':
+		if ($dialer->dial_whom_selector === 'user-or-group') {
 			// create a dial list from the input state
 			$dial_list = DialList::get($dialer->dial_whom_user_or_group);
 
@@ -40,7 +40,7 @@ switch ($dialer->state) {
 			$dial_list = DialList::load(array());
 			$dialer->state = $dial_list->get_state();
 			// arbitrary number, simpler handling
-			$dialer->addNumber($dialer->dial_whom_or_group);
+			$dialer->dial($dialer->dial_whom_number);
 		}
 		break;
 	case 'recording':

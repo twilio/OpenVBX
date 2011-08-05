@@ -100,6 +100,7 @@
 						<button id="client-ui-mute" class="client-ui-action-button mute">Mute</button>
 						<button id="client-ui-answer" class="client-ui-action-button answer">Answer</button>
 						<button id="client-ui-hangup" class="client-ui-action-button hangup">Hangup</button>
+						<button id="client-ui-close" class="client-ui-action-button close">Close</button>
 					</div>
 				</div>
 			</div>

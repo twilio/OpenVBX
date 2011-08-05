@@ -159,7 +159,7 @@ iframe {
 
 /* Client UI Status */
 #client-ui-status {
-	padding: 110px 0 0 0;
+	padding: 110px 8px 0 8px;
 	background: transparent url(../i/mic_big.png) center 15px no-repeat;
 }
 
@@ -298,14 +298,66 @@ iframe {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#316800), to(#53A82B));
 }
 
-#client-ui-actions #client-ui-hangup {
+#client-ui-actions #client-ui-hangup,
+#client-ui-actions #client-ui-close {
 	background-color: #C00;
     background: -moz-linear-gradient(100% 100% 90deg, #900, #C00);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#C00), to(#900));
 }
 
-#client-ui-actions #client-ui-hangup:active {
+#client-ui-actions #client-ui-hangup:active,
+#client-ui-actions #client-ui-close:active {
 	background-color: #900;
     background: -moz-linear-gradient(100% 100% 90deg, #C00, #650000);
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#650000), to(#C00));
 }
+
+#client-error,
+#client-error div {
+	margin: 0;
+	padding: 0;
+}
+
+#client-error {
+	background: #FF0000;
+    background: -moz-linear-gradient(100% 100% 90deg, #FF0000, #DE0202);
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#DE0202), to(#FF0000));
+	background: -o-linear-gradient(#FF0000, #DE0202);
+	background: -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF0000', endColorstr='#DE0202')";;
+	background: linear-gradient(#FF0000, #DE0202);
+	border: 1px solid red;
+	border-width: 0 1px 1px 1px;
+	font-size: 14px;
+	height: auto;
+	left: 50%;
+	margin-left: -320px;
+	position: absolute;
+	text-align: center;
+	top: 0;
+	width: 640px;
+	-moz-border-radius-bottomleft: 6px; /* FF1+ */
+	-webkit-border-bottom-left-radius: 6px; /* Saf3+, Chrome */
+	-khtml-border-bottom-left-radius: 6px; /* Konqueror */
+	border-bottom-left-radius: 6px; /* Standard. IE9 */
+	-moz-border-radius-bottomright: 6px; /* FF1+ */
+	-webkit-border-bottom-right-radius: 6px; /* Saf3+, Chrome */
+	-khtml-border-bottom-right-radius: 6px; /* Konqueror */
+	border-bottom-right-radius: 6px; /* Standard. IE9 */
+}
+#client-error div {
+	border: 1px solid white;
+	border-width: 0 1px 1px 1px;
+	padding: 5px;
+	-moz-border-radius-bottomleft: 5px; /* FF1+ */
+	-webkit-border-bottom-left-radius: 5px; /* Saf3+, Chrome */
+	-khtml-border-bottom-left-radius: 5px; /* Konqueror */
+	border-bottom-left-radius: 5px; /* Standard. IE9 */
+	-moz-border-radius-bottomright: 5px; /* FF1+ */
+	-webkit-border-bottom-right-radius: 5px; /* Saf3+, Chrome */
+	-khtml-border-bottom-right-radius: 5px; /* Konqueror */
+	border-bottom-right-radius: 5px; /* Standard. IE9 */
+}
+#client-error p {
+	margin: 0;
+}
+

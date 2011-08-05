@@ -76,6 +76,23 @@ OpenVBX.clientUnMute = function() {
 // Call Dialog
 
 $(function () {	
+	if ((window.parent.Client) && (window.parent.Client.disabled || window.parent.Twilio.Device.status() == 'offline')) {
+		// Twilio Client is offline, probably due to an error, so lets
+		// disable the use of Client to prevent unexpected behavior
+		
+		// disable calls using Twilio Client, replace selector with hidden element to pre-set the device type
+		$('#vbx-context-menu .call-dialog select[name="device"]').closest('label')
+			.replaceWith($('<input type="hidden" name="device" value="primary-device" />'));
+		
+		// neuter the online/offline button
+		var _status = $('#vbx-client-status');
+		if (_status.hasClass('online')) {
+			_status.removeClass('online').addClass('offline');
+			window.parent.Client.status.setWindowStatus(false);
+		}
+		_status.addClass('disabled');
+	}
+	
 	// options
 	var globalTwilioCallLock = false;
 	var distance = 35;
@@ -286,20 +303,37 @@ $(function () {
 		e.stopPropagation();
 		
 		var parent = $(this).closest('#vbx-client-status'),
+			client_status = true,
 			status = null;
 		
-		if (parent.hasClass('online')) {
-			// go offline
-			status = false;
-			parent.removeClass('online');
-		}
-		else {
-			// go online
-			status = true;
-			parent.addClass('online');
+		if (window.parent.Client.disabled || window.parent.Twilio.Device.status() == 'offline') {
+			client_status = false;
 		}
 		
-		window.parent.Client.status.setWindowStatus(status);
+		if (client_status) {
+			if (parent.hasClass('online')) {
+				// go offline
+				status = false;
+				parent.removeClass('online');
+			}
+			else {
+				// go online
+				status = true;
+				parent.addClass('online');
+			}
+			
+			window.parent.Client.status.setWindowStatus(status);
+		}
+		else {
+			$('.error-dialog .error-code').text('');
+			$('.error-dialog .error-message')
+				.text('The Phone Client is not available. ' +
+					  'Please check to make sure that you have Flash installed ' +
+					  'and that there are no Flash Blocking plugins enabled.');
+			
+			$('.error-dialog').dialog('open');
+		}
+		
 	});
 });
 
