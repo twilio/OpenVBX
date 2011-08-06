@@ -54,6 +54,9 @@ class TwimlDial {
 		elseif ($device_or_user instanceof VBX_Device) {
 			$dialed = $this->dialDevice($device_or_user);
 		}
+		else {
+			$dialed = $this->dialNumber($device_or_user);
+		}
 		
 		return $dialed;
 	}
@@ -129,6 +132,18 @@ class TwimlDial {
 			$this->response->append($dial);
 		}
 		return $dialed;
+	}
+	
+	/**
+	 * Dial a number directly, no special sauce here
+	 *
+	 * @param string $number 
+	 * @return bool
+	 */
+	public function dialNumber($number) {
+		$dialed = false;
+		$this->response->addDial($number);
+		return true;
 	}
 	
 	/**
