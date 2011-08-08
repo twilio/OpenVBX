@@ -153,9 +153,8 @@ class Login extends MY_Controller
 									 0,
 									 '/'.(($this->tenant->id > 1)? $this->tenant->name : '')
 									 );
-						setcookie('last_known_url', real_site_url('/numbers'), null, '/');
+						setcookie('last_known_url', site_url('/numbers'), null, '/');
 						return redirect('');
-						// return redirect('numbers');
 					}
 				}
 				catch(VBX_IncomingNumberException $e)
@@ -168,14 +167,12 @@ class Login extends MY_Controller
 			$devices = VBX_Device::search(array('user_id' => $user->id));
 			if(empty($devices))
 			{
-				setcookie('last_known_url', real_site_url('/devices'), null, '/');
+				setcookie('last_known_url', site_url('/devices'), null, '/');
 				return redirect('');
-				// return redirect('devices');
 			}
 		}
 		
 		setcookie('last_known_url', $redirect, null, '/');
 		return $this->redirect('');
-		// return $this->redirect($redirect);
 	}
 }

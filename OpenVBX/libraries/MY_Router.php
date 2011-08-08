@@ -268,10 +268,8 @@ class MY_Router extends CI_Router
 		{
 			$api = $segments[0];
 			$api_version = $segments[1];
-			
 			$segments = array_slice($segments, 2);
 			$this->set_api_version($api_version);
-
 			$this->uri->segments = $segments;
 		}
 		
@@ -282,12 +280,8 @@ class MY_Router extends CI_Router
 			$this->set_tenant($tenant);
 			if(empty($segments))
 			{
-				$this->set_directory('messages');
-				$segments[0] = 'messages';
-				$segments[1] = 'message_index';
-				$segments[2] = 'index';
-				
-				$this->uri->segments = $segments;
+				$this->set_directory('iframe');
+				$this->uri->segments = array();
 			}
 			else
 			{
@@ -336,9 +330,9 @@ class MY_Router extends CI_Router
 				return;
 			}
 		}
+
 		// If we got this far it means we didn't encounter a
 		// matching route so we'll set the site default route
 		$this->_set_request($this->uri->segments);
 	}
-
 }
