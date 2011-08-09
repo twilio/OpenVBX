@@ -24,7 +24,7 @@ class DialListException extends Exception {}
 class DialList {
 	protected $users;
 	
-	public function __construct($users) {
+	public function __construct($users = array()) {
 		$this->users = $users;
 	}
 	
