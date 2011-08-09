@@ -295,12 +295,15 @@ class TwimlDial {
 	 * @return string json or std
 	 */
 	private function _get_state() {
+		$state = null;
 		if ($this->use_sessions) {
 			$CI =& get_instance();
 			$state = $CI->session->userdata($this->cookie_name);
 		}
 		else {
-			$state = $_COOKIE[$this->cookie_name];
+			if (!empty($_COOKIE[$this->cookie_name])) {
+				$state = $_COOKIE[$this->cookie_name];
+			}
 		}
 
 		return $state;
