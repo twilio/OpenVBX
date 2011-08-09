@@ -54,6 +54,7 @@ class VBX_Incoming_numbers extends Model
 		}
 
 		/* Get Sandbox Number */
+		$sandbox = FALSE;
 		try
 		{
 			$response = $this->twilio->request("Accounts/{$this->twilio_sid}/Sandbox");
