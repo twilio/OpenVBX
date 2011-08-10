@@ -27,7 +27,7 @@ body {
 }
 
 /* iFrame */
-iframe {
+#openvbx-iframe {
 	z-index: 0;
 }
 
