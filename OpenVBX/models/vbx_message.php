@@ -396,7 +396,7 @@ class VBX_Message extends Model {
 		$recording_host = $ci->settings->get('recording_host', VBX_PARENT_TENANT);
 		
 		$vm_url = $message->content_url;
-		if (trim($recording_host != '')) {
+		if (trim($recording_host) != '') {
 			$vm_url = str_replace('api.twilio.com',$recording_host, $vm_url);
 		}
 		$message->content_url = $vm_url;
