@@ -22,14 +22,14 @@ switch ($dialer->state) {
 			do {
 				$to_dial = $dial_list->next();
 				if ($to_dial instanceof VBX_User || $to_dial instanceof VBX_Device) {
-					$dialed = $dialer->dial($to_dial);
-					if ($dialed) {
-						$dialer->state = $dial_list->get_state();
-					}
+					$dialed = $dialer->dial($to_dial) || $dialed;
 				}
-			} while(!$dialed && ($to_dial instanceof VBX_User || $to_dial instanceof VBX_Device));
+			} while((!$dialed || $dial_list instanceof DialListUser) && ($to_dial instanceof VBX_User || $to_dial instanceof VBX_Device));
 
-			if (!$dialed) {
+			if ($dialed) {
+				$dialer->state = $dial_list->get_state();
+			}
+			else {
 				// nobody to call, push directly to voicemail
 				$dialer->noanswer();
 			}
@@ -72,7 +72,7 @@ switch ($dialer->state) {
 					$dialer->state = $dial_list->get_state();
 				}
 			}
-		} while(!$dialed && ($to_dial instanceof VBX_User || $to_dial instanceof VBX_Device));
+		} while((!$dialed || $dial_list instanceof DialListUser) && ($to_dial instanceof VBX_User || $to_dial instanceof VBX_Device));
 		
 		if (!$dialed) {
 			// no users left see what next action is, or go to voicemail
