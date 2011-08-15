@@ -377,7 +377,7 @@ class CI_Template {
 
 	function clean_output($data)
 	{
-		if (is_scalar($data)) {
+		if (is_string($data)) {
 			if (version_compare(phpversion(), '5.2.3', '<')) {
 				$data = htmlspecialchars($data);
 			}
@@ -396,7 +396,7 @@ class CI_Template {
 				$item = self::clean_output($item);
 			}
 		}
-
+	
 		return $data;
 	}
 
