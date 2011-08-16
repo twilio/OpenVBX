@@ -8,7 +8,20 @@ $dialer = new TwimlDial();
 
 $dialer->set_state();
 
-// Respond based on state
+/**
+ * Respond based on state
+ * 
+ * **NOTE** dialing is done purely on a sequential basis for now.
+ * Due to a limitation in Twilio Client we cannot do simulring.
+ * If ANY device picks up a call Client stops ringing.
+ * 
+ * The flow is as follows:
+ * - Single User: Sequentially dial devices. If user is online
+ *   then the first device will be Client.
+ * - Group: Sequentially dial each user's 1st device. If user
+ *   is online Client will be the first device.
+ * - Number: The number will be dialed.
+ */ 
 switch ($dialer->state) {
 	case 'hangup':
 		$dialer->hangup();
