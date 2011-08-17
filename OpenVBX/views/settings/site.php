@@ -107,11 +107,21 @@
 			<br class="clear" />
 
 			<table class="vbx-items-grid">
+				<thead>
+					<tr class="items-head">
+						<th class="tenant-name">Name</th>
+						<th class="tenant-url">Url</th>
+						<th class="tenant-edit">Edit</th>
+						<th class="flow-delete">Delete</th>
+					</tr>
+				</thead>
 				<tbody>
 					<?php foreach($tenants as $tenant): ?>
 					<tr class="items-row">
+							<td class="name-tenant"><?php echo $tenant->name ?></td>
 							<td class="url-tenant"><a href="<?php echo tenant_url('', $tenant->id) ?>"><?php echo tenant_url('', $tenant->id) ?></a></td>
 							<td class="edit-tenant"><a href="<?php echo site_url('settings/site/tenant/'.$tenant->id) ?>" class="edit action"><span class="replace">Edit</span></a></td>
+							<td class="delete-tenant"><a href="<?php echo site_url('settings/site/tenant/'.$tenant->id) ?>" class="trash action"><span class="replace">Delete</span></a></td>
 					</tr>
 					<?php endforeach; ?>
 				</tbody>
@@ -159,3 +169,8 @@
 		</div>
 
 	</div><!-- .vbx-content-main -->
+	
+	<div id="dDeleteTenant" title="Delete Tenant?" class="dialog">
+		<p>Are you sure you wish to delete this tenant?</p>
+		<b>WARNING: This action cannot be undone.</b>
+	</div>

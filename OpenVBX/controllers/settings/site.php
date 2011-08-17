@@ -67,6 +67,8 @@ class Site extends User_Controller
 
 	private function tenant_handler($id)
 	{
+		$data = $this->init_view_data();
+		
 		switch($this->request_method)
 		{
 			case 'POST':
@@ -75,6 +77,11 @@ class Site extends User_Controller
 					return $this->update_tenant($id);
 				}
 				return $this->add_tenant();
+			case 'DELETE':
+				if($id)
+				{
+					return $this->delete_tenant($id);
+				}
 			case 'GET':
 				if($id)
 				{
@@ -447,6 +454,73 @@ class Site extends User_Controller
 		}
 
 		$this->respond('', 'settings/tenant', $data);
+	}
+	
+	private function delete_tenant($id)
+	{
+		$tenant = $this->settings->get_tenant_by_id($id);
+		$tenant_settings = $this->get_current_settings($id);
+		$tenant_account_sid = $this->settings->get('twilio_sid', $id);
+		
+		if (!isset($tenant_account_sid) || empty($tenant_account_sid))
+		{
+			throw new VBX_SettingsException('Tenant Twilio SID could not be retrieved.');
+		}
+		
+		$data['json'] = array('error' => false, 'message' => '');
+		if(!empty($tenant))
+		{
+			try
+			{
+				$this->db->trans_start();
+				
+				$twilio = new TwilioRestClient($this->twilio_sid,
+											   $this->twilio_token,
+											   $this->twilio_endpoint);
+				
+				$response = $twilio->request('Accounts/'.$tenant_account_sid, 'POST', array('Status' => 'closed'));
+							
+				if($response
+					&& $response->IsError != true)
+				{
+					$account = $response->ResponseXml;
+					//Successfully closed account
+				}
+				else
+				{
+					$message = 'Failed to close subaccount';
+					if($response && $response->ErrorMessage)
+						$message = $response->ErrorMessage;
+					throw new VBX_SettingsException($message);
+				}
+											
+				$this->settings->delete_tenant($tenant);
+				
+				$this->db->trans_complete();
+			}
+			catch(VBX_SettingsException $e)
+			{
+				error_log($e->getMessage());
+				$this->db->trans_rollback();
+
+				$data['error'] = true;
+				$data['message'] = $e->getMessage();
+			}
+			
+		}
+		else
+		{
+			$message = "Tenant $id does not exist.";
+			$data['json']['message'] = $message;
+			$this->session->set_flashdata('error', $message);
+		}
+
+		if($this->response_type == 'json')
+		{
+			return $this->respond('', '', $data, 'yui-t7');
+		}
+		
+		return redirect('settings/site');
 	}
 
 }

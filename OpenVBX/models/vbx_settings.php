@@ -186,6 +186,102 @@ class VBX_Settings extends Model
 			->where('id', $tenant['id'])
 			->update($this->tenants_table);
 	}
+	
+	function delete_tenant($tenant)
+	{
+		$ci =& get_instance();
+		
+		$errors = array();
+		if(!(!empty($tenant)
+			 && isset($tenant->id)
+			 && intval($tenant->id) > 0
+			 && $this->get_tenant_by_id($tenant->id) !== false))
+		{
+			throw new VBX_SettingsException('Can not delete tenant, malformed delete request');
+		}
+		
+		try
+		{
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('annotations');
+				
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('annotation_types');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('rest_access');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('audio_files');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('flows');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('flow_store');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('groups_users');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('group_annotations');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('group_messages');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('groups');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('messages');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('numbers');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('plugin_store');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('user_annotations');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('user_messages');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('users');
+
+			$ci->db
+				->where('tenant_id', $tenant->id)
+				->delete('settings');
+
+			$ci->db
+				->where('id', $tenant->id)
+				->delete('tenants');
+
+		}
+		catch(VBX_SettingsException $e)
+		{
+			error_log($e->getMessage());
+			throw $e;
+		}
+	}
 
 	function add($name, $value, $tenant_id)
 	{

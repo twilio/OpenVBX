@@ -17,6 +17,8 @@
 
  * Contributor(s):
  **/
+var dialogs = {};
+var activeAnchor;
 
 $(document).ready(function() {
 	/* VBX Content Tabs */
@@ -50,4 +52,39 @@ $(document).ready(function() {
 		history.navigationMode = 'compatible';
 
 	});
+	
+	dialogs['deleteTenant'] = $('#dDeleteTenant').dialog({ 
+		autoOpen: false,
+		width: 480,
+		buttons: {
+			'Delete': function() {
+				var dialog = this;
+				$.ajax({
+					url : $(activeAnchor).attr('href'),
+					type : 'DELETE',
+					success : function(data) {
+						if(!data.error) {
+							$.notify('Tenant has been deleted');
+							$(activeAnchor)
+								.parents('tr')
+								.fadeOut('fast');
+							$(dialog).dialog('close');
+							return;
+						}
+					},
+					dataType : 'json'
+				});
+			},
+			Cancel: function() { $(this).dialog('close'); }
+		}
+	});
+	
+	dialogs['deleteTenant'].closest('.ui-dialog').addClass('display');
+	
+	$('a.trash').click(function(event) {
+		event.preventDefault();
+		activeAnchor = this;
+		dialogs['deleteTenant'].dialog('open');
+	});
+	
 });
