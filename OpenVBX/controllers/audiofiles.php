@@ -300,7 +300,7 @@ class AudioFiles extends User_Controller
 
 	function hangup_on_cancel()
 	{
-		$this->request = new TwilioUtils($this->twilio_sid, $this->twilio_token);
+		// $this->request = new TwilioUtils($this->twilio_sid, $this->twilio_token);
 		$this->response = new Response();
 
 		$this->response->addHangup();

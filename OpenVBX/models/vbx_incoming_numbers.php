@@ -32,45 +32,37 @@ class VBX_Incoming_numbers extends Model
 	public function __construct()
 	{
 		parent::__construct();
-
-		$this->twilio = new TwilioRestClient($this->twilio_sid,
-											 $this->twilio_token,
-											 $this->twilio_endpoint);
-
 		$this->cache_key = $this->twilio_sid . '_incoming_numbers';
 
 	}
 
 	function get_sandbox()
 	{
-		if(function_exists('apc_fetch')) {
+		if(function_exists('apc_fetch')) 
+		{
 			$success = FALSE;
-			$data = apc_fetch($this->cache_key.'sandbox', $success);
+			$sandbox = apc_fetch($this->cache_key.'sandbox', $success);
 
-			if($data AND $success) {
-				$sandbox = simplexml_load_string($data);
-				return $sandbox;
+			if($sandbox AND $success) 
+			{
+				return @unserialize($sandbox);
 			}
 		}
 
-		/* Get Sandbox Number */
-		$sandbox = FALSE;
-		try
-		{
-			$response = $this->twilio->request("Accounts/{$this->twilio_sid}/Sandbox");
+		$service = OpenVBX::getService();
+		try {
+			$sandbox = $service->account->sandbox;
+			if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
+			{
+				$sandbox = $this->parseIncomingPhoneNumber($sandbox);
+				if (function_exists('apc_store')) 
+				{
+					$success = apc_store($this->cache_key.'sandbox', serialize($sandbox), self::CACHE_TIME_SEC);
+				}
+			}
 		}
-		catch(TwilioException $e)
-		{
-			throw new VBX_IncomingNumberException('Failed to connect to Twilio.', 503);
-		}
-
-		if(isset($response->ResponseXml->TwilioSandbox))
-		{
-			$sandbox = $response->ResponseXml->TwilioSandbox;
-		}
-		
-		if($sandbox instanceof SimpleXMLElement && function_exists('apc_store')) {
-			$success = apc_store($this->cache_key.'sandbox', $sandbox->asXML(), self::CACHE_TIME_SEC);
+		catch (Exception $e) {
+			throw new VBX_IncomingNumbersException($e->getMessage);
 		}
 
 		return $sandbox;
@@ -78,64 +70,39 @@ class VBX_Incoming_numbers extends Model
 
 	function get_numbers($retrieve_sandbox = true)
 	{
-		$numbers = array();
-		if(function_exists('apc_fetch')) {
+		if(function_exists('apc_fetch')) 
+		{
 			$success = FALSE;
 			$data = apc_fetch($this->cache_key.'numbers'.$retrieve_sandbox, $success);
-			if($data AND $success) {
+			if($data AND $success) 
+			{
 				$numbers = @unserialize($data);
 				if(is_array($numbers)) return $numbers;
 			}
 		}
 
-		$items = array();
-		$nextpageuri = "Accounts/{$this->twilio_sid}/IncomingPhoneNumbers";
-		do {
-			/* Get IncomingNumbers */
-			try
+		$numbers = array();
+		$service = OpenVBX::getService();
+		try {
+			foreach ($service->account->incoming_phone_numbers as $number) 
 			{
-				$response = $this->twilio->request($nextpageuri);
+				// check that number is a proper instance type
+				$numbers[] = $this->parseIncomingPhoneNumber($number);
 			}
-			catch(TwilioException $e)
-			{
-				throw new VBX_IncomingNumberException('Failed to connect to Twilio.', 503);
-			}
-
-			if($response->IsError)
-			{
-				throw new VBX_IncomingNumberException($response->ErrorMessage, $response->HttpStatus);
-			}
-
-			if(isset($response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber))
-			{
-				$phoneNumbers = $response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber
-					? $response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber
-					: array($response->ResponseXml->IncomingPhoneNumbers->IncomingPhoneNumber);
-				foreach($phoneNumbers as $number)
-				{
-					$items[] = $number;
-				}
-			}
-			
-			$nextpageuri = (string) $response->ResponseXml->IncomingPhoneNumbers['nextpageuri'];
-			$nextpageuri = preg_replace('|^/\d{4}-\d{2}-\d{2}/|m', '', $nextpageuri);
-		} while (!empty($nextpageuri));
+		}
+		catch (Exception $e) {
+			throw new VBX_IncomingNumbersException($e->getMessage());
+		}
 		
 		$ci = &get_instance();
 		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
-		if($enabled_sandbox_number && $retrieve_sandbox) {
-			$sandbox = $this->get_sandbox();
-			if (!empty($sandbox)) {
-				$items[] = $sandbox;
-			}
-		}
-
-		foreach($items as $item)
+		if ($enabled_sandbox_number && $retrieve_sandbox) 
 		{
-			$numbers[] = $this->parseIncomingPhoneNumber($item);
+			$numbers[] = $this->get_sandbox();
 		}
 
-		if(function_exists('apc_store')) {
+		if(function_exists('apc_store')) 
+		{
 			$success = apc_store($this->cache_key.'numbers'.$retrieve_sandbox, serialize($numbers), self::CACHE_TIME_SEC);
 		}
 
@@ -162,15 +129,15 @@ class VBX_Incoming_numbers extends Model
 	{
 		$num = new stdClass();
 		$num->flow_id = null;
-		$num->id = (string) isset($item->Sid)? (string) $item->Sid : 'Sandbox';
-		$num->name = (string) $item->FriendlyName;
-		$num->phone = format_phone($item->PhoneNumber);
-		$num->pin = isset($item->Pin)? (string)$item->Pin : null;
-		$num->sandbox = isset($item->Pin)? true : false;
-		$num->url = (string) $item->VoiceUrl;
-		$num->method = (string) $item->VoiceMethod;
-		$num->smsUrl = (string) $item->SmsUrl;
-		$num->smsMethod = (string) $item->SmsMethod;
+		$num->id = $item->sid ? $item->sid : 'Sandbox';
+		$num->name = $item->friendly_name;
+		$num->phone = format_phone($item->phone_number);
+		$num->pin = $item->pin ? $item->pin : null;
+		$num->sandbox = $item->pin ? true : false;
+		$num->url = $item->voice_url;
+		$num->method = $item->voice_method;
+		$num->smsUrl = $item->sms_url;
+		$num->smsMethod = $item->sms_method;
 
 		$call_base = site_url('twiml/start') . '/';
 		$base_pos = strpos($num->url, $call_base);
@@ -186,40 +153,57 @@ class VBX_Incoming_numbers extends Model
 		return $num;
 	}
 
+	/**
+	 * Assign a number to a flow
+	 *
+	 * @param string $phone_id - phone number sid
+	 * @param int $flow_id - flow id
+	 * @return bool
+	 */
 	function assign_flow($phone_id, $flow_id)
 	{
-		$voice_url = site_url("twiml/start/voice/$flow_id");
-		$sms_url = site_url("twiml/start/sms/$flow_id");
-		if(strtolower($phone_id) == 'sandbox')
-			$rest_url = "Accounts/{$this->twilio_sid}/Sandbox";
-		else
-			$rest_url = "Accounts/{$this->twilio_sid}/IncomingPhoneNumbers/$phone_id";
+		$voice_url = site_url('twiml/start/voice/'.$flow_id);
+		$sms_url = site_url('twiml/start/sms/'.$flow_id);
 
-		$response = $this->twilio->request($rest_url,
-										   'POST',
-										   array('VoiceUrl' => $voice_url,
-												 'SmsUrl' => $sms_url,
-												 'VoiceFallbackUrl' => base_url().'fallback/voice.php',
-												 'SmsFallbackUrl' => base_url().'fallback/sms.php',
-												 'VoiceFallbackMethod' => 'GET',
-												 'SmsFallbackMethod' => 'GET',
-												 'SmsMethod' => 'POST',
-												 'ApiVersion' => '2010-04-01',
-												 )
-										   );
+		$service = OpenVBX::getService();
+		try {
+			if (strtolower($phone_id) == 'sandbox') 
+			{
+				$number = $service->account->sandbox;
+			}
+			else {
+				$number = $service->account->incoming_phone_numbers->get($phone_id);
+			}
 
-		if($response->IsError)
+			$number->update(array(
+					'VoiceUrl' => $voice_url,
+					'SmsUrl' => $sms_url,
+					'VoiceFallbackUrl' => base_url().'fallback/voice.php',
+					'SmsFallbackUrl' => base_url().'fallback/sms.php',
+					'VoiceFallbackMethod' => 'GET',
+					'SmsFallbackMethod' => 'GET',
+					'SmsMethod' => 'POST',
+					'ApiVersion' => '2010-04-01'
+				));
+		} 
+		catch (Exception $e) 
 		{
-			throw new VBX_IncomingNumberException($response->ErrorMessage);
+			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 
 		$this->clear_cache();
 		return TRUE;
 	}
 
-	// purchase a new phone number, return the new number
+	/**
+	 * Purchase a new number
+	 *
+	 * @param bool $is_local 
+	 * @param string $area_code 
+	 * @return void
+	 */
 	function add_number($is_local, $area_code)
-	{
+	{		
 		$voice_url = site_url("twiml/start/voice/0");
 		$sms_url = site_url("twiml/start/sms/0");
 
@@ -243,52 +227,62 @@ class VBX_Incoming_numbers extends Model
 				   'ApiVersion' => '2010-04-01',
 				   );
 
-		// purchase tollfree, uses AvailablePhoneNumbers to search first.
-		if(!$is_local) {
-			$response = $this->twilio->request("Accounts/{$this->twilio_sid}/AvailablePhoneNumbers/US/TollFree");
-			if($response->IsError)
-				throw new VBX_IncomingNumberException($response->ErrorMessage);
-
-			$availablePhoneNumbers = $response->ResponseXml->AvailablePhoneNumbers;
-			if(empty($availablePhoneNumbers->AvailablePhoneNumber))
-				throw new VBX_IncomingNumberException("Currently out of TollFree numbers, please try again later.");
-
-			// Grab the first number from the list.
-			$params['PhoneNumber'] = $availablePhoneNumbers->AvailablePhoneNumber->PhoneNumber;
-			$response = $this->twilio->request("Accounts/{$this->twilio_sid}/IncomingPhoneNumbers",
-											   'POST',
-											   $params );
-
-		}  else { // purchase local
-
-			if(!empty($area_code))
+		$service = OpenVBX::getService();
+		try {
+			// purchase tollfree, uses AvailablePhoneNumbers to search first.
+			if(!$is_local) 
 			{
-				$params['AreaCode'] = $area_code;
+				$country = 'US';
+				$numbers = $service->account->available_phone_numbers
+													->getTollFree($country)
+													->getList();
+				
+				if (count($numbers->available_phone_numbers)) 
+				{
+					$params['PhoneNumber'] = current($numbers->available_phone_numbers)->phone_number;
+				}
+				else 
+				{
+					throw new VBX_IncomingNumberException('Currently out of TollFree numbers. Please try again later.');
+				}
 			}
-
-			$rest_url = "Accounts/{$this->twilio_sid}/IncomingPhoneNumbers/";
-			$response = $this->twilio->request($rest_url, 'POST', $params);
+			else 
+			{ 
+				// purchase local
+				if(!empty($area_code))
+				{
+					$params['AreaCode'] = $area_code;
+				}
+			}
+			$number = $service->account->incoming_phone_numbers->create($params);
+		}
+		catch (Exception $e) 
+		{
+			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 
-		if($response->IsError)
-			throw new VBX_IncomingNumberException($response->ErrorMessage);
-
 		$this->clear_cache();
-
-		return $this->parseIncomingPhoneNumber($response->ResponseXml->IncomingPhoneNumber);
+		return $this->parseIncomingPhoneNumber($number);
 	}
 
-	// purchase a new phone number, return the new number
+	/**
+	 * Remove a phone number from the current account
+	 *
+	 * @param string $phone_id
+	 * @return bool
+	 */
 	function delete_number($phone_id)
 	{
-		$rest_url = "Accounts/{$this->twilio_sid}/IncomingPhoneNumbers/$phone_id";
-
-		$response = $this->twilio->request($rest_url, 'DELETE');
-
-		if($response->IsError) throw new VBX_IncomingNumberException($response->ErrorMessage);
-
+		$service = OpenVBX::getService();
+		try {
+			$service->account->incoming_phone_numbers->delete($phone_id);
+		}
+		catch (Exception $e) 
+		{
+			throw new VBX_IncomingNumberException($e->getMessage());
+		}
+	
 		$this->clear_cache();
-
 		return TRUE;
 	}
 

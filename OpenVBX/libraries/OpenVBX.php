@@ -19,9 +19,13 @@
  * Contributor(s):
  **/
 
+include(APPPATH.'libraries/Services/Twilio.php');
+
 class OpenVBXException extends Exception {}
 class OpenVBX {
 	public static $currentPlugin = null;
+	
+	private static $_twilioService;
 
 	public static function query($sql)
 	{
@@ -222,5 +226,38 @@ class OpenVBX {
 	public static function setPageTitle($title, $overwrite = false) {
 		$ci = &get_instance();
 		return $ci->template->write('title', $title, $overwrite);
+	}
+	
+	/**
+	 * Get the Twilio Services object for communicating with Twilio HQ
+	 * 
+	 * Optional: Pass different Account Sid & Token values to communicate
+	 * with a different Twilio Account
+	 *
+	 * @throws OpenVBXException if invalid parameters are passed in for new object generation
+	 * @param string $twilio_sid Optional - Twilio Account Sid
+	 * @param string $twilio_token Optional - Twilio Account Token
+	 * @return void
+	 */
+	public function getService($twilio_sid = false, $twilio_token = false) {
+		// if sid & token are passed, make sure they're not the same as our master
+		// values. If they are, make a new object, otherwise use the same internal object
+		if (!empty($twilio_sid) || !empty($twilio_token)) {
+			$ci = &get_instance();
+			if (!empty($twilio_sid) && !empty($twilio_token)) {
+				if ($twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) {
+					return new Services_Twilio($twilio_sid, $twilio_token);
+				}
+			}
+			else {
+				throw new OpenVBXException('Must pass in both a Sid & Token to get a new Services Object');
+			}
+		}
+
+		// return standard in service object
+		if (!(self::$_twilioService instanceof Services_Twilio)) {
+			self::$_twilioService = new Services_Twilio($this->twilio_sid, $this->twilio_token);
+		}
+		return self::$_twilioService;
 	}
 }

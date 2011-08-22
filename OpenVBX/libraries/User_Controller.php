@@ -377,12 +377,15 @@ class User_Controller extends MY_Controller
 	 * @since 0.93
 	 * @return void
 	 */
-	protected function set_client_support() {
+	protected function set_client_support() 
+	{
 		$this->application_sid = $this->settings->get('application_sid', VBX_PARENT_TENANT);
-		if (!empty($this->application_sid)) {
+		if (!empty($this->application_sid)) 
+		{
+			// once hooked up properly this library should autoload
 			if (!class_exists('Services_Twilio_Capability'))
 			{
-				include_once(APPPATH.'libraries/Capability.php');
+				include_once(APPPATH.'libraries/Services/Twilio/Capability.php');
 			}
 			$this->capability = new Services_Twilio_Capability($this->twilio_sid, $this->twilio_token);
 
@@ -399,8 +402,6 @@ class User_Controller extends MY_Controller
 				$this->capability->allowClientIncoming($user->id);
 			}
 			catch (Exception $e) {
-				//throw new User_ControllerException($e->getMessage());
-				// this shouldn't be fatal, log instead of fail
 				error_log($e->getMessage());
 			}
 		}
