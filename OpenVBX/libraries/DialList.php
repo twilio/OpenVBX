@@ -170,5 +170,3 @@ class DialListUser extends DialList {
 		return array_shift(current($this->users)->devices);
 	}
 }
-
-?>

@@ -86,7 +86,7 @@ switch ($dialer->state) {
 				}
 			}
 		} while(!$dialed && ($to_dial instanceof VBX_User || $to_dial instanceof VBX_Device));
-		
+
 		if (!$dialed) {
 			// no users left see what next action is, or go to voicemail
 			$dialer->noanswer();
