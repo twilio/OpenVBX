@@ -35,7 +35,7 @@ class Install extends Controller {
 		parent::Controller();
 		if(file_exists(APPPATH . 'config/openvbx.php')) $this->config->load('openvbx');
 
-		if(file_exists(APPPATH . 'config/database.php') AND version_compare(PHP_VERSION, '5.0.0', '>=')) {
+		if(file_exists(APPPATH . 'config/database.php') AND version_compare(PHP_VERSION, $this->min_php_version, '>=')) {
 			$this->load->database();
 
 			redirect('');
