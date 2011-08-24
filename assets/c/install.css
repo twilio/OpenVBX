@@ -303,6 +303,7 @@ ul.dependencies li.fail.optional {
 }
 
 .navigation .submit {
+	width: 145px;
 	float: right;
 	margin: 0 10px 0 20px;
 	background-color: #316480;
@@ -312,6 +313,12 @@ ul.dependencies li.fail.optional {
 	background-color: #0066FF;
 }
 
+.navigation .submit.loading {
+    background-image: url(../i/ajax-loader-circle.gif);
+    background-position: 50% 50%;
+	background-repeat: no-repeat;
+    text-indent: -9999px;
+}
 
 .replace {
 	display: none;

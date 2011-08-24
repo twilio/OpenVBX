@@ -31,6 +31,8 @@ class AudioFiles extends User_Controller
 	function __construct()
 	{
 		parent::__construct();
+		$this->load->helper('twilio');
+		$this->load->library('TwimlResponse');
 		$this->load->model('vbx_audio_file');
 	}
 
@@ -171,10 +173,9 @@ class AudioFiles extends User_Controller
 			$rest_access_token = $this->make_rest_access();
 			$path = 'audiofiles!prompt_for_recording_twiml';
 			$recording_url = stripslashes(site_url("twiml/redirect/" . $path . "/$rest_access_token"));
-
-			$service = OpenVBX::getService();
 			
 			try {
+				$service = OpenVBX::getService();
 				$call = $service->account->calls->create(
 														$callerid,
 														$to,
@@ -206,12 +207,8 @@ class AudioFiles extends User_Controller
 
 	function prompt_for_recording_twiml()
 	{
-		if (!OpenVBX::validateRequest()) {
-			$response = new TwimlResponse;
-			$response->say('Could not validate this request. Goodbye');
-			$response->respond();
-		}
-
+		validate_rest_request();
+		
 		$response = new TwimlResponse;
 		$audioFile = VBX_Audio_File::get(array('recording_call_sid' => $this->input->get_post('CallSid')));
 
@@ -233,6 +230,8 @@ class AudioFiles extends User_Controller
 
 	function replay_recording_twiml()
 	{
+		validate_rest_request();
+		
 		$response = new TwimlResponse();
 
 		if ($this->input->get_post('RecordingUrl'))
@@ -259,17 +258,20 @@ class AudioFiles extends User_Controller
 
 	function accept_or_reject_recording_twiml()
 	{
-		$this->request = new TwilioUtils($this->twilio_sid, $this->twilio_token);
-		$this->response = new Response();
-
-		switch($this->request->Digits)
+		validate_rest_request();
+		
+		$response = new TwimlResponse;
+		$digits = clean_digits($this->input->get_post('Digits'));
+		$call_sid = $this->input->get_post('CallSid');
+		
+		switch($digits)
 		{
 			case 1:
-				$audioFile = VBX_Audio_File::get(array('recording_call_sid' => $this->request->CallSid));
+				$audioFile = VBX_Audio_File::get(array('recording_call_sid' => $call_sid));
 
 				if ($audioFile == null)
 				{
-					trigger_error("That's weird - we can't find the place holder audio file that matches this sid (" . $this->request->CallSid . ")");
+					trigger_error("That's weird - we can't find the place holder audio file that matches this sid (".$call_sid.")");
 				}
 				else
 				{
@@ -277,27 +279,26 @@ class AudioFiles extends User_Controller
 					$audioFile->save();
 				}
 
-				$this->response->addSay('Your recording has been saved.');
-				$this->response->addHangup();
+				$response->say('Your recording has been saved.');
+				$response->hangup();
 				break;
 			case 2:
-				$this->response->addRedirect(site_url('audiofiles/prompt_for_recording_twiml'));
+				$response->redirect(site_url('audiofiles/prompt_for_recording_twiml'));
 			default:
-				$this->response->addRedirect(site_url('audiofiles/replay_recording_twiml'));
+				$response->redirect(site_url('audiofiles/replay_recording_twiml'));
 				break;
 		}
 
-		return $this->response->Respond();
+		return $response->respond();
 	}
 
 	function hangup_on_cancel()
 	{
-		// $this->request = new TwilioUtils($this->twilio_sid, $this->twilio_token);
-		$this->response = new Response();
-
-		$this->response->addHangup();
-
-		return $this->response->Respond();
+		validate_rest_request();
+		
+		$response = new TwimlResponse;
+		$response->hangup();
+		return $response->respond();
 	}
 
 	function cancel_recording()
@@ -320,7 +321,7 @@ class AudioFiles extends User_Controller
 
 			if (is_null($audioFile))
 			{
-				trigger_error("We were given an id for an audio_file, but we can't find the record.	 That's odd.  And, by odd I really mean it should *never* happen.");
+				trigger_error("We were given an id for an audio_file, but we can't find the record. That's odd. And, by odd I really mean it should *never* happen.");
 			}
 			else if ($audioFile->user_id != $this->session->userdata('user_id'))
 			{
@@ -329,13 +330,12 @@ class AudioFiles extends User_Controller
 			else
 			{
 				error_log("Redirecting to cancel page!");
-				
 				$cancel_url = site_url('audiofiles/hangup_on_cancel');
-				$service = OpenVBX::getService();
 				
 // ep($audioFile->recording_call_sid);
 				
 				try {
+					$service = OpenVBX::getService();
 					$call = $service->account->calls->get($audioFile->recording_call_sid);
 // ep($call->status);
 					$call->route($cancel_url);
@@ -343,7 +343,7 @@ class AudioFiles extends User_Controller
 					$audioFile->save();
 				}
 				catch (Exception $e) {
-					ep($e->getMessage());
+// ep($e->getMessage());
 					//throw new AudioFilesException($e->getMessage());
 					trigger_error($e->getMessage());
 				}

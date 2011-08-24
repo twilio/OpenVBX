@@ -1,6 +1,8 @@
 <?php
 
 function runUpdate_50() {
+	set_time_limit(3600);
+	
 	require_once('OpenVBX/libraries/twilio.php');
 
 	$ci = &get_instance();
@@ -21,66 +23,52 @@ function runUpdate_50() {
 }
 
 function create_application($name, $tenant_id) {
-
 	$ci = &get_instance();
 	$ci->load->model('vbx_settings');
 
-	$appName = "OpenVBX :: {$name}";
+	$app_name = "OpenVBX :: {$name}";
 	$twilio_sid = $ci->vbx_settings->get('twilio_sid', $tenant_id);
 	$twilio_token = $ci->vbx_settings->get('twilio_token', $tenant_id);
-	$twilio = new TwilioRestClient($twilio_sid,
-								   $twilio_token,
-								   'https://api.twilio.com/2010-04-01');
-	$response = $twilio->request("Accounts/{$twilio_sid}/Applications",
-								 'GET',
-								 array('FriendlyName' => $appName));
-	if($response->IsError) {
-		if($response->HttpStatus > 400) {
-			throw(new Exception($response->ErrorMessage));
-		}
-	}
-
-	// If we found an existing application, update the urls.
-	$foundApp = intval($response->ResponseXml->Applications['total']);
-	if($foundApp) {
-		$appSid = (string)$response->ResponseXml->Applications->Application->Sid;
-		$response = $twilio->request("Accounts/{$twilio_sid}/Applications/{$appSid}",
-									 'POST',
-									 array('FriendlyName' => $appName,
-										   'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
-										   'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
-										   'VoiceMethod' => 'POST',
-										   'SmsUrl' => '',
-										   'SmsFallbackUrl' => '',
-										   'SmsMethod' => 'POST',
-										   ));
-		if($response->IsError) {
-			if($response->HttpStatus > 400) {
-				throw(new Exception($response->ErrorMessage));
+	
+	if (!empty($twilio_sid) && !empty($twilio_token)) 
+	{
+		error_log('Processing tenant: '.$tenant_id);
+		$service = OpenVBX::getService($twilio_sid, $twilio_token);
+		$applications = $service->account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
+		$application = false;
+		foreach ($applications as $_application) 
+		{
+			if ($_application->friendly_name == $app_name) 
+			{
+				$application = $_application;
 			}
 		}
-
-		// Otherwise, lets create a new application for openvbx
-	} else {
-		$response = $twilio->request("Accounts/{$twilio_sid}/Applications",
-									 'POST',
-									 array('FriendlyName' => $appName,
-										   'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
-										   'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
-										   'VoiceMethod' => 'POST',
-										   'SmsUrl' => '',
-										   'SmsFallbackUrl' => '',
-										   'SmsMethod' => 'POST',
-										   ));
-		if($response->IsError) {
-			if($response->HttpStatus > 400) {
-				throw(new Exception($response->ErrorMessage));
-			}
+		
+		$params = array('FriendlyName' => $app_name,
+					   'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
+					   'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
+					   'VoiceMethod' => 'POST',
+					   'SmsUrl' => '',
+					   'SmsFallbackUrl' => '',
+					   'SmsMethod' => 'POST'
+				   );
+		
+		if (!empty($application)) 
+		{
+			error_log('Modifying app: '.$app_name);
+			$application->update($params);
 		}
-
-		$appSid = (string)$response->ResponseXml->Application->Sid;
+		else 
+		{
+			error_log('Creating app: '.$app_name);
+			$application = $service->account->applications->create($app_name, $params);
+		}
+	
+		error_log('Created/Updated app for tenant id: '.$tenant_id.' - Application Sid: '.$application->sid);
+		$ci->vbx_settings->add('application_sid', $application->sid, $tenant_id);
+	}
+	else {
+		error_log('Skipped app creation for tenant "'.$tenant_id.'" - incomplete account Sid/Token pair.');
 	}
 
-	// Update the settings for this tenant
-	$ci->vbx_settings->add('application_sid', $appSid, $tenant_id);
 }

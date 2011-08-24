@@ -49,8 +49,8 @@ class VBX_Incoming_numbers extends Model
 			}
 		}
 
-		$service = OpenVBX::getService();
 		try {
+			$service = OpenVBX::getService();
 			$sandbox = $service->account->sandbox;
 			if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
 			{
@@ -82,8 +82,8 @@ class VBX_Incoming_numbers extends Model
 		}
 
 		$numbers = array();
-		$service = OpenVBX::getService();
 		try {
+			$service = OpenVBX::getService();
 			foreach ($service->account->incoming_phone_numbers as $number) 
 			{
 				// check that number is a proper instance type
@@ -165,8 +165,8 @@ class VBX_Incoming_numbers extends Model
 		$voice_url = site_url('twiml/start/voice/'.$flow_id);
 		$sms_url = site_url('twiml/start/sms/'.$flow_id);
 
-		$service = OpenVBX::getService();
 		try {
+			$service = OpenVBX::getService();
 			if (strtolower($phone_id) == 'sandbox') 
 			{
 				$number = $service->account->sandbox;
@@ -227,8 +227,8 @@ class VBX_Incoming_numbers extends Model
 				   'ApiVersion' => '2010-04-01',
 				   );
 
-		$service = OpenVBX::getService();
 		try {
+			$service = OpenVBX::getService();
 			// purchase tollfree, uses AvailablePhoneNumbers to search first.
 			if(!$is_local) 
 			{
@@ -273,8 +273,8 @@ class VBX_Incoming_numbers extends Model
 	 */
 	function delete_number($phone_id)
 	{
-		$service = OpenVBX::getService();
 		try {
+			$service = OpenVBX::getService();
 			$service->account->incoming_phone_numbers->delete($phone_id);
 		}
 		catch (Exception $e) 

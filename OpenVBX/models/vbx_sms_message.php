@@ -70,10 +70,10 @@ class VBX_Sms_message extends Model {
 			}
 		}
 		
-		$service = OpenVBX::getService();
 		$page = floor(($offset + 1) / $page_size);
 		
 		try {
+			$service = OpenVBX::getService();
 			$messages = $service->account->sms_messages->getIterator($page, $page_size, array());
 			if (count($messages)) {
 				$this->total = count($messages); // @TODO need verification that this will work, return may not be Array compatible
@@ -104,8 +104,8 @@ class VBX_Sms_message extends Model {
 		$from = PhoneNumber::normalizePhoneNumberToE164($from);
 		$to = PhoneNumber::normalizePhoneNumberToE164($to);
 		
-		$service = OpenVBX::getService();
 		try {
+			$service = OpenVBX::getService();
 			$response = $service->account->sms_messages->create($from,
 																$to,
 																$message

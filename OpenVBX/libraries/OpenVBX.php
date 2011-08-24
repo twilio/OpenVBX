@@ -247,7 +247,12 @@ class OpenVBX {
 			$ci = &get_instance();
 			if (!empty($twilio_sid) && !empty($twilio_token)) {
 				if ($twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) {
-					return new Services_Twilio($twilio_sid, $twilio_token);
+					try {
+						return new Services_Twilio($twilio_sid, $twilio_token);
+					}
+					catch (Exception $e) {
+						throw new OpenVBXException($e->getMessage());
+					}
 				}
 			}
 			else {
@@ -258,7 +263,12 @@ class OpenVBX {
 		// return standard in service object
 		if (!(self::$_twilioService instanceof Services_Twilio)) {
 			$ci = &get_instance();
-			self::$_twilioService = new Services_Twilio($ci->twilio_sid, $ci->twilio_token);
+			try {
+				self::$_twilioService = new Services_Twilio($ci->twilio_sid, $ci->twilio_token);
+			}
+			catch (Exception $e) {
+				throw new OpenVBXException($e->getMessage());
+			}
 		}
 		return self::$_twilioService;
 	}

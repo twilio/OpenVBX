@@ -205,6 +205,7 @@ class Site extends User_Controller
 				if (!empty($update_app))
 				{
 					$service = OpenVBX::getService();
+
 					foreach ($update_app as $app) 
 					{
 						try {
@@ -237,10 +238,10 @@ class Site extends User_Controller
 
 	private function create_application_for_subaccount($tenant_id, $name, $accountSid) {
 		$appName = "OpenVBX - {$name}";
-		$service = OpenVBX::getService();
 		
 		$application = false;
 		try {
+			$service = OpenVBX::getService();
 			$account = $service->accounts->get($accountSid);
 			foreach ($account->applications as $_application) 
 			{
@@ -265,10 +266,12 @@ class Site extends User_Controller
 			);
 
 		try {
-			if (!empty($application)) {
+			if (!empty($application)) 
+			{
 				$application->update($params);
 			}
-			else {
+			else 
+			{
 				$application = $account->applications->create($appName, $params);
 			}
 		}
@@ -316,9 +319,9 @@ class Site extends User_Controller
 				$this->settings->set('from_email', $tenant['admin_email'], $data['id']);
 
 				$friendlyName = substr($tenant['url_prefix'].' - '.$tenant['admin_email'], 0, 32);					
-				$service = OpenVBX::getService();
 
 				try {
+					$service = OpenVBX::getService();
 					$account = $service->accounts->create(array(
 															'FriendlyName' => $friendlyName
 														));
