@@ -114,24 +114,30 @@ class VBX_Call extends Model {
 		try
 		{
 			PhoneNumber::validatePhoneNumber($from);
-			PhoneNumber::validatePhoneNumber($to);
+			// handle being passed an email address for calls to browser clients
+			if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+				PhoneNumber::validatePhoneNumber($to);
+			}
 		}
 		catch(PhoneNumberException $e)
 		{
 			throw new VBX_CallException($e->getMessage());
 		}
-
+		
+		// don't normalize email addresses that are used to identify browser clients
+		if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+			$to = PhoneNumber::normalizePhoneNumberToE164($to);
+		}
 		$callerid = PhoneNumber::normalizePhoneNumberToE164($callerid);
 		$from = PhoneNumber::normalizePhoneNumberToE164($from);
-		$to = PhoneNumber::normalizePhoneNumberToE164($to);
 		$recording_url = site_url("twiml/dial").'?'.http_build_query(compact('callerid', 'to', 'rest_access'));
 
 		try {
 			$service = OpenVBX::getService();
 			$service->account->calls->create($callerid,
-												$from,
-												$recording_url
-											);
+											$from,
+											$recording_url
+										);
 		}
 		catch (Exception $e) {
 			throw new VBX_CallException($e->getMessage());
@@ -145,9 +151,9 @@ class VBX_Call extends Model {
 		try {
 			$service = OpenVBX::getService();
 			$service->account->calls->create($callerid,
-												$to,
-												$recording_url
-											);
+											$to,
+											$recording_url
+										);
 		}
 		catch (Exception $e) {
 			throw new VBX_CallException($e->getMessage());

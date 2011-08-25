@@ -34,7 +34,7 @@ function create_application($name, $tenant_id) {
 	{
 		error_log('Processing tenant: '.$tenant_id);
 		$service = OpenVBX::getService($twilio_sid, $twilio_token);
-		$applications = $service->account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
+		$applications = $service->account->applications->getIterator(0, 1, array('FriendlyName' => $app_name));
 		$application = false;
 		foreach ($applications as $_application) 
 		{

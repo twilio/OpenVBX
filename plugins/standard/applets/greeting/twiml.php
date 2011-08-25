@@ -1,15 +1,18 @@
 <?php
 
-$response = new Response();
+$response = new TwimlResponse;
 
 $next = AppletInstance::getDropZoneUrl('next');
 $prompt = AppletInstance::getAudioSpeechPickerValue('prompt');
 
-$response->append(AudioSpeechPickerWidget::getVerbForValue($prompt, null));
-	
-if(!empty($next))
+if (!empty($prompt)) 
 {
-	$response->addRedirect($next);    
+	AudioSpeechPickerWidget::setVerbForValue($prompt, $response);
 }
 
-$response->Respond();
+if(!empty($next))
+{
+	$response->redirect($next);    
+}
+
+$response->respond();

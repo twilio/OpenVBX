@@ -55,7 +55,7 @@
 
 		public function __construct($url, $text, $status) {
 			// Deprecatation Notice
-			trigger_error(__CLASS__.' is deprecated. Please use Services_Twilio instead.', E_USER_WARNING);
+			_deprecated_notice(__CLASS__, '1.0.4', 'Services_Twilio');
 
 			preg_match('/([^?]+)\??(.*)/', $url, $matches);
 			$this->Url = $matches[1];
@@ -102,7 +102,7 @@
 		public function __construct($accountSid, $authToken,
 									$endpoint = "https://api.twilio.com/2010-04-01") {
 			// Deprecatation Notice
-			trigger_error(__CLASS__.' is deprecated. Please use TwimlResponse instead.', E_USER_WARNING);
+			_deprecated_notice(__CLASS__, '1.0.4', 'TwimlResponse');
 
 			$this->AccountSid = $accountSid;
 			$this->AuthToken = $authToken;
@@ -223,7 +223,7 @@
 		 */
 		function __construct($body=NULL, $attr = array()) {
 			// Deprecatation Notice
-			trigger_error(__CLASS__.' is deprecated. Please use Services_Twilio_RequestValidator instead.', E_USER_WARNING);
+			_deprecated_notice(__CLASS__, '1.0.4', 'TwimlResponse');
 			
 			if (is_array($body)) {
 				$attr = $body;
@@ -534,7 +534,7 @@
 
 		function __construct($id, $token) {
 			// Deprecatation Notice
-			trigger_error(__CLASS__.' is deprecated. Please use Services_Twilio instead.', E_USER_WARNING);
+			_deprecated_notice(__CLASS__, '1.0.4');
 			
 			$this->AuthToken = $token;
 			$this->AccountSid = $id;

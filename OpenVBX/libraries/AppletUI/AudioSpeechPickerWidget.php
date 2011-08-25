@@ -89,8 +89,50 @@ class AudioSpeechPickerWidget extends AppletUIWidget
 		return parent::render($data);
 	}
 	
+	/**
+	 * Set the proper verb for the pickers value
+	 * 
+	 * @example 
+	 * 		$response = new Services_Twilio_Twiml;
+	 * 		AudioSpeechPickerWidget::setVerbForValue($value, $response);
+	 *
+	 * @param string $value
+	 * @param object $response Services_Twilio_Twiml
+	 * @return mixed Services_Twilio_Twiml on success, boolean false on fail
+	 */
+	public static function setVerbForValue($value, $response) {
+		$matches = array();
+		if (empty($value) || !($response instanceof Services_Twilio_Twiml))
+		{
+			return false;
+		}
+		else if (preg_match('/^vbx-audio-upload:\/\/(.*)/i', $value, $matches))
+		{
+			// This is a locally hosted file, and we need to return the correct absolute URL for the file.
+			return $response->play(asset_url('audio-uploads/'.$matches[1]));
+		}
+		else if (preg_match('/^http(s)?:\/\/(.*)/i', $value))
+		{
+			// it's already an absolute URL
+			return $response-play($value);
+		}
+		else
+		{
+			return $response->say($value);
+		}		
+	}
+	
+	/**
+	 * Create the proper verb for the Picker's value
+	 *
+	 * @deprecated use AudioSpeechPickerWidget::setVerbForValue instead
+	 * @param mixed $value 
+	 * @param object $defaultVerb 
+	 * @return object subclass of Verb
+	 */
 	public static function getVerbForValue($value, $defaultVerb)
 	{
+		_deprecated_notice(__METHOD__, '1.0.4', 'AudioSpeechPickerWidget::setVerbForValue');
 		$matches = array();
 
 		if (empty($value))

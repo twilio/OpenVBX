@@ -1,8 +1,10 @@
 <?php
-$response = new Response();
+
+$ci = &get_instance();
+$response = new TwimlResponse;
 
 /* Fetch all the data to operate the menu */
-$digits = isset($_REQUEST['Digits'])? $_REQUEST['Digits'] : false;
+$digits = isset($_REQUEST['Digits'])? $ci->input->get_post('Digits') : false;
 $prompt = AppletInstance::getAudioSpeechPickerValue('prompt');
 $invalid_option = AppletInstance::getAudioSpeechPickerValue('invalid-option');
 $repeat_count = AppletInstance::getValue('repeat-count', 3);
@@ -33,17 +35,16 @@ if($digits !== false)
 	{
 		if($invalid_option)
 		{
-			$verb = AudioSpeechPickerWidget::getVerbForValue($invalid_option, null);
-			$response->append($verb);
-			$response->addRedirect();
+			AudioSpeechPickerWidget::setVerbForValue($invalid_option, $response);
+			$response->redirect();
 		}
 		else
 		{			 
-			$response->addSay('You selected an incorrect option.');
-			$response->addRedirect();
+			$response->say('You selected an incorrect option.');
+			$response->redirect();
 		}
 		
-		$response->Respond();
+		$response->respond();
 		exit;
 	}
 		
@@ -51,33 +52,35 @@ if($digits !== false)
 
 if(!empty($selected_item))
 {
-	$response->addRedirect($selected_item);
-	$response->Respond();
+	$response->redirect($selected_item);
+	$response->respond();
 	exit;
 }
 
-$gather = $response->addGather(compact('numDigits'));
-$verb = AudioSpeechPickerWidget::getVerbForValue($prompt, null);
-$gather->append($verb);
+$gather = $response->gather(compact('numDigits'));
+// $verb = AudioSpeechPickerWidget::getVerbForValue($prompt, null);
+AudioSpeechPickerWidget::setVerbForValue($prompt, $gather);
+// $gather->append($verb);
 
 // Infinite loop
 if($repeat_count == -1)
 {
-	$response->addRedirect();
+	$response->redirect();
 	// Specified repeat count
 }
 else
 {
 	for($i=1; $i < $repeat_count; $i++)
 	{
-		$gather->addPause(array('length' => 5));
-		$gather->append($verb);
+		$gather->pause(array('length' => 5));
+		AudioSpeechPickerWidget::setVerbForValue($prompt, $gather);
+		// $gather->append($verb);
 	}
 }
 
 if(!empty($next))
 {
-	$response->addRedirect($next);
+	$response->redirect($next);
 }
 
-$response->Respond();
+$response->respond();

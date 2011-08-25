@@ -232,7 +232,7 @@ class AudioFiles extends User_Controller
 	{
 		validate_rest_request();
 		
-		$response = new TwimlResponse();
+		$response = new TwimlResponse;
 
 		if ($this->input->get_post('RecordingUrl'))
 		{
