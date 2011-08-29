@@ -2,16 +2,14 @@
 
 class TwimlDial {
 	/**
-	 * For testing only. Some proxies and firewalls 
-	 * don't properly pass or set the server name so 
-	 * cookies may not set due to a mismatch. Use this
-	 * only in testing if you're having trouble setting
-	 * cookies as it will break in load-balanced
-	 * server configurations
+	 * Use the CodeIgniter session class to set the cookie
+	 * Not using this has caused issues on some systems, but
+	 * until we know that this squashes our bugs we'll leave
+	 * the toggle to allow the legacy method of tracking
 	 *
 	 * @var bool
 	 */
-	private $use_sessions = false;
+	private $use_ci_session = true;
 	
 	static $hangup_stati = array('completed', 'answered');
 	static $default_voicemail_message = 'Please leave a message. Press the pound key when you are finished.';
@@ -22,6 +20,13 @@ class TwimlDial {
 	public $response;
 	
 	public $dial;
+
+	/**
+	 * Default timeout is the same as the Twilio default timeout
+	 *
+	 * @var int
+	 */
+	public $default_timeout = 5;
 	
 	public function __construct()
 	{
@@ -45,6 +50,8 @@ class TwimlDial {
 		$this->no_answer_group_voicemail = AppletInstance::getAudioSpeechPickerValue('no-answer-group-voicemail');
 		$this->no_answer_redirect = AppletInstance::getDropZoneUrl('no-answer-redirect');
 		$this->no_answer_redirect_number = AppletInstance::getDropZoneUrl('no-answer-redirect-number');
+		
+		$this->dial_whom_instance = get_class($this->dial_whom_user_or_group);
 	}
 	
 // Helpers
@@ -106,7 +113,6 @@ class TwimlDial {
 		
 		if ($device->is_active) 
 		{
-			ep('Dialing: '.$device->value);
 			$user = VBX_User::get($device->user_id);				
 			$dial = $this->getDial();
 
@@ -139,6 +145,7 @@ class TwimlDial {
 	{
 		// get users devices and add all active devices to do simultaneous dialing
 		$dialed = false;
+
 		if (count($user->devices)) 
 		{
 			$dial = $this->getDial();
@@ -242,7 +249,7 @@ class TwimlDial {
 			if (!AudioSpeechPickerWidget::setVerbForValue($voicemail, $this->response))
 			{
 				// fallback to default voicemail message
-				$response->say(self::$default_voicemail_message);
+				$this->response->say(self::$default_voicemail_message);
 			}
 			$this->response->record(array('transcribeCallback' => site_url('twiml/transcribe')));
 			$this->state = 'recording';
@@ -357,7 +364,7 @@ class TwimlDial {
 	private function _get_state() 
 	{
 		$state = null;
-		if ($this->use_sessions) 
+		if ($this->use_ci_session) 
 		{
 			$CI =& get_instance();
 			$state = $CI->session->userdata($this->cookie_name);
@@ -387,7 +394,7 @@ class TwimlDial {
 		}
 		$state = (!empty($state)) ? $state : '{}';
 		
-		if ($this->use_sessions) 
+		if ($this->use_ci_session) 
 		{
 			$CI =& get_instance();
 			$CI->session->set_userdata($this->cookie_name, $state);
@@ -399,4 +406,3 @@ class TwimlDial {
 	}
 }
 
-?>

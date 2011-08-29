@@ -181,7 +181,7 @@ class AudioFiles extends User_Controller
 														$to,
 														$recording_url
 													);
-// ep($call->sid);
+
 				// Create a place holder for our recording
 				$audioFile = new VBX_Audio_File((object) Array(
 						'label' => 'Recording with '.format_phone($to),
@@ -294,6 +294,8 @@ class AudioFiles extends User_Controller
 
 	function hangup_on_cancel()
 	{
+		_deprecated_method(__METHOD__, '1.0.4');
+		
 		validate_rest_request();
 		
 		$response = new TwimlResponse;
@@ -329,21 +331,28 @@ class AudioFiles extends User_Controller
 			}
 			else
 			{
-				error_log("Redirecting to cancel page!");
-				$cancel_url = site_url('audiofiles/hangup_on_cancel');
-				
-// ep($audioFile->recording_call_sid);
-				
+				error_log('canceling call');
 				try {
 					$service = OpenVBX::getService();
 					$call = $service->account->calls->get($audioFile->recording_call_sid);
-// ep($call->status);
-					$call->route($cancel_url);
+									
+					if ($call->status == 'ringing') {
+						$params = array(
+							'Status' => 'canceled'
+						);
+					}
+					else {
+						$params = array(
+							'Status' => 'complete'
+						);
+					}
+					
+					$call->update($params);
+					
 					$audioFile->cancelled = true;
 					$audioFile->save();
 				}
 				catch (Exception $e) {
-// ep($e->getMessage());
 					//throw new AudioFilesException($e->getMessage());
 					trigger_error($e->getMessage());
 				}

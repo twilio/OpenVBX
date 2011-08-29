@@ -19,7 +19,7 @@
  * Contributor(s):
  **/
 
-require_once(APPPATH.'libraries/twilio.php');
+#require_once(APPPATH.'libraries/twilio.php');
 
 class Iframe extends User_Controller {
 

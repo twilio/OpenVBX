@@ -114,7 +114,7 @@ class AudioSpeechPickerWidget extends AppletUIWidget
 		else if (preg_match('/^http(s)?:\/\/(.*)/i', $value))
 		{
 			// it's already an absolute URL
-			return $response-play($value);
+			return $response->play($value);
 		}
 		else
 		{
