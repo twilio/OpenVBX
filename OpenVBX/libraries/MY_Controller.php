@@ -45,14 +45,12 @@ class MY_Controller extends Controller
 	public $twilio_endpoint;
 
 	public $testing_mode = false;
-	public $domain;
 
 	public function __construct()
 	{
 		parent::__construct();
 
-		if(!file_exists(APPPATH . 'config/openvbx.php')
-		   || !file_exists(APPPATH . 'config/database.php'))
+		if(!file_exists(APPPATH . 'config/openvbx.php') || !file_exists(APPPATH . 'config/database.php'))
 		{
 			redirect('install');
 		}
@@ -79,6 +77,13 @@ class MY_Controller extends Controller
 		}
 
 		$this->tenant = $this->settings->get_tenant($this->router->tenant);
+		if(!$this->tenant->active)
+		{
+			$this->session->set_userdata('loggedin', 0);
+			$this->session->set_flashdata('error', 'This tenant is no longer active');
+			return redirect('auth/logout');
+		}
+		
 		if($this->tenant === false)
 		{
 			$this->router->tenant = '';
@@ -148,8 +153,8 @@ class MY_Controller extends Controller
 		if(isset($_SERVER['HTTP_ACCEPT']))
 		{
 			$accepts = explode(',', $_SERVER['HTTP_ACCEPT']);
-			if(in_array('application/json', $accepts)
-			   && strtolower($this->router->class) != 'page') {
+			if(in_array('application/json', $accepts) && strtolower($this->router->class) != 'page') 
+			{
 				header('Content-Type: application/json');
 				$this->response_type = 'json';
 			}
@@ -158,7 +163,9 @@ class MY_Controller extends Controller
 		if($type)
 		{
 			$this->response_type = $type;
-		} else if(!$this->response_type) {
+		} 
+		else if(!$this->response_type) 
+		{
 			$this->response_type = 'html';
 		}
 	}

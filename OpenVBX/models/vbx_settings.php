@@ -28,7 +28,7 @@ class VBX_Settings extends Model
 
 	public $setting_options = array('twilio_sid',
 									'twilio_token',
-									'twilio_endpoint',
+									// 'twilio_endpoint',
 									'from_email',
 									'recording_host',
 									'theme');
@@ -38,7 +38,8 @@ class VBX_Settings extends Model
 									   'tenant_id');
 	protected $tenants_params = array('active',
 									  'name',
-									  'url_prefix');
+									  'url_prefix',
+									  'type');
 
 	private $cache_key;
 

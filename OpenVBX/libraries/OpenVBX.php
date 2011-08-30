@@ -67,8 +67,15 @@ class OpenVBX {
 		return VBX_User::get($user_id);
 	}
 
+	/**
+	 * Get the twilio API version from the API endpoint settings
+	 *
+	 * @deprecated url versioning is handled by Twilio Services library
+	 * @return mixes string/null
+	 */
 	public static function getTwilioApiVersion()
 	{
+		_deprecated_method(__METHOD__, '1.0.4');
 		$ci = &get_instance();
 		$url = $ci->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
 		if(preg_match('/.*\/([0-9]+-[0-9]+-[0-9]+)$/', $url, $matches))
@@ -260,7 +267,7 @@ class OpenVBX {
 			}
 		}
 
-		// return standard in service object
+		// return standard service object
 		if (!(self::$_twilioService instanceof Services_Twilio)) {
 			$ci = &get_instance();
 			try {
@@ -270,6 +277,7 @@ class OpenVBX {
 				throw new OpenVBXException($e->getMessage());
 			}
 		}
+				
 		return self::$_twilioService;
 	}
 	

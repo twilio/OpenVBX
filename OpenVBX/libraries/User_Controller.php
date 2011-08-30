@@ -28,12 +28,8 @@ class User_Controller extends MY_Controller
 	protected $section;
 	protected $request_method;
 	protected $response_type;
-	public $twilio_sid;
-	public $twilio_token;
-	public $twilio_endpoint;
 
 	public $testing_mode = false;
-	public $domain;
 
 	public $capability;
 
@@ -66,28 +62,10 @@ class User_Controller extends MY_Controller
 		$this->load->model('vbx_rest_access');
 		$this->load->model('vbx_message');
 
-		$this->tenant = $this->settings->get_tenant($this->router->tenant);
-		if($this->tenant === false)
-		{
-			$this->router->tenant = '';
-			return redirect('');
-		}
-
 		// When we're in testing mode, allow access to set Hiccup configuration
 		$this->testing_mode = !empty($_REQUEST['vbx_testing_key'])? $_REQUEST['vbx_testing_key'] == $this->config->item('testing-key') : false;
 		$this->config->set_item('sess_cookie_name', $this->tenant->id . '-' . $this->config->item('sess_cookie_name'));
 		$this->load->library('session');
-		$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
-		$this->twilio_token = $this->settings->get('twilio_token', $this->tenant->id);
-		$this->twilio_endpoint = $this->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
-
-		if(!$this->tenant->active)
-		{
-			$this->session->set_userdata('loggedin', 0);
-			$this->session->set_flashdata('error', 'This tenant is no longer active');
-			return redirect('auth/logout');
-		}
-
 
 		$keys = array('base_url', 'salt');
 		foreach($keys as $key)

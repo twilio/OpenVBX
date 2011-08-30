@@ -332,6 +332,7 @@ class Site extends User_Controller
 					$this->settings->add('twilio_token', $tenant_token, $data['id']);
 					$appSid = $this->create_application_for_subaccount($data['id'], $tenant['url_prefix'], $tenant_sid);
 					$this->settings->add('application_sid', $appSid, $data['id']);
+					$this->settings->add('type', '2');
 				}
 				catch (Exception $e) {
 					throw new VBX_SettingsException($e->getMessage());
