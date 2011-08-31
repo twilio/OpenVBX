@@ -316,8 +316,8 @@ var Client = {
 	ready: function (device) {
 		this.message('Ready');
 		this.status.setCallStatus(false);
-		$('#client-ui-dial').show();	
-		if (typeof this.onready == 'function') {
+		$('#client-ui-dial').show();
+		if ($.type(this.onready) == 'function') {
 			this.onready.call();
 		}
 	}
