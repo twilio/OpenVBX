@@ -27,13 +27,15 @@ class Install extends Controller {
 
 	public $tests;
 	public $pass;
+	
+	protected $min_php_version = '5.0.0';
 
 	function Install()
 	{
 		parent::Controller();
 		if(file_exists(APPPATH . 'config/openvbx.php')) $this->config->load('openvbx');
 
-		if(file_exists(APPPATH . 'config/database.php') AND version_compare(PHP_VERSION, '5.0.0', '>=')) {
+		if(file_exists(APPPATH . 'config/database.php') AND version_compare(PHP_VERSION, $this->min_php_version, '>=')) {
 			$this->load->database();
 
 			redirect('');
@@ -94,10 +96,10 @@ class Install extends Controller {
 		$this->tests = array();
 		$this->pass = TRUE;
 
-		$this->add_test(version_compare(PHP_VERSION, '5.0.0', '>='),
+		$this->add_test(version_compare(PHP_VERSION, $this->min_php_version, '>='),
 						'PHP version',
 						PHP_VERSION,
-						'You must be running at least PHP 5.0; you are using ' . PHP_VERSION);
+						'You must be running at least PHP '.$this->min_php_version.'; you are using ' . PHP_VERSION);
 
 		$this->add_test(function_exists('mysql_connect'),
 						'MySQL',

@@ -24,7 +24,7 @@ class DialListException extends Exception {}
 class DialList {
 	protected $users;
 	
-	public function __construct($users) {
+	public function __construct($users = array()) {
 		$this->users = $users;
 	}
 	
@@ -170,5 +170,3 @@ class DialListUser extends DialList {
 		return array_shift(current($this->users)->devices);
 	}
 }
-
-?>

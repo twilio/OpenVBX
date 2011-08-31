@@ -392,6 +392,14 @@ class VBX_Message extends Model {
 		$ci =& get_instance();
 		$ci->load->model('vbx_user');
 		$ci->load->model('vbx_group');
+		
+		$recording_host = $ci->settings->get('recording_host', VBX_PARENT_TENANT);
+		
+		$vm_url = $message->content_url;
+		if (trim($recording_host) != '') {
+			$vm_url = str_replace('api.twilio.com',trim($recording_host), $vm_url);
+		}
+		$message->content_url = $vm_url;
 
 		$users = array();
 		if($message->owner_type == 'user')
@@ -436,7 +444,7 @@ class VBX_Message extends Model {
 							 "New $owner $message_type Notification - {$message->caller}",
 							 'message',
 							 compact('message'));
-				error_log("message queued for $email");
+				error_log("message queued for $user->email");
 			}
 
 			foreach($numbers as $number)

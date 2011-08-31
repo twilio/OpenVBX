@@ -40,7 +40,6 @@ var currentDialogType = null;
  * @return void 
  */
 OpenVBX.clientDial = function(params) {
-	console.log(params);
 	params = $.extend(params, { 'Digits': 1 });
 	window.parent.Client.call(params);
 };
@@ -81,15 +80,30 @@ $(function () {
 		// disable the use of Client to prevent unexpected behavior
 		
 		// disable calls using Twilio Client, replace selector with hidden element to pre-set the device type
-		$('#vbx-context-menu .call-dialog select[name="device"]').closest('label')
-			.replaceWith($('<input type="hidden" name="device" value="primary-device" />'));
+		var _devices = $('#vbx-context-menu .call-dialog select[name="device"]').closest('label');
+		var _primarydevice = $('<input type="hidden" name="device" value="primary-device" />');
+		_devices.replaceWith(_primarydevice);
 		
 		// neuter the online/offline button
 		var _status = $('#vbx-client-status');
 		if (_status.hasClass('online')) {
-			_status.removeClass('online').addClass('offline');
+			_status.removeClass('online').addClass('offline').addClass('disabled');
 			window.parent.Client.status.setWindowStatus(false);
 		}
+			
+		var enableClient = function() {
+			var status = _status;
+			var devices = _devices;
+			var primarydevice = _primarydevice;
+			return function() {
+				if (status.hasClass('disabled')) {
+					status.removeClass('disabled').find('button').trigger('click');
+				}
+				primarydevice.replaceWith(devices);
+			}
+		}
+		window.parent.Client.onready = enableClient();
+
 		_status.addClass('disabled');
 	}
 	
@@ -193,7 +207,7 @@ $(function () {
 					link.shown = true;
 				});
 			$('.call-button').data('link', link);
-			$('input[name="to"]', dialog).val(phone);
+			$('input[name="to"]', dialog).val(phone).focus();
 			$('input[name="target"]', dialog).val(target);
 			$('.screen').show();
 			

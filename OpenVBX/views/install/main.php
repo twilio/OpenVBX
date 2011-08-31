@@ -41,7 +41,11 @@
 			</ul>
 
 			<div class="information">
+			<?php if ($pass): ?>
 				<p><strong>Heads up&hellip;</strong> have your database credentials and <br />Twilio Account information handy.</p>
+			<?php else: ?>
+				<p><strong>Tests did not pass. Please correct the problems listed above before continuing.</strong></p>
+			<?php endif; ?>
 			</div>
 
 		</div>
