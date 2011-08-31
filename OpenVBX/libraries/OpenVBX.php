@@ -247,7 +247,7 @@ class OpenVBX {
 	 * @param string $twilio_token Optional - Twilio Account Token
 	 * @return object Services_Twilio
 	 */
-	public static function getService($twilio_sid = false, $twilio_token = false) {
+	public static function getAccount($twilio_sid = false, $twilio_token = false) {
 		// if sid & token are passed, make sure they're not the same as our master
 		// values. If they are, make a new object, otherwise use the same internal object
 		if (!empty($twilio_sid) || !empty($twilio_token)) {
@@ -255,7 +255,8 @@ class OpenVBX {
 			if (!empty($twilio_sid) && !empty($twilio_token)) {
 				if ($twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) {
 					try {
-						return new Services_Twilio($twilio_sid, $twilio_token);
+						$service = Services_Twilio($twilio_sid, $twilio_token);
+						return $service->account;
 					}
 					catch (Exception $e) {
 						throw new OpenVBXException($e->getMessage());
@@ -278,7 +279,7 @@ class OpenVBX {
 			}
 		}
 				
-		return self::$_twilioService;
+		return self::$_twilioService->account;
 	}
 	
 	/**

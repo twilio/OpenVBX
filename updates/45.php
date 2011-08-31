@@ -19,14 +19,13 @@ function runUpdate_45() {
 			
 			if (!empty($twilio_sid) && !empty($twilio_token))
 			{
-				$service = OpenVBX::getService($twilio_sid, $twilio_token);				
-				foreach ($service->account->incoming_phone_numbers as $number) 
+				$account = OpenVBX::getAccount($twilio_sid, $twilio_token);				
+				foreach ($account->incoming_phone_numbers as $number) 
 				{
 					$number->update(array(
 						'ApiVersion' => '2010-04-01'
 					));
 				}
-				unset($service);
 			}
 			else {
 				error_log('Skipped number updates for tenant "'.$tenant->id.'" - incomplete account Sid/Token pair.');

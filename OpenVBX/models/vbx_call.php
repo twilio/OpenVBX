@@ -71,8 +71,8 @@ class VBX_Call extends Model {
 
 		$page = floor(($offset + 1) / $page_size);
 		try {
-			$service = OpenVBX::getService();
-			$calls = $service->account->calls->getIterator($page, $page_size, array());
+			$account = OpenVBX::getAccount();
+			$calls = $account->calls->getIterator($page, $page_size, array());
 			if (count($calls)) {
 				$this->total = count($calls);
 				foreach ($calls as $call) {
@@ -133,11 +133,11 @@ class VBX_Call extends Model {
 		$recording_url = site_url("twiml/dial").'?'.http_build_query(compact('callerid', 'to', 'rest_access'));
 
 		try {
-			$service = OpenVBX::getService();
-			$service->account->calls->create($callerid,
-											$from,
-											$recording_url
-										);
+			$account = OpenVBX::getAccount();
+			$account->calls->create($callerid,
+										$from,
+										$recording_url
+									);
 		}
 		catch (Exception $e) {
 			throw new VBX_CallException($e->getMessage());
@@ -149,11 +149,11 @@ class VBX_Call extends Model {
 	{
 		$recording_url = site_url("twiml/redirect/$path/$rest_access");
 		try {
-			$service = OpenVBX::getService();
-			$service->account->calls->create($callerid,
-											$to,
-											$recording_url
-										);
+			$account = OpenVBX::getAccount();
+			$account->calls->create($callerid,
+										$to,
+										$recording_url
+									);
 		}
 		catch (Exception $e) {
 			throw new VBX_CallException($e->getMessage());

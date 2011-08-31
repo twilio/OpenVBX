@@ -30,11 +30,12 @@ function create_application($name, $tenant_id) {
 	$twilio_sid = $ci->vbx_settings->get('twilio_sid', $tenant_id);
 	$twilio_token = $ci->vbx_settings->get('twilio_token', $tenant_id);
 	
+	// Rare event, sid and/or token may be empty 
 	if (!empty($twilio_sid) && !empty($twilio_token)) 
 	{
 		error_log('Processing tenant: '.$tenant_id);
-		$service = OpenVBX::getService($twilio_sid, $twilio_token);
-		$applications = $service->account->applications->getIterator(0, 1, array('FriendlyName' => $app_name));
+		$account = OpenVBX::getAccount($twilio_sid, $twilio_token);
+		$applications = $account->applications->getIterator(0, 1, array('FriendlyName' => $app_name));
 		$application = false;
 		foreach ($applications as $_application) 
 		{
@@ -61,7 +62,7 @@ function create_application($name, $tenant_id) {
 		else 
 		{
 			error_log('Creating app: '.$app_name);
-			$application = $service->account->applications->create($app_name, $params);
+			$application = $account->applications->create($app_name, $params);
 		}
 	
 		error_log('Created/Updated app for tenant id: '.$tenant_id.' - Application Sid: '.$application->sid);

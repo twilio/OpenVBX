@@ -49,8 +49,8 @@ class VBX_Accounts extends Model
 		}
 
 		try {
-			$service = OpenVBX::getService();
-			$account_type = $service->account->type;
+			$account = OpenVBX::getAccount();
+			$account_type = $account->type;
 		}
 		catch (Exception $e) {
 			throw new VBX_AccountsException($e->getMessage());

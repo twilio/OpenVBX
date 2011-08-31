@@ -35,28 +35,27 @@
 	/**
 	 * Update each tenant to sub-account status
 	 * Pull full list of sub-accounts to make sure that accounts being upgraded are sub-accounts
-	 * Any account found to not be a sub-account of tenant 0 is assumed to be a full account
+	 * Any account found to not be a sub-account of tenant 1 is assumed to be a full account
 	 * 
 	 * @return void
 	 */
 	function runUpdate_49_update_tenant_type_status() {
 		$ci = &get_instance();
 		
-		// get a list of sub-accounts for the parent account
 		$parent_account_sid = $ci->vbx_settings->get('twilio_sid', 1);
 		$parent_account_token = $ci->vbx_settings->get('twilio_token', 1);
-		$parent_service = OpenVBX::getService($parent_account_sid, $parent_account_token);
+		$parent_account = OpenVBX::getAccount($parent_account_sid, $parent_account_token);
 		
 		$subaccount_sids = array();
-		foreach ($parent_service->accounts as $account) {
+		foreach ($parent_account->accounts as $account) {
 			array_push($subaccount_sids, $account->sid);
 		}
 		
-		// get all tenants, exclude the parent account	
 		$tenants = $ci->db
 			 ->from('tenants')
-			 ->where('id >', '1')
-			 ->get()->result();
+			 ->where('id >', '1') // exclude the host account
+			 ->get()
+			 ->result();
 		
 		if (!empty($tenants)) {
 			foreach($tenants as $tenant) {
@@ -74,7 +73,7 @@
 				}
 			
 				$ci->db
-					->set('type', '2')
+					->set('type', $type)
 					->where('id', $tenant->id)
 					->update('tenants');
 			}		

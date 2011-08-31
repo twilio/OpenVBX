@@ -204,12 +204,12 @@ class Site extends User_Controller
 
 				if (!empty($update_app))
 				{
-					$service = OpenVBX::getService();
+					$account = OpenVBX::getAccount();
 
 					foreach ($update_app as $app) 
 					{
 						try {
-							$application = $service->account->applications->get($app['app_sid']);
+							$application = $account->applications->get($app['app_sid']);
 							$application->update(array_merge($app['params'], array('FriendlyName' => $application->friendly_name)));
 						}
 						catch (Exception $e) {
@@ -241,9 +241,9 @@ class Site extends User_Controller
 		
 		$application = false;
 		try {
-			$service = OpenVBX::getService();
-			$account = $service->accounts->get($accountSid);
-			foreach ($account->applications as $_application) 
+			$account = OpenVBX::getAccount();
+			$sub_account = $account->accounts->get($accountSid);
+			foreach ($sub_account->applications as $_application) 
 			{
 				if ($application->friendly_name == $appName) 
 				{
@@ -272,7 +272,7 @@ class Site extends User_Controller
 			}
 			else 
 			{
-				$application = $account->applications->create($appName, $params);
+				$application = $sub_account->applications->create($appName, $params);
 			}
 		}
 		catch (Exception $e) {
@@ -321,12 +321,12 @@ class Site extends User_Controller
 				$friendlyName = substr($tenant['url_prefix'].' - '.$tenant['admin_email'], 0, 32);					
 
 				try {
-					$service = OpenVBX::getService();
-					$account = $service->accounts->create(array(
+					$account = OpenVBX::getAccount();
+					$sub_account = $account->accounts->create(array(
 															'FriendlyName' => $friendlyName
 														));
-					$tenant_sid = $account->sid;
-					$tenant_token = $account->auth_token;
+					$tenant_sid = $sub_account->sid;
+					$tenant_token = $sub_account->auth_token;
 					
 					$this->settings->add('twilio_sid', $tenant_sid, $data['id']);
 					$this->settings->add('twilio_token', $tenant_token, $data['id']);

@@ -50,8 +50,8 @@ class VBX_Incoming_numbers extends Model
 		}
 
 		try {
-			$service = OpenVBX::getService();
-			$sandbox = $service->account->sandbox;
+			$account = OpenVBX::getAccount();
+			$sandbox = $account->sandbox;
 			if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
 			{
 				$sandbox = $this->parseIncomingPhoneNumber($sandbox);
@@ -83,8 +83,8 @@ class VBX_Incoming_numbers extends Model
 
 		$numbers = array();
 		try {
-			$service = OpenVBX::getService();
-			foreach ($service->account->incoming_phone_numbers as $number) 
+			$account = OpenVBX::getAccount();
+			foreach ($account->incoming_phone_numbers as $number) 
 			{
 				// check that number is a proper instance type
 				$numbers[] = $this->parseIncomingPhoneNumber($number);
@@ -166,13 +166,13 @@ class VBX_Incoming_numbers extends Model
 		$sms_url = site_url('twiml/start/sms/'.$flow_id);
 
 		try {
-			$service = OpenVBX::getService();
+			$account = OpenVBX::getAccount();
 			if (strtolower($phone_id) == 'sandbox') 
 			{
-				$number = $service->account->sandbox;
+				$number = $account->sandbox;
 			}
 			else {
-				$number = $service->account->incoming_phone_numbers->get($phone_id);
+				$number = $account->incoming_phone_numbers->get($phone_id);
 			}
 
 			$number->update(array(
@@ -228,12 +228,12 @@ class VBX_Incoming_numbers extends Model
 				   );
 
 		try {
-			$service = OpenVBX::getService();
+			$account = OpenVBX::getAccount();
 			// purchase tollfree, uses AvailablePhoneNumbers to search first.
 			if(!$is_local) 
 			{
 				$country = 'US';
-				$numbers = $service->account->available_phone_numbers
+				$numbers = $account->available_phone_numbers
 													->getTollFree($country)
 													->getList();
 				
@@ -254,7 +254,7 @@ class VBX_Incoming_numbers extends Model
 					$params['AreaCode'] = $area_code;
 				}
 			}
-			$number = $service->account->incoming_phone_numbers->create($params);
+			$number = $account->incoming_phone_numbers->create($params);
 		}
 		catch (Exception $e) 
 		{
@@ -274,8 +274,8 @@ class VBX_Incoming_numbers extends Model
 	function delete_number($phone_id)
 	{
 		try {
-			$service = OpenVBX::getService();
-			$service->account->incoming_phone_numbers->delete($phone_id);
+			$account = OpenVBX::getAccount();
+			$account->incoming_phone_numbers->delete($phone_id);
 		}
 		catch (Exception $e) 
 		{

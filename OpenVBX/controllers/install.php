@@ -397,8 +397,8 @@ class Install extends Controller {
 			$app_token = md5($_SERVER['REQUEST_URI']);
 			$app_name = "OpenVBX - {$app_token}";
 
-			$service = OpenVBX::getService($settings['twilio_sid'], $settings['twilio_token']);
-			$applications = $service->account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
+			$account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
+			$applications = $account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
 
 			$application = false;
 			foreach ($applications as $_application) 
@@ -426,7 +426,7 @@ class Install extends Controller {
 			}
 			else 
 			{
-				$application = $service->account->applications->create($params);
+				$application = $account->applications->create($params);
 			}
 		}
 		catch(Exception $e)
@@ -522,8 +522,8 @@ class Install extends Controller {
 		try
 		{
 			// call for most basic of information to see if we have access
-			$service = OpenVBX::getService($twilio_sid, $twilio_token);
-			$accounts = $service->account->accounts;			
+			$account = OpenVBX::getAccount($twilio_sid, $twilio_token);
+			$accounts = $account->accounts;			
 		}
 		catch(Exception $e)
 		{

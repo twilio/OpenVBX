@@ -29,7 +29,6 @@ class TwimlException extends Exception {}
 */
 class Twiml extends MY_Controller {
 
-	protected $service;
 	protected $response;
 
 	private $flow;
@@ -52,7 +51,6 @@ class Twiml extends MY_Controller {
 		$this->load->model('vbx_message');
 
 		$this->flow_id = get_cookie('flow_id');
-		$this->service = OpenVBX::getService();
 		$this->response = new TwimlResponse;
 	}
 

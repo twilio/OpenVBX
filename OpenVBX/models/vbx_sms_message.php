@@ -73,8 +73,8 @@ class VBX_Sms_message extends Model {
 		$page = floor(($offset + 1) / $page_size);
 		
 		try {
-			$service = OpenVBX::getService();
-			$messages = $service->account->sms_messages->getIterator($page, $page_size, array());
+			$account = OpenVBX::getAccount();
+			$messages = $account->sms_messages->getIterator($page, $page_size, array());
 			if (count($messages)) {
 				$this->total = count($messages); // @TODO need verification that this will work, return may not be Array compatible
 				foreach ($messages as $message) {
@@ -105,8 +105,8 @@ class VBX_Sms_message extends Model {
 		$to = PhoneNumber::normalizePhoneNumberToE164($to);
 		
 		try {
-			$service = OpenVBX::getService();
-			$response = $service->account->sms_messages->create($from,
+			$account = OpenVBX::getAccount();
+			$response = $account->sms_messages->create($from,
 																$to,
 																$message
 															);
@@ -114,7 +114,7 @@ class VBX_Sms_message extends Model {
 		catch (Exception $e) {
 			throw new VBX_Sms_messageException($e->getMessage);
 		}
-		file_put_contents('/tmp/sms.php', print_r($response, true));
+
 		if (!in_array($response->status, array('sent', 'queued'))) {
 			throw new VBX_Sms_messageException('SMS delivery failed. An unknown error occurred during delivery.');
 		}

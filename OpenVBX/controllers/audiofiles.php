@@ -175,12 +175,12 @@ class AudioFiles extends User_Controller
 			$recording_url = stripslashes(site_url("twiml/redirect/" . $path . "/$rest_access_token"));
 			
 			try {
-				$service = OpenVBX::getService();
-				$call = $service->account->calls->create(
-														$callerid,
-														$to,
-														$recording_url
-													);
+				$account = OpenVBX::getAccount();
+				$call = $account->calls->create(
+											$callerid,
+											$to,
+											$recording_url
+										);
 
 				// Create a place holder for our recording
 				$audioFile = new VBX_Audio_File((object) Array(
@@ -333,8 +333,8 @@ class AudioFiles extends User_Controller
 			{
 				error_log('canceling call');
 				try {
-					$service = OpenVBX::getService();
-					$call = $service->account->calls->get($audioFile->recording_call_sid);
+					$account = OpenVBX::getAccount();
+					$call = $account->calls->get($audioFile->recording_call_sid);
 									
 					if ($call->status == 'ringing') {
 						$params = array(
