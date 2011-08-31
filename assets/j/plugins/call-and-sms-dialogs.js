@@ -207,7 +207,7 @@ $(function () {
 					link.shown = true;
 				});
 			$('.call-button').data('link', link);
-			$('input[name="to"]', dialog).val(phone);
+			$('input[name="to"]', dialog).val(phone).focus();
 			$('input[name="target"]', dialog).val(target);
 			$('.screen').show();
 			
