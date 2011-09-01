@@ -255,7 +255,7 @@ class OpenVBX {
 			if (!empty($twilio_sid) && !empty($twilio_token)) {
 				if ($twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) {
 					try {
-						$service = Services_Twilio($twilio_sid, $twilio_token);
+						$service = new Services_Twilio($twilio_sid, $twilio_token);
 						return $service->account;
 					}
 					catch (Exception $e) {
