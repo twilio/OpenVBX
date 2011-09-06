@@ -28,7 +28,7 @@ class Install extends Controller {
 	public $tests;
 	public $pass;
 	
-	protected $min_php_version = '5.0.0';
+	protected $min_php_version = '5.2';
 
 	function Install()
 	{

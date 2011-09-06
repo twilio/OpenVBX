@@ -9,7 +9,7 @@
 		$ci = &get_instance();
 		runUpdate_49_add_tenant_type_field();
 		runUpdate_49_update_tenant_type_status();
-		$ci->settings->set('version', '1.0.5b', 1);
+		$ci->settings->set('version', '1.1b', 1);
 		$ci->settings->set('schema-version', '53', 1);
 	}
 	
