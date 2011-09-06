@@ -66,10 +66,12 @@ class MY_Controller extends Controller
 		$this->load->model('vbx_flow_store');
 		$this->load->model('vbx_plugin_store');
 		$this->load->helper('file');
+		$this->load->library('session');
 
 		$this->settings = new VBX_Settings();
 
 		$rewrite_enabled = intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT));
+		$rewrite_enabled = 1;
 		if($rewrite_enabled)
 		{
 			/* For mod_rewrite */
@@ -77,13 +79,13 @@ class MY_Controller extends Controller
 		}
 
 		$this->tenant = $this->settings->get_tenant($this->router->tenant);
-		if(!$this->tenant->active)
+		if(!$this->tenant || !$this->tenant->active)
 		{
 			$this->session->set_userdata('loggedin', 0);
 			$this->session->set_flashdata('error', 'This tenant is no longer active');
 			return redirect('auth/logout');
 		}
-		
+
 		if($this->tenant === false)
 		{
 			$this->router->tenant = '';
@@ -94,7 +96,6 @@ class MY_Controller extends Controller
 		if($this->tenant)
 		{
 			$this->config->set_item('sess_cookie_name', $this->tenant->id . '-' . $this->config->item('sess_cookie_name'));
-			$this->load->library('session');
 			$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
 			$this->twilio_token = $this->settings->get('twilio_token', $this->tenant->id);
 			$this->twilio_endpoint = $this->settings->get('twilio_endpoint', VBX_PARENT_TENANT);

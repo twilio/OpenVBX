@@ -67,14 +67,20 @@ class VBX_Settings extends Model
 	{
 		$ci =& get_instance();
 
-		$tenant = $ci->db
+		$query = $ci->db
 			 ->from($this->tenants_table)
 			 ->where('url_prefix', strtolower($url_prefix))
-			 ->get()->result();
+			 ->get();
 
-		if(!empty($tenant[0]))
-			return $tenant[0];
-
+		if ($query) 
+		{
+			$tenant = $query->result();
+			if(!empty($tenant[0]))
+			{
+				return $tenant[0];
+			}
+		}
+		
 		return false;
 	}
 
@@ -244,34 +250,39 @@ class VBX_Settings extends Model
 
 	function get($name, $tenant_id)
 	{
-		$ci =& get_instance();
-
 		if(function_exists('apc_fetch')) {
 			$success = false;
-			if(($data = apc_fetch($this->cache_key.$tenant_id.$name, $success))
-				&& $success) {
+			if(($data = apc_fetch($this->cache_key.$tenant_id.$name, $success)) && $success) 
+			{
 				$result = @unserialize($data);
 				if(!empty($result[0]))
 					return $result[0]->value;
 			}
 		}
 
-
-		$result = $ci->db
+		$ci =& get_instance();
+		$query = $ci->db
 			->select('value')
-			->from($this->settings_table . ' as s')
-			->where('s.name', $name)
-			->where('s.tenant_id', $tenant_id)
-			->get()->result();
+			->from($this->settings_table)
+			->where(array(
+				'name' => $name, 
+				'tenant_id' => intval($tenant_id)
+			))
+			->get();
+		
+		if ($query) 
+		{
+			$result = $query->result();
+			if(function_exists('apc_store')) {
+				$success = apc_store($this->cache_key.$tenant_id.$name, serialize($result), self::CACHE_TIME_SEC);
+			}
 
-
-		if(function_exists('apc_store')) {
-			$success = apc_store($this->cache_key.$tenant_id.$name, serialize($result), self::CACHE_TIME_SEC);
+			if(!empty($result[0]))
+			{
+				return $result[0]->value;
+			}
 		}
-
-		if(!empty($result[0]))
-			return $result[0]->value;
-
+		
 		return false;
 	}
 

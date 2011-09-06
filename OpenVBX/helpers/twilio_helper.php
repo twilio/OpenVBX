@@ -30,7 +30,7 @@ if (!function_exists('validate_rest_request')) {
 	function validate_rest_request($failure_message = 'Could not validate this request. Goodbye.') {
 		if (!OpenVBX::validateRequest()) {
 			$response = new TwimlResponse;
-			$response->say($message);
+			$response->say($failure_message);
 			$response->respond();
 		}
 	}

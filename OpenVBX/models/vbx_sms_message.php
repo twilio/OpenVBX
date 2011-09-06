@@ -107,9 +107,9 @@ class VBX_Sms_message extends Model {
 		try {
 			$account = OpenVBX::getAccount();
 			$response = $account->sms_messages->create($from,
-																$to,
-																$message
-															);
+														$to,
+														$message
+													);
 		}
 		catch (Exception $e) {
 			throw new VBX_Sms_messageException($e->getMessage);

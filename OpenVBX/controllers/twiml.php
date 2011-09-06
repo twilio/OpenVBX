@@ -467,7 +467,7 @@ class Twiml extends MY_Controller {
 
 		if($flow_id > 0)
 		{
-			if(!empty($flow))
+			if(!empty($this->flow))
 			{
 				if( $this->flow_type == 'sms' )
 				{

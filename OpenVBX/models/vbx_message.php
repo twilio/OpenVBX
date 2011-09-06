@@ -385,7 +385,6 @@ class VBX_Message extends Model {
 
 	function notify_message($message, $notify = false)
 	{
-		error_log("Notify message: ".($notify? 'true' : 'false') );
 		if($notify === false)
 			return;
 

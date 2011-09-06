@@ -3,14 +3,15 @@
 $response = new TwimlResponse; // start a new Twiml response
 if(!empty($_REQUEST['RecordingUrl'])) // if we've got a transcription
 {
+	$CI =& get_instance();
 	// add a voice message 
 	OpenVBX::addVoiceMessage(
 						 AppletInstance::getUserGroupPickerValue('permissions'),
-						 $_REQUEST['CallSid'],
-						 $_REQUEST['From'],
-						 $_REQUEST['To'], 
-						 $_REQUEST['RecordingUrl'],
-						 $_REQUEST['RecordingDuration']
+						 $CI->input->get_post('CallSid'),
+						 $CI->input->get_post('From'),
+						 $CI->input->get_post('To'), 
+						 $CI->input->get_post('RecordingUrl'),
+						 $CI->input->get_post('RecordingDuration')
 					 );		
 }
 else
