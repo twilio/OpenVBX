@@ -168,6 +168,7 @@ class Install extends Controller {
 	{
 		$database = $this->database;
 
+		// @todo - inspect mysql version to see if mysqli is available
 		$database['dbdriver'] = 'mysql';
 		$database['dbprefix'] = '';
 		$database['pconnect'] = FALSE;

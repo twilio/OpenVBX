@@ -349,10 +349,13 @@ class Twiml extends MY_Controller {
 				$user = VBX_User::get(array(
 					'email' => $this->input->get_post('to')
 				));
-				if (!empty($user)) 
+				if (!empty($user) && $user->online == 1) 
 				{
 					$dial_client = true;
 					$to = $user->id;
+				}
+				else {
+					// @todo pull primary device or fail
 				}
 			}
 

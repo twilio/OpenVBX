@@ -426,6 +426,17 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
+/*
+|--------------------------------------------------------------------------
+| Local config overrides
+|--------------------------------------------------------------------------
+|
+| Sometimes your local environment just needs some things to be overridden
+|
+*/
+if (is_file(APPPATH.'config/config-local.php')) {
+	include_once(APPPATH.'config/config-local.php');
+}
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */

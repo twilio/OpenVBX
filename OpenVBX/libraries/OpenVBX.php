@@ -75,7 +75,6 @@ class OpenVBX {
 	 */
 	public static function getTwilioApiVersion()
 	{
-		_deprecated_method(__METHOD__, '1.0.4');
 		$ci =& get_instance();
 		$url = $ci->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
 		if(preg_match('/.*\/([0-9]+-[0-9]+-[0-9]+)$/', $url, $matches))
@@ -248,6 +247,9 @@ class OpenVBX {
 	 * @return object Services_Twilio
 	 */
 	public static function getAccount($twilio_sid = false, $twilio_token = false) {
+		$api_version = OpenVBX::getTwilioApiVersion();
+		$_http = null;
+		
 		// if sid & token are passed, make sure they're not the same as our master
 		// values. If they are, make a new object, otherwise use the same internal object
 		if (!empty($twilio_sid) || !empty($twilio_token)) {
@@ -255,7 +257,12 @@ class OpenVBX {
 			if (!empty($twilio_sid) && !empty($twilio_token)) {
 				if ($twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) {
 					try {
-						$service = new Services_Twilio($twilio_sid, $twilio_token);
+						$service = new Services_Twilio(
+												$twilio_sid, 
+												$twilio_token,
+												$api_version,
+												$_http
+											);
 						return $service->account;
 					}
 					catch (Exception $e) {
@@ -272,7 +279,20 @@ class OpenVBX {
 		if (!(self::$_twilioService instanceof Services_Twilio)) {
 			$ci =& get_instance();
 			try {
-				self::$_twilioService = new Services_Twilio($ci->twilio_sid, $ci->twilio_token);
+				// internal api development override, you'll never need this
+				if ($_http_settings = $ci->config->item('_http')) {
+					$_http = new Services_Twilio_TinyHttp(
+						                $_http_settings['host'],
+						                array("curlopts" => array(CURLOPT_USERAGENT => Services_Twilio::USER_AGENT))
+						            );
+				}
+				
+				self::$_twilioService = new Services_Twilio(
+													$ci->twilio_sid, 
+													$ci->twilio_token,
+													$api_version,
+													$_http
+												);
 			}
 			catch (Exception $e) {
 				throw new OpenVBXException($e->getMessage());
