@@ -26,7 +26,7 @@ class TwimlDial {
 	 *
 	 * @var int
 	 */
-	public $default_timeout = 5;
+	public $default_timeout = 20;
 	
 	public function __construct()
 	{
