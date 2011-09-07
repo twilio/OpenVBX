@@ -5,7 +5,7 @@
 	 *
 	 * @return void
 	 */
-	function runUpdate_53() {
+	function runUpdate_54() {
 		$ci = &get_instance();
 		runUpdate_49_add_tenant_type_field();
 		runUpdate_49_update_tenant_type_status();
