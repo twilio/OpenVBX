@@ -171,7 +171,7 @@ class Install extends Controller {
 		$database['dbdriver'] = 'mysql';
 		$database['dbprefix'] = '';
 		$database['pconnect'] = FALSE;
-		$database['db_debug'] = TRUE;
+		$database['db_debug'] = FALSE;
 		$database["cache_on"] = FALSE;
 		$database["cachedir"] = "";
 		$database["char_set"] = "utf8";
