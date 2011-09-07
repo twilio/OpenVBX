@@ -203,6 +203,7 @@ CREATE TABLE IF NOT EXISTS `tenants` (
   url_prefix VARCHAR(255) NOT NULL,
   local_prefix VARCHAR(1000) NOT NULL,
   active TINYINT NOT NULL DEFAULT 1,
+  type TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY(id),
   INDEX(name),
   INDEX url_prefix (url_prefix)
@@ -301,7 +302,7 @@ INSERT INTO settings
 	   VALUES
 	   ('dash_rss', '', 1),
 	   ('theme', '', 1),
-	   ('version', '1.0.4', 1),
+	   ('version', '1.1b', 1),
 	   ('iphone_theme', '', 1),
 	   ('enable_sandbox_number', 1, 1),
 	   ('twilio_endpoint', 'https://api.twilio.com/2010-04-01', 1),

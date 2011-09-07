@@ -45,14 +45,12 @@ class MY_Controller extends Controller
 	public $twilio_endpoint;
 
 	public $testing_mode = false;
-	public $domain;
 
 	public function __construct()
 	{
 		parent::__construct();
 
-		if(!file_exists(APPPATH . 'config/openvbx.php')
-		   || !file_exists(APPPATH . 'config/database.php'))
+		if(!file_exists(APPPATH . 'config/openvbx.php') || !file_exists(APPPATH . 'config/database.php'))
 		{
 			redirect('install');
 		}
@@ -68,10 +66,12 @@ class MY_Controller extends Controller
 		$this->load->model('vbx_flow_store');
 		$this->load->model('vbx_plugin_store');
 		$this->load->helper('file');
+		$this->load->library('session');
 
 		$this->settings = new VBX_Settings();
 
 		$rewrite_enabled = intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT));
+		$rewrite_enabled = 1;
 		if($rewrite_enabled)
 		{
 			/* For mod_rewrite */
@@ -79,6 +79,13 @@ class MY_Controller extends Controller
 		}
 
 		$this->tenant = $this->settings->get_tenant($this->router->tenant);
+		if(!$this->tenant || !$this->tenant->active)
+		{
+			$this->session->set_userdata('loggedin', 0);
+			$this->session->set_flashdata('error', 'This tenant is no longer active');
+			return redirect('auth/logout');
+		}
+
 		if($this->tenant === false)
 		{
 			$this->router->tenant = '';
@@ -89,7 +96,6 @@ class MY_Controller extends Controller
 		if($this->tenant)
 		{
 			$this->config->set_item('sess_cookie_name', $this->tenant->id . '-' . $this->config->item('sess_cookie_name'));
-			$this->load->library('session');
 			$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
 			$this->twilio_token = $this->settings->get('twilio_token', $this->tenant->id);
 			$this->twilio_endpoint = $this->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
@@ -148,8 +154,8 @@ class MY_Controller extends Controller
 		if(isset($_SERVER['HTTP_ACCEPT']))
 		{
 			$accepts = explode(',', $_SERVER['HTTP_ACCEPT']);
-			if(in_array('application/json', $accepts)
-			   && strtolower($this->router->class) != 'page') {
+			if(in_array('application/json', $accepts) && strtolower($this->router->class) != 'page') 
+			{
 				header('Content-Type: application/json');
 				$this->response_type = 'json';
 			}
@@ -158,7 +164,9 @@ class MY_Controller extends Controller
 		if($type)
 		{
 			$this->response_type = $type;
-		} else if(!$this->response_type) {
+		} 
+		else if(!$this->response_type) 
+		{
 			$this->response_type = 'html';
 		}
 	}

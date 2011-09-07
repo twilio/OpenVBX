@@ -1,8 +1,10 @@
 <?php
+$ci = &get_instance();
+
 $moderator = AppletInstance::getUserGroupPickerValue('moderator');
 $confId = AppletInstance::getValue('conf-id');
 $confName = AppletInstance::getInstanceId() . $confId;
-$caller = normalize_phone_to_E164( isset($_REQUEST['From'])? $_REQUEST['From'] : '' );
+$caller = normalize_phone_to_E164(isset($_REQUEST['From'])? $ci->input->get_post('From') : '');
 $isModerator = false;
 $defaultWaitUrl = 'http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient';
 $waitUrl = AppletInstance::getValue('wait-url', $defaultWaitUrl);
@@ -39,15 +41,16 @@ if (!is_null($moderator)) {
 	}
 }
 
-$confOptions = array('muted' => (!$hasModerator || $isModerator)? 'false' : 'true',
-					 'startConferenceOnEnter' => (!$hasModerator || $isModerator)? 'true' : 'false',
-					 'endConferenceOnExit' => ($hasModerator && $isModerator)? 'true' : 'false',
-					 'waitUrl' => $waitUrl,
-					 );
+$confOptions = array(
+	'muted' => (!$hasModerator || $isModerator)? 'false' : 'true',
+	'startConferenceOnEnter' => (!$hasModerator || $isModerator)? 'true' : 'false',
+	'endConferenceOnExit' => ($hasModerator && $isModerator)? 'true' : 'false',
+	'waitUrl' => $waitUrl,
+);
 
-$response = new Response();
+$response = new TwimlResponse();
 
-$dial = $response->addDial();
-$dial->addConference($confName, $confOptions);
+$dial = $response->dial();
+$dial->conference($confName, $confOptions);
 
-$response->Respond();
+$response->respond();

@@ -33,45 +33,34 @@ class VBX_Accounts extends Model
 	{
 		parent::__construct();
 		
-		$this->twilio = new TwilioRestClient($this->twilio_sid,
-											 $this->twilio_token,
-											 $this->twilio_endpoint);
-
-		$this->cache_key = $this->twilio_sid . '_accounts' . date('z-H');
+		$ci = &get_instance();
+		$this->cache_key = $ci->twilio_sid . '_accounts' . date('z-H');
 	}
 
 	function getAccountType()
 	{
 		if(function_exists('apc_fetch')) {
 			$success = FALSE;
-			$data = apc_fetch($this->cache_key, $success);
+			$type = apc_fetch($this->cache_key, $success);
 			
-			if($data AND $success) {
-				$type = @unserialize($data);
+			if($type AND $success) {
 				return $type;
 			}
 		}
-		
-		/* Request the Account resource from twilio /Accounts/TwilioSid */
-		try
-		{
-			$response = $this->twilio->request("Accounts/{$this->twilio_sid}");
-		}
-		catch(TwilioException $e)
-		{
-			throw new VBX_AccountsException('Failed to connect to Twilio.', 503);
-		}
 
-		if(isset($response->ResponseXml->Account))
-		{
-			$account = $response->ResponseXml->Account;
+		try {
+			$account = OpenVBX::getAccount();
+			$account_type = $account->type;
+		}
+		catch (Exception $e) {
+			throw new VBX_AccountsException($e->getMessage());
 		}
 
 		if(function_exists('apc_store')) {
-			$success = apc_store($this->cache_key, serialize((String)$account->Type), self::CACHE_TIME_SEC);
+			$success = apc_store($this->cache_key, $account_type, self::CACHE_TIME_SEC);
 		}
 
-		return (String)$account->Type;
+		return $account_type;
 	}
 
 	private function clear_cache()

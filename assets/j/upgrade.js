@@ -25,6 +25,7 @@ if(typeof(OpenVBX) == "undefined") {
 
 OpenVBX.Upgrader = {
 	tabsDisabled: true,
+	buttonsDisabled: false,
 	ready : false,
 	currentStep : 1,
 	validate : function(afterValidation) {
@@ -108,6 +109,7 @@ OpenVBX.Upgrader = {
 		return false;
 	},
 	setButtons : function() {
+		$('button.submit').removeClass('loading');
 		
 		if($('.steps').css('left').replace('px','') > -700) {
 			$('button.prev').prop('disabled', true);
@@ -149,6 +151,7 @@ OpenVBX.Upgrader = {
 
 		if(OpenVBX.Upgrader.ready)
 		{
+			$('button.submit').addClass('loading');
 			$.ajax({
 				url : OpenVBX.home + '/upgrade/setup',
 				data : $('form input, form select, form textarea'),
@@ -157,6 +160,8 @@ OpenVBX.Upgrader = {
 						$('.error')
 							.text(data.message)
 							.slideDown();
+						$('button.submit').removeClass('loading');
+						
 					} else {
 						OpenVBX.Upgrader.gotoStep(2);
 					}
@@ -167,6 +172,7 @@ OpenVBX.Upgrader = {
 					$('.error')
 						.text('An application error occurred.  Please try again.')
 					.slideDown();
+					$('button.submit').removeClass('loading');
 				}
 			});
 		}

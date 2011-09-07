@@ -95,4 +95,4 @@ switch ($dialer->state) {
 }
 
 $dialer->save_state();
-$dialer->Respond();
+$dialer->respond();

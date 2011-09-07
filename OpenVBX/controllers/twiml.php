@@ -19,8 +19,9 @@
  * Contributor(s):
  **/
 
+
 require_once(APPPATH.'libraries/twilio.php');
-require_once(APPPATH.'libraries/Applet.php');
+#require_once(APPPATH.'libraries/Applet.php'); // moved in favor of using load->library()
 
 class TwimlException extends Exception {}
 
@@ -29,7 +30,6 @@ class TwimlException extends Exception {}
 class Twiml extends MY_Controller {
 
 	protected $response;
-	protected $request;
 
 	private $flow;
 	private $flow_id;
@@ -38,15 +38,20 @@ class Twiml extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->database();
+
+		$this->load->helper('twilio');
 		$this->load->helper('cookie');
-		$this->request = new TwilioUtils($this->twilio_sid, $this->twilio_token);
-		$this->response = new Response();
-		$this->flow_id = get_cookie('flow_id');
+
+		$this->load->library('applet');
+		$this->load->library('TwimlResponse');
+
 		$this->load->model('vbx_flow');
 		$this->load->model('vbx_rest_access');
 		$this->load->model('vbx_user');
 		$this->load->model('vbx_message');
+
+		$this->flow_id = get_cookie('flow_id');
+		$this->response = new TwimlResponse;
 	}
 
 	function index()
@@ -56,6 +61,8 @@ class Twiml extends MY_Controller {
 
 	function start_sms($flow_id)
 	{
+		validate_rest_request();
+		
 		log_message("info", "Calling SMS Flow $flow_id");
 		$body = $this->input->get_post('Body');
 		$this->flow_type = 'sms';
@@ -77,14 +84,15 @@ class Twiml extends MY_Controller {
 		}
 		else
 		{
-			$this->response->addSay('Error 4 0 4 - Flow not found.');
-			$this->response->Respond();
+			$this->response->say('Error 4 0 4 - Flow not found.');
+			$this->response->respond();
 		}
-
 	}
 
 	function start_voice($flow_id)
 	{
+		validate_rest_request();
+		
 		log_message("info", "Calling Voice Flow $flow_id");
 		$this->flow_type = 'voice';
 
@@ -97,15 +105,14 @@ class Twiml extends MY_Controller {
 		}
 
 		$instance = isset($flow_data['start'])? $flow_data['start'] : null;
-
 		if(is_object($instance))
 		{
 			$this->applet($flow_id, 'start');
 		}
 		else
 		{
-			$this->response->addSay('Error 4 0 4 - Flow not found.');
-			$this->response->Respond();
+			$this->response->say('Error 4 0 4 - Flow not found.');
+			$this->response->respond();
 		}
 	}
 
@@ -115,7 +122,7 @@ class Twiml extends MY_Controller {
 		$redirect = $this->session->userdata('redirect');
 		if(!empty($redirect))
 		{
-			$this->response->addRedirect($redirect);
+			$this->response->redirect($redirect);
 			$this->session->set_userdata('last-redirect', $redirect);
 			$this->session->unset_userdata('redirect');
 			return $this->response->respond();
@@ -231,16 +238,16 @@ class Twiml extends MY_Controller {
 
 			if(!is_object($applet))
 			{
-				$this->response->addSay("Unknown applet instance in flow $flow_id.");
-				$this->response->Respond();
+				$this->response->say("Unknown applet instance in flow $flow_id.");
+				$this->response->respond();
 			}
 
 		}
 		catch(Exception $ex)
 		{
-			$this->response->addSay('Error: ' + $ex->getMessage());
+			$this->response->say('Error: ' + $ex->getMessage());
+			$this->response->respond();
 		}
-
 	}
 
 	function whisper()
@@ -248,23 +255,24 @@ class Twiml extends MY_Controller {
 		$name =	$this->input->get_post('name');
 		if(empty($name))
 		{
-			$name = "Open V B X";
+			$name = "Open-V-B-X";
 		}
 
 		/* If we've received any input */
-		if(strlen($this->request->Digits) > 0) {
-			if($this->request->Digits != '1') {
-				$this->response->addHangup();
+		$digits = clean_digits($this->input->get_post('Digits'));
+		if(strlen($digits) > 0) {
+			if($digits != '1') {
+				$this->response->hangup();
 			}
 		} else {
 			/* Prompt the user to answer the call */
-			$gather = $this->response->addGather(array('numDigits' => '1'));
+			$gather = $this->response->gather(array('numDigits' => '1'));
 			$say_number = implode(' ', str_split($this->request->From));
-			$gather->addSay("This is a call for {$name}. To accept, Press 1.");
-			$this->response->addHangup();
+			$gather->say("This is a call for {$name}. To accept, Press 1.");
+			$this->response->hangup();
 		}
 
-		$this->response->Respond();
+		$this->response->respond();
 	}
 
 	function redirect($path, $singlepass = false)
@@ -272,19 +280,33 @@ class Twiml extends MY_Controller {
 		if(!$this->session->userdata('loggedin')
 		   && !$this->login_call($singlepass))
 		{
-			$this->response->addSay("Unable to authenticate this call.	Goodbye");
-			$this->response->addHangup();
-			$this->response->Respond();
+			$this->response->say("Unable to authenticate this call.	Goodbye");
+			$this->response->hangup();
+			$this->response->respond();
 			return;
 		}
 
 		$path = str_replace('!', '/', $path);
-		$this->response->addRedirect(site_url($path), array('method' => 'POST'));
-		$this->response->Respond();
+		$this->response->redirect(site_url($path), array('method' => 'POST'));
+		$this->response->respond();
 	}
 
+	/**
+	 * Dial
+	 * 
+	 * Callback method that responds to a Twilio request and provides
+	 * a number for Twilio to dial.
+	 * 
+	 * Overloaded by Twilio Client integration - Twilio Client connection
+	 * requests automatically include the "1" Digit to immediately connect
+	 * the call
+	 *
+	 * @return void
+	 */
 	function dial()
 	{
+		validate_rest_request();
+		
 		$rest_access = $this->input->get_post('rest_access');
 		$to = $this->input->get_post('to');
 		$callerid = $this->input->get_post('callerid');
@@ -292,12 +314,13 @@ class Twiml extends MY_Controller {
 		if(!$this->session->userdata('loggedin')
 		   && !$this->login_call($rest_access))
 		{
-			$this->response->addSay("Unable to authenticate this call.	Goodbye");
-			$this->response->addHangup();
-			$this->response->Respond();
+			$this->response->say("Unable to authenticate this call.	Goodbye");
+			$this->response->hangup();
+			$this->response->respond();
 			return;
 		}
-		/* Response */
+		
+		// Response
 		log_message('info', $rest_access. ':: Session for phone call: '.var_export($this->session->userdata('user_id'), true));
 		$user = VBX_User::get($this->session->userdata('user_id'));
 		$name = '';
@@ -310,52 +333,57 @@ class Twiml extends MY_Controller {
 			$name = $user->first_name;
 		}
 
-		if($this->request->Digits !== false
-		   && $this->request->Digits == 1) {
-			$options = array('action' => site_url("twiml/dial_status").'?'.http_build_query(compact('to')),
-							 'callerId' => $callerid);
+		$digits = clean_digits($this->input->get_post('Digits'));
+		if($digits !== false && $digits == 1) 
+		{
+			$options = array(
+				'action' => site_url("twiml/dial_status").'?'.http_build_query(compact('to')),
+				'callerId' => $callerid
+			);
 
 			$dial_client = false;
 			$to = normalize_phone_to_E164($to);
-			if (!is_numeric($to)) {
-				//$to = htmlspecialchars($this->input->get_post('to'));
+			if (!is_numeric($to)) 
+			{
 				// look up user by email address
 				$user = VBX_User::get(array(
 					'email' => $this->input->get_post('to')
 				));
-				if (!empty($user)) {
+				if (!empty($user)) 
+				{
 					$dial_client = true;
 					$to = $user->id;
 				}
 			}
-			
-			if (!$dial_client) {
-				$this->response->addDial($to, $options);
+
+			if (!$dial_client) 
+			{
+				$this->response->dial($to, $options);
 			}
-			else {
-				$dial = new Dial(NULL, $options);
-				$dial->append(new Client($to));
-				$this->response->append($dial);
+			else 
+			{
+				$dial = $this->response->dial(NULL, $options);
+				$dial->client($to);
 			}
 
-		} else {
-			$gather = $this->response->addGather(array('numDigits' => 1));
-			$gather->addSay("Hello {$name}, this is a call from v b x".
-							", to accept, press 1.");
+		} 
+		else 
+		{
+			$gather = $this->response->gather(array('numDigits' => 1));
+			$gather->say("Hello {$name}, this is a call from V-B-X, to accept, press 1.");
 		}
 
-		$this->response->Respond();
+		$this->response->respond();
 	}
 
 	function dial_status()
 	{
-		if($this->request->DialCallStatus == 'failed')
+		if($this->input->get_post('DialCallStatus') == 'failed')
 		{
-			$this->response
-				->addSay('The number you have dialed is invalid. Goodbye.');
+			$this->response->say('The number you have dialed is invalid. Goodbye.');
 		}
-		$this->response->addHangup();
-		$this->response->Respond();
+		$this->response->hangup();
+		$this->response->respond();
 	}
 
 	function transcribe()
@@ -366,7 +394,8 @@ class Twiml extends MY_Controller {
 		$this->load->model('vbx_message');
 		try
 		{
-			if(empty($this->request->CallSid))
+			$call_sid = $this->input->get_post('CallSid');
+			if(empty($call_sid))
 			{
 				throw new TwimlException('CallSid empty: possible non-twilio client access');
 			}
@@ -375,7 +404,7 @@ class Twiml extends MY_Controller {
 			{
 				$message = $this->vbx_message->get_message(array('call_sid' => $_REQUEST['CallSid']));
 
-				$message->content_text = $this->request->TranscriptionText;
+				$message->content_text = $this->input->get_post('TranscriptionText');
 				$this->vbx_message->save($message, $notify);
 			}
 			catch(VBX_MessageException $e)
@@ -438,7 +467,7 @@ class Twiml extends MY_Controller {
 
 		if($flow_id > 0)
 		{
-			if(!empty($flow))
+			if(!empty($this->flow))
 			{
 				if( $this->flow_type == 'sms' )
 				{

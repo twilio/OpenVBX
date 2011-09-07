@@ -19,12 +19,16 @@
  * Contributor(s):
  **/
 
-require_once(APPPATH.'libraries/twilio.php');
+#require_once(APPPATH.'libraries/twilio.php');
 
 class Iframe extends User_Controller {
 
+	protected $client_token_timeout;
+
 	public function __construct() {
 		parent::__construct();
+		// make tokens valid for 4 hours
+		$this->client_token_timeout = 3600*8;
 	}
 
 	function index() {
@@ -48,10 +52,9 @@ class Iframe extends User_Controller {
 			$data['twilio_js'] = $tjs_baseurl.'/libs/twiliojs/1.0/twilio.js';
 		}
 
-		$data['client_capability'] = $this->capability->generateToken();
+		$data['client_capability'] = $this->capability->generateToken($this->client_token_timeout);
 		$data['capability'] = $this->capability;
 
 		$this->load->view('iframe', $data);
 	}
-
 }

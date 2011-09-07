@@ -28,7 +28,7 @@ class Install extends Controller {
 	public $tests;
 	public $pass;
 	
-	protected $min_php_version = '5.0.0';
+	protected $min_php_version = '5.2';
 
 	function Install()
 	{
@@ -384,74 +384,57 @@ class Install extends Controller {
 		}
 	}
 
+	/**
+	 * Check for the existence of a Twilio Client specific application
+	 * Create one if necessary
+	 *
+	 * @param array $settings 
+	 * @return string Application Sid
+	 */
 	private function get_application($settings) {
-		require_once('OpenVBX/libraries/twilio.php');
-
 		try
 		{
-			$twilio_sid = $settings['twilio_sid'];
-			$twilio_token = $settings['twilio_token'];
-			$appToken = md5($_SERVER['REQUEST_URI']);
-			$appName = "OpenVBX - {$appToken}";
-			$twilio = new TwilioRestClient($twilio_sid, $twilio_token);
+			$app_token = md5($_SERVER['REQUEST_URI']);
+			$app_name = "OpenVBX - {$app_token}";
 
-			// Check to see if the application already exists
-			$response = $twilio->request("Accounts/{$twilio_sid}/Applications",
-										 'GET',
-										 array('FriendlyName' => $appName));
-			if($response->IsError) {
-                if($response->HttpStatus > 400) {
-					throw(new InstallException($response->ErrorMessage));
-                }
+			$account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
+			$applications = $account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
+
+			$application = false;
+			foreach ($applications as $_application) 
+			{
+				if ($_application->friendly_name == $app_name) 
+				{
+					$application = $_application;
+					break;
+				}
 			}
 
-			$foundApp = intval($response->ResponseXml->Applications['total']);
-			if($foundApp) {
-                $appSid = (string)$response->ResponseXml->Applications->Application->Sid;
-				$response = $twilio->request("Accounts/{$twilio_sid}/Applications/{$appSid}",
-											 'POST',
-											 array('FriendlyName' => $appName,
-												   'VoiceUrl' => site_url('twiml/dial'),
-												   'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
-												   'VoiceMethod' => 'POST',
-												   'SmsUrl' => '',
-												   'SmsFallbackUrl' => '',
-												   'SmsMethod' => 'POST',
-												   ));
+			$params = array(
+				'FriendlyName' => $app_name,
+				'VoiceUrl' => site_url('twiml/dial'),
+				'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
+				'VoiceMethod' => 'POST',
+				'SmsUrl' => '',
+				'SmsFallbackUrl' => '',
+				'SmsMethod' => 'POST'
+			);
 
-				return $appSid;
+			if (!empty($application)) 
+			{
+				$application->update($params);
 			}
-
-			$response = $twilio->request("Accounts/{$twilio_sid}/Applications",
-										 'POST',
-										 array('FriendlyName' => $appName,
-											   'VoiceUrl' => site_url('/twiml/dial'),
-											   'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
-											   'VoiceMethod' => 'POST',
-											   'SmsUrl' => '',
-											   'SmsFallbackUrl' => '',
-											   'SmsMethod' => 'POST',
-											   ));
-			if($response->IsError) {
-                if($response->HttpStatus > 400) {
-					$json['errors'] = array('twilio_sid' => $response->ErrorMessage,
-											'twilio_token' => $response->ErrorMessage );
-
-					throw new InstallException('Invalid Twilio SID or Token');
-                }
-
-                throw new InstallException($response->ErrorMessage);
+			else 
+			{
+				$application = $account->applications->create($params);
 			}
-
-			$appSid = (string)$response->ResponseXml->Application->Sid;
-
 		}
 		catch(Exception $e)
 		{
 			throw new InstallException($e->getMessage());
 		}
 
-		return $appSid;
+		return $application->sid;
 	}
 
 	function validate()
@@ -502,16 +485,14 @@ class Install extends Controller {
 				$json['errors'] = array('hostname' => $error,
 										'username' => '',
 										'password' => '');
-				throw new InstallException( "Failed to connect to database: $error",
-											2 );
+				throw new InstallException("Failed to connect to database: $error", 2);
 			}
 
 			if(!mysql_select_db($database['default']['database'], $dbh))
 			{
 				$error = mysql_error($dbh);
 				$json['errors'] = array('database_name' => $error );
-				throw new InstallException( "Failed to access database: $error",
-											2);
+				throw new InstallException("Failed to access database: $error", 2);
 			}
 
 		}
@@ -525,40 +506,41 @@ class Install extends Controller {
 		return $json;
 	}
 
+	/**
+	 * Verify the Account Sid & Token
+	 * Request a list of accounts with the credentials. Exceptions will
+	 * give us our error conditions. Only known right now is 20003 (auth denied)
+	 *
+	 * @return array
+	 */
 	function validate_step3()
 	{
 		$json = array('success' => true, 'step' => 2, 'message' => 'success');
 		$twilio_sid = $this->openvbx_settings['twilio_sid'];
 		$twilio_token = $this->openvbx_settings['twilio_token'];
 
-		require_once(APPPATH . 'libraries/twilio.php');
-
 		try
 		{
-			$twilio = new TwilioRestClient($twilio_sid,
-										   $twilio_token);
-
-			$response = $twilio->request("Accounts/{$twilio_sid}",
-										 'GET',
-										 array());
-
-			if($response->IsError) {
-				if($response->HttpStatus > 400) {
-					$json['errors'] = array('twilio_sid' => $response->ErrorMessage,
-											'twilio_token' => $response->ErrorMessage );
-
-					throw new InstallException('Invalid Twilio SID or Token');
-				}
-
-				throw new InstallException($response->ErrorMessage);
-			}
-
+			// call for most basic of information to see if we have access
+			$account = OpenVBX::getAccount($twilio_sid, $twilio_token);
+			$accounts = $account->accounts;			
 		}
-		catch(InstallException $e)
+		catch(Exception $e)
 		{
 			$json['success'] = false;
-			$json['message'] = $e->getMessage();
 			$json['step'] = $e->getCode();
+
+			switch ($e->getCode()) {
+				case '20003':
+					$json['message'] = 'Authentication Failed. Invalid Twilio SID or Token';
+					break;
+				default:
+					$json['message'] = $e->getMessage();
+			}
+			
+			// include code in error message so that users can better 
+			// communicate error conditions in support requests
+			$json['message'] .= ' ('.$e->getCode().')';
 		}
 
 		return $json;

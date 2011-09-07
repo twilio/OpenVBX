@@ -18,7 +18,7 @@
 
 	<form id="install-form" method="post" action="">
 
-	<p class="error ui-widget-overlay"><?php if(isset($error)) echo $error; ?></p>
+	<div class="error ui-widget-overlay"><?php if(isset($error)) echo $error; ?></div>
 
 	<div class="steps">
 
@@ -38,7 +38,7 @@
 					</ul>
 				</div>
 			</div><!-- .step-desc -->
-
+			
 		</div><!-- .step -->
 
 		<div class="step">
@@ -52,15 +52,14 @@
 
 		</div><!-- .step -->
 
-
 	</div><!-- .steps -->
 
+<?php if (!isset($error)): ?>
 	<div class="navigation">
 		<button class="next">Continue &raquo;</button>
 		<button class="submit">Upgrade &raquo;</button>
 	</div>
-
-
+<?php endif; ?>
 	</form>
 
 	</div><!-- #install-container -->

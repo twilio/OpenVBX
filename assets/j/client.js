@@ -17,7 +17,6 @@
 
  * Contributor(s):
  **/
-
 var Client = {
 	// if we've detected no-flash, or flashblock, or ???
 	disabled: false,

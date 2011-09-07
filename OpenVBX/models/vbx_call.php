@@ -38,12 +38,16 @@ class VBX_Call extends Model {
 	{
 		parent::Model();
 		$ci = &get_instance();
-		$this->twilio = new TwilioRestClient($this->twilio_sid,
-											 $this->twilio_token,
-											 $this->twilio_endpoint);
-		$this->cache_key = $this->twilio_sid . '_calls';
+		$this->cache_key = $ci->twilio_sid . '_calls';
 	}
 
+	/**
+	 * Get a list of calls
+	 *
+	 * @param string $offset 
+	 * @param string $page_size 
+	 * @return void
+	 */
 	function get_calls($offset = 0, $page_size = 20)
 	{
 		$output = array();
@@ -66,32 +70,26 @@ class VBX_Call extends Model {
 		}
 
 		$page = floor(($offset + 1) / $page_size);
-		$params = array('num' => $page_size, 'page' => $page);
-		$response = $this->twilio->request("Accounts/{$this->twilio_sid}/Calls", 'GET', $params);
-
-		if($response->IsError)
-		{
-			throw new VBX_CallException($response->ErrorMessage, $response->HttpStatus);
-		}
-		else
-		{
-
-			$this->total = (string) $response->ResponseXml->Calls['total'];
-			$records = $response->ResponseXml->Calls->Call;
-
-			foreach($records as $record)
-			{
-				$item = new stdClass();
-				$item->id = (string) $record->Sid;
-				$item->caller = format_phone($record->From);
-				$item->called = format_phone($record->To);
-				$item->status = (string)$record->Status;
-				$item->start = isset($record->StartTime) ? strtotime($record->StartTime) : null;
-				$item->end = isset($record->EndTime) ? strtotime($record->EndTime) : null;
-				$item->seconds = isset($record->RecordingDuration) ? (string) $record->RecordingDuration : 0;
-
-				$output[] = $item;
+		try {
+			$account = OpenVBX::getAccount();
+			$calls = $account->calls->getIterator($page, $page_size, array());
+			if (count($calls)) {
+				$this->total = count($calls);
+				foreach ($calls as $call) {
+					$output[] = (object) Array(
+						'id' => $call->sid,
+						'caller' => format_phone($call->from),
+						'called' => format_phone($call->to),
+						'status' => $call->status,
+						'start' => $call->start_time,
+						'end' => $call->end_time,
+						'seconds' => intval($call->recording_duration)
+					);
+				}
 			}
+		}
+		catch (Exception $e) {
+			throw new VBX_CallException($e->getMessage());
 		}
 
 		if(function_exists('apc_store')) {
@@ -102,61 +100,64 @@ class VBX_Call extends Model {
 		return $output;
 	}
 
+	/**
+	 * Start an outbound call
+	 *
+	 * @param string $from - the user making the call, this is the device that'll be called first
+	 * @param string $to - the call destination
+	 * @param string $callerid - the number to use as the caller id
+	 * @param string $rest_access - token to authenticate the twiml request
+	 * @return void
+	 */
 	function make_call($from, $to, $callerid, $rest_access)
 	{
 		try
 		{
 			PhoneNumber::validatePhoneNumber($from);
-			PhoneNumber::validatePhoneNumber($to);
+			// handle being passed an email address for calls to browser clients
+			if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+				PhoneNumber::validatePhoneNumber($to);
+			}
 		}
 		catch(PhoneNumberException $e)
 		{
 			throw new VBX_CallException($e->getMessage());
 		}
-
+		
+		// don't normalize email addresses that are used to identify browser clients
+		if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+			$to = PhoneNumber::normalizePhoneNumberToE164($to);
+		}
 		$callerid = PhoneNumber::normalizePhoneNumberToE164($callerid);
 		$from = PhoneNumber::normalizePhoneNumberToE164($from);
-		$to = PhoneNumber::normalizePhoneNumberToE164($to);
-		
-		$twilio = new TwilioRestClient($this->twilio_sid,
-									   $this->twilio_token,
-									   $this->twilio_endpoint);
-		
 		$recording_url = site_url("twiml/dial").'?'.http_build_query(compact('callerid', 'to', 'rest_access'));
-		
-		$response = $twilio->request("Accounts/{$this->twilio_sid}/Calls",
-									 'POST',
-									 array( "Caller" => $callerid,
-											"Called" => $from,
-											"Url" => $recording_url,
-											)
-									 );
-		
-		if($response->IsError) {
-			error_log($from);
-			throw new VBX_CallException($response->ErrorMessage);
+
+		try {
+			$account = OpenVBX::getAccount();
+			$account->calls->create($callerid,
+										$from,
+										$recording_url
+									);
+		}
+		catch (Exception $e) {
+			throw new VBX_CallException($e->getMessage());
 		}
 	}
 
 
 	function make_call_path($to, $callerid, $path, $rest_access)
 	{
-		$twilio = new TwilioRestClient($this->twilio_sid,
-									   $this->twilio_token);
-		
 		$recording_url = site_url("twiml/redirect/$path/$rest_access");
-		$response = $twilio->request("Accounts/{$this->twilio_sid}/Calls",
-									 'POST',
-									 array( "Caller" => PhoneNumber::normalizePhoneNumberToE164($callerid),
-											"Called" => PhoneNumber::normalizePhoneNumberToE164($to),
-											"Url" => $recording_url,
-											)
-									 );
-		if($response->IsError) {
-			error_log($from);
-			error_log(var_export($response, true));
-			throw new VBX_CallException($response->ErrorMessage);
+		try {
+			$account = OpenVBX::getAccount();
+			$account->calls->create($callerid,
+										$to,
+										$recording_url
+									);
 		}
+		catch (Exception $e) {
+			throw new VBX_CallException($e->getMessage());
+		}		
 	}
 
 }

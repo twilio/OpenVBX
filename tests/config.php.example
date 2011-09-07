@@ -1,9 +1,0 @@
-<?php
-
-$webroot = ''; // Use localtunnel @progrium on github
-$selenium['username'] = ""; // selenium username - recommend saucelabs :)
-$selenium['access-key'] = ""; // selenium password 
-$selenium['os'] = "Windows 2003";
-$selenium['browser'] = "firefox";
-$selenium['browser-version'] =  "3.6.";
-$selenium['job-name'] = "OpenVBXTest";

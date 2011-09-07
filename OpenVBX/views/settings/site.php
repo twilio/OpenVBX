@@ -95,12 +95,9 @@
 					<label for"tenant-url-prefix" class="field-label">Tenant Name:
 					    <input id="tenant-url-prefix" type="text" name="tenant[url_prefix]" value="" class="medium" />
 					</label>
-		            <fieldset class="vbx-input-complex vbx-input-container">
-			            <label class="field-label-inline" for="create-subaccount">Create Subaccount
-				            <input type="checkbox" id="create-subaccount" name="tenant[create_subaccount]" value="1" checked="checked"/>
-			            </label>
-		            </fieldset>
-
+		            <p>Tenant will be added as a sub-account of your account.</p>
+		        </div>
+				<div class="vbx-input-complex vbx-input-container">
 				    <button class="add-tenant-button normal-button" type="submit"><span>Add tenant</span></button>
 				</div>
 			</form>

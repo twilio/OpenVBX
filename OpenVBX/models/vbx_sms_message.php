@@ -38,17 +38,17 @@ class VBX_Sms_message extends Model {
 	function __construct()
 	{
 		parent::Model();
-		$ci = &get_instance();
-		error_log($_SERVER['REQUEST_URI']);
-		error_log("TWILIO SID: ".$ci->twilio_sid);
-		$this->twilio_sid = $ci->twilio_sid;
-		$this->twilio = new TwilioRestClient($ci->twilio_sid,
-											 $ci->twilio_token,
-											 $ci->twilio_endpoint);
-		
-		$this->cache_key = $this->twilio_sid . '_sms';
+		$ci = &get_instance();		
+		$this->cache_key = $ci->twilio_sid . '_sms';
 	}
 
+	/**
+	 * Get SMS Messages
+	 *
+	 * @param string $offset 
+	 * @param string $page_size 
+	 * @return void
+	 */
 	function get_messages($offset = 0, $page_size = 20)
 	{
 		$output = array();
@@ -69,31 +69,26 @@ class VBX_Sms_message extends Model {
 				if(is_array($output)) return $output;
 			}
 		}
-
+		
 		$page = floor(($offset + 1) / $page_size);
-		$params = array('num' => $page_size, 'page' => $page);
-		$response = $this->twilio->request("Accounts/{$this->twilio_sid}/SMS/Messages", 'GET', $params);
-
-		if($response->IsError)
-		{
-			throw new VBX_Sms_messageException($response->ErrorMessage, $response->HttpStatus);
-		}
-		else
-		{
-
-			$this->total = (string) $response->ResponseXml->SMSMessages['total'];
-			$records = $response->ResponseXml->SMSMessages->SMSMessage;
-
-			foreach($records as $record)
-			{
-				$item = new stdClass();
-				$item->id = (string) $record->Sid;
-				$item->from = format_phone($record->From);
-				$item->to = format_phone($record->To);
-				$item->status = (string)$record->Status;
-
-				$output[] = $item;
+		
+		try {
+			$account = OpenVBX::getAccount();
+			$messages = $account->sms_messages->getIterator($page, $page_size, array());
+			if (count($messages)) {
+				$this->total = count($messages); // @TODO need verification that this will work, return may not be Array compatible
+				foreach ($messages as $message) {
+					$output[] = (object) Array(
+						'id' => $message->sid,
+						'from' => format_phone($message->from),
+						'to' => format_phone($message->to),
+						'status' => $message->status
+					);
+				}
 			}
+		}
+		catch (Exception $e) {
+			throw new VBX_Sms_messageException($e->getMessage());
 		}
 
 		if(function_exists('apc_store')) {
@@ -108,25 +103,20 @@ class VBX_Sms_message extends Model {
 	{
 		$from = PhoneNumber::normalizePhoneNumberToE164($from);
 		$to = PhoneNumber::normalizePhoneNumberToE164($to);
+		
+		try {
+			$account = OpenVBX::getAccount();
+			$response = $account->sms_messages->create($from,
+														$to,
+														$message
+													);
+		}
+		catch (Exception $e) {
+			throw new VBX_Sms_messageException($e->getMessage);
+		}
 
-		$twilio = new TwilioRestClient($this->twilio_sid,
-									   $this->twilio_token,
-									   $this->twilio_endpoint);
-		error_log("Sending sms from $from to $to with content: $message");
-		$response = $twilio->request("Accounts/{$this->twilio_sid}/SMS/Messages",
-									 'POST',
-									 array( "From" => $from,
-											"To" => $to,
-											"Body" => $message,
-											)
-									 );
-		$status = isset($response->ResponseXml)? $response->ResponseXml->SMSMessage->Status : 'failed';
-		if($response->IsError ||
-		   ($status != 'sent' && $status != 'queued'))
-		{
-			error_log("SMS not sent - Error Occurred");
-			error_log($response->ErrorMessage);
-			throw new VBX_Sms_messageException($response->ErrorMessage);
+		if (!in_array($response->status, array('sent', 'queued'))) {
+			throw new VBX_Sms_messageException('SMS delivery failed. An unknown error occurred during delivery.');
 		}
 	}
 

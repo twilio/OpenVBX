@@ -1,0 +1,18 @@
+CIUnit Foostack
+    Originally created by: Clemens "rafsoaken" Gruenberger
+    Modified and Updated by: Mario "Kuroir" Ricalde.
+
+Notes:
+    - CIUnit was updated to work completely with CodeIgniter 1.7.2
+    - CIUnit is completely separated from the CodeIgniter Core Files.
+        > CIUnit has it's own modified core files and will load them only
+          when needed (by using the console for instance).
+        > CIUnit won't use the system index.php anymore, instead it'll use
+          libraries/fooStack/fooBase/index.php
+
+          This is to prevent CIUnit/Foostack to cause any extra load on
+          production.          
+
+          Folder structure:
+              - libraries/fooStack/fooBase/index.php (Application and System Folder)
+              - tests/settings.php (Optional: only edit if you want to move index.php)

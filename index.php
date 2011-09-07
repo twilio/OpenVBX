@@ -49,8 +49,8 @@ function shutdown()
 | For more info visit:	http://www.php.net/error_reporting
 |
 */
-error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
-ini_set('display_errors', 'Off');
+error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE ^ E_USER_WARNING);
+ini_set('display_errors', 'On');
 ini_set('log_errors', 'On');
 
 /*

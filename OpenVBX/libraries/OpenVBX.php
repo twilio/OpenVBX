@@ -19,9 +19,14 @@
  * Contributor(s):
  **/
 
+include(APPPATH.'libraries/Services/Twilio.php');
+
 class OpenVBXException extends Exception {}
 class OpenVBX {
 	public static $currentPlugin = null;
+	
+	private static $_twilioService;
+	private static $_twilioValidator;
 
 	public static function query($sql)
 	{
@@ -33,7 +38,7 @@ class OpenVBX {
 	}
 
 	public static function isAdmin() {
-		$ci = &get_instance();
+		$ci =& get_instance();
 		$is_admin = $ci->session->userdata('is_admin');
 
 		return ($is_admin == 1);
@@ -43,7 +48,7 @@ class OpenVBX {
 	{
 		try
 		{
-			$ci = &get_instance();
+			$ci =& get_instance();
 			$ci->load->model('vbx_accounts');
 			return $ci->vbx_accounts->getAccountType();
 		}
@@ -57,14 +62,21 @@ class OpenVBX {
 
 	public static function getCurrentUser()
 	{
-		$ci = &get_instance();
+		$ci =& get_instance();
 		$user_id = $ci->session->userdata('user_id');
 		return VBX_User::get($user_id);
 	}
 
+	/**
+	 * Get the twilio API version from the API endpoint settings
+	 *
+	 * @deprecated url versioning is handled by Twilio Services library
+	 * @return mixes string/null
+	 */
 	public static function getTwilioApiVersion()
 	{
-		$ci = &get_instance();
+		_deprecated_method(__METHOD__, '1.0.4');
+		$ci =& get_instance();
 		$url = $ci->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
 		if(preg_match('/.*\/([0-9]+-[0-9]+-[0-9]+)$/', $url, $matches))
 		{
@@ -76,7 +88,7 @@ class OpenVBX {
 
 	public static function addCSS($file)
 	{
-		$ci = &get_instance();
+		$ci =& get_instance();
 		$plugin = OpenVBX::$currentPlugin;
 		$info = $plugin->getInfo();
 		$path = $info['plugin_path'] .'/'. $file;
@@ -88,7 +100,7 @@ class OpenVBX {
 
 	public static function addJS($file)
 	{
-		$ci = &get_instance();
+		$ci =& get_instance();
 		$plugin = OpenVBX::$currentPlugin;
 		$info = $plugin->getInfo();
 		$path = $info['plugin_path'] .'/'. $file;
@@ -100,7 +112,7 @@ class OpenVBX {
 
 	public static function setNotificationMessage($message)
 	{
-		$ci = &get_instance();
+		$ci =& get_instance();
 		$ci->session->set_flashdata('error', $message);
 	}
 
@@ -152,7 +164,7 @@ class OpenVBX {
 	{
 		try
 		{
-			$ci = &get_instance();
+			$ci =& get_instance();
 			$ci->load->model('vbx_message');
 			if(!is_object($owner))
 			{
@@ -192,7 +204,7 @@ class OpenVBX {
 	/* Returns the version from the php software on the server */
 	public static function version()
 	{
-		$ci = &get_instance();
+		$ci =& get_instance();
 		$ci->load->model('vbx_settings');
 		return $ci->vbx_settings->get('version', VBX_PARENT_TENANT);
 	}
@@ -200,7 +212,7 @@ class OpenVBX {
 	/* Returns the version of the database schema */
 	public static function schemaVersion()
 	{
-		$ci = &get_instance();
+		$ci =& get_instance();
 		$ci->load->model('vbx_settings');
 		return $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
 	}
@@ -220,7 +232,102 @@ class OpenVBX {
 	}
 
 	public static function setPageTitle($title, $overwrite = false) {
-		$ci = &get_instance();
+		$ci =& get_instance();
 		return $ci->template->write('title', $title, $overwrite);
+	}
+	
+	/**
+	 * Get the Twilio Services object for communicating with Twilio HQ
+	 * 
+	 * Optional: Pass different Account Sid & Token values to communicate
+	 * with a different Twilio Account
+	 *
+	 * @throws OpenVBXException if invalid parameters are passed in for new object generation
+	 * @param string $twilio_sid Optional - Twilio Account Sid
+	 * @param string $twilio_token Optional - Twilio Account Token
+	 * @return object Services_Twilio
+	 */
+	public static function getAccount($twilio_sid = false, $twilio_token = false) {
+		// if sid & token are passed, make sure they're not the same as our master
+		// values. If they are, make a new object, otherwise use the same internal object
+		if (!empty($twilio_sid) || !empty($twilio_token)) {
+			$ci =& get_instance();
+			if (!empty($twilio_sid) && !empty($twilio_token)) {
+				if ($twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) {
+					try {
+						$service = new Services_Twilio($twilio_sid, $twilio_token);
+						return $service->account;
+					}
+					catch (Exception $e) {
+						throw new OpenVBXException($e->getMessage());
+					}
+				}
+			}
+			else {
+				throw new OpenVBXException('Both a Sid & Token are required to get a new Services Object');
+			}
+		}
+
+		// return standard service object
+		if (!(self::$_twilioService instanceof Services_Twilio)) {
+			$ci =& get_instance();
+			try {
+				self::$_twilioService = new Services_Twilio($ci->twilio_sid, $ci->twilio_token);
+			}
+			catch (Exception $e) {
+				throw new OpenVBXException($e->getMessage());
+			}
+		}
+				
+		return self::$_twilioService->account;
+	}
+	
+	/**
+	 * Validate that the current request came from Twilio
+	 * 
+	 * If no url is passed then the default $_SERVER['REQUEST_URI'] will be passed
+	 * through site_url().
+	 * 
+	 * If no post_vars are passed then $_POST will be used directly.
+	 *
+	 * @param string $uri 
+	 * @param array $post_vars 
+	 * @return bool
+	 */
+	public static function validateRequest($url = false, $post_vars = false) {
+		if (!(self::$_twilioValidator instanceof Services_Twilio_RequestValidator)) {
+			$ci =& get_instance();
+			self::$_twilioValidator = new Services_Twilio_RequestValidator($ci->twilio_token);
+		}
+		
+		if (empty($url)) {
+			// we weren't handed a uri, use the default
+			$url = site_url($_SERVER['REQUEST_URI']);
+		}
+		elseif (strpos($url, '://') === false) {
+			// we were handed a relative uri, make it full
+			$url = site_url($url);
+		}
+		
+		if (empty($post_vars)) {
+			// we weren't handed post-vars, use the default
+			$post_vars = $_POST;
+		}
+		
+		return self::$_twilioValidator->validate(self::getRequestSignature(), $url, $post_vars);
+	}
+	
+	/**
+	 * Get the X-Twilio-Signature header value
+	 *
+	 * @todo probably needs some special love for nginx?
+	 * @return mixed string, boolean false if not found
+	 */
+	public static function getRequestSignature() {
+		$request_signature = false;
+		if (!empty($_SERVER['HTTP_X_TWILIO_SIGNATURE'])) {
+			$request_signature = $_SERVER['HTTP_X_TWILIO_SIGNATURE'];
+		}
+		return $request_signature;
 	}
 }

@@ -187,7 +187,7 @@ class AppletInstance
 		$mode = self::getValue($name.'_mode');
 		$say = self::getValue($name.'_say');
 		$play = self::getValue($name.'_play');
-		
+	
 		if ($mode === 'play')
 		{
 			$matches = array();
