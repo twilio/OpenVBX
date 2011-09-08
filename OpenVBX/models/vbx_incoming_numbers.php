@@ -139,6 +139,10 @@ class VBX_Incoming_numbers extends Model
 		$num->smsUrl = $item->sms_url;
 		$num->smsMethod = $item->sms_method;
 
+		// @todo do comparison against url domain, then against 'twiml/start'
+		// then include warning when small differences like www/non-www are encountered
+		// don't be friendly to other sub-domain matches, only www since that is the
+		// only safe variation to assume
 		$call_base = site_url('twiml/start') . '/';
 		$base_pos = strpos($num->url, $call_base);
 		$num->installed = ($base_pos !== FALSE);
