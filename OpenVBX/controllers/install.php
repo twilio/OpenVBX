@@ -28,7 +28,8 @@ class Install extends Controller {
 	public $tests;
 	public $pass;
 	
-	protected $min_php_version = '5.2';
+	private $account;
+	protected $min_php_version = MIN_PHP_VERSION;
 
 	function Install()
 	{
@@ -398,8 +399,11 @@ class Install extends Controller {
 			$app_token = md5($_SERVER['REQUEST_URI']);
 			$app_name = "OpenVBX - {$app_token}";
 
-			$account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
-			$applications = $account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
+			if (empty($this->account)) 
+			{
+				$this->account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
+			}
+			$applications = $this->account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
 
 			$application = false;
 			foreach ($applications as $_application) 
@@ -421,13 +425,13 @@ class Install extends Controller {
 				'SmsMethod' => 'POST'
 			);
 
-			if (!empty($application)) 
+			if (!empty($application))
 			{
 				$application->update($params);
 			}
 			else 
 			{
-				$application = $account->applications->create($params);
+				$application = $this->account->applications->create($app_name, $params);
 			}
 		}
 		catch(Exception $e)

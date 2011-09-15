@@ -603,3 +603,11 @@
     background-position: center -36px;
 }
 
+.vbx-items-grid .type-tenant {
+	width: 100px;
+}
+.vbx-items-grid .edit-tenant {
+	width: 40px;
+	text-align: right;
+}
+

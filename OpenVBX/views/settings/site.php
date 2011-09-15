@@ -33,6 +33,7 @@
 					<label for="override" class="field-label">Hostname to use in recording URLs (must be a CNAME for api.twilio.com)
 						<input class="medium" id="override" name="site[recording_host]" value="<?php echo @$recording_host["value"]; ?>">
 				</div>
+				
 				<button class="submit-button" type="submit"><span>Update</span></button>
 			</form>
 
@@ -95,8 +96,23 @@
 					<label for"tenant-url-prefix" class="field-label">Tenant Name:
 					    <input id="tenant-url-prefix" type="text" name="tenant[url_prefix]" value="" class="medium" />
 					</label>
-		            <p>Tenant will be added as a sub-account of your account.</p>
 		        </div>
+				<div class="vbx-input-complex vbx-input-container">
+				<?php if (isset($connect_application_sid) && !empty($connect_application_sid['value'])): ?>
+					<label for="auth-type" class="field-label">Authentication Type:
+						<select class="medium" name="auth_type" id="auth-type">
+							<option value="subaccount">Sub-Account</option>
+							<option value="connect">Twilio Connect (OAuth)</option>
+						</select>
+					</label>
+				<?php else: /* In case anybody foobars their Connect App sid we can fail gracefully */?>
+					<div style="width: 50%; margin: 15px 0;">
+						<p>You don&rsquo;t have a <a href="http://twilio.com/docs/connect">Twilio Connect</a> Application defined. Your Tenants will be created as a sub-account of your account.</p>
+						<p>To create Tenants with Twilio Connect create a Connect Application in your account and enter the Application Sid in the &ldquo;Twilio Connect Application SID&rdquo; field in your Twilio Account Settings screen.</p>
+					</div>
+					<input type="hidden" name="auth_type" value="subaccount" />
+				<?php endif; ?>
+				</div>
 				<div class="vbx-input-complex vbx-input-container">
 				    <button class="add-tenant-button normal-button" type="submit"><span>Add tenant</span></button>
 				</div>
@@ -108,6 +124,19 @@
 					<?php foreach($tenants as $tenant): ?>
 					<tr class="items-row">
 							<td class="url-tenant"><a href="<?php echo tenant_url('', $tenant->id) ?>"><?php echo tenant_url('', $tenant->id) ?></a></td>
+							<td class="type-tenant"><?php 
+								switch ($tenant->type) {
+									case VBX_Settings::AUTH_TYPE_FULL:
+										echo 'Full';
+										break;
+									case VBX_Settings::AUTH_TYPE_CONNECT:
+										echo 'Twilio Connect';
+										break;
+									case VBX_Settings::AUTH_TYPE_SUBACCOUNT:
+										echo 'Sub-Account';
+										break;
+								}
+							?></td>
 							<td class="edit-tenant"><a href="<?php echo site_url('settings/site/tenant/'.$tenant->id) ?>" class="edit action"><span class="replace">Edit</span></a></td>
 					</tr>
 					<?php endforeach; ?>
@@ -130,9 +159,15 @@
 					</label>
 					<label for="site-twilio-application-sid" class="field-label">Twilio Client Application SID
 						<input id="site-twilio-application-sid" type="text" name="site[application_sid]" value="<?php echo @$application_sid['value']; ?>" class="medium" />
+						<p class="instruction">This Sid identifies your install for the purposes of making<br />and receiving calls with <a href="http://www.twilio.com/api/client">Twilio Client</a>.</p>
+					</label>
+					<label for="site-twilio-connect-application-sid" class="field-label">Twilio Connect Application SID
+						<input id="site-twilio-connect-application-sid" type="text" name="site[connect_application_sid]" value="<?php echo @$connect_application_sid['value']; ?>" class="medium" />
+						<p class="instruction">This Sid identifies your install for the purposes of using<br />Twilio Connect to authorize your Tenant accounts. Changing<br />this Sid will invalidate all of your existing Connect authorizations.</p>
 					</label>
 					<label for="site-from-email" class="field-label">From Email
 						<input id="site-from-email" type="text" name="site[from_email]" value="<?php echo @$from_email['value'] ?>" class="medium" />
+						<p class="instruction">This is the email address which which all outbound emails<br />from OpenVBX install will be addressed.</p>
 					</label>
 				</fieldset>
 				<button class="submit-button" type="submit"><span>Update</span></button>

@@ -22,21 +22,20 @@
 	</li>
 	<li><b>jQuery UI</b>
 		<pre>
-			Copyright (c) 2009 AUTHORS.txt (http://jqueryui.com/about)
-			Dual licensed under the MIT (MIT-LICENSE.txt)
-			and GPL (GPL-LICENSE.txt) licenses.
-			http://docs.jquery.com/UI
+			Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+			Dual licensed under the MIT or GPL Version 2 licenses.
+			http://jquery.org/license
 		</pre>
 	</li>
 	<li><b>jQuery</b>
 		<pre>
-			Copyright 2010, John Resig
+			Copyright 2011, John Resig
 			Dual licensed under the MIT or GPL Version 2 licenses.
 			http://jquery.org/license
 			
 			Includes Sizzle.js
 			http://sizzlejs.com/
-			Copyright 2010, The Dojo Foundation
+			Copyright 2011, The Dojo Foundation
 			Released under the MIT, BSD, and GPL Licenses.
 		</pre>
 	</li>
@@ -56,21 +55,21 @@
 		<pre>
 			http://www.asual.com/jquery/address/
 			
-			Copyright (c) 2009 Rostislav Hristov
-			Dual licensed under the MIT and GPL licenses.
-			http://docs.jquery.com/License
+			Copyright (c) 2009-2010 Rostislav Hristov
+			Dual licensed under the MIT or GPL Version 2 licenses.
+			http://jquery.org/license
 		</pre>
 	</li>
-	<li><b>jQuery hashchange 1.0.0</b>
+	<li><b>jQuery hashchange event</b>
 		<pre>
-			Copyright (c) 2008 Chris Leishman (chrisleishman.com)
-			Dual licensed under the MIT (MIT-LICENSE.txt)
-			and GPL (GPL-LICENSE.txt) licenses.
+			Copyright (c) 2010 "Cowboy" Ben Alman
+			Dual licensed under the MIT and GPL licenses.
+			http://benalman.com/about/license/
 		</pre>
 	</li>
 	<li><b>Cookie plugin</b>
 		<pre>
-			Copyright (c) 2006 Klaus Hartl (stilbuero.de)
+			Copyright (c) 2010 Klaus Hartl (stilbuero.de)
 			Dual licensed under the MIT and GPL licenses:
 			http://www.opensource.org/licenses/mit-license.php
 			http://www.gnu.org/licenses/gpl.html
@@ -87,25 +86,22 @@
 			Released under the MIT and GPL licenses.
 		</pre>
 	</li>
-	<li><b>jQuery validation plug-in 1.5.2</b>
+	<li><b>jQuery validation plug-in</b>
 		<pre>
-			
 			http://bassistance.de/jquery-plugins/jquery-plugin-validation/
 			http://docs.jquery.com/Plugins/Validation
 			
-			Copyright (c) 2006 - 2008 Jörn Zaefferer
-			
-			$Id: jquery.validate.js 6243 2009-02-19 11:40:49Z joern.zaefferer $
+			Copyright (c) 2006 - 2011 Jörn Zaefferer
 			
 			Dual licensed under the MIT and GPL licenses:
-			http://www.opensource.org/licenses/mit-license.php
-			http://www.gnu.org/licenses/gpl.html
+			  http://www.opensource.org/licenses/mit-license.php
+			  http://www.gnu.org/licenses/gpl.html
 		</pre>
 	</li>
-	<li><b>SWFUpload jQuery Plugin v1.0.0</b>
+	<li><b>SWFUpload jQuery Plugin</b>
 		<pre>
 			Copyright (c) 2009 Adam Royle
-			Licensed under the MIT license.
+		 	Licensed under the MIT license.
 		</pre>
 	</li>
 	<li><b>YUI Grids</b>

@@ -11,6 +11,7 @@ class Services_Twilio_Rest_Account
             'outgoing_caller_ids',
             'calls',
             'conferences',
+			'connect_apps',
             'incoming_phone_numbers',
             'notifications',
             'outgoing_callerids',

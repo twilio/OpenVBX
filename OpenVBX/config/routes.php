@@ -40,12 +40,13 @@
 |
 */
 
-#$route['default_controller'] = "messages/message_index";
-$route['default_controller'] = "iframe";
-$route['scaffolding_trigger'] = "";
+$route['default_controller'] = 'iframe';
+$route['scaffolding_trigger'] = '';
 
-$route['install'] = "install";
-$route['upgrade'] = "upgrade";
+$route['install'] = 'install';
+$route['upgrade'] = 'upgrade';
+$route['welcome'] = 'welcome';
+$route['welcome/(:any)'] = 'welcome/$1';
 $route['upgrade/setup'] = "upgrade/setup";
 $route['upgrade/validate'] = "upgrade/validate";
 $route['messages'] = "messages/message_index";

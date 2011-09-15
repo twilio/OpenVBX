@@ -283,6 +283,7 @@ ul.dependencies li.fail.optional {
     -webkit-border-radius: 4px;
     cursor: pointer;
 	outline: none;
+	min-width: 145px;
 }
 
 .navigation .prev {
@@ -303,7 +304,6 @@ ul.dependencies li.fail.optional {
 }
 
 .navigation .submit {
-	width: 145px;
 	float: right;
 	margin: 0 10px 0 20px;
 	background-color: #316480;

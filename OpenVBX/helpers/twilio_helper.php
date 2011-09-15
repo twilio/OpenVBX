@@ -51,6 +51,25 @@ if (!function_exists('clean_digits')) {
 	}
 }
 
+if (!function_exists('version_url')) {
+	/**
+	 * Append the current site rev to a url to force asset reload on upgrade/change
+	 *
+	 * @param string $url
+	 * @return string
+	 */
+	function version_url($url) {
+		if (strpos($url, 'v=') === false)
+		{
+			$ci =& get_instance();
+			$vers = 'v='.$ci->config->item('site_rev');
+			$pre = (strpos($url, '?') === false ? '?' : '&'); 
+			$url .= $pre.$vers;
+		}
+		return $url;
+	}
+}
+
 if (!function_exists('_deprecated_notice')) {
 	/**
 	 * Throw a deprecated method warning

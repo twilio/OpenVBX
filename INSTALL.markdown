@@ -81,7 +81,7 @@ OpenVBX requires the software listed below. It is all available for free and is 
 1. **APC support (optional):** APC is recommended, but not required.
 1. **Config directory writable:** The configuration directory must be writable by the user your webserver is running as for the OpenVBX installation to complete. The path to the configuration directory is `<webroot>/OpenVBX/config`. On unix systems you can adjust the permissions with the `chown` and `chmod` commands.
 1. **SimpleXML support:** OpenVBX requires SimpleXML. If you don't meet this requirement, install the SimpleXML module.
-1. **JSON support:** OpenVBX requires JSON. If you don't meet this requirement, install the JSON module. For versions of PHP prior to 5.2 you will need the [PEAR Services\_JSON](http://pear.php.net/package/Services_JSON) PECL module installed.
+1. **JSON support:** OpenVBX requires JSON. If you don't meet this requirement install the JSON module or install the [PEAR Services\_JSON](http://pear.php.net/package/Services_JSON) PECL module.
 1. **Upload directory writable:** The upload directory must be writable by the user your webserver is running as for the OpenVBX installation to complete. The path to the configuration directory is `<webroot>/OpenVBX/audio-uploads`. On unix systems you can adjust the permissions with the `chown` and `chmod` commands.
 
 ## Configure Database

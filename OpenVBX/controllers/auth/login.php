@@ -93,7 +93,7 @@ class Login extends MY_Controller
 										   $this->input->post('pw'),
 										   $this->input->post('captcha'),
 										   $this->input->post('captcha_token'));
-			
+
 			if($user)
 			{
 				$userdata = array('email' => $user->email,

@@ -84,7 +84,7 @@ class Twiml extends MY_Controller {
 		}
 		else
 		{
-			$this->response->say('Error 4 0 4 - Flow not found.');
+			$this->response->say('Error 4-oh-4 - Flow not found.');
 			$this->response->respond();
 		}
 	}
@@ -111,7 +111,7 @@ class Twiml extends MY_Controller {
 		}
 		else
 		{
-			$this->response->say('Error 4 0 4 - Flow not found.');
+			$this->response->say('Error 4-oh-4 - Flow not found.');
 			$this->response->respond();
 		}
 	}
@@ -255,7 +255,7 @@ class Twiml extends MY_Controller {
 		$name =	$this->input->get_post('name');
 		if(empty($name))
 		{
-			$name = "Open-V-B-X";
+			$name = "Open VeeBee Ex";
 		}
 
 		/* If we've received any input */
@@ -373,7 +373,7 @@ class Twiml extends MY_Controller {
 		else 
 		{
 			$gather = $this->response->gather(array('numDigits' => 1));
-			$gather->say("Hello {$name}, this is a call from V-B-X, to accept, press 1.");
+			$gather->say("Hello {$name}, this is a call from VeeBee Ex, to accept, press 1.");
 		}
 
 		$this->response->respond();

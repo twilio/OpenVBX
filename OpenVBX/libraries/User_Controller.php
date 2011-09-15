@@ -136,11 +136,18 @@ class User_Controller extends MY_Controller
 				error_log($e->getMessage());
 			}
 
+			/* Check for first run */
+			if ($this->session->userdata('is_admin') && $this->uri->segment(1) != 'welcome') 
+			{
+				$this->welcome_check();
+			}
+
 			/* Check for updates if an admin */
 			if($this->session->userdata('is_admin') && $this->uri->segment(1) != "upgrade")
 			{
 				$this->upgrade_check();
 			}
+
 		}
 
 		$this->set_client_support();
@@ -157,6 +164,19 @@ class User_Controller extends MY_Controller
 		$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
 		if($currentSchemaVersion != $upgradingToSchemaVersion)
 			redirect('upgrade');
+	}
+	
+	private function welcome_check() 
+	{
+		if ($this->router->class == 'iframe' || $this->router->class == 'welcome') 
+		{
+			return false;
+		}
+		
+		if ($this->settings->get('tenant_first_run', $this->tenant->id)) 
+		{
+			redirect('welcome');
+		}
 	}
 
 	function digest_parse($digest)
@@ -176,7 +196,8 @@ class User_Controller extends MY_Controller
 	}
 
 
-	function attempt_digest_auth() {
+	function attempt_digest_auth() 
+	{
 		$message = '';
 
 		if(isset($_SERVER['Authorization'])) {
@@ -300,7 +321,8 @@ class User_Controller extends MY_Controller
 		return $data;
 	}
 
-	protected function get_user_numbers() {
+	protected function get_user_numbers() 
+	{
 
 		$this->load->model('vbx_device');
 		$numbers = $this->vbx_device->get_by_user($this->user_id);
@@ -308,13 +330,15 @@ class User_Controller extends MY_Controller
 		return $numbers;
 	}
 
-	protected function message_counts() {
+	protected function message_counts() 
+	{
 		$groups = VBX_User::get_group_ids($this->user_id);
 		$counts = $this->vbx_message->get_folders($this->user_id, $groups);
 		return $counts;
 	}
 
-	protected function get_twilio_numbers() {
+	protected function get_twilio_numbers() 
+	{
 		$this->load->model('vbx_incoming_numbers');
 		$numbers = array();
 		try

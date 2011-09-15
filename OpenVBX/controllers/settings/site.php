@@ -222,6 +222,7 @@ class Site extends User_Controller
 				$this->session->set_flashdata('error', 'Settings have been saved');
 			}
 			catch(SiteException $e) {
+				ep('hi');
 				$data['error'] = true;
 				$data['message'] = $e->getMessage();
 				$this->session->set_flashdata('error', $e->getMessage());
@@ -236,13 +237,14 @@ class Site extends User_Controller
 		$this->respond('', 'settings/site', $data);
 	}
 
-	private function create_application_for_subaccount($tenant_id, $name, $accountSid) {
+	private function create_application_for_subaccount($tenant_id, $name, $accountSid) 
+	{
 		$appName = "OpenVBX - {$name}";
 		
 		$application = false;
 		try {
-			$account = OpenVBX::getAccount();
-			$sub_account = $account->accounts->get($accountSid);
+			$service = OpenVBX::_getService();
+			$sub_account = $service->accounts->get($accountSid);
 			foreach ($sub_account->applications as $_application) 
 			{
 				if ($application->friendly_name == $appName) 
@@ -317,27 +319,62 @@ class Site extends User_Controller
 				}
 
 				$this->settings->set('from_email', $tenant['admin_email'], $data['id']);
-
 				$friendlyName = substr($tenant['url_prefix'].' - '.$tenant['admin_email'], 0, 32);					
 
-				try {
-					$account = OpenVBX::getAccount();
-					$sub_account = $account->accounts->create(array(
-															'FriendlyName' => $friendlyName
-														));
-					$tenant_sid = $sub_account->sid;
-					$tenant_token = $sub_account->auth_token;
-					
-					$this->settings->add('twilio_sid', $tenant_sid, $data['id']);
-					$this->settings->add('twilio_token', $tenant_token, $data['id']);
-					$appSid = $this->create_application_for_subaccount($data['id'], $tenant['url_prefix'], $tenant_sid);
-					$this->settings->add('application_sid', $appSid, $data['id']);
-					$this->settings->add('type', '2');
-				}
-				catch (Exception $e) {
-					throw new VBX_SettingsException($e->getMessage());
+				switch ($this->input->post('auth_type')) 
+				{
+					case 'connect':
+						$auth_type = VBX_Settings::AUTH_TYPE_CONNECT;
+						break;
+					case 'subaccount':
+					default:
+						$auth_type = VBX_Settings::AUTH_TYPE_SUBACCOUNT;
+						break;
 				}
 
+				if ($auth_type === VBX_Settings::AUTH_TYPE_SUBACCOUNT) 
+				{
+					try {
+						/**
+						 * This is the only time, aside from install & upgrade, that we should
+						 * need to do this. We need access to the base service object to create
+						 * new accounts. Since this activity is relegated to the parent account
+						 * we'll make an exception and go after the full service object.
+						 */
+						$service = OpenVBX::_getService();
+					
+						// default, sub-account
+						$sub_account = $service->accounts->create(array(
+															'FriendlyName' => $friendlyName
+														));
+						$tenant_sid = $sub_account->sid;
+						$tenant_token = $sub_account->auth_token;
+						$this->settings->add('twilio_sid', $tenant_sid, $data['id']);
+						$this->settings->add('twilio_token', $tenant_token, $data['id']);
+						
+						$app_sid = $this->create_application_for_subaccount($data['id'], $tenant['url_prefix'], $tenant_sid);
+						$this->settings->add('application_sid', $app_sid, $data['id']);
+					}
+					catch (Exception $e) {
+						throw new VBX_SettingsException($e->getMessage());
+					}
+				}
+				elseif ($auth_type === VBX_Settings::AUTH_TYPE_CONNECT)
+				{
+					// when using connect, we won't get a sid, token, or app_sid until user first login
+					$tenant_id = $tenant_token = $app_sid = null;
+				}
+				else 
+				{
+					throw new VBX_SettingsException('Unknown auth-type encountered during tenant creation');
+				}
+
+				$this->settings->update_tenant(array(
+					'id' => $data['id'],
+					'type' => $auth_type
+				));
+				$this->settings->add('tenant_first_run', 1, $data['id']);
+				
 				$this->db->trans_complete();
 				$this->session->set_flashdata('error', 'Added new tenant');
 				$user->send_new_user_notification();
@@ -377,7 +414,7 @@ class Site extends User_Controller
 		$data['rewrite_enabled'] = array(
 			'value' => intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT))
 		);
-
+		
 		$this->respond('Tenant Settings', 'settings/tenant', $data);
 	}
 

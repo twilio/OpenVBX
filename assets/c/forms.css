@@ -11,6 +11,9 @@
         color: #404040;
 }
 
+.vbx-form .field-label .label-text-plain {
+	color: black;
+}
 
 .vbx-input-container .instruction {
     font-size: 11px;

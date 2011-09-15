@@ -45,7 +45,7 @@ class Upgrade extends User_Controller {
 			$data['plugins'][] = $plugin->getInfo();
 		}
 
-		$data['php_version_min'] = '5.2';
+		$data['php_version_min'] = MIN_PHP_VERSION;
 		$data['php_version'] = phpversion();
 		if (!version_compare($data['php_version'], $data['php_version_min'], '>=')) {
 			$data['error'] = '<p>Your server doesn\'t meet the minimum PHP requirements necessary to run this version of OpenVBX.</p>'.

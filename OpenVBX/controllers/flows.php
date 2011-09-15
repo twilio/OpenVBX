@@ -229,6 +229,7 @@ class Flows extends User_Controller {
 		if (!$this->config->item('use_unminimized_css')) {
 			$this->template->add_css('flows/styles', 'dynamic');
 		}
+		
 		$flow = VBX_Flow::get($id);
 		
 		if(empty($flow))

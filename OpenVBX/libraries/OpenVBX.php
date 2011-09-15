@@ -230,32 +230,48 @@ class OpenVBX {
 		return $updates[count($updates)-1];
 	}
 
-	public static function setPageTitle($title, $overwrite = false) {
+	public static function setPageTitle($title, $overwrite = false) 
+	{
 		$ci =& get_instance();
 		return $ci->template->write('title', $title, $overwrite);
 	}
 	
 	/**
-	 * Get the Twilio Services object for communicating with Twilio HQ
+	 * Get the full Twilio Service API object
 	 * 
-	 * Optional: Pass different Account Sid & Token values to communicate
-	 * with a different Twilio Account
+	 * For internal use only, for plugin/expansion use see OpenVBX::getAccount()
 	 *
-	 * @throws OpenVBXException if invalid parameters are passed in for new object generation
-	 * @param string $twilio_sid Optional - Twilio Account Sid
-	 * @param string $twilio_token Optional - Twilio Account Token
+	 * @param string $twilio_sid 
+	 * @param string $twilio_sid 
 	 * @return object Services_Twilio
 	 */
-	public static function getAccount($twilio_sid = false, $twilio_token = false) {
+	public function _getService($twilio_sid = false, $twilio_sid = false) 
+	{
 		$api_version = OpenVBX::getTwilioApiVersion();
 		$_http = null;
+
+		$ci =& get_instance();
+		// internal api development override, you'll never need this
+		if ($_http_settings = $ci->config->item('_http_settings')) 
+		{
+			if (!empty($_http_settings['host'])) 
+			{
+				$_http = new Services_Twilio_TinyHttp(
+				                $_http_settings['host'],
+				                array("curlopts" => array(CURLOPT_USERAGENT => Services_Twilio::USER_AGENT))
+				            );
+			}
+		}
 		
 		// if sid & token are passed, make sure they're not the same as our master
 		// values. If they are, make a new object, otherwise use the same internal object
-		if (!empty($twilio_sid) || !empty($twilio_token)) {
+		if (!empty($twilio_sid) || !empty($twilio_token)) 
+		{
 			$ci =& get_instance();
-			if (!empty($twilio_sid) && !empty($twilio_token)) {
-				if ($twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) {
+			if (!empty($twilio_sid) && !empty($twilio_token)) 
+			{
+				if ($twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) 
+				{
 					try {
 						$service = new Services_Twilio(
 												$twilio_sid, 
@@ -263,33 +279,37 @@ class OpenVBX {
 												$api_version,
 												$_http
 											);
-						return $service->account;
+						return $service;
 					}
 					catch (Exception $e) {
 						throw new OpenVBXException($e->getMessage());
 					}
 				}
 			}
-			else {
+			else 
+			{
 				throw new OpenVBXException('Both a Sid & Token are required to get a new Services Object');
 			}
 		}
 
 		// return standard service object
-		if (!(self::$_twilioService instanceof Services_Twilio)) {
-			$ci =& get_instance();
+		if (!(self::$_twilioService instanceof Services_Twilio)) 
+		{
+			if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) 
+			{
+				$twilio_sid = $ci->vbx_settings->get('twilio_sid', VBX_PARENT_TENANT);
+				$twilio_token = $ci->vbx_settings->get('twilio_token', VBX_PARENT_TENANT);
+			}
+			else 
+			{	
+				$twilio_sid = $ci->twilio_sid;
+				$twilio_token = $ci->twilio_token;
+			}
+			
 			try {
-				// internal api development override, you'll never need this
-				if ($_http_settings = $ci->config->item('_http')) {
-					$_http = new Services_Twilio_TinyHttp(
-						                $_http_settings['host'],
-						                array("curlopts" => array(CURLOPT_USERAGENT => Services_Twilio::USER_AGENT))
-						            );
-				}
-				
 				self::$_twilioService = new Services_Twilio(
-													$ci->twilio_sid, 
-													$ci->twilio_token,
+													$twilio_sid, 
+													$twilio_token,
 													$api_version,
 													$_http
 												);
@@ -298,8 +318,39 @@ class OpenVBX {
 				throw new OpenVBXException($e->getMessage());
 			}
 		}
-				
-		return self::$_twilioService->account;
+		
+		return self::$_twilioService;
+	}
+	
+	/**
+	 * Get the Twilio Services Account object for communicating with Twilio HQ
+	 * 
+	 * Will return the proper account for communications with Twilio.
+	 * This method is sub-account & twilio connect aware
+	 * 
+	 * Optional: Pass different Account Sid & Token values to communicate
+	 * with a different Twilio Account
+	 * 
+	 * Twilio Connect Aware. Will return the connect account if applicable.
+	 *
+	 * @throws OpenVBXException if invalid parameters are passed in for new object generation
+	 * @param string $twilio_sid Optional - Twilio Account Sid
+	 * @param string $twilio_token Optional - Twilio Account Token
+	 * @return object Services_Twilio_Rest_Account
+	 */
+	public static function getAccount($twilio_sid = false, $twilio_token = false) 
+	{
+		$service = self::_getService($twilio_sid, $twilio_token);
+		
+		$ci =& get_instance();
+		if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) 
+		{
+			return $service->accounts->get($ci->twilio_sid);
+		}
+		else 
+		{
+			return $service->account;
+		}
 	}
 	
 	/**
@@ -314,22 +365,27 @@ class OpenVBX {
 	 * @param array $post_vars 
 	 * @return bool
 	 */
-	public static function validateRequest($url = false, $post_vars = false) {
-		if (!(self::$_twilioValidator instanceof Services_Twilio_RequestValidator)) {
+	public static function validateRequest($url = false, $post_vars = false) 
+	{
+		if (!(self::$_twilioValidator instanceof Services_Twilio_RequestValidator)) 
+		{
 			$ci =& get_instance();
 			self::$_twilioValidator = new Services_Twilio_RequestValidator($ci->twilio_token);
 		}
 		
-		if (empty($url)) {
+		if (empty($url)) 
+		{
 			// we weren't handed a uri, use the default
 			$url = site_url($_SERVER['REQUEST_URI']);
 		}
-		elseif (strpos($url, '://') === false) {
+		elseif (strpos($url, '://') === false) 
+		{
 			// we were handed a relative uri, make it full
 			$url = site_url($url);
 		}
 		
-		if (empty($post_vars)) {
+		if (empty($post_vars)) 
+		{
 			// we weren't handed post-vars, use the default
 			$post_vars = $_POST;
 		}
@@ -343,9 +399,11 @@ class OpenVBX {
 	 * @todo probably needs some special love for nginx?
 	 * @return mixed string, boolean false if not found
 	 */
-	public static function getRequestSignature() {
+	public static function getRequestSignature() 
+	{
 		$request_signature = false;
-		if (!empty($_SERVER['HTTP_X_TWILIO_SIGNATURE'])) {
+		if (!empty($_SERVER['HTTP_X_TWILIO_SIGNATURE'])) 
+		{
 			$request_signature = $_SERVER['HTTP_X_TWILIO_SIGNATURE'];
 		}
 		return $request_signature;

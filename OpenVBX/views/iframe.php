@@ -6,13 +6,15 @@
 	<title><?php echo empty($title) ? ' ' : "$title | " ?><?php echo $site_title ?> <?php echo (isset($counts))? '('.$counts[0]->new.')' : '' ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
-	<link rel="stylesheet" href="<?php echo asset_url('assets/c/iframe.css'); ?>" type="text/css" media="screen" />	
+	<link rel="stylesheet" href="<?php echo asset_url('assets/c/iframe.css'); ?>" type="text/css" media="screen" />
+<?php if ($this->config->item('use_unminimized_js')): ?>
 	<script type="text/javascript" src="<?php echo asset_url('assets/j/frameworks/jquery-1.6.2.min.js'); ?>"></script>
 	<script type="text/javascript" src="<?php echo asset_url('assets/j/frameworks/jquery-ui-1.8.14.custom.min.js'); ?>"></script>
 	<script type="text/javascript" src="<?php echo asset_url('/assets/j/plugins/jquery.cookie.js'); ?>"></script>
 	<script type="text/javascript" src="<?php echo asset_url('/assets/j/client.js'); ?>"></script>
-	<script type="text/javascript" src="<?php echo $twilio_js; ?>"></script>
-	
+<?php else: ?>
+	<script type="text/javascript" src="<?php echo asset_url('/assets/min/?g=iframejs'); ?>"></script>
+<?php endif; ?>	
 </head>
 <body>
 	<div id="container">
@@ -110,6 +112,7 @@
 		</iframe>
 	</div><!-- /container -->
 
+<script type="text/javascript" src="<?php echo $twilio_js; ?>"></script>
 <?php $this->load->view('js-init'); ?>
 <script type="text/javascript" src="<?php echo asset_url('assets/j/iframe.js') ?>"></script>
 </body>
