@@ -9,6 +9,10 @@
  * changes. http://yourdomain/min/builder/
  **/
 
+
+$jquery = '//assets/j/frameworks/jquery-1.6.2.min.js';
+$jquery_ui = '//assets/j/frameworks/jquery-ui-1.8.14.custom.min.js';
+
 $sources = array(
 	'css' => array(
 		'//assets/c/reset-fonts-grids-2.8.css',
@@ -35,8 +39,8 @@ $sources = array(
 	),
 	'js' => array(
 		'//assets/j/soundmanager2/soundmanager2.js',
-		'//assets/j/frameworks/jquery-1.6.2.min.js',
-		'//assets/j/frameworks/jquery-ui-1.8.14.custom.min.js',
+		$jquery,
+		$jquery_ui,
 		'//assets/j/swfupload/swfupload.js',
 		'//assets/j/swfupload/swfupload.cookies.js',
 		'//assets/j/modal-tabs.js',
@@ -60,14 +64,23 @@ $sources = array(
 		'//assets/j/update-check.js'
 	),
 	'iframejs' => array(
-		'//assets/j/frameworks/jquery-1.6.2.min.js', 
-		'//assets/j/frameworks/jquery-ui-1.8.14.custom.min.js', 
+		$jquery, 
+		$jquery, 
 		'//assets/j/plugins/jquery.cookie.js',
 		'//assets/j/iframe.js',
 		'//assets/j/client.js'		
 	),
-	'flowbuilderjs' => array(
-		
+	'installjs' => array(
+		$jquery,
+		'//assets/j/plugins/jquery.validate.js',
+		'//assets/j/steps.js',
+		'//assets/j/install.js'
+	),
+	'upgradejs' => array(
+		$jquery,
+		'//assets/j/plugins/jquery.validate.js',
+		'//assets/j/steps.js',
+		'//assets/j/upgrade.js'		
 	)
 );
 

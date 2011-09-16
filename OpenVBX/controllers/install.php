@@ -60,8 +60,11 @@ class Install extends Controller {
 
 		$this->openvbx_settings = array();
 		$this->openvbx = array();
+		
 		$this->openvbx_settings['twilio_sid'] = trim($this->input->post('twilio_sid'));
 		$this->openvbx_settings['twilio_token'] = trim($this->input->post('twilio_token'));
+		$this->openvbx_settings['connect_application_sid'] = trim($this->input->post('connect_application_sid'));
+
 		$this->openvbx['salt'] = md5(rand(10000, 99999));
 		$this->openvbx_settings['from_email'] = trim($this->input->post('from_email') == ""?
 													 ''
@@ -401,7 +404,7 @@ class Install extends Controller {
 
 			if (empty($this->account)) 
 			{
-				$this->account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
+				$this->account = OpenVBX::_getService($settings['twilio_sid'], $settings['twilio_token'])->account;
 			}
 			$applications = $this->account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
 
@@ -520,15 +523,36 @@ class Install extends Controller {
 	 */
 	function validate_step3()
 	{
+		$this->load->model('vbx_settings');
+		
 		$json = array('success' => true, 'step' => 2, 'message' => 'success');
 		$twilio_sid = $this->openvbx_settings['twilio_sid'];
 		$twilio_token = $this->openvbx_settings['twilio_token'];
+		$connect_app = $this->openvbx_settings['connect_application_sid'];
 
 		try
 		{
 			// call for most basic of information to see if we have access
-			$account = OpenVBX::getAccount($twilio_sid, $twilio_token);
-			$accounts = $account->accounts;			
+			$service = OpenVBX::_getService($twilio_sid, $twilio_token);
+			$status = $service->account->status;
+
+			// check the connect app if a sid is provided
+			if (!empty($connect_app)) {
+				try {
+					$application = $service->account->connect_apps->get($connect_app);
+					$friendly_name = $application->friendly_name;
+				}
+				catch (Exception $e) {
+					switch ($e->getCode()) {
+						case 0:
+							// return a better message than "resource not found"
+							throw new InstallException('The Connect Application SID "'.$connect_app.'" was not found.', 0);
+							break;
+						default:
+							throw new InstallException($e->getMessage, $e->getCode);
+					}
+				}
+			}
 		}
 		catch(Exception $e)
 		{

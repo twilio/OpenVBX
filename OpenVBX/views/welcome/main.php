@@ -7,7 +7,7 @@
 
 			<div class="steps">
 				
-				<div class="step">
+				<div class="step next">
 					<a target="_blank" class="help" href="http://openvbx.org/install#upgrade" title="Get help at OpenVBX.org">Help</a>
 					<h1>Connect</h1>
 					<div class="step-desc">
@@ -18,7 +18,7 @@
 					</div><!-- .step-desc -->
 				</div><!-- .step -->
 
-				<div class="step">
+				<div class="step submit">
 					<a target="_blank" class="help" href="http://openvbx.org/install#connect" title="Get help at OpenVBX.org">Help</a>
 					<h1>Connect Complete</h1>
 					<div class="step-desc">

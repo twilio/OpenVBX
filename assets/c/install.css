@@ -313,7 +313,7 @@ ul.dependencies li.fail.optional {
 	background-color: #0066FF;
 }
 
-.navigation .submit.loading {
+.navigation button.loading {
     background-image: url(../i/ajax-loader-circle.gif);
     background-position: 50% 50%;
 	background-repeat: no-repeat;

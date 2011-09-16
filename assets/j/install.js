@@ -18,214 +18,111 @@
  * Contributor(s):
  **/
 
-if(typeof(OpenVBX) == "undefined") {
-	var OpenVBX = {};
-}
+$(document).ready(function() {
+	if($('.error').text() != '') {
+		setTimeout(OpenVBX.Steps.toggleError, 1000);
+	}
 
-
-OpenVBX.Installer = {
-	tabsDisabled: true,
-	ready : false,
-	currentStep : 1,
-	validate : function(afterValidation) {
-		var step = $('#step-'+OpenVBX.Installer.currentStep);
-		var params = $('textarea, input, select', step);
-		var result = $.ajax({
-			url : OpenVBX.home + '/install/validate',
-			data : params,
-			success : function(data) {
-				$('.invalid').removeClass('invalid');
-				if(!data.success) {
-					$('.error').text(data.message);
-					$('.error').slideDown();
-					for(var a in data.errors) {
-						$('#'+a+'-'+OpenVBX.Installer.currentStep).addClass('invalid');
+	$('#install-steps').Steps({
+		validateCallbacks : {
+			next : function (stepId, step) {		
+				var _this = this,
+					_success = false,
+					params = $('textarea, input, select', step);
+				
+				_this.Steps.setButtonLoading('next', true);
+			
+				$.ajax({
+					url : OpenVBX.home + '/install/validate',
+					data : params,
+					type : 'post',
+					dataType : 'json',
+					async : false,
+					success : function(r) {
+						$('.invalid', step).removeClass('invalid');
+						_success = r.success;
+						if (!r.success) {
+							for (var a in r.errors) {
+								$('#' + a + '-' + stepId).addClass('invalid');
+							}
+							_this.Steps.triggerError(r.message);
+						}
+						else {
+							_this.Steps.clearError();
+						}
+					},
+					error : function(XHR, textStatus, errorThrown) {
+						_this.Steps.triggerError('An application error occurred.  Please try again.');
 					}
-				} else {
-					if(OpenVBX.Installer.currentStep == 5) {
-						OpenVBX.Installer.ready = true;
-					}
-					
-					afterValidation();
-				}
-				return data.success;
+				});
+			
+				_this.Steps.setButtonLoading('next', false);
+				return _success;
 			},
+			prev : function (stepId, step) {
+				return true;
+			},
+			submit : function (stepId, step) {
+				var _this = $(this),
+					_success = false;
+				
+				_this.Steps.setButtonLoading('submit', true);
+				_this.Steps.setButtonLoading('next', true);
+				
+				$.ajax({
+					url : OpenVBX.home + '/install/validate',
+					data : $('textarea, input, select', step),
+					type : 'post',
+					dataType : 'json',
+					async : false,
+					success : function (r) {
+						$('.invalid', step).removeClass('invalid');
+						_success = r.success;
+						if (!r.success) {
+							for (var a in r.errors) {
+								$('#' + a + '-' + stepId).addClass('invalid');
+							}
+							_this.Steps.triggerError(r.message);
+						}
+						else {
+							_this.Steps.clearError();
+							_success = doInstall(_this);
+						}
+					},
+					error : function(XHR, textStatus, errorThrown) {
+						_this.Steps.triggerError('An application error occurred.  Please try again.');
+					}
+				});
+								
+				_this.Steps.setButtonLoading('submit', false);
+				_this.Steps.setButtonLoading('next', false);
+				return _success;
+			}
+		}
+	});
+
+	var doInstall = function(_this) {
+		var _installSuccess = false;
+		
+		$.ajax({
+			url : OpenVBX.home + '/install/setup',
+			data : $('form input, form select, form textarea'),
 			type : 'post',
 			async : false,
 			dataType : 'json',
-			error : function(XMLHttpRequest, textStatus, errorThrown) {
-				$('.error').text('An application error occurred.  Please try again.');
-				$('.error').slideDown();
+			success : function(r) {
+				_installSuccess = r.success;
+				if (!r.success) {
+					_this.Steps.triggerError(r.message);
+				}
+			},
+			error : function(XHR, textStatus, errorThrown) {
+				_this.Steps.triggerError('An application error occurred.  Please try again.');
 			}
 		});
-		return result;
-	},
-	prevStep : function(e) {
-		if(typeof(e) != "undefined") {
-			e.preventDefault();
-		}
-
-		if(OpenVBX.Installer.prevStepLock)
-			return false;
-
-		OpenVBX.Installer.prevStepLock = true;
-		if($('.steps').css('left').replace('px','') > -700)
-			return false;
-
-		$('.error').slideUp();
-		OpenVBX.Installer.currentStep -= 1;
-		OpenVBX.Installer.gotoStep(OpenVBX.Installer.currentStep);
-
-		return false;
-	},
-	nextStep : function(e) {
-		OpenVBX.Installer.tabsDisabled = false;
-		if(typeof(e) != "undefined") {
-			e.preventDefault();
-		}
-
-		if(OpenVBX.Installer.nextStepLock)
-			return false;
-
-		var afterValidation = function() {
-			
-			OpenVBX.Installer.nextStepLock = true;
-			if($('.steps').css('left').replace('px','') <= -3500)
-				return false;
-			
-			$('.error').slideUp();
-			OpenVBX.Installer.currentStep += 1;
-			if(OpenVBX.Installer.currentStep == 6 && OpenVBX.Installer.ready) {
-				OpenVBX.Installer.submit(e);
-			} else {
-				OpenVBX.Installer.gotoStep(OpenVBX.Installer.currentStep);
-			}
-
-		};
-
-		OpenVBX.Installer.validate(afterValidation);
-
-		return false;
-	},
-	setButtons : function() {
-		if($('.steps').css('left').replace('px','') > -700) {
-			$('button.prev').prop('disabled', true);
-		} else {
-			$('button.prev').prop('disabled', false);
-		}
-		
-		if($('.steps').css('left').replace('px','') <= -3500) {
-			$('button.next').prop('disabled', true);
-		} else {
-			$('button.next').prop('disabled', false);
-		}
-		switch(OpenVBX.Installer.currentStep) {
-			case 1:
-				$('button.prev').hide();
-				$('button.next').show();
-				$('button.submit').hide();
-			break;
-			default:
-				$('button.prev').show();
-				$('button.next').show();
-				$('button.submit').hide();
-				break;
-			case 5:
-				$('button.next').hide();
-				$('button.submit').show();
-				break;
-			case 6:
-				$('button').hide();
-				break;
-		}
-
-		OpenVBX.Installer.nextStepLock = false;
-		OpenVBX.Installer.prevStepLock = false;
-	},
-	gotoStep : function(step) {
-		var left = (step * -700) + 700;
-		$('.steps').animate({'left': left}, 'normal', 'swing', OpenVBX.Installer.setButtons);
-		OpenVBX.Installer.currentStep = step;
-	},
-	toggleError : function() {
-		$('.error').slideToggle();
-	},
-	submit : function(e) {
-		if(typeof(e) != "undefined") {
-			e.preventDefault();
-		}
-
-		if(OpenVBX.Installer.ready)
-		{
-			$.ajax({
-				url : OpenVBX.home + '/install/setup',
-				data : $('form input, form select, form textarea'),
-				success : function(data) {
-					if(!data.success) {
-						$('.error')
-							.text(data.error)
-							.slideDown();
-					} else {
-						OpenVBX.Installer.gotoStep(6);
-					}
-				},
-				type : 'post',
-				dataType : 'json',
-				error : function(XMLHttpRequest, textStatus, errorThrown) {
-					$('.error')
-						.text('An application error occurred.  Please try again.')
-					.slideDown();
-				}
-			});
-		}
-
-		return false;
-	}
-};
-
-$(document).ready(function() {
-	if($('.error').text() != '') {
-		setTimeout(OpenVBX.Installer.toggleError, 
-				   1000);
+		return _installSuccess;
 	}
 	
-	OpenVBX.Installer.setButtons();
-	$('button.next').click(OpenVBX.Installer.nextStep);
-	$('button.prev').click(OpenVBX.Installer.prevStep);
-	$('.error').click(OpenVBX.Installer.toggleError);
-	$('button.submit').click(OpenVBX.Installer.nextStep);
-	$('form').submit(function(e) {
-		e.preventDefault();
-	});
-	
-	$('fieldset').each(function() { 
-		$('input:last', 
-		  this).keypress(
-			  function(e) {
-				  var keyCode = e.keyCode || e.which; 
-				  if(keyCode == 9) {
-					  e.preventDefault();
-					  OpenVBX.Installer.nextStep();
-				  }
-			  });
-	});
-
-	var last_key = false;
-	$(window).bind('keydown', function(e) {
-		var tabstops = {iDatabasePassword : '', 
-						iTwilioToken : '',
-						iFromEmail : '',
-						iAdminPw2 : ''};
-
-		if($(e.target).attr('id') in tabstops
-		   && e.which == 9 && last_key != 16)
-			e.preventDefault();
-
-		if(OpenVBX.Installer.tabsDisabled && e.which == 9)
-			e.preventDefault();
-		last_key = e.which;
-	});
-
 	setTimeout(function() {
 		$.ajax({ 
 			url : OpenVBX.home.replace('index.php', 'support/rewrite'), 
@@ -237,6 +134,4 @@ $(document).ready(function() {
 			} 
 		});
 	}, 1000);
-
-
 });

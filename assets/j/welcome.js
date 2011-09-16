@@ -27,6 +27,11 @@ jQuery(function($) {
 	});
 	
 	$('#welcome-steps').Steps({
+		buttonText : {
+			prev : 'Previous',
+			next : 'Continue',
+			submit : 'Continue to Inbox'
+		},
 		// validate step before switching
 		validateCallbacks : {
 			next : function(stepId, step) {
@@ -41,7 +46,7 @@ jQuery(function($) {
 			prev : function(stepId, step) {
 				return true;
 			},
-			submit : function(stepId, step) {
+			submit : function() {
 				var self = this;
 				$.post(OpenVBX.home + '/welcome/finish',
 					{},

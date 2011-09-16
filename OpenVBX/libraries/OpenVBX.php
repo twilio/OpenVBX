@@ -76,7 +76,7 @@ class OpenVBX {
 	public static function getTwilioApiVersion()
 	{
 		$ci =& get_instance();
-		$url = $ci->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
+		$url = $ci->vbx_settings->get('twilio_endpoint', VBX_PARENT_TENANT);
 		if(preg_match('/.*\/([0-9]+-[0-9]+-[0-9]+)$/', $url, $matches))
 		{
 			return $matches[1];
@@ -245,9 +245,8 @@ class OpenVBX {
 	 * @param string $twilio_sid 
 	 * @return object Services_Twilio
 	 */
-	public function _getService($twilio_sid = false, $twilio_sid = false) 
+	public function _getService($twilio_sid = false, $twilio_token = false, $api_version = '2010-04-01') 
 	{
-		$api_version = OpenVBX::getTwilioApiVersion();
 		$_http = null;
 
 		$ci =& get_instance();
