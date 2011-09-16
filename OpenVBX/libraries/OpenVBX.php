@@ -284,7 +284,7 @@ class OpenVBX {
 												$api_version,
 												$_http
 											);
-						return $service;
+						return $service->account;
 					}
 					catch (Exception $e) {
 						throw new OpenVBXException($e->getMessage());

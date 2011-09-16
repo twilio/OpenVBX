@@ -40,7 +40,6 @@ class Logout extends MY_Controller
 	
 	private function logout()
 	{
-		
 		$this->session->sess_destroy();
 		$this->session->set_userdata('loggedin', false);
 		

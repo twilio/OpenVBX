@@ -83,7 +83,7 @@ class MY_Controller extends Controller
 		{
 			$this->session->set_userdata('loggedin', 0);
 			$this->session->set_flashdata('error', 'This tenant is no longer active');
-			return redirect('auth/logout');
+			return redirect(site_url('auth/logout'));
 		}
 
 		if($this->tenant === false)

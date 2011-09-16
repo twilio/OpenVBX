@@ -172,7 +172,6 @@ class Install extends Controller {
 	{
 		$database = $this->database;
 
-		// @todo - inspect mysql version to see if mysqli is available
 		$database['dbdriver'] = 'mysql';
 		$database['dbprefix'] = '';
 		$database['pconnect'] = FALSE;
@@ -213,6 +212,21 @@ class Install extends Controller {
 			{
 				throw new InstallException( "Failed to connect to database: "
 											. mysql_error(), 2 );
+			}
+
+			// test for mysqli compat
+			if (function_exists('mysqli_connect')) {
+				// server info won't work without first selecting a table
+				mysql_select_db($database['default']['database']);
+				$server_version = mysql_get_server_info($dbh);
+				if (!empty($server_version)) {
+					if (version_compare($server_version, '4.1.13', '>=') && version_compare($server_version, '5', '<')) {
+						$database['default']['dbdriver'] = 'mysqli';
+					}
+					elseif (version_compare($server_version, '5.0.7', '>=')) {
+						$database['default']['dbdriver'] = 'mysqli';
+					}
+				}
 			}
 
 			$this->setup_database($database, $dbh);
@@ -404,12 +418,12 @@ class Install extends Controller {
 
 			if (empty($this->account)) 
 			{
-				$this->account = OpenVBX::_getService($settings['twilio_sid'], $settings['twilio_token'])->account;
+				$this->account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
 			}
 			$applications = $this->account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
 
 			$application = false;
-			foreach ($applications as $_application) 
+			foreach ($applications as $_application)
 			{
 				if ($_application->friendly_name == $app_name) 
 				{
@@ -502,7 +516,6 @@ class Install extends Controller {
 				$json['errors'] = array('database_name' => $error );
 				throw new InstallException("Failed to access database: $error", 2);
 			}
-
 		}
 		catch(InstallException $e)
 		{
@@ -533,20 +546,30 @@ class Install extends Controller {
 		try
 		{
 			// call for most basic of information to see if we have access
-			$service = OpenVBX::_getService($twilio_sid, $twilio_token);
-			$status = $service->account->status;
+			$account = OpenVBX::getAccount($twilio_sid, $twilio_token);
+			
+			/**
+			 * We'll get an account back with empty members, even if we supplied
+			 * bunk credentials, we need to verify that something is there to be
+			 * confident of success.
+			 */
+			$status = $account->type;
+			if (empty($status)) 
+			{
+				throw new InstallException('Unable to access Twilio Account');
+			}
 
 			// check the connect app if a sid is provided
 			if (!empty($connect_app)) {
 				try {
-					$application = $service->account->connect_apps->get($connect_app);
+					$application = $account->connect_apps->get($connect_app);
 					$friendly_name = $application->friendly_name;
 				}
 				catch (Exception $e) {
 					switch ($e->getCode()) {
 						case 0:
 							// return a better message than "resource not found"
-							throw new InstallException('The Connect Application SID "'.$connect_app.'" was not found.', 0);
+							throw new InstallException('The Connect Application SID &ldquo;'.$connect_app.'&rdquo; was not found.', 0);
 							break;
 						default:
 							throw new InstallException($e->getMessage, $e->getCode);
@@ -566,9 +589,7 @@ class Install extends Controller {
 				default:
 					$json['message'] = $e->getMessage();
 			}
-			
-			// include code in error message so that users can better 
-			// communicate error conditions in support requests
+
 			$json['message'] .= ' ('.$e->getCode().')';
 		}
 

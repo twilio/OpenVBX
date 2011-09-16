@@ -126,6 +126,13 @@ class Site extends User_Controller
 			);
 		}
 
+		$data['server_info'] = array(
+			'php_version' => phpversion(),
+			'mysql_version' => $this->db->conn_id->server_info,
+			'mysql_driver' => $this->db->dbdriver,
+			'apache_version' => apache_get_version()
+		);
+
 		$data['available_themes'] = $this->vbx_theme->get_all();
 		$plugins = Plugin::all();
 		foreach($plugins as $plugin)
@@ -242,8 +249,8 @@ class Site extends User_Controller
 		
 		$application = false;
 		try {
-			$service = OpenVBX::_getService();
-			$sub_account = $service->accounts->get($accountSid);
+			$account = OpenVBX::getAccount();
+			$sub_account = $account->accounts->get($accountSid);
 			foreach ($sub_account->applications as $_application) 
 			{
 				if ($application->friendly_name == $appName) 
@@ -331,19 +338,17 @@ class Site extends User_Controller
 						break;
 				}
 
+				/**
+				 * Only do app setup for sub-accounts.
+				 * Connect tenants will get set up after going through the connect process.
+				 */
 				if ($auth_type === VBX_Settings::AUTH_TYPE_SUBACCOUNT) 
 				{
 					try {
-						/**
-						 * This is the only time, aside from install & upgrade, that we should
-						 * need to do this. We need access to the base service object to create
-						 * new accounts. Since this activity is relegated to the parent account
-						 * we'll make an exception and go after the full service object.
-						 */
-						$service = OpenVBX::_getService();
-					
+						$account = OpenVBX::getAccount();
+
 						// default, sub-account
-						$sub_account = $service->accounts->create(array(
+						$sub_account = $account->accounts->create(array(
 															'FriendlyName' => $friendlyName
 														));
 						$tenant_sid = $sub_account->sid;

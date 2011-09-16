@@ -543,7 +543,5 @@ $(function () {
 		Client.ui.toggleTab(this);
 	});
 		
-	if (OpenVBX.capability) {
-		Client.init();
-	}
+	Client.init();
 });
