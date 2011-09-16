@@ -237,19 +237,26 @@ class OpenVBX {
 	}
 	
 	/**
-	 * Get the full Twilio Service API object
+	 * Get the Twilio Services Account object for communicating with Twilio HQ
 	 * 
-	 * For internal use only, for plugin/expansion use see OpenVBX::getAccount()
+	 * Will return the proper account for communications with Twilio.
+	 * This method is sub-account & twilio connect aware
+	 * 
+	 * Optional: Pass different Account Sid & Token values to communicate
+	 * with a different Twilio Account
+	 * 
+	 * Twilio Connect Aware. Will return the connect account if applicable.
 	 *
-	 * @param string $twilio_sid 
-	 * @param string $twilio_sid 
-	 * @return object Services_Twilio
+	 * @throws OpenVBXException if invalid parameters are passed in for new object generation
+	 * @param string $twilio_sid Optional - Twilio Account Sid
+	 * @param string $twilio_token Optional - Twilio Account Token
+	 * @return object Services_Twilio_Rest_Account
 	 */
-	public function _getService($twilio_sid = false, $twilio_token = false, $api_version = '2010-04-01') 
+	public static function getAccount($twilio_sid = false, $twilio_token = false, $api_version = '2010-04-01') 
 	{
 		$_http = null;
-
 		$ci =& get_instance();
+		
 		// internal api development override, you'll never need this
 		if ($_http_settings = $ci->config->item('_http_settings')) 
 		{
@@ -266,7 +273,6 @@ class OpenVBX {
 		// values. If they are, make a new object, otherwise use the same internal object
 		if (!empty($twilio_sid) || !empty($twilio_token)) 
 		{
-			$ci =& get_instance();
 			if (!empty($twilio_sid) && !empty($twilio_token)) 
 			{
 				if ($twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) 
@@ -293,22 +299,11 @@ class OpenVBX {
 
 		// return standard service object
 		if (!(self::$_twilioService instanceof Services_Twilio)) 
-		{
-			if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) 
-			{
-				$twilio_sid = $ci->vbx_settings->get('twilio_sid', VBX_PARENT_TENANT);
-				$twilio_token = $ci->vbx_settings->get('twilio_token', VBX_PARENT_TENANT);
-			}
-			else 
-			{	
-				$twilio_sid = $ci->twilio_sid;
-				$twilio_token = $ci->twilio_token;
-			}
-			
+		{	
 			try {
 				self::$_twilioService = new Services_Twilio(
-													$twilio_sid, 
-													$twilio_token,
+													$ci->twilio_sid, 
+													$ci->twilio_token,
 													$api_version,
 													$_http
 												);
@@ -318,38 +313,7 @@ class OpenVBX {
 			}
 		}
 		
-		return self::$_twilioService;
-	}
-	
-	/**
-	 * Get the Twilio Services Account object for communicating with Twilio HQ
-	 * 
-	 * Will return the proper account for communications with Twilio.
-	 * This method is sub-account & twilio connect aware
-	 * 
-	 * Optional: Pass different Account Sid & Token values to communicate
-	 * with a different Twilio Account
-	 * 
-	 * Twilio Connect Aware. Will return the connect account if applicable.
-	 *
-	 * @throws OpenVBXException if invalid parameters are passed in for new object generation
-	 * @param string $twilio_sid Optional - Twilio Account Sid
-	 * @param string $twilio_token Optional - Twilio Account Token
-	 * @return object Services_Twilio_Rest_Account
-	 */
-	public static function getAccount($twilio_sid = false, $twilio_token = false) 
-	{
-		$service = self::_getService($twilio_sid, $twilio_token);
-		
-		$ci =& get_instance();
-		if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) 
-		{
-			return $service->accounts->get($ci->twilio_sid);
-		}
-		else 
-		{
-			return $service->account;
-		}
+		return self::$_twilioService->account;
 	}
 	
 	/**

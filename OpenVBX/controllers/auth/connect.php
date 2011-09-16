@@ -37,14 +37,9 @@ class Connect extends MY_Controller
 	{
 		$user_id = $this->session->userdata('user_id');
 
-ep(__METHOD__.' user_id: '.$user_id);		
-
 		if (!empty($user_id) && $user = $this->validate_returning_user($user_id)) 
 		{
-ep(__METHOD__.' user: '.$user->email);
 			$tenant = $this->db->get_where('tenants', array('id' => $user->tenant_id))->result();
-
-ep(__METHOD__, $tenant);
 
 			if (!empty($tenant[0])) 
 			{
@@ -69,7 +64,7 @@ ep(__METHOD__, $tenant);
 	{
 		// jump through hoops to get around the Tenantization
 		$userdata = $this->db->get_where('users', array('id' => $user_id))->result();
-ep(__METHOD__, 'userdata: ', $userdata);
+
 		if (!empty($userdata[0])) {
 			$user = new VBX_User($userdata[0]);
 			$list = implode(',', array(

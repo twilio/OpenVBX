@@ -46,7 +46,8 @@ class Welcome extends User_Controller {
 			'openvbx_js' => array(
 				'connect_sid' => $this->vbx_settings->get('connect_application_sid', VBX_PARENT_TENANT),
 				'connect_base_uri' => $connect_base_uri
-			)
+			),
+			'title' => 'Welcome'
 		);
 		$this->load->view('steps', $data);
 	}
@@ -57,9 +58,10 @@ class Welcome extends User_Controller {
 			$app_name = 'OpenVBX :: '.$this->tenant->url_prefix;
 			
 			try {
+				//$twilio_sid = $this->vbx_settings->get('')
 				$account = OpenVBX::getAccount();
 				$applications = $account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
-			
+
 				$application = false;
 				foreach ($applications as $_application) {
 					if ($_application->friendly_name == $app_name) {
@@ -91,7 +93,13 @@ class Welcome extends User_Controller {
 			}
 			catch (Exception $e) 
 			{
-				$error = $e->getMessage();
+				switch ($e->getCode()) {
+					case '20003':
+						$error = 'Authentication Failed. Invalid Twilio SID or Token ('.$e->getCode().')';
+						break;
+					default:
+						$error = $e->getMessage().' ('.$e->getCode().')';
+				}
 			}
 		}
 		

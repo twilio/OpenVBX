@@ -222,7 +222,6 @@ class Site extends User_Controller
 				$this->session->set_flashdata('error', 'Settings have been saved');
 			}
 			catch(SiteException $e) {
-				ep('hi');
 				$data['error'] = true;
 				$data['message'] = $e->getMessage();
 				$this->session->set_flashdata('error', $e->getMessage());

@@ -34,6 +34,8 @@
 						<input class="medium" id="override" name="site[recording_host]" value="<?php echo @$recording_host["value"]; ?>">
 				</div>
 				
+				<!-- @todo: add setting to select male/female voice option for speech -->
+				
 				<button class="submit-button" type="submit"><span>Update</span></button>
 			</form>
 
@@ -86,7 +88,7 @@
 		<div id="settings-multi-tenant" class="vbx-tab-view">
 			<?php if(isset($tenants)): ?>
 			<h3>Tenants</h3>
-			<form name="tenants" action="<?php echo site_url('settings/site/tenant') ?>#multi-tenant" method="POST" class="add-tenant-form vbx-form">
+			<form name="tenants" action="<?php echo site_url('settings/site/tenant') ?>#multi-tenant" method="POST" class="add-tenant-form vbx-form" autocomplete="off">
 				<div class="vbx-input-complex vbx-input-container">
 					<label for="tenant-admin-email" class="field-label">Adminstrator email:
 						<input id="tenant-admin-email" type="text" name="tenant[admin_email]" value="" class="medium" />
@@ -149,7 +151,7 @@
 
 		<div id="settings-twilio-account" class="vbx-tab-view">
 			<h3>Twilio Account</h3>
-			<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#twilio-account" method="POST" class="vbx-settings-form vbx-form">
+			<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#twilio-account" method="POST" class="vbx-settings-form vbx-form" autocomplete="off">
 				<fieldset class="vbx-input-container">
 					<label for="site-twilio-sid" class="field-label">Twilio SID
 						<input id="site-twilio-sid" type="text" name="site[twilio_sid]" value="<?php echo @$twilio_sid['value'] ?>" class="medium" />

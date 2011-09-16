@@ -27,7 +27,7 @@ class Iframe extends User_Controller {
 
 	public function __construct() {
 		parent::__construct();
-		// make tokens valid for 4 hours
+		// make tokens valid for 8 hours
 		$this->client_token_timeout = 3600*8;
 	}
 
@@ -43,17 +43,16 @@ class Iframe extends User_Controller {
 			setcookie('last_known_url', '', time() - 3600, '/');
 		}
 
+		// look at protocol and serve the appropriate file, https comes from amazon aws
+		$tjs_baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ?
+			'https://s3.amazonaws.com/static.twilio.com' : 'http://static.twilio.com';
+		$data['twilio_js'] = $tjs_baseurl.'/libs/twiliojs/1.0/twilio.js';
+
 		if (!empty($this->application_sid))
 		{
-			// look at protocol and serve the appropriate file, https comes from amazon aws
-			$tjs_baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ?
-				'https://s3.amazonaws.com/static.twilio.com' : 'http://static.twilio.com';
-			//$this->template->add_js($tjs_baseurl.'/libs/twiliojs/1.0/twilio.js', 'absolute');
-			$data['twilio_js'] = $tjs_baseurl.'/libs/twiliojs/1.0/twilio.js';
+			$data['client_capability'] = $this->capability->generateToken($this->client_token_timeout);
+			$data['capability'] = $this->capability;
 		}
-
-		$data['client_capability'] = $this->capability->generateToken($this->client_token_timeout);
-		$data['capability'] = $this->capability;
 
 		$this->load->view('iframe', $data);
 	}

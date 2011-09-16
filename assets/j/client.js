@@ -523,7 +523,7 @@ $(function () {
 		event.stopPropagation();
 		Client.hangup();
 	});
-	
+
 	$('#client-ui-mute').live('click', function(event) {
 		event.preventDefault();
 		event.stopPropagation();
@@ -536,12 +536,14 @@ $(function () {
 		var key = $(this).children('.client-ui-button-number').text();
 		Client.ui.pressKey(key);
 	});
-	
+
 	$('.client-ui-tab-wedge a, .client-ui-tab-status-inner', $('#dialer')).live('click', function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		Client.ui.toggleTab(this);
 	});
-	
-	Client.init();
+		
+	if (OpenVBX.capability) {
+		Client.init();
+	}
 });

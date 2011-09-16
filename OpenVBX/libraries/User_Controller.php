@@ -381,10 +381,9 @@ class User_Controller extends MY_Controller
 	 */
 	protected function set_client_support() 
 	{
-		$this->application_sid = $this->settings->get('application_sid', VBX_PARENT_TENANT);
+		$this->application_sid = $this->settings->get('application_sid', $ci->tenant->id);
 		if (!empty($this->application_sid)) 
 		{
-			// once hooked up properly this library should autoload
 			if (!class_exists('Services_Twilio_Capability'))
 			{
 				include_once(APPPATH.'libraries/Services/Twilio/Capability.php');

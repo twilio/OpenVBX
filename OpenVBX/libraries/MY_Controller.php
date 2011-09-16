@@ -96,8 +96,12 @@ class MY_Controller extends Controller
 		if($this->tenant)
 		{
 			$this->config->set_item('sess_cookie_name', $this->tenant->id . '-' . $this->config->item('sess_cookie_name'));
+			
 			$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
-			$this->twilio_token = $this->settings->get('twilio_token', $this->tenant->id);
+			$token_from = ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT ? VBX_PARENT_TENANT : $this->tenant->id);
+			$this->twilio_token = $this->settings->get('twilio_token', $token_from);				
+
+			// @deprecated, will be removed in a future release
 			$this->twilio_endpoint = $this->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
 		}
 

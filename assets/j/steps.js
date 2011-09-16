@@ -194,12 +194,12 @@
 		return _currentStep == _numSteps;
 	};
 	
-	$.fn.Steps.disablePrev = function(disable) {
-		disable(_prevButton, (disable === true), (disable === true));
+	$.fn.Steps.disablePrev = function(disabled) {
+		disable(_prevButton, (disabled === true), (disabled === true));
 	};
 
-	$.fn.Steps.disableNext = function(disable) {
-		disable(_nextButton, (disable === true), (disable === true));
+	$.fn.Steps.disableNext = function(disabled) {
+		disable(_nextButton, (disabled === true), (disabled === true));
 	};
 
 	$.fn.Steps.lockPrev = function(lock) {

@@ -258,7 +258,6 @@ class VBX_Incoming_numbers extends Model
 		}
 		catch (Exception $e) 
 		{
-			ep($e->getMessage());
 			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 
