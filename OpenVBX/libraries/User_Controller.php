@@ -381,7 +381,8 @@ class User_Controller extends MY_Controller
 	 */
 	protected function set_client_support() 
 	{
-		$this->application_sid = $this->settings->get('application_sid', $ci->tenant->id);
+		$this->application_sid = $this->settings->get('application_sid', $this->tenant->id);
+		ep($this->application_sid);
 		if (!empty($this->application_sid)) 
 		{
 			if (!class_exists('Services_Twilio_Capability'))
