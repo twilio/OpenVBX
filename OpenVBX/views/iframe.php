@@ -34,6 +34,7 @@
 			</div><!-- .client-ui-tab .open -->
 
 			<div class="client-ui-content">
+				<!-- put presence ui here? -->
 				<div class="client-ui-bg-overlay"><!-- leave me alone! --></div>
 				<div class="client-ui-inset">
 					<div id="client-ui-status" class="clearfix">
