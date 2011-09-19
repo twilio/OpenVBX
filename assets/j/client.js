@@ -160,10 +160,15 @@ var Client = {
 		}
 		
 		// notify the iframe
-		if (window.frames['openvbx-iframe'].OpenVBX.presence) {
-			window.frames['openvbx-iframe'].OpenVBX.presence._set(event, Client.clients);
+		try {
+			if (window.frames['openvbx-iframe'].OpenVBX.presence) {
+				window.frames['openvbx-iframe'].OpenVBX.presence._set(event, Client.clients);
+			}
 		}
-		
+		catch (e) {
+			// fail silently, probably tried during a page load or something fun like that
+		}
+
 		// trigger event for main frame listeners
 		$(this).trigger('presence', [event, Client.clients]);
 	},
@@ -421,7 +426,7 @@ Client.ui = {
 	displayTime: function() {
 		var totalseconds = Math.floor(this.getTicks() / 1000);
 
-		var minutes = Math.floor(seconds / 60);
+		var minutes = Math.floor(totalseconds / 60);
 		var seconds = totalseconds % 60;
 
 		if(minutes < 10) {

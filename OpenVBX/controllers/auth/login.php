@@ -97,11 +97,9 @@ class Login extends MY_Controller
 
 			if ($user) {
 				$connect_auth = OpenVBX::connectAuthTenant($user->tenant_id);
-ep($connect_auth);
-ep($user->is_admin);
+
 				// we kick out non-admins, admins will have an opportunity to re-auth the account
 				if (!$connect_auth && !$user->is_admin) {
-ep('redirecting plebian user');
 					$this->session->set_flashdata('error', 'Connect auth denied');
 					return redirect('auth/connect/account_deauthorized');
 				}
