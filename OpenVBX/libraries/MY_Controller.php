@@ -38,6 +38,10 @@ class MY_Controller extends Controller
 	protected $section;
 	protected $request_method;
 	protected $response_type;
+	
+	protected $js_assets = 'js';
+	protected $css_assets = 'css';
+
 	public $tenant;
 
 	public $twilio_sid;
@@ -114,9 +118,10 @@ class MY_Controller extends Controller
 		if ($this->response_type == 'html') 
 		{
 			$scripts = null;
+			$js_assets = (!empty($this->js_assets) ? $this->js_assets : 'js');
 			if ($this->config->item('use_unminimized_js'))
 			{
-				$scripts = $this->get_assets_list('js');
+				$scripts = $this->get_assets_list($js_assets);
 				if (is_array($scripts)) {
 					foreach ($scripts as $script)
 					{
@@ -125,12 +130,13 @@ class MY_Controller extends Controller
 				}
 			}
 			else {
-				$this->template->add_js(asset_url('/assets/min/?g=js'), 'absolute');
+				$this->template->add_js(asset_url('/assets/min/?g='.$js_assets), 'absolute');
 			}
 
+			$css_assets = (!empty($this->css_assets) ? $this->css_assets : 'css');
 			if ($this->config->item('use_unminimized_css'))
-			{
-				$styles = $this->get_assets_list('css');
+			{				
+				$styles = $this->get_assets_list($css_assets);
 				if (is_array($styles)) {
 					foreach ($styles as $style)
 					{
@@ -138,7 +144,7 @@ class MY_Controller extends Controller
 					}
 				}
 			} else {
-				$this->template->add_css(asset_url('/assets/min/?g=css'), 'link');
+				$this->template->add_css(asset_url('/assets/min/?g='.$css_assets), 'link');
 			}
 		}
 	}

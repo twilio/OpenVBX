@@ -240,6 +240,7 @@ class Install extends Controller {
 
 			$this->setup_openvbx_settings($openvbx_settings);
 
+			$this->setup_connect_app($openvbx_settings);
 
 		}
 		catch(InstallException $e)
@@ -254,6 +255,52 @@ class Install extends Controller {
 		}
 
 		echo json_encode($json);
+	}
+	
+	private function setup_connect_app($settings) {
+		try {
+			$account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
+			$connect_application = $account->connect_apps->get($settings['connect_application_sid']);
+			
+			$site_url = site_url();
+			if ($settings['rewrite_enabled']) {
+				$site_url = str_replace('/index.php', '', $site_url);
+			}
+			
+			$required_settings = array(
+				'HomepageUrl' => $site_url,
+				'AuthorizeRedirectUrl' => $site_url.'/auth/connect',
+				'DeauthorizeCallbackUrl' => $site_url.'/auth/connect/deauthorize',
+				'Permissions' => array(
+					'get-all',
+					'post-all'
+				)
+			);
+		
+			$updated = false;
+			foreach ($required_settings as $key => $setting) {
+				$app_key = Services_Twilio::decamelize($key);
+				if ($connect_application->$app_key != $setting) {
+					$connect_application->$app_key = $setting;
+					$updated = true;
+				}
+			}
+
+			if ($updated) {
+				$connect_application->update(array(
+					'FriendlyName' => $connect_application->friendly_name,
+					'Description' => $connect_application->description,
+					'CompanyName' => $connect_application->company_name,
+					'HomepageUrl' => $required_settings['HomepageUrl'],
+					'AuthorizeRedirectUrl' => $required_settings['AuthorizeRedirectUrl'],
+					'DeauthorizeCallbackUrl' => $required_settings['DeauthorizeCallbackUrl'],
+					'Permissions' => implode(',', $required_settings['Permissions'])
+				));
+			}
+		}
+		catch (Exception $e) {
+			throw new InstallException($e->getMessage(), $e->getCode());
+		}
 	}
 
 	private function setup_database($database, $dbh)
@@ -567,37 +614,6 @@ class Install extends Controller {
 				try {
 					$connect_application = $account->connect_apps->get($connect_app);
 					$friendly_name = $application->friendly_name;
-					
-					$required_settings = array(
-						'HomepageUrl' => site_url(),
-						'AuthorizeRedirectUrl' => site_url('/auth/connect'),
-						'DeauthorizeCallbackUrl' => site_url('/auth/connect/deauthorize'),
-						'Permissions' => array(
-							'get-all',
-							'post-all'
-						)
-					);
-					
-					$updated = false;
-					foreach ($required_settings as $key => $setting) {
-						$app_key = Services_Twilio::decamelize($key);
-						if ($connect_application->$app_key != $setting) {
-							$connect_application->$app_key = $setting;
-							$updated = true;
-						}
-					}
-
-					if ($updated) {
-						$connect_application->update(array(
-							'FriendlyName' => $connect_application->friendly_name,
-							'Description' => $connect_application->description,
-							'CompanyName' => $connect_application->company_name,
-							'HomepageUrl' => $required_settings['HomepageUrl'],
-							'AuthorizeRedirectUrl' => $required_settings['AuthorizeRedirectUrl'],
-							'DeauthorizeCallbackUrl' => $required_settings['DeauthorizeCallbackUrl'],
-							'Permissions' => implode(',', $required_settings['Permissions'])
-						));
-					}
 				}
 				catch (Exception $e) {
 					switch ($e->getCode()) {

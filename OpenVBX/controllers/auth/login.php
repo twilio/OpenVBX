@@ -22,6 +22,7 @@
 class Login extends MY_Controller
 {
 	protected $user_id;
+	protected $js_assets = 'loginjs';
 
 	function __construct()
 	{
@@ -94,15 +95,24 @@ class Login extends MY_Controller
 										   $this->input->post('captcha'),
 										   $this->input->post('captcha_token'));
 
-			if($user)
-			{
+			if ($user) {
+				$connect_auth = OpenVBX::connectAuthTenant($user->tenant_id);
+ep($connect_auth);
+ep($user->is_admin);
+				// we kick out non-admins, admins will have an opportunity to re-auth the account
+				if (!$connect_auth && !$user->is_admin) {
+ep('redirecting plebian user');
+					$this->session->set_flashdata('error', 'Connect auth denied');
+					return redirect('auth/connect/account_deauthorized');
+				}
+
 				$userdata = array('email' => $user->email,
 								  'user_id' => $user->id,
 								  'is_admin' => $user->is_admin,
 								  'loggedin' => TRUE,
 								  'signature' => VBX_User::signature($user->id),
 								  );
-				
+			
 				$this->session->set_userdata($userdata);
 
 				if(OpenVBX::schemaVersion() >= 24)
@@ -111,9 +121,8 @@ class Login extends MY_Controller
 				}
 
 				return $this->redirect($redirect);
-				
 			}
-
+			
 			$this->session->set_flashdata('error',
 										  'Email address and/or password is incorrect');
 			return redirect('auth/login?redirect='.urlencode($redirect));

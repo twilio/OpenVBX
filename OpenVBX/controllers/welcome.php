@@ -30,10 +30,10 @@ class Welcome extends User_Controller {
 	}
 	
 	public function index() {
-		// currently only checks for tenant first run, there is no overall
-		// first run concept right now, this was implemented to accommodate
-		// a tenant being run through the Connect process
-		if (!$this->settings->get('tenant_first_run', $this->tenant->id)) {
+		$tenant_first_run = $this->settings->get('tenant_first_run', $this->tenant->id);
+		$twilio_sid = $this->twilio_sid;
+
+		if (!$tenant_first_run && !in_array($twilio_sid, array('unauthorized_client', 'deauthorized_client'))) {
 			redirect('/numbers');
 		}
 
@@ -62,7 +62,6 @@ class Welcome extends User_Controller {
 			$app_name = 'OpenVBX :: '.$this->tenant->url_prefix;
 			
 			try {
-				//$twilio_sid = $this->vbx_settings->get('')
 				$account = OpenVBX::getAccount();
 				$applications = $account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
 

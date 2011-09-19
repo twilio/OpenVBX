@@ -9,26 +9,34 @@
 				
 				<div class="step next">
 					<a target="_blank" class="help" href="http://openvbx.org/install#upgrade" title="Get help at OpenVBX.org">Help</a>
-					<h1>Connect</h1>
+					
+					<?php if (!empty($tenant_sid) && $tenant_sid == 'unauthorized_client'): ?>
+						<h1>Connect Access Denied</h1>
+					<?php else: ?>
+						<h1>Connect</h1>
+					<?php endif; ?>
+					
 					<div class="step-desc">
-						<p>You need to connect your OpenVBX Account with your Twilio Account.</p>
-			            <div class="upgrade-warning">
+						
+						<?php if (!empty($tenant_sid) && $tenant_sid == 'unauthorized_client'): ?>
+							<div class="upgrade-error .error">
+								<p>You are required to authorize OpenVBX to access your account to use OpenVBX.</p> 
+							</div>
+						<?php else: ?>
+							<br />
+							<p>You need to connect your OpenVBX Account with your Twilio Account.</p>
+						<?php endif; ?>
+
+						<br />
+						<p>Click &ldquo;Continue&rdquo; to authorize OpenVBX to access your account.</p>
+						
+						<div class="upgrade-warning">
 							<p>If you do not have a Twilio Account you can set up an Account during the next step.</p>
 						</div>
+						
 					</div><!-- .step-desc -->
 				</div><!-- .step -->
 
-<?php
-
-/*
-if $data['tenant_sid'] is present and == 'unauthorized_client' then do not allow user to proceed, the user declined to give
-OpenVBX access to their account.
-
-Add new div here that has a back button, but no forward button.
-
-*/
-
-?>
 				<div class="step submit">
 					<a target="_blank" class="help" href="http://openvbx.org/install#connect" title="Get help at OpenVBX.org">Help</a>
 					<h1>Connect Complete</h1>

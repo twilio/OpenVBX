@@ -22,13 +22,13 @@
 class Logout extends MY_Controller
 {
 	protected $user_id;
+	protected $js_assets = 'loginjs';
 
 	function __construct()
 	{
 		parent::__construct();
 		$this->config->load('openvbx');
 		$this->load->database();
-
 
 		$this->user_id = $this->session->userdata('user_id');
 	}

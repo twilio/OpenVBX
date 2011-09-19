@@ -22,6 +22,7 @@
 class Reset extends MY_Controller
 {
 	protected $user_id;
+	protected $js_assets = 'loginjs';
 
 	function __construct()
 	{
@@ -31,7 +32,7 @@ class Reset extends MY_Controller
 
 		$this->template->write('title', '');
 
-		$this->user_id = $this->session->userdata('user_id');
+		$this->user_id = $this->session->userdata('user_id');		
 	}
 
 	public function index()

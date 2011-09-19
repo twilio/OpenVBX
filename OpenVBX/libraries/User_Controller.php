@@ -136,6 +136,8 @@ class User_Controller extends MY_Controller
 				error_log($e->getMessage());
 			}
 
+			$this->connect_check();
+
 			/* Check for first run */
 			if ($this->session->userdata('is_admin') && $this->uri->segment(1) != 'welcome') 
 			{
@@ -149,9 +151,6 @@ class User_Controller extends MY_Controller
 			}
 
 		}
-		
-		// @deprecated
-		// $this->set_client_support();
 	}
 
 	protected function redirect($url)
@@ -177,6 +176,30 @@ class User_Controller extends MY_Controller
 		if ($this->settings->get('tenant_first_run', $this->tenant->id)) 
 		{
 			redirect('welcome');
+		}
+	}
+	
+	private function connect_check() {
+		$section = $this->uri->segment(1);
+		if (!in_array($section, array('welcome', 'auth', 'connect')))
+		{
+			if ($this->twilio_sid == 'unauthorized_client') 
+			{				
+				$redirect_path = 'welcome';
+			}
+		
+			if ($this->twilio_sid == 'deauthorized_client') {
+				if ($this->session->userdata('is_admin')) {
+					$redirect_path = 'welcome';
+				}
+				else {
+					$redirect_path = 'auth/connect/account_deauthorized';
+				}
+			}
+		
+			if (!empty($redirect_path)) {
+				redirect($redirect_path);
+			}	
 		}
 	}
 

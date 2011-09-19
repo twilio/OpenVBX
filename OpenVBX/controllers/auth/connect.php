@@ -24,6 +24,7 @@ class Connect extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		$this->section = 'connect';
 	}
 	
 	/**
@@ -35,6 +36,8 @@ class Connect extends MY_Controller
 	 */
 	public function index() 
 	{
+		// validate_rest_request(); // can't use yet, request signatures are wrong
+		
 		$user_id = $this->session->userdata('user_id');
 
 		if (!empty($user_id) && $user = $this->validate_returning_user($user_id)) 
@@ -43,12 +46,58 @@ class Connect extends MY_Controller
 
 			if (!empty($tenant[0])) 
 			{
-				$this->setup_connect_tenant($this->input->get('AccountSid'), $user->tenant_id);
-				return redirect($tenant[0]->url_prefix.'/welcome#step-2');
+				if ($account_sid = $this->input->get('AccountSid')) // regular account sid
+				{
+					$this->setup_connect_tenant($account_sid, $user->tenant_id);
+					return redirect($tenant[0]->url_prefix.'/welcome#step-2');
+				}
+				elseif ($error = $this->input->get('error')) // unauthorized_client
+				{
+					$this->setup_connect_tenant($error, $user->tenant_id);
+					return redirect($tenant[0]->url_prefix.'/welcome');
+				}
 			}
 		}
-		
+
 		$this->returning_user_fail();
+	}
+	
+	public function deauthorize() 
+	{
+		// validate_rest_request(); // can't use yet, request signatures are wrong
+		
+		if ($account_sid = $this->input->get('AccountSid')) 
+		{
+			$result = $this->db->select('tenants.*')
+								->from('tenants')
+								->join('settings', 'tenants.id = settings.tenant_id')
+								->where('settings.name = "twilio_sid"')
+								->where('settings.value = "'.$this->db->escape_str($account_sid).'"')
+								->limit(1)
+								->get()->result();
+			
+			if (!empty($result)) 
+			{
+				$tenant = current($result);
+				if ($tenant->id) {
+					log_message('info', 'AccountSid "'.$account_sid.'" deauthorized on '.date('r').' (server tz: '.date_default_timezone_get().')');
+					$this->setup_connect_tenant('deauthorized_client', $tenant->id);
+				}
+			}
+		}
+		exit;
+	}
+	
+	public function account_deauthorized() 
+	{
+		// the account that the user has tried to access has been deauthorized by someone
+		
+		// @todo:
+		// if the user is an admin, give them the option to connect again, if they're not, 
+		// prompt them to contact an admin	
+
+		$data = array();
+		$this->respond('Account Deauthorized', 'account-deauthorized', $data, 'login-wrapper', 'layout/login');
 	}
 	
 	/**
@@ -94,7 +143,7 @@ class Connect extends MY_Controller
 	 */
 	protected function returning_user_fail() 
 	{
-		#$this->session->sess_destroy();
+		$this->session->sess_destroy();
 		return redirect('auth/login');
 	}
 

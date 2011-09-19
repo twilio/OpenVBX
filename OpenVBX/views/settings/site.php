@@ -176,6 +176,7 @@
 					<label for="site-twilio-connect-application-sid" class="field-label">Twilio Connect Application SID
 						<input id="site-twilio-connect-application-sid" type="text" name="site[connect_application_sid]" value="<?php echo @$connect_application_sid['value']; ?>" class="medium" />
 						<p class="instruction">Leave blank to not use Twilio Connect. Changing an existing<br />Sid will invalidate any existing Connect authorizations.</p>
+						<p class="instruction">The Connect Application will be checked and updated for the<br />proper callback urls on save.</p>
 					</label>
 				</fieldset>
 				<button class="submit-button" type="submit"><span>Update</span></button>

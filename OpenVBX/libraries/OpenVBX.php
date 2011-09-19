@@ -372,7 +372,7 @@ class OpenVBX {
 	/**
 	 * Get the X-Twilio-Signature header value
 	 *
-	 * @todo probably needs some special love for nginx?
+	 * @todo maybe needs some special love for nginx?
 	 * @return mixed string, boolean false if not found
 	 */
 	public static function getRequestSignature() 
@@ -383,5 +383,38 @@ class OpenVBX {
 			$request_signature = $_SERVER['HTTP_X_TWILIO_SIGNATURE'];
 		}
 		return $request_signature;
+	}
+	
+	public function connectAuthTenant($tenant_id) {
+		$auth = true;
+				
+		$ci =& get_instance();
+		$tenant = $ci->db->get_where('tenants', array('id' => $tenant_id))->result();
+										
+		if ($tenant && $tenant[0]->id == $tenant_id) 
+		{
+			try {
+				if ($tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) 
+				{
+					$sid = $ci->db->get_where('settings', array(
+										'name' => 'twilio_sid',
+										'tenant_id' => $tenant->id
+									));
+					$token = $ci->db->get_where('settings', array(
+										'name' => 'twilio_token',
+										'tenant_id' => VBX_PARENT_TENANT
+									));
+				}
+				$account = self::getAccount($sid, $token);
+				$account_type = $account->type;
+			}
+			catch (Exception $e) {
+				// @todo - check for 20006 code, currently returns 20003
+				log_message('Connect auth failed: '.$e->getMessage().' :: '.$e->getCode());
+				$auth = false;
+			}
+		}
+		
+		return $auth;
 	}
 }
