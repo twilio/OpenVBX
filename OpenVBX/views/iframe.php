@@ -60,27 +60,9 @@
 						</form><!-- #make-call-form -->
 						<ul id="client-ui-user-list">
 							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
 								<span class="user-name">Shawn Parker</span>
-								<button class="user-dial-button">Dial</button>
-							</li>
-							<li class="user-item">
-								<span class="user-name">Thomas Schiavone</span>
-								<button class="user-dial-button">Dial</button>
-							</li>
-							<li class="user-item">
-								<span class="user-name">Adam Ballai</span>
-								<button class="user-dial-button">Dial</button>
-							</li>
-							<li class="user-item">
-								<span class="user-name">Josh Gomez</span>
-								<button class="user-dial-button">Dial</button>
-							</li>
-							<li class="user-item">
-								<span class="user-name">Longnamehere Long</span>
-								<button class="user-dial-button">Dial</button>
-							</li>
-							<li class="user-item">
-								<span class="user-name">Patrick Malatack</span>
 								<button class="user-dial-button">Dial</button>
 							</li>
 						</ul><!-- #client-ui-user-list -->
