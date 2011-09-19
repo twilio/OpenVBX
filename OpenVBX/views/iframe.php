@@ -34,13 +34,65 @@
 			</div><!-- .client-ui-tab .open -->
 
 			<div class="client-ui-content">
-				<!-- put presence ui here? -->
 				<div class="client-ui-bg-overlay"><!-- leave me alone! --></div>
 				<div class="client-ui-inset">
+
+					<div id="client-make-call">
+						<div id="client-mode-status">
+							<a id="client-mode-button" class="enabled" href="">Client</a>
+							<a id="phone-mode-button" class="disabled" href="">Phone</a>
+						</div>
+
+						<form id="make-call-form" action="" method="POST">
+							<fieldset>
+								<label class="field-label"><span class="label-text">Call</span>
+								<input id="dial-phone-number" type="text" placeholder="Phone number" />
+								</label>
+
+								<label class="field-label"><span class="label-text">From</span>
+								<select id="caller-id-phone-number">
+									<option>Caller ID 1</option>
+									<option>Caller ID 2</option>
+								</select>
+								</label>
+							</fieldset>
+							<input id="dial-input-button" type="submit" value="Dial" />
+						</form><!-- #make-call-form -->
+						<ul id="client-ui-user-list">
+							<li class="user-item">
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="user-name">Thomas Schiavone</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="user-name">Adam Ballai</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="user-name">Josh Gomez</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="user-name">Longnamehere Long</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="user-name">Patrick Malatack</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+						</ul><!-- #client-ui-user-list -->
+					</div><!-- #client-make-call -->
+
+
+
+					<div id="client-on-call">
 					<div id="client-ui-status" class="clearfix">
 						<h2 id="client-ui-message">Initializing...</h2>
 						<h3 class="client-ui-timer">0:00</h3>
-					</div>
+					</div><!-- #client-ui-status -->
 					<div id="client-ui-pad" class="clearfix">
 						<div class="client-ui-button-row">
 							<div class="client-ui-button">
@@ -104,7 +156,8 @@
 						<button id="client-ui-answer" class="client-ui-action-button answer">Answer</button>
 						<button id="client-ui-hangup" class="client-ui-action-button hangup">Hangup</button>
 						<button id="client-ui-close" class="client-ui-action-button close">Close</button>
-					</div>
+					</div><!-- #client-ui-actions -->
+					</div><!-- #client-on-call -->
 				</div>
 			</div>
 		</div><!-- /dialer -->
