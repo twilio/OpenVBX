@@ -124,10 +124,9 @@ class Account extends User_Controller {
 		$success = $user->update($this->user_id, $params);
 
 		if ($this->response_type == 'json') {
-			$data = array(
-				'error' => !$success,
-				'message' => (!$success ? 'an error occurred while updating the user' : 'user status updated')
-			);
+			$data = (isset($this->data) ? $this->data : array());
+			$data['json']['error'] = !$success;
+			$data['json']['message'] = (!$success ? 'an error occurred while updating the user' : 'user status updated');
 			$this->respond('', null, $data);
 		}
 		else {
@@ -204,4 +203,21 @@ class Account extends User_Controller {
 		return $data;
 	}
 	
+	public function client_status() {
+		$this->load->helper('twilio');
+		if ($this->input->post('clientstatus')) {
+			$accept_incoming = ($this->input->post('online') == 1 ? true : false);
+			$this->data = array(
+				'json' => array(
+					'client_status' => ($accept_incoming ? 'online' : 'offline'),
+					'client_capability' => generate_capability_token($this->make_rest_access(), $accept_incoming)
+				)
+			);
+			$this->edit();
+		}
+		else {
+			throw new TwilioException('Invalid Request', 400);
+			exit;
+		}
+	}
 }

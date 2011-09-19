@@ -368,7 +368,6 @@ class Twiml extends MY_Controller {
 				$dial = $this->response->dial(NULL, $options);
 				$dial->client($to);
 			}
-
 		} 
 		else 
 		{

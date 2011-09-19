@@ -471,7 +471,11 @@ class CI_Template {
 		switch ($type)
 		{
 			case 'dynamic':
-				$filepath = site_url().preg_replace('|^(/)|', '', $script);
+				$siteurl = site_url();
+				if (!preg_match('|.*?/$|', $siteurl)) {
+					$siteurl .= '/';
+				}
+				$filepath = $siteurl.preg_replace('|^(/)|', '', $script);
 				$js = '<script type="text/javascript" src="'.version_url($filepath).'"';
 				if ($defer)
 				{
@@ -546,7 +550,7 @@ class CI_Template {
 		if (!function_exists('version_url')) {
 			$this->CI->load->helper('twilio');
 		}
-		
+
 		switch ($type)
 		{
 			case 'dynamic':
@@ -560,7 +564,7 @@ class CI_Template {
 				break;
 
 			case 'link':
-				$filepath = (preg_match('|https?://|', $style) ? $style : $filepath);
+				$filepath = (preg_match('|https?://|', $style) ? $style : site_url().$style);
 				$css = '<link type="text/css" rel="stylesheet" href="'.version_url($filepath).'"';
 				if ($media)
 				{

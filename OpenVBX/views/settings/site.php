@@ -150,8 +150,8 @@
 
 
 		<div id="settings-twilio-account" class="vbx-tab-view">
-			<h3>Twilio Account</h3>
 			<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#twilio-account" method="POST" class="vbx-settings-form vbx-form" autocomplete="off">
+				<h3>Twilio Account</h3>
 				<fieldset class="vbx-input-container">
 					<label for="site-twilio-sid" class="field-label">Twilio SID
 						<input id="site-twilio-sid" type="text" name="site[twilio_sid]" value="<?php echo @$twilio_sid['value'] ?>" class="medium" />
@@ -163,13 +163,19 @@
 						<input id="site-twilio-application-sid" type="text" name="site[application_sid]" value="<?php echo @$application_sid['value']; ?>" class="medium" />
 						<p class="instruction">This Sid identifies your install for the purposes of making<br />and receiving calls with <a href="http://www.twilio.com/api/client">Twilio Client</a>.</p>
 					</label>
-					<label for="site-twilio-connect-application-sid" class="field-label">Twilio Connect Application SID
-						<input id="site-twilio-connect-application-sid" type="text" name="site[connect_application_sid]" value="<?php echo @$connect_application_sid['value']; ?>" class="medium" />
-						<p class="instruction">This Sid identifies your install for the purposes of using<br />Twilio Connect to authorize your Tenant accounts. Changing<br />this Sid will invalidate all of your existing Connect authorizations.</p>
-					</label>
 					<label for="site-from-email" class="field-label">From Email
 						<input id="site-from-email" type="text" name="site[from_email]" value="<?php echo @$from_email['value'] ?>" class="medium" />
 						<p class="instruction">This is the email address which which all outbound emails<br />from OpenVBX install will be addressed.</p>
+					</label>
+				</fieldset>
+				
+				<h3>Twilio Connect Settings</h3>
+				<fieldset class="vbx-input-container">
+					<p>This Sid identifies your install for the purposes of using<br />Twilio Connect to authorize your Tenant accounts.</p>
+					<br />
+					<label for="site-twilio-connect-application-sid" class="field-label">Twilio Connect Application SID
+						<input id="site-twilio-connect-application-sid" type="text" name="site[connect_application_sid]" value="<?php echo @$connect_application_sid['value']; ?>" class="medium" />
+						<p class="instruction">Leave blank to not use Twilio Connect. Changing an existing<br />Sid will invalidate any existing Connect authorizations.</p>
 					</label>
 				</fieldset>
 				<button class="submit-button" type="submit"><span>Update</span></button>
@@ -181,19 +187,22 @@
 			<h3>About</h3>
 			<ul>
 				<li>Current Version: <?php echo OpenVBX::version() ?></li>
+			<?php if ($tenant->id == VBX_PARENT_TENANT): /* if parent tenant */ ?>
 				<li>Schema Version: <?php echo OpenVBX::schemaVersion() ?></li>
 				<li>Latest Schema Available: <?php echo OpenVBX::getLatestSchemaVersion(); ?></li>
 				<li>Database configuration: <?php echo "{$server_info['mysql_driver']}://{$this->db->username}@{$this->db->hostname}/{$this->db->database}" ?></li>
 				<li>Rewrite enabled: <?php echo $rewrite_enabled['value']? 'Yes' : 'No' ?></li>
+			<?php endif; /* if parent tenant */ ?>
 			</ul>
 
+<?php if ($tenant->id == VBX_PARENT_TENANT): /* if parent tenant 2 */ ?>
 			<h3>Server Info</h3>
 			<ul>
 				<li>Apache Version: <?php echo $server_info['apache_version']; ?></li>
 				<li>PHP Version: <?php echo $server_info['php_version']; ?></li>
 				<li>MySQL Version: <?php echo $server_info['mysql_version']; ?> using <?php echo $server_info['mysql_driver']; ?> driver</li>
 			</ul>
-
+<?php endif; /* if parent tenant 2 */ ?>
 			<br />
 			
 			<p>Thanks to everyone involved, you made it better than envisioned!</p>

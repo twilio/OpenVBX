@@ -18,8 +18,11 @@
  * Contributor(s):
  **/
 
-jQuery(function($) {
+if (top != self) {
+	top.location = self.location;
+}
 
+jQuery(function($) {
 	$('a.help').live('click', function(e) {
 		e.stopPropagation();
 		e.preventDefault();

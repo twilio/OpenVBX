@@ -316,6 +316,14 @@ class OpenVBX {
 		return self::$_twilioService->account;
 	}
 	
+	public function getAccounts() {
+		if (!(self::$_twilioService instanceof Services_Twilio)) {
+			$ci =& get_instance();
+			self::getAccount();
+		}
+		return self::$_twilioService->accounts;
+	}
+	
 	/**
 	 * Validate that the current request came from Twilio
 	 * 
@@ -330,6 +338,11 @@ class OpenVBX {
 	 */
 	public static function validateRequest($url = false, $post_vars = false) 
 	{
+		$ci =& get_instance();
+		if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) {
+			return true;
+		}
+		
 		if (!(self::$_twilioValidator instanceof Services_Twilio_RequestValidator)) 
 		{
 			$ci =& get_instance();

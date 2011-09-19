@@ -83,7 +83,7 @@ class MY_Controller extends Controller
 		{
 			$this->session->set_userdata('loggedin', 0);
 			$this->session->set_flashdata('error', 'This tenant is no longer active');
-			return redirect(site_url('auth/logout'));
+			return redirect(asset_url('auth/logout'));
 		}
 
 		if($this->tenant === false)
@@ -100,6 +100,7 @@ class MY_Controller extends Controller
 			$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
 			$token_from = ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT ? VBX_PARENT_TENANT : $this->tenant->id);
 			$this->twilio_token = $this->settings->get('twilio_token', $token_from);				
+			$this->application_sid = $this->settings->get('application_sid', $this->tenant->id);
 
 			// @deprecated, will be removed in a future release
 			$this->twilio_endpoint = $this->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
@@ -214,6 +215,7 @@ class MY_Controller extends Controller
 		/* Filter out standard templates vars */
 		$json = $this->build_json_response($json);
 		$json_str = json_encode($json);
+		header('content-type: text/javascript');
 		if(!$pprint)
 		{
 			echo $json_str;

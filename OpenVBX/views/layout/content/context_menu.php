@@ -39,20 +39,19 @@
 					    <?php elseif(!empty($callerid_numbers) && count($callerid_numbers) == 1): /* num-numbers */?>
 							<?php $c = $callerid_numbers[0]; ?>
 							<?php if(isset($c->trial) && $c->trial == 1): /* is-trail */?>
-							<label class="field-label left">From
-								<input type="text" name="callerid" value="" class="small" />
-							</label>
+								<label class="field-label left">From
+									<input type="text" name="callerid" value="" class="small" />
+								</label>
 							<?php else: /* is-trail */ ?>
-							<input type="hidden" name="callerid" value="<?php echo $c->phone ?>" />
+								<input type="hidden" name="callerid" value="<?php echo $c->phone ?>" />
 							<?php endif; /* is-trail */ ?>
 						<?php else: /* num-numbers */ ?>
 							<?php if(OpenVBX::getTwilioAccountType() == 'Trial'): /* trial-notice */ ?>
-							<p>You're using a Twilio trial account, please upgrade to dial using a virtual phone number.</p>
+								<p>You're using a Twilio trial account, please upgrade to dial using a virtual phone number.</p>
 							<?php else: ?>
-							<p>We were unable to connect to Twilio at this time. This feature is disabled.  Try again later.</p>
+								<p>We were unable to connect to Twilio at this time or you do not have any incoming phone numbers validated for Caller Id. This feature is disabled.</p>
 							<?php endif; /* trial-notice */ ?>
 						<?php endif; /* num-numbers */ ?>
-
 
 							<label class="field-label left">Using
 								<select name="device" class="small">

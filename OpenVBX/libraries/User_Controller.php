@@ -149,8 +149,9 @@ class User_Controller extends MY_Controller
 			}
 
 		}
-
-		$this->set_client_support();
+		
+		// @deprecated
+		// $this->set_client_support();
 	}
 
 	protected function redirect($url)
@@ -376,12 +377,13 @@ class User_Controller extends MY_Controller
 	 *
 	 * Application SID is always set by the parent tenant
 	 *
+	 * @deprecated 1.1
 	 * @since 0.93
 	 * @return void
 	 */
+	/*
 	protected function set_client_support() 
 	{
-		$this->application_sid = $this->settings->get('application_sid', $this->tenant->id);
 		if (!empty($this->application_sid)) 
 		{
 			if (!class_exists('Services_Twilio_Capability'))
@@ -400,11 +402,14 @@ class User_Controller extends MY_Controller
 
 			try {
 				$this->capability->allowClientOutgoing($this->application_sid, $params);
-				$this->capability->allowClientIncoming($user->id);
+				if ($user->online == 1) {
+					$this->capability->allowClientIncoming($user->id);
+				}
 			}
 			catch (Exception $e) {
 				error_log($e->getMessage());
 			}
 		}
 	}
+	*/
 }

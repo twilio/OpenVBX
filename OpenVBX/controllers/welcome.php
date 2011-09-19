@@ -49,6 +49,10 @@ class Welcome extends User_Controller {
 			),
 			'title' => 'Welcome'
 		);
+		
+		if ($tenant_sid = $this->vbx_settings->get('twilio_sid', $this->tenant->id)) {
+			$data['tenant_sid'] = $tenant_sid;
+		}
 		$this->load->view('steps', $data);
 	}
 	

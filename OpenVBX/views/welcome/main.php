@@ -18,6 +18,17 @@
 					</div><!-- .step-desc -->
 				</div><!-- .step -->
 
+<?php
+
+/*
+if $data['tenant_sid'] is present and == 'unauthorized_client' then do not allow user to proceed, the user declined to give
+OpenVBX access to their account.
+
+Add new div here that has a back button, but no forward button.
+
+*/
+
+?>
 				<div class="step submit">
 					<a target="_blank" class="help" href="http://openvbx.org/install#connect" title="Get help at OpenVBX.org">Help</a>
 					<h1>Connect Complete</h1>

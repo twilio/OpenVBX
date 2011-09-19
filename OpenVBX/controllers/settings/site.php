@@ -162,9 +162,50 @@ class Site extends User_Controller
 					{
 						$app_sid = $value;
 					}
+					if ($name == 'connect_application_sid') {
+						$connect_app_sid = $value;
+					}
 					$this->settings->set($name, trim($value), $this->tenant->id);
 				}
 
+				// Connect App (if applicable)
+				if (!empty($connect_app_sid) && $this->tenant->id == VBX_PARENT_TENANT) {
+					$account = OpenVBX::getAccount();
+					$connect_app = $account->connect_apps->get($connect_app_sid);
+					
+					$required_settings = array(
+						'HomepageUrl' => site_url(),
+						'AuthorizeRedirectUrl' => site_url('/auth/connect'),
+						'DeauthorizeCallbackUrl' => site_url('/auth/connect/deauthorize'),
+						'Permissions' => array(
+							'get-all',
+							'post-all'
+						)
+					);
+					
+					$updated = false;
+					foreach ($required_settings as $key => $setting) {
+						$app_key = Services_Twilio::decamelize($key);
+						if ($connect_app->$app_key != $setting) {
+							$connect_app->$app_key = $setting;
+							$updated = true;
+						}
+					}
+					
+					if ($updated) {
+						$connect_app->update(array(
+							'FriendlyName' => $connect_app->friendly_name,
+							'Description' => $connect_app->description,
+							'CompanyName' => $connect_app->company_name,
+							'HomepageUrl' => $required_settings['HomepageUrl'],
+							'AuthorizeRedirectUrl' => $required_settings['AuthorizeRedirectUrl'],
+							'DeauthorizeCallbackUrl' => $required_settings['DeauthorizeCallbackUrl'],
+							'Permissions' => implode(',', $required_settings['Permissions'])
+						));
+					}
+				}
+				
+				// Client App
 				$update_app = false;
 				if (empty($app_sid) && !empty($current_app_sid))
 				{
@@ -211,7 +252,9 @@ class Site extends User_Controller
 
 				if (!empty($update_app))
 				{
-					$account = OpenVBX::getAccount();
+					if (empty($account)) {
+						$account = OpenVBX::getAccount();
+					}
 
 					foreach ($update_app as $app) 
 					{
@@ -223,7 +266,7 @@ class Site extends User_Controller
 							$this->session->set_flashdata('error', 'Could not update Application: '.$e->getMessage());
 							throw new SiteException($e->getMessage());
 						}
-					}
+					}					
 				}
 
 				$this->session->set_flashdata('error', 'Settings have been saved');
@@ -249,8 +292,8 @@ class Site extends User_Controller
 		
 		$application = false;
 		try {
-			$account = OpenVBX::getAccount();
-			$sub_account = $account->accounts->get($accountSid);
+			$accounts = OpenVBX::getAccounts();
+			$sub_account = $accounts->get($accountSid);
 			foreach ($sub_account->applications as $_application) 
 			{
 				if ($application->friendly_name == $appName) 
@@ -345,10 +388,10 @@ class Site extends User_Controller
 				if ($auth_type === VBX_Settings::AUTH_TYPE_SUBACCOUNT) 
 				{
 					try {
-						$account = OpenVBX::getAccount();
+						$accounts = OpenVBX::getAccounts();
 
 						// default, sub-account
-						$sub_account = $account->accounts->create(array(
+						$sub_account = $accounts->create(array(
 															'FriendlyName' => $friendlyName
 														));
 						$tenant_sid = $sub_account->sid;

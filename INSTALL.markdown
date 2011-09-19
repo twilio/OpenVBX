@@ -119,10 +119,9 @@ When creating your application use these settings:
 
 1. **Friendly Name:** Any name that makes sense to you.
 1. **Company Name & Description:** _Optional_. Anything that makes sense to you.
-1. **Homepage URL:** The full url to your webroot. ie: _http://example.org_
-1. **Authorize URL:** The path to OpenVBX's Authorize Callback. ie: _http://example.org/authorize/connect_
-1. **Deauthorize URL:** _Not used. Leave blank_.
-1. **Access Required:** Get All & Post All.
+1. **Homepage URL & Authorize URL:** The full url to your webroot. ie: _http://example.org_ - these will be updated by OpenVBX during the install process.
+1. **Deauthorize URL:** _Leave blank_. This will be set by OpenVBX during install.
+1. **Access Required:** Select "Read all account data" & "Charge account for usage".
 
 
 ## Optional Settings

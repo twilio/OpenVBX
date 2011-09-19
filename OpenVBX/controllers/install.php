@@ -181,10 +181,13 @@ class Install extends Controller {
 		$database["char_set"] = "utf8";
 		$database["dbcollat"] = "utf8_general_ci";
 
-		return array('global' => array('active_group' => "default",
-									   'active_record' => TRUE,
-									   ),
-					 'default' => $database);
+		return array(
+			'global' => array(
+				'active_group' => "default",
+				'active_record' => TRUE,
+			),
+			'default' => $database
+		);
 	}
 
 	public function setup()
@@ -562,8 +565,39 @@ class Install extends Controller {
 			// check the connect app if a sid is provided
 			if (!empty($connect_app)) {
 				try {
-					$application = $account->connect_apps->get($connect_app);
+					$connect_application = $account->connect_apps->get($connect_app);
 					$friendly_name = $application->friendly_name;
+					
+					$required_settings = array(
+						'HomepageUrl' => site_url(),
+						'AuthorizeRedirectUrl' => site_url('/auth/connect'),
+						'DeauthorizeCallbackUrl' => site_url('/auth/connect/deauthorize'),
+						'Permissions' => array(
+							'get-all',
+							'post-all'
+						)
+					);
+					
+					$updated = false;
+					foreach ($required_settings as $key => $setting) {
+						$app_key = Services_Twilio::decamelize($key);
+						if ($connect_application->$app_key != $setting) {
+							$connect_application->$app_key = $setting;
+							$updated = true;
+						}
+					}
+
+					if ($updated) {
+						$connect_application->update(array(
+							'FriendlyName' => $connect_application->friendly_name,
+							'Description' => $connect_application->description,
+							'CompanyName' => $connect_application->company_name,
+							'HomepageUrl' => $required_settings['HomepageUrl'],
+							'AuthorizeRedirectUrl' => $required_settings['AuthorizeRedirectUrl'],
+							'DeauthorizeCallbackUrl' => $required_settings['DeauthorizeCallbackUrl'],
+							'Permissions' => implode(',', $required_settings['Permissions'])
+						));
+					}
 				}
 				catch (Exception $e) {
 					switch ($e->getCode()) {

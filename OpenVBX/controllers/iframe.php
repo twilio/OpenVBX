@@ -27,8 +27,6 @@ class Iframe extends User_Controller {
 
 	public function __construct() {
 		parent::__construct();
-		// make tokens valid for 8 hours
-		$this->client_token_timeout = 3600*8;
 	}
 
 	function index() {
@@ -49,12 +47,18 @@ class Iframe extends User_Controller {
 		$twilio_js_file = 'twilio'.($this->config->item('use_unminimized_js') ? '' : '.min').'.js';
 		$data['twilio_js'] = $tjs_baseurl.'/libs/twiliojs/1.0/'.$twilio_js_file;
 
+		$data['client_capability'] = null;
 		if (!empty($this->application_sid))
 		{
-			$data['client_capability'] = $this->capability->generateToken($this->client_token_timeout);
-			$data['capability'] = $this->capability;
+			$user_id = intval($this->session->userdata('user_id'));
+			$user = VBX_user::get(array('id' => $user_id));
+			$data['client_capability'] = generate_capability_token($this->make_rest_access(), ($user->online == 1));
 		}
 
+		// internal dev haxies
+		if (function_exists('twilio_dev_mods')) {
+			$data = twilio_dev_mods($data);
+		}
 		$this->load->view('iframe', $data);
 	}
 }

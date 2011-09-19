@@ -35,16 +35,18 @@ var Client = {
 	// after a call ends we set a timeout that waits a little while before
 	// putting the window away
 	close_timeout: null,
-		
+	
+	clients: [],
+	
 	muted: false,
 		
 	options: {
 		cookie_name: 'vbx_client_call'
 	},
 	
-	init: function () {
+	init: function (callback) {		
 		try {
-			Twilio.Device.setup(OpenVBX.client_capability);
+			Twilio.Device.setup(OpenVBX.client_capability, OpenVBX.client_params);
 
 			Twilio.Device.ready(function (device) {
 				Client.ready(device);
@@ -73,6 +75,10 @@ var Client = {
 			Twilio.Device.cancel(function(conn) {
 				Client.cancel();
 			});
+			
+			Twilio.Device.presence(function(event) {
+				Client.handleEvent(event);
+			});
 		
 			$('#dialer #client-ui-actions button').hide();
 		}
@@ -81,7 +87,13 @@ var Client = {
 			// browser most likely doesn't have flash or is using a flash block application
 			Client.ui.disabledBanner(e);
 		}
-	}, 
+	},
+	
+	log : function(message) {
+		if (window.console && window.console.log) {
+			console.log(message);
+		}
+	},
 
 // Helpers
 	
@@ -102,7 +114,7 @@ var Client = {
 		
 		switch(number) {
 			case -13:
-				return '#'
+				return '#';
 			case -6:
 				return '*';
 			case 0:
@@ -119,8 +131,42 @@ var Client = {
 		}
 		return null;
 	},
+	
+	isReady: function() {
+		var status = false;
+		try {
+		 	status = (Twilio.Device.status() == 'ready');
+		}
+		catch (e) {
+			// most likely the connection is delayed, everyone can just wait.
+		}
+
+		return status;
+	},
 
 // Actions
+	
+	handleEvent: function(event) {
+		var pos = jQuery.inArray(event.from, Client.clients);
+		if (event.available == true) {
+			if (pos < 0) {
+				Client.clients.push(event.from);
+			}
+		}
+		else {
+			if (pos > -1) {
+				Client.clients.splice(pos, 1);
+			}
+		}
+		
+		// notify the iframe
+		if (window.frames['openvbx-iframe'].OpenVBX.presence) {
+			window.frames['openvbx-iframe'].OpenVBX.presence._set(event, Client.clients);
+		}
+		
+		// trigger event for main frame listeners
+		$(this).trigger('presence', [event, Client.clients]);
+	},
 	
 	answer: function() {
 		this.accept();
@@ -373,10 +419,10 @@ Client.ui = {
 	},
 
 	displayTime: function() {
-		var seconds = Math.floor(this.getTicks() / 1000);
+		var totalseconds = Math.floor(this.getTicks() / 1000);
 
 		var minutes = Math.floor(seconds / 60);
-		var seconds = seconds % 60;
+		var seconds = totalseconds % 60;
 
 		if(minutes < 10) {
 			minutes = '0' + minutes;
@@ -394,7 +440,7 @@ Client.ui = {
 		var tab = $(clicked).closest('.client-ui-tab'),
 			animate_speed = 500,
 			dialer_offset = $('#dialer .client-ui-content').css('width'),
-			tab_status_offset = $('#dialer .client-ui-tab').css('height')
+			tab_status_offset = $('#dialer .client-ui-tab').css('height');
 		
 		if (tab.hasClass('open')) {
 			dialer_offset_mod = '-=';
@@ -424,7 +470,7 @@ Client.ui = {
 	toggleCallView: function(status) {
 		var dialer = $('#dialer'),
 			dialer_offset_mod = false,
-			dialer_offset = parseInt($('#dialer').css('width').replace('px', '')) + parseInt($('#dialer .client-ui-tab').css('width').replace('px', '')) + 'px';
+			dialer_offset = parseInt($('#dialer').css('width').replace('px', ''), 10) + parseInt($('#dialer .client-ui-tab').css('width').replace('px', ''), 10) + 'px';
 		
 		if (status == 'open' && dialer.hasClass('closed')) {
 			dialer_offset_mod = '+=';
@@ -468,14 +514,28 @@ Client.status = {
 		this.getCookieVal(on_call);
 	},
 	
-	setWindowStatus: function (status) {
+	setWindowStatus: function (status, callback) {
 		this.setCookieVal('window_open', status);
 		$.ajax({
-			url: OpenVBX.home + '/account/edit',
+			url: OpenVBX.home + '/account/client_status',
 			data: {
-				'online': (status ? 1 : 0).toString()
+				'online': (status ? 1 : 0).toString(),
+				'clientstatus' : true
 			},
-			success: function(r) {},
+			success: function(r) {
+				if (!r.error) {
+					// reset the device with returned token
+					OpenVBX.client_capability = r.client_capability;
+					var response = r,
+						old_onready = Client.onready;
+						
+					Client.onready = function() {
+						callback.apply(null, [response]);						
+					};
+					
+					Twilio.Device.setup(OpenVBX.client_capability, OpenVBX.client_params);
+				}
+			},
 			async: false,
 			type : 'POST',
 			dataType : 'json'
@@ -542,6 +602,8 @@ $(function () {
 		event.stopPropagation();
 		Client.ui.toggleTab(this);
 	});
-		
-	Client.init();
+	
+	if (OpenVBX.client_capability) {
+		Client.init();
+	}
 });

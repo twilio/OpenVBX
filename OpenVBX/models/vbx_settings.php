@@ -45,6 +45,8 @@ class VBX_Settings extends Model
 
 	const CACHE_TIME_SEC = 1;
 	
+	const CLIENT_TOKEN_TIMEOUT = 28800; // 8 hours
+	
 	const AUTH_TYPE_PARENT = 0;
 	const AUTH_TYPE_FULL = 1; // @note currently not used, this is for future expansion
 	const AUTH_TYPE_SUBACCOUNT = 2;

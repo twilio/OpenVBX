@@ -69,44 +69,53 @@ OpenVBX.clientMute = function() {
  */
 OpenVBX.clientUnMute = function() {
 	window.parent.Client.unmute();
-}
+};
+
+/**
+ * See if the browser client is in a ready state
+ *
+ * @return bool
+ */
+OpenVBX.clientIsReady = function() {
+	return window.parent.Client.isReady();
+};
+
+/**
+ * Presence notifier
+ * Monitor this object with $(OpenVBX.presence).bind('presence', function(client, onlineClients) { ... });
+ */
+OpenVBX.presence = {
+	onlineClients : [],
+	_set : function(client, onlineClients) {
+		this.onlineClients = onlineClients;
+		$(this).trigger('presence', [client, OpenVBX.presence.onlineClients]);
+	}
+};
+jQuery(function($) {
+	OpenVBX.presence.onlineClients = $(window.parent.Client.clients);
+});
 	
 /////////////////////////////////////////////////////
 // Call Dialog
 
 $(function () {	
-	if ((window.parent.Client) && (window.parent.Client.disabled || window.parent.Twilio.Device.status() == 'offline')) {
-		// Twilio Client is offline, probably due to an error, so lets
-		// disable the use of Client to prevent unexpected behavior
+	if (window.parent.Client && !window.parent.Client.isReady()) {
+		var _status = $('#vbx-client-status'),
+			_userstatus = null;
 		
-		// disable calls using Twilio Client, replace selector with hidden element to pre-set the device type
-		var _devices = $('#vbx-context-menu .call-dialog select[name="device"]').closest('label');
-		var _primarydevice = $('<input type="hidden" name="device" value="primary-device" />');
-		_devices.replaceWith(_primarydevice);
+		_userstatus = (_status.hasClass('online') ? 'online' : 'offline');
+		_status.removeClass('online').addClass('loading');
 		
-		// neuter the online/offline button
-		var _status = $('#vbx-client-status');
-		if (_status.hasClass('online')) {
-			_status.removeClass('online').addClass('offline').addClass('disabled');
-			window.parent.Client.status.setWindowStatus(false);
-		}
-			
-		var enableClient = function() {
-			var status = _status;
-			var devices = _devices;
-			var primarydevice = _primarydevice;
-			return function() {
-				if (status.hasClass('disabled')) {
-					status.removeClass('disabled').find('button').trigger('click');
-				}
-				primarydevice.replaceWith(devices);
+		window.parent.Client.onready = function() {
+			_status.removeClass('loading');
+			if (_userstatus == 'online') {
+				_status.addClass('online');
 			}
-		}
-		window.parent.Client.onready = enableClient();
-
-		_status.addClass('disabled');
+		};
+		
+		return;
 	}
-	
+		
 	// options
 	var globalTwilioCallLock = false;
 	var distance = 35;
@@ -320,23 +329,17 @@ $(function () {
 			client_status = true,
 			status = null;
 		
-		if (window.parent.Client.disabled || window.parent.Twilio.Device.status() == 'offline') {
+		if (window.parent.Client.disabled) {
 			client_status = false;
 		}
 		
 		if (client_status) {
-			if (parent.hasClass('online')) {
-				// go offline
-				status = false;
-				parent.removeClass('online');
-			}
-			else {
-				// go online
-				status = true;
-				parent.addClass('online');
-			}
+			status = parent.hasClass('online') ? false : true;
+			parent.removeClass('online').addClass('loading');
 			
-			window.parent.Client.status.setWindowStatus(status);
+			window.parent.Client.status.setWindowStatus(status, function(r) {
+				parent.removeClass('loading').addClass(r.client_status);
+			});
 		}
 		else {
 			$('.error-dialog .error-code').text('');
