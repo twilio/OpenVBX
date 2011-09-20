@@ -113,6 +113,8 @@ body {
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
 }
 
 #client-mode-status a {
@@ -130,6 +132,8 @@ body {
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
 }
 
 #client-mode-status a.disabled {
@@ -138,6 +142,8 @@ body {
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
 }
 
 #make-call-form {
@@ -183,6 +189,8 @@ body {
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
 }
 
 #make-call-form #caller-id-phone-number {
@@ -204,10 +212,10 @@ body {
 	background-clip: padding-box;
 	-moz-background-clip: padding;
 	-webkit-background-clip: padding-box;
-	border: none;
-	border-radius: 8px;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	border: none;
 	cursor: pointer;
 	overflow: visible; /* removes extra side padding in IE */
 }
@@ -291,10 +299,10 @@ body {
 	background-clip: padding-box;
 	-moz-background-clip: padding;
 	-webkit-background-clip: padding-box;
-	border: none;
-	border-radius: 8px;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	border: none;
 	cursor: pointer;
 	overflow: visible; /* removes extra side padding in IE */
 }
@@ -476,10 +484,10 @@ body {
     background-clip: padding-box;
     -moz-background-clip: padding;
     -webkit-background-clip: padding-box;
-	border: none;
-	border-radius: 8px;
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
+	border-radius: 8px;
+	border: none;
     cursor: pointer;
     overflow: visible; /* removes extra side padding in IE */
 }

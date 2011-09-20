@@ -168,7 +168,7 @@
 						<p class="instruction">This is the email address which which all outbound emails<br />from OpenVBX install will be addressed.</p>
 					</label>
 				</fieldset>
-				<?php if($tenant_mode == Site::MODE_MULTI): ?>
+			<?php if($tenant_mode == Site::MODE_MULTI): ?>
 				<h3>Twilio Connect Settings</h3>
 				<fieldset class="vbx-input-container">
 					<p>This Sid identifies your install for the purposes of using<br />Twilio Connect to authorize your Tenant accounts.</p>
@@ -179,7 +179,7 @@
 						<p class="instruction">The Connect Application will be checked and updated for the<br />proper callback urls on save.</p>
 					</label>
 				</fieldset>
-				<?php endif; ?>
+			<?php endif; ?>
 				<button class="submit-button" type="submit"><span>Update</span></button>
 			</form>
 		</div><!-- .vbx-tab-view -->

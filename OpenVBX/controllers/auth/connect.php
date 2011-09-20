@@ -35,9 +35,7 @@ class Connect extends MY_Controller
 	 * @return void
 	 */
 	public function index() 
-	{
-		// validate_rest_request(); // can't use yet, request signatures are wrong
-		
+	{		
 		$user_id = $this->session->userdata('user_id');
 
 		if (!empty($user_id) && $user = $this->validate_returning_user($user_id)) 
@@ -62,40 +60,48 @@ class Connect extends MY_Controller
 		$this->returning_user_fail();
 	}
 	
+	/**
+	 * Twilio calls us when a user deauthorizes our connect account
+	 *
+	 * @return void
+	 */
 	public function deauthorize() 
 	{
-		// validate_rest_request(); // can't use yet, request signatures are wrong
-		
-		if ($account_sid = $this->input->get('AccountSid')) 
-		{
-			$result = $this->db->select('tenants.*')
-								->from('tenants')
-								->join('settings', 'tenants.id = settings.tenant_id')
-								->where('settings.name = "twilio_sid"')
-								->where('settings.value = "'.$this->db->escape_str($account_sid).'"')
-								->limit(1)
-								->get()->result();
-			
-			if (!empty($result)) 
+		$header = '405'; // method not allowed
+
+		if (OpenVBX::validateRequest() || 1 == 1) // currently bypassing authorization until signatures are correct
+		{ 
+			if ($account_sid = $this->input->post('AccountSid')) 
 			{
-				$tenant = current($result);
-				if ($tenant->id) {
-					log_message('info', 'AccountSid "'.$account_sid.'" deauthorized on '.date('r').' (server tz: '.date_default_timezone_get().')');
-					$this->setup_connect_tenant('deauthorized_client', $tenant->id);
+				$result = $this->db->select('tenants.*')
+									->from('tenants')
+									->join('settings', 'tenants.id = settings.tenant_id')
+									->where('settings.name = "twilio_sid"')
+									->where('settings.value = "'.$this->db->escape_str($account_sid).'"')
+									->limit(1)
+									->get()->result();
+			
+				if (!empty($result)) 
+				{
+					$tenant = current($result);
+					if ($tenant->id) {
+						log_message('info', 'AccountSid "'.$account_sid.'" deauthorized on '.date('r').' (server tz: '.date_default_timezone_get().')');
+						$this->setup_connect_tenant('deauthorized_client', $tenant->id);
+						$header = '204'; // accepted, but no content to return
+					}
 				}
+				
+				$header = '400'; // sid not found so its a bad request
 			}
 		}
+		
+		set_status_header($header);
 		exit;
 	}
 	
 	public function account_deauthorized() 
 	{
-		// the account that the user has tried to access has been deauthorized by someone
-		
-		// @todo:
-		// if the user is an admin, give them the option to connect again, if they're not, 
-		// prompt them to contact an admin	
-
+		// the account that the user has tried to access has been deauthorized by someone	
 		$data = array();
 		$this->respond('Account Deauthorized', 'account-deauthorized', $data, 'login-wrapper', 'layout/login');
 	}

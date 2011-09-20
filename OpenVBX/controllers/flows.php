@@ -226,7 +226,7 @@ class Flows extends User_Controller {
 			$this->template->add_js(site_url('/flows/scripts'), 'absolute');
 		}
 		if (!$this->config->item('use_unminimized_css')) {
-			$this->template->add_css(site_url('flows/styles'), 'absolute');
+			$this->template->add_css(site_url('flows/styles'), 'link');
 		}
 		
 		$flow = VBX_Flow::get($id);
