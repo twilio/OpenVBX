@@ -343,6 +343,11 @@ class Twiml extends MY_Controller {
 
 			$dial_client = false;
 			$to = normalize_phone_to_E164($to);
+			if (!($client_status = $this->input->get_post('online')))
+			{
+				$client_status = 'offline';
+			}
+
 			if (!is_numeric($to)) 
 			{
 				// look up user by email address
@@ -355,7 +360,18 @@ class Twiml extends MY_Controller {
 					$to = $user->id;
 				}
 				else {
-					// @todo pull primary device or fail
+					$to = null;
+					
+					if (count($user->devices)) 
+					{
+						foreach ($user->devices as $device) 
+						{
+							if ($device->is_active) 
+							{
+								$to = $user->devices[0]->value;
+							}
+						}
+					}					
 				}
 			}
 
@@ -363,7 +379,7 @@ class Twiml extends MY_Controller {
 			{
 				$this->response->dial($to, $options);
 			}
-			else 
+			elseif (!empty($to))
 			{
 				$dial = $this->response->dial(NULL, $options);
 				$dial->client($to);

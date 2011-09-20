@@ -98,7 +98,7 @@ jQuery(function($) {
 /////////////////////////////////////////////////////
 // Call Dialog
 
-$(function () {	
+jQuery(function () {	
 	if (window.parent.Client && !window.parent.Client.isReady()) {
 		var _status = $('#vbx-client-status'),
 			_userstatus = null;
@@ -117,226 +117,244 @@ $(function () {
 	}
 		
 	// options
-	var globalTwilioCallLock = false;
-	var distance = 35;
-	var time = 250;
-	var hideDelay = 100;
-	
-	var hideDelayTimer = null;
+	// var globalTwilioCallLock = false;
+	// var distance = 35;
+	// var time = 250;
+	// var hideDelay = 100;
+	// 
+	// var hideDelayTimer = null;
 	var dialog = $('.call-dialog').css('opacity', 0);
-	$('form', dialog).live('submit', function(event) {
-		event.preventDefault();
-	});
+	// $('form', dialog).live('submit', function(event) {
+	// 	event.preventDefault();
+	// });
 
-	var hideDialog = function (event, link) {
-		// reset the timer if we get fired again - avoids double animations
-		if (hideDelayTimer)
-			clearTimeout(hideDelayTimer);
-		link.shown = false;
-		$('.call-button').data('link', link);
-
-		// store the timer so that it can be cleared in the mouseover if required
-		hideDelayTimer = setTimeout(function () {
-			hideDelayTimer = null;
-			dialog.animate({
-				top: '-=' + distance + 'px',
-				opacity: 0
-			}, time, 'swing', function () {
-					// once the animate is complete, set the tracker variables
-				globalTwilioCallLock = false;
-				// hide the dialog entirely after the effect (opacity alone doesn't do the job)
-				dialog.css('display', 'none');
-			});
-		}, hideDelay);
-
-		$('.screen').hide();
-		$('.invoke-call-button span').text('Call');
-		$('.call-dialing').hide();
-		
-		currentDialogHideFunction = null;
-		currentDialogType = null;
-		
-		return false;
-	};
-
-	$('.twilio-call').each(function () {
-			
-		// tracker
-		var beingShown = false;
-		var link = this;
-
-		link.shown = false;
-		
-		var trigger = $(this);
-		var displayDialog = function (event, link) {
-
-			if (currentDialogType == 'sms') {
-				currentDialogHideFunction();
-			}
-			
-			// stops the hide event if we move from the trigger to the dialog element
-			if (hideDelayTimer) clearTimeout(hideDelayTimer);
-			// don't trigger the animation again if we're being shown, or already visible
-			if (beingShown || link.shown) {
-				return false;
-			} 
-
-			if(globalTwilioCallLock) {
-				globalTwilioCallLock = false;
-				var oldLink = $('.call-button').data('link');
-				oldLink.shown = false;
-				$('.call-dialog').hide();
-			}
-
-			var phone = '';
-			if(link) {
-				if($(link).text() != 'Call') {
-					phone = $(link).text();
-				} else {
-					phone = '';
-				}
-				target = $(link).attr('href');
-			}
-
-			globalTwilioCallLock = beingShown = true;
-			// reset position of dialog box
-			dialog.css({
-				position: 'absolute',
-				left: trigger.get(0).offsetLeft,
-				top: trigger.get(0).offsetTop,
-				display: 'block' // brings the dialog back in to view
-			})
-			// (we're using chaining on the dialog) now animate it's opacity and position
-				.animate({
-					top: '+=' + distance + 'px',
-					opacity: 1
-				}, time, 'swing', function() {
-					// once the animation is complete, set the tracker variables
-					beingShown = false;
-					link.shown = true;
-				});
-			$('.call-button').data('link', link);
-			$('input[name="to"]', dialog).val(phone).focus();
-			$('input[name="target"]', dialog).val(target);
-			$('.screen').show();
-			
-			currentDialogType = 'call';
-			currentDialogHideFunction = function() {
-				hideDialog(null, link);
-			};
-			
-			return true;
-		};
-
-		$(window).keypress(function(event) {
-			if(event.keyCode == 27)
-				hideDialog(event, link);
-		});
-
-		if($(this).hasClass('hover'))
-		{
-			// set the mouseover and mouseout on both element
-			$([trigger.get(0), dialog.get(0)])
-				.mouseover(function(event) {
-					displayDialog(event, link);
-				})
-				.mouseout(function(event) {
-					hideDialog(event, link);
-				});
-		} else {
-			$(trigger).click(function(event) { 
-				return (displayDialog(event, link) ? false : hideDialog(event, link));
-			});
-		}
-
-		$('.close', dialog).live('click', function(event) {
-			hideDialog(event, link);
-			event.preventDefault();
-		});
-		
-	});
-
-	var callNumber = function(event) {
-		event.preventDefault();
-		var device = $('select[name="device"]', dialog).val();
-		if (device == 'client') {
-			clientDialNumber();
-		}
-		else {
-			deviceDialNumber(event, this);
-		}
-	};
-
-	var clientDialNumber = function() {
-		window.parent.Client.call({
-			'to': $('#dial-number', dialog).val(),
-			'callerid': $(':input[name="callerid"]', dialog).val(),
-			'Digits': 1
-		});
-		$('.close', dialog).click();
-	};
+	// var hideDialog = function (event, link) {
+	// 	// reset the timer if we get fired again - avoids double animations
+	// 	if (hideDelayTimer)
+	// 		clearTimeout(hideDelayTimer);
+	// 	link.shown = false;
+	// 	$('.call-button').data('link', link);
+	// 
+	// 	// store the timer so that it can be cleared in the mouseover if required
+	// 	hideDelayTimer = setTimeout(function () {
+	// 		hideDelayTimer = null;
+	// 		dialog.animate({
+	// 			top: '-=' + distance + 'px',
+	// 			opacity: 0
+	// 		}, time, 'swing', function () {
+	// 				// once the animate is complete, set the tracker variables
+	// 			globalTwilioCallLock = false;
+	// 			// hide the dialog entirely after the effect (opacity alone doesn't do the job)
+	// 			dialog.css('display', 'none');
+	// 		});
+	// 	}, hideDelay);
+	// 
+	// 	$('.screen').hide();
+	// 	$('.invoke-call-button span').text('Call');
+	// 	$('.call-dialing').hide();
+	// 	
+	// 	currentDialogHideFunction = null;
+	// 	currentDialogType = null;
+	// 	
+	// 	return false;
+	// };
+	//
+	// $('.twilio-call').each(function () {
+	// 	
+	// 	// tracker
+	// 	var beingShown = false;
+	// 	var link = this;
+	// 
+	// 	link.shown = false;
+	// 	
+	// 	var trigger = $(this);
+	// 	var displayDialog = function (event, link) {
+	// 
+	// 		if (currentDialogType == 'sms') {
+	// 			currentDialogHideFunction();
+	// 		}
+	// 		
+	// 		// stops the hide event if we move from the trigger to the dialog element
+	// 		if (hideDelayTimer) clearTimeout(hideDelayTimer);
+	// 		// don't trigger the animation again if we're being shown, or already visible
+	// 		if (beingShown || link.shown) {
+	// 			return false;
+	// 		} 
+	// 
+	// 		if(globalTwilioCallLock) {
+	// 			globalTwilioCallLock = false;
+	// 			var oldLink = $('.call-button').data('link');
+	// 			oldLink.shown = false;
+	// 			$('.call-dialog').hide();
+	// 		}
+	// 
+	// 		var phone = '';
+	// 		if(link) {
+	// 			if($(link).text() != 'Call') {
+	// 				phone = $(link).text();
+	// 			} else {
+	// 				phone = '';
+	// 			}
+	// 			target = $(link).attr('href');
+	// 		}
+	// 
+	// 		globalTwilioCallLock = beingShown = true;
+	// 		// reset position of dialog box
+	// 		dialog.css({
+	// 			position: 'absolute',
+	// 			left: trigger.get(0).offsetLeft,
+	// 			top: trigger.get(0).offsetTop,
+	// 			display: 'block' // brings the dialog back in to view
+	// 		})
+	// 		// (we're using chaining on the dialog) now animate it's opacity and position
+	// 			.animate({
+	// 				top: '+=' + distance + 'px',
+	// 				opacity: 1
+	// 			}, time, 'swing', function() {
+	// 				// once the animation is complete, set the tracker variables
+	// 				beingShown = false;
+	// 				link.shown = true;
+	// 			});
+	// 		$('.call-button').data('link', link);
+	// 		$('input[name="to"]', dialog).val(phone).focus();
+	// 		$('input[name="target"]', dialog).val(target);
+	// 		$('.screen').show();
+	// 		
+	// 		currentDialogType = 'call';
+	// 		currentDialogHideFunction = function() {
+	// 			hideDialog(null, link);
+	// 		};
+	// 		
+	// 		return true;
+	// 	};
+	// 
+	// 	$(window).keypress(function(event) {
+	// 		if(event.keyCode == 27)
+	// 			hideDialog(event, link);
+	// 	});
+	// 
+	// 	if($(this).hasClass('hover'))
+	// 	{
+	// 		// set the mouseover and mouseout on both element
+	// 		$([trigger.get(0), dialog.get(0)])
+	// 			.mouseover(function(event) {
+	// 				displayDialog(event, link);
+	// 			})
+	// 			.mouseout(function(event) {
+	// 				hideDialog(event, link);
+	// 			});
+	// 	} else {
+	// 		$(trigger).click(function(event) { 
+	// 			return (displayDialog(event, link) ? false : hideDialog(event, link));
+	// 		});
+	// 	}
+	// 
+	// 	$('.close', dialog).live('click', function(event) {
+	// 		hideDialog(event, link);
+	// 		event.preventDefault();
+	// 	});
+	// 	
+	// });
+	// 
+	// var callNumber = function(event) {
+	// 	event.preventDefault();
+	// 	var device = $('select[name="device"]', dialog).val();
+	// 	if (device == 'client') {
+	// 		clientDialNumber();
+	// 	}
+	// 	else {
+	// 		deviceDialNumber(event, this);
+	// 	}
+	// };
+	// 
+	// var clientDialNumber = function() {
+	// 	window.parent.Client.call({
+	// 		'to': $('#dial-number', dialog).val(),
+	// 		'callerid': $(':input[name="callerid"]', dialog).val(),
+	// 		'Digits': 1
+	// 	});
+	// 	$('.close', dialog).click();
+	// };
+	// 
+	// var deviceDialNumber = function(event, clicked) {
+	// 	$('.invoke-call-button span').text('Calling...');
+	// 	$('.call-dialing').show();
+	// 
+	// 	var link = $(clicked).data('link');
+	// 	$(this).prop('disabled', true);
+	// 	var button = $(clicked);
+	// 	$.ajax({
+	// 		url : OpenVBX.home + '/messages/call',
+	// 		data : $('form input, form select', dialog),
+	// 		dataType : 'json',
+	// 		type : 'POST',
+	// 		success : function(data) {
+	// 			button.prop('disabled', false);
+	// 			hideDialog(event, link);
+	// 			if(!data.error) {
+	// 				$.notify('You are now being connected to ' + $('input[name="to"]', dialog).val());
+	// 				return;
+	// 			}
+	// 
+	// 			$('.error-dialog').dialog('option', 'buttons', { 
+	// 				"Ok": function() { 
+	// 					$(this).dialog("close"); 
+	// 				} 
+	// 			});
+	// 
+	// 			$('.error-dialog .error-code').text('');
+	// 			$('.error-dialog .error-message')
+	// 				.text('Unable to complete call. Message from server: '
+	// 					  + data.message);
+	// 			
+	// 			$('.error-dialog').dialog('open');
+	// 		}
+	// 	});
+	// };
+	// 
+	// $('.call-button', dialog).click(callNumber);
+	// 
+	// $('.screen').live('click', function(event) {
+	// 	event.preventDefault();
+	// 	if(globalTwilioCallLock) {
+	// 		$('.close', dialog).click();
+	// 	}
+	// });
 	
-	var deviceDialNumber = function(event, clicked) {
-		$('.invoke-call-button span').text('Calling...');
-		$('.call-dialing').show();
-
-		var link = $(clicked).data('link');
-		$(this).prop('disabled', true);
-		var button = $(clicked);
-		$.ajax({
-			url : OpenVBX.home + '/messages/call',
-			data : $('form input, form select', dialog),
-			dataType : 'json',
-			type : 'POST',
-			success : function(data) {
-				button.prop('disabled', false);
-				hideDialog(event, link);
-				if(!data.error) {
-					$.notify('You are now being connected to ' + $('input[name="to"]', dialog).val());
-					return;
-				}
-
-				$('.error-dialog').dialog('option', 'buttons', { 
-					"Ok": function() { 
-						$(this).dialog("close"); 
-					} 
-				});
-
-				$('.error-dialog .error-code').text('');
-				$('.error-dialog .error-message')
-					.text('Unable to complete call. Message from server: '
-						  + data.message);
-				
-				$('.error-dialog').dialog('open');
-			}
-		});
-	};
-
-	$('.call-button', dialog).click(callNumber);
-
-	$('.screen').live('click', function(event) {
-		event.preventDefault();
-		if(globalTwilioCallLock) {
-			$('.close', dialog).click();
+	console.log('.twilio-call');
+	$('.twilio-call').live('click', function(e) {
+		e.preventDefault();
+		
+		console.log(window.parent.Client.ui.state());
+		switch (window.parent.Client.ui.state()) {
+			case 'closed':
+				window.parent.Client.ui.toggleCallView('open');
+				break;
+			case 'tab':
+				window.parent.Client.ui.toggleTab();
+				break;
+			case 'open':
+			default:
+				// do nothing
 		}
 	});
-	
+
 	$('#vbx-client-status .client-button').live('click', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		
+	
 		var parent = $(this).closest('#vbx-client-status'),
 			client_status = true,
 			status = null;
-		
+	
 		if (window.parent.Client.disabled) {
 			client_status = false;
 		}
-		
+	
 		if (client_status) {
 			status = parent.hasClass('online') ? false : true;
 			parent.removeClass('online').addClass('loading');
-			
+		
 			window.parent.Client.status.setWindowStatus(status, function(r) {
 				parent.removeClass('loading').addClass(r.client_status);
 			});
@@ -347,10 +365,9 @@ $(function () {
 				.text('The Phone Client is not available. ' +
 					  'Please check to make sure that you have Flash installed ' +
 					  'and that there are no Flash Blocking plugins enabled.');
-			
+		
 			$('.error-dialog').dialog('open');
 		}
-		
 	});
 });
 

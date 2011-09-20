@@ -24,16 +24,28 @@
 class Iframe extends User_Controller {
 
 	protected $client_token_timeout;
+	
+	protected $tjs_baseurl = '';
+	protected $tjs_file = '';
 
 	public function __construct() {
 		parent::__construct();
+
+		// look at protocol and serve the appropriate file, https comes from amazon aws
+		$this->twilio_js_baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ?
+			'https://s3.amazonaws.com/static.twilio.com' : 'http://static.twilio.com';
+		$this->twilio_js_file = 'twilio'.($this->config->item('use_unminimized_js') ? '' : '.min').'.js';
 	}
 
 	function index() {
-		$data = array(
+		$data = $this->init_view_data();
+		$data = array_merge($data, array(
 			'site_title' => 'OpenVBX',
-			'iframe_url' => site_url('/messages')
-		);
+			'iframe_url' => site_url('/messages'),
+			'users' => $this->get_users(),
+			'twilio_js' => $this->twilio_js_baseurl.'/libs/twiliojs/1.0/'.$this->twilio_js_file,
+			'client_capability' => null
+		));
 		
 		// if the 'last_known_url' cookie is set then we've been redirected IN to frames mode
 		if (!empty($_COOKIE['last_known_url'])) {
@@ -41,13 +53,6 @@ class Iframe extends User_Controller {
 			setcookie('last_known_url', '', time() - 3600, '/');
 		}
 
-		// look at protocol and serve the appropriate file, https comes from amazon aws
-		$tjs_baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ?
-			'https://s3.amazonaws.com/static.twilio.com' : 'http://static.twilio.com';
-		$twilio_js_file = 'twilio'.($this->config->item('use_unminimized_js') ? '' : '.min').'.js';
-		$data['twilio_js'] = $tjs_baseurl.'/libs/twiliojs/1.0/'.$twilio_js_file;
-
-		$data['client_capability'] = null;
 		if (!empty($this->application_sid))
 		{
 			$user_id = intval($this->session->userdata('user_id'));
@@ -59,6 +64,22 @@ class Iframe extends User_Controller {
 		if (function_exists('twilio_dev_mods')) {
 			$data = twilio_dev_mods($data);
 		}
+		
 		$this->load->view('iframe', $data);
+	}
+	
+	protected function get_users() {
+		$users = VBX_User::search(array(
+			'is_active' => 1,
+		));
+		
+		$current_user = $this->session->userdata('user_id');
+		foreach ($users as $k => $user) {
+			if ($user->id == $current_user) {
+				unset($users[$k]);
+			}
+		}
+		
+		return $users;
 	}
 }
