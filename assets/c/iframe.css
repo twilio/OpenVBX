@@ -182,8 +182,8 @@ body {
 
 #make-call-form #dial-phone-number {
 	width: 118px;
-	padding: 3px 4px;
-	font-size: 13px;
+	padding: 4px 4px;
+	font-size: 12px;
 	background: #FFF;
 	border: 1px solid #000;
 	border-radius: 4px;
@@ -195,7 +195,8 @@ body {
 
 #make-call-form #caller-id-phone-number {
 	width: 128px;
-	font-size: 16px;
+	font-size: 12px;
+	padding: 4px 0;
 }
 
 #make-call-form #dial-input-button { 
@@ -307,9 +308,23 @@ body {
 	overflow: visible; /* removes extra side padding in IE */
 }
 
+#client-ui-user-list .user-dial-button[disabled="disabled"],
+#make-call-form #dial-input-button[disabled="disabled"] {
+	opacity: 0.5;
+	-moz-opacity: 0.5;
+	filter:alpha(opacity=50);
+}
 
+#dialer p {
+	color: #fff;
+}
 
-
+#client-ui-user-list .no-icons .user-name {
+	padding-left: 0;
+}
+#client-ui-user-list .user-item.no-icons .status-icon {
+	display: none;
+}
 
 /* Client On Call */
 #client-on-call {
