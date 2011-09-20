@@ -66,6 +66,72 @@
 								<span class="user-name">Shawn Parker</span>
 								<button class="user-dial-button">Dial</button>
 							</li>
+							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
+							<li class="user-item">
+								<span class="status-icon enabled-phone" title="Phone Enabled"></span>
+								<span class="status-icon disabled-client" title="Client Disabled"></span>
+								<span class="user-name">Shawn Parker</span>
+								<button class="user-dial-button">Dial</button>
+							</li>
 						</ul><!-- #client-ui-user-list -->
 					</div><!-- #client-make-call -->
 
