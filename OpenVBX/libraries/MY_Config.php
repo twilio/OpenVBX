@@ -68,7 +68,7 @@ function asset_url($uri)
 function iphone_handler_url($uri)
 {
 	$CI =& get_instance();
-    return 'openvbx://'.$CI->config->item('server_name').'/'.$uri;
+	return 'openvbx://'.$CI->config->item('server_name').'/'.$uri;
 }
 
 function tenant_url($uri, $tenant_id = NULL)
