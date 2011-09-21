@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-define('MIN_PHP_VERSION', '5.2');
+define('MIN_PHP_VERSION', '5.4');
 
 /*
 |--------------------------------------------------------------------------

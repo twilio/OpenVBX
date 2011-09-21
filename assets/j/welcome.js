@@ -69,4 +69,10 @@ jQuery(function($) {
 			}
 		}
 	});
+	
+	if($('.error').text() != '') {
+		setTimeout(function() {
+				$('#welcome-steps').Steps.toggleError(true)
+			}, 1000);
+	}
 });

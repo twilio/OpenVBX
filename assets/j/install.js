@@ -19,9 +19,6 @@
  **/
 
 $(document).ready(function() {
-	if($('.error').text() != '') {
-		setTimeout(OpenVBX.Steps.toggleError, 1000);
-	}
 
 	$('#install-steps').Steps({
 		validateCallbacks : {
@@ -121,6 +118,12 @@ $(document).ready(function() {
 			}
 		});
 		return _installSuccess;
+	}
+	
+	if($('.error').text() != '') {
+		setTimeout(function() {
+				$('#install-steps').Steps.toggleError(true)
+			}, 1000);
 	}
 	
 	setTimeout(function() {

@@ -51,15 +51,6 @@
 		_options,
 		_this;
 
-	var toggleError = function(state) {
-		if (state === true && !_error.is(':visible')) {
-			_error.slideDown();
-		}
-		else if (state === false && _error.is(':visible')) {
-			_error.slideUp();
-		}
-	};
-
 	var nextStep = function(e) {
 		e.preventDefault();
 		
@@ -188,6 +179,15 @@
 				}			
 			}
 		});
+	};
+	
+	$.fn.Steps.toggleError = function(state) {
+		if (state === true && !_error.is(':visible')) {
+			_error.slideDown();
+		}
+		else if (state === false && _error.is(':visible')) {
+			_error.slideUp();
+		}
 	};
 	
 	$.fn.Steps.isLastStep = function() {
