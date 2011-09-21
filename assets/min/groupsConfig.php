@@ -9,7 +9,6 @@
  * changes. http://yourdomain/min/builder/
  **/
 
-
 $jquery = '//assets/j/frameworks/jquery-1.6.2.min.js';
 $jquery_ui = '//assets/j/frameworks/jquery-ui-1.8.14.custom.min.js';
 $jquery_cookie = '//assets/j/plugins/jquery.cookie.js';
