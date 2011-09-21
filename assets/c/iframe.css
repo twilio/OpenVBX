@@ -151,7 +151,6 @@ body {
 	margin: 10px 0;
 	padding: 0 20px;
 	clear: left;
-	overflow: auto;
 }
 
 #make-call-form fieldset {
@@ -324,10 +323,30 @@ body {
 }
 
 #client-ui-user-list .no-icons .user-name {
-	padding-left: 0;
+	padding-left: 5px;
 }
 #client-ui-user-list .user-item.no-icons .status-icon {
 	display: none;
+}
+
+#dialer button .button-spinner {
+	display: block;
+	width: 100%;
+	height: auto;
+	text-align: center;
+	line-height: 16px;
+}
+
+#dialer button .button-spinner img {
+	vertical-align: top;
+	margin-right: 7px;
+}
+#dialer .user-dial-button .button-spinner img {
+	display: none;
+}
+#dialer .user-dial-button .button-spinner {
+	text-indent: -9999px;
+	background: transparent url('../i/ajax-loader-circle-dark.gif') 50% 50% no-repeat;
 }
 
 /* Client On Call */

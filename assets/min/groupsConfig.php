@@ -70,7 +70,7 @@ $sources = array(
 		$jquery_ui, 
 		$jquery_cookie,
 		'//assets/j/iframe.js',
-		'//assets/j/client.js'		
+		'//assets/j/client.js'	
 	),
 	'installjs' => array(
 		$jquery,

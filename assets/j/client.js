@@ -44,7 +44,8 @@ var Client = {
 	muted: false,
 		
 	options: {
-		cookie_name: 'vbx_client_call'
+		cookie_name: 'vbx_client_call',
+		debug: false
 	},
 	
 	init: function (callback) {		
@@ -52,34 +53,42 @@ var Client = {
 			Twilio.Device.setup(OpenVBX.client_capability, OpenVBX.client_params);
 
 			Twilio.Device.ready(function (device) {
+				Client.log('event: ready');
 				Client.ready(device);
 			});
 		
 			Twilio.Device.offline(function (device) {
+				Client.log('event: offline');
 				Client.offline(device);
 			});
 		
 			Twilio.Device.error(function (error) {
+				Client.log('event: error');
 				Client.error(error);
 			});
 		
 			Twilio.Device.connect(function (conn) {
+				Client.log('event: connect');
 				Client.connect(conn);
 			});
 		
 			Twilio.Device.disconnect(function (conn) {
+				Client.log('event: disconnect');
 				Client.disconnect(conn);
 			});
 		
 			Twilio.Device.incoming(function (conn) {
+				Client.log('event: incoming');
 				Client.incoming(conn);
 			});
 		
 			Twilio.Device.cancel(function(conn) {
-				Client.cancel();
+				Client.log('event: cancel');
+				Client.cancel(conn);
 			});
 			
 			Twilio.Device.presence(function(event) {
+				Client.log('event: presence');
 				Client.handleEvent(event);
 			});
 		
@@ -93,7 +102,7 @@ var Client = {
 	},
 	
 	log : function(message) {
-		if (window.console && window.console.log) {
+		if (Client.options.debug && window.console && window.console.log) {
 			console.log(message);
 		}
 	},
@@ -147,6 +156,17 @@ var Client = {
 		return status;
 	},
 
+	triggerError: function(message) {
+		try {
+			if (window.frames['openvbx-iframe'].OpenVBX.error) {
+				window.frames['openvbx-iframe'].OpenVBX.error.trigger(message);
+			}
+		}
+		catch (e) {
+			Client.log(message);
+		}
+	},
+	
 // Actions
 	
 	handleEvent: function(event) {
@@ -187,9 +207,8 @@ var Client = {
 		return Client.call_mode;
 	},
 	
-	// smart caller that analyzes the environment to make appropriate call
+	// "magic" caller that analyzes the environment to make appropriate call
 	makeCallTo: function(call_to, online_status) {
-		console.log(call_to);
 		var mode = Client.getCallMode(),
 			status = online_status == 'online' ? 'online' : 'offline',
 			call_from = $('#caller-id-phone-number').val();
@@ -213,7 +232,26 @@ var Client = {
 	
 	dial: function(params) {
 		// ajax call to trigger call connection dance
-		
+		$.ajax({
+			url: OpenVBX.home + '/messages/call',
+			data: params,
+			dataType: 'json',
+			type: 'POST',
+			success: function(response) {
+				if (response.error) {
+					var message = 'Unable to complete call. Message from server: ' + response.message;
+					Client.triggerError(message);
+				}
+				
+				setTimeout(function() {
+						Client.ui.toggleCallView('close');
+					}, 1000);
+			},
+			error: function(xhr, status, error) {
+				var message = 'Unable to complete call. Message from server: ' + error;
+				Client.triggerError(message);
+			}
+		});
 	},
 	
 	answer: function() {
@@ -267,7 +305,7 @@ var Client = {
 	giveUpIncoming: function(conn) {
 		conn.cancel();
 		clearTimeout(this.incoming_timeout);
-		setTimeout(function() { 
+		setTimeout(function() {
 				Client.ui.reset(); 
 			}, 1000);
 	},
@@ -367,7 +405,7 @@ var Client = {
 	},
 
 	disconnect: function (connection) {
-		if (connection == this.connection) {
+		if (connection.parameters.CallSid == this.connection.parameters.CallSid) {
 			Twilio.Device.sounds.incoming(true);
 			
 			// reset ui
@@ -387,7 +425,7 @@ var Client = {
 	},
 	
 	cancel: function(connection) {
-		if (connection == this.connection) {
+		if (connection.parameters.CallSid == this.connection.parameters.CallSid) {
 			this.clear_connection();
 		
 			this.ui.endTick();
@@ -396,7 +434,8 @@ var Client = {
 			this.message('Call cancelled');
 			
 			clearTimeout(this.incoming_timeout);
-			setTimeout(function() { 
+			setTimeout(function() {
+					console.log('resetting');
 					Client.ui.reset(); 
 				}, 1000);
 		}
@@ -454,6 +493,25 @@ Client.ui = {
 		$(elements, $('#client-ui-actions')).removeClass('muted').hide();
 	},
 	
+	addDialSpinner: function(elm, text) {
+		var button = $(elm),
+			span = $('<span />').addClass('button-spinner'),
+			img = $('<img />').attr('src', OpenVBX.assets + '/assets/i/ajax-loader-circle-dark.gif');
+			
+		span.append(img);
+		if (!text) {
+			text = 'Calling';
+		}
+		span.append(text);
+		button.find('.button-text').css({'display': 'none'})
+			.end().append(span);
+	},
+	
+	removeDialSpinner: function(elm) {
+		$(elm).find('.button-spinner').remove()
+			.end().find('button-text').show();
+	},
+	
 // Timer
 	startTick: function() {
 		this.startTime = new Date();
@@ -503,7 +561,6 @@ Client.ui = {
 			dialer_offset = $('#dialer .client-ui-content').css('width'),
 			tab_status_offset = $('#dialer .client-ui-tab').css('height');
 		
-		console.log(dialer.hasClass('closed'));
 		if (!dialer.hasClass('closed')) {
 			if (tab.hasClass('open')) {
 				dialer_offset_mod = '-=';
@@ -527,9 +584,6 @@ Client.ui = {
 				},
 				animate_speed,
 				function() {});
-		}
-		else {
-			console.log('no');
 		}
 	},
 	
@@ -597,6 +651,7 @@ Client.ui = {
 		Client.setCallMode();
 	},
 	
+	// toggle status by classname for a user in the list
 	toggleUserStatus: function(userid, available) {
 		var	user = $('#client-ui-user-list li#user-' + userid);
 		if (available) {
@@ -605,6 +660,24 @@ Client.ui = {
 		else {
 			user.removeClass('online');
 		}
+	},
+	
+	// when someone purchases a number we need to make it available
+	refreshNumbers: function(number) {
+		$.ajax({
+			url: OpenVBX.home + '/numbers/refresh_select',
+			data: {},
+			dataType: 'json',
+			type: 'POST',
+			success: function(response) {
+				if (response.error) {
+					Client.triggerError('Unable to refresh phone numbers. Message from server: ' + reponse.message);
+				}
+				else {
+					$('#dialer #callerid-container').html(response.html);
+				}
+			}
+		});
 	},
 	
 // banner to show that client is disabled

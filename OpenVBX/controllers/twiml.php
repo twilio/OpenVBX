@@ -375,7 +375,7 @@ class Twiml extends MY_Controller {
 				}
 			}
 
-			if (!$dial_client) 
+			if (!$dial_client && !empty($to)) 
 			{
 				$this->response->dial($to, $options);
 			}
@@ -383,6 +383,10 @@ class Twiml extends MY_Controller {
 			{
 				$dial = $this->response->dial(NULL, $options);
 				$dial->client($to);
+			}
+			else {
+				$this->response->say("We're sorry, this user is currently not reachable. Goodbye.");
+				$this->response->hangup();
 			}
 		} 
 		else 

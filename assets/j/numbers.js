@@ -183,7 +183,9 @@ $(document).ready(function() {
 
 				var number_id = data.number.id;
 
-
+				if (window.parent.Client) {
+					window.parent.Client.ui.refreshNumbers();
+				}
 				$('#completed-order').removeClass('hide');
 			},
 			error: function(xhr, status, error) {

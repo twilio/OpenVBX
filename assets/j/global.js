@@ -18,6 +18,18 @@
  * Contributor(s):
  **/
 
+OpenVBX.error = {
+	trigger: function(message, code) {
+		var error_message = message || 'An unknown error has occurred',
+			error_code = code || '';
+		
+		$('.error-dialog')
+			.find('.error-code').text(error_code).end()
+			.find('.error-message').text(error_message).end()
+			.dialog('open');
+	}
+}
+
 var _st = window.setTimeout;
 
 window.setTimeout = function(fRef, mDelay) {

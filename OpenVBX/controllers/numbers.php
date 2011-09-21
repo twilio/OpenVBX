@@ -282,5 +282,16 @@ class Numbers extends User_Controller
 	{
 		return $this->make_rest_access();
 	}
-
+	
+	public function refresh_select() {
+		$data = $this->init_view_data();
+		$html = $this->load->view('dialer/numbers', $data, true);
+		
+		$response['json'] = array(
+			'error' => false,
+			'html' => $html
+		);
+		
+		$this->respond('', 'dialer/numbers', $response);
+	}
 }
