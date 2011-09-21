@@ -121,11 +121,9 @@ jQuery(function($) {
 	// @todo pull out when html is deleted from view
 	var dialog = $('.call-dialog').css('opacity', 0);
 	
-	console.log('.twilio-call');
 	$('.twilio-call').live('click', function(e) {
 		e.preventDefault();
 		
-		console.log(window.parent.Client.ui.state());
 		switch (window.parent.Client.ui.state()) {
 			case 'closed':
 				window.parent.Client.ui.toggleCallView('open');

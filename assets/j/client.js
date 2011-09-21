@@ -435,7 +435,6 @@ var Client = {
 			
 			clearTimeout(this.incoming_timeout);
 			setTimeout(function() {
-					console.log('resetting');
 					Client.ui.reset(); 
 				}, 1000);
 		}
