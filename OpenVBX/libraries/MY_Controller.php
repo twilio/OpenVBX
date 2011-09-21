@@ -38,6 +38,10 @@ class MY_Controller extends Controller
 	protected $section;
 	protected $request_method;
 	protected $response_type;
+	
+	protected $js_assets = 'js';
+	protected $css_assets = 'css';
+
 	public $tenant;
 
 	public $twilio_sid;
@@ -67,7 +71,7 @@ class MY_Controller extends Controller
 		$this->load->model('vbx_plugin_store');
 		$this->load->helper('file');
 		$this->load->library('session');
-
+		
 		$this->settings = new VBX_Settings();
 
 		$rewrite_enabled = intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT));
@@ -83,7 +87,7 @@ class MY_Controller extends Controller
 		{
 			$this->session->set_userdata('loggedin', 0);
 			$this->session->set_flashdata('error', 'This tenant is no longer active');
-			return redirect('auth/logout');
+			return redirect(asset_url('auth/logout'));
 		}
 
 		if($this->tenant === false)
@@ -96,8 +100,13 @@ class MY_Controller extends Controller
 		if($this->tenant)
 		{
 			$this->config->set_item('sess_cookie_name', $this->tenant->id . '-' . $this->config->item('sess_cookie_name'));
+			
 			$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
-			$this->twilio_token = $this->settings->get('twilio_token', $this->tenant->id);
+			$token_from = ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT ? VBX_PARENT_TENANT : $this->tenant->id);
+			$this->twilio_token = $this->settings->get('twilio_token', $token_from);				
+			$this->application_sid = $this->settings->get('application_sid', $this->tenant->id);
+
+			// @deprecated, will be removed in a future release
 			$this->twilio_endpoint = $this->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
 		}
 
@@ -106,37 +115,66 @@ class MY_Controller extends Controller
 		$this->set_response_type();
 		$this->set_request_method();
 
-		$scripts = null;
-		if ($this->config->item('use_unminimized_js'))
+		if ($this->response_type == 'html') 
 		{
-			$sources_file = APPPATH . 'assets/j/site-bootstrap.sources';
-			$scripts = explode("\n", file_get_contents(APPPATH . '../assets/j/site-bootstrap.sources'));
-		}
-		else {
-			$scripts = array('site.js');
-		}
+			$scripts = null;
+			$js_assets = (!empty($this->js_assets) ? $this->js_assets : 'js');
+			if ($this->config->item('use_unminimized_js'))
+			{
+				$scripts = $this->get_assets_list($js_assets);
+				if (is_array($scripts)) {
+					foreach ($scripts as $script)
+					{
+						if ($script) $this->template->add_js($script);
+					}
+				}
+			}
+			else {
+				$this->template->add_js(asset_url('/assets/min/?g='.$js_assets), 'absolute');
+			}
 
-		if ($this->config->item('use_unminimized_css'))
-		{
-			$sources_file = APPPATH . 'assets/c/site-css.sources';
-			$styles = explode("\n", file_get_contents(APPPATH . '../assets/c/site-css.sources'));
-		} else {
-			$styles = array('site-' . $this->config->item('site_rev') . '.css');
-		}
-
-		foreach ($scripts as $script)
-		{
-			if ($script) $this->template->add_js("assets/j/$script");
-		}
-
-		foreach ($styles as $style)
-		{
-			if ($style) $this->template->add_css("assets/c/$style");
+			$css_assets = (!empty($this->css_assets) ? $this->css_assets : 'css');
+			if ($this->config->item('use_unminimized_css'))
+			{				
+				$styles = $this->get_assets_list($css_assets);
+				if (is_array($styles)) {
+					foreach ($styles as $style)
+					{
+						if ($style) $this->template->add_css($style);
+					}
+				}
+			} else {
+				$this->template->add_css(asset_url('/assets/min/?g='.$css_assets), 'link');
+			}
 		}
 	}
-
-
-
+	
+	/**
+	 * Called when no minimizing assets
+	 * Import the minification group definitions & cleanse for direct inclusion
+	 *
+	 * @param string $type 
+	 * @return mixed array | false
+	 */
+	protected function get_assets_list($type) {
+		$_assets = array();
+		if (empty($this->assets)) {
+			$min_config = BASEPATH.'../assets/min/groupsConfig.php';
+			if (is_file($min_config)) {
+				include($min_config);
+				$this->assets = $sources;
+			}
+		}
+		if (isset($this->assets[$type])) {
+			$_assets = $this->assets[$type];
+			foreach ($_assets as &$asset) {
+				$asset = preg_replace('|^(//)|', '', $asset);
+			}
+			return $_assets;
+		}
+		return false;
+	}
+	
 	protected function set_request_method($method = null)
 	{
 		$this->request_method = $_SERVER['REQUEST_METHOD'];
@@ -183,6 +221,7 @@ class MY_Controller extends Controller
 		/* Filter out standard templates vars */
 		$json = $this->build_json_response($json);
 		$json_str = json_encode($json);
+		header('content-type: text/javascript');
 		if(!$pprint)
 		{
 			echo $json_str;

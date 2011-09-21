@@ -39,7 +39,6 @@ a {
     outline: none;
 }
 
-
 .steps {
     position: relative;
     width: 5000px;
@@ -65,6 +64,9 @@ a {
 	background-color: #D1E3ED;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-background-clip: padding-box;
 }
 
 .step .help:hover {
@@ -103,6 +105,22 @@ a {
 	background-color: #316480;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-background-clip: padding-box;
+}
+
+.upgrade-error {
+	margin-bottom: 10px;
+	padding: 20px;
+	color: #FFF;
+	background-color: #CA3A26;
+	border-bottom: 2px solid #B13321;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-background-clip: padding-box;
 }
 
 .plugin-list {
@@ -135,6 +153,9 @@ a {
 	background-color: #74C729;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-background-clip: padding-box;
 }
 
 #login-openvbx:active {
@@ -154,12 +175,14 @@ a {
 	background-color: #74C729;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-background-clip: padding-box;
 }
 
 #goto-openvbx:active {
 	background-color: #528D1D;
 }
-
 
 strong {
 	font-weight: bold;
@@ -183,6 +206,9 @@ ul.dependencies li {
 	color: #FFF;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-background-clip: padding-box;
 	overflow: auto;
 }
 
@@ -215,6 +241,9 @@ ul.dependencies li.fail.optional {
 	width: 700px;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-background-clip: padding-box;
     background-color: #FFF;
     border: 1px solid #EEE;
 	margin: 0 auto;
@@ -225,10 +254,10 @@ ul.dependencies li.fail.optional {
 }
 
 #install-form label {
-        display: block;
-        margin-bottom: 18px;
-        font-size: 15px;
-        color: #404040;
+	display: block;
+	margin-bottom: 18px;
+	font-size: 15px;
+	color: #404040;
 }
 
 #install-form .instruction {
@@ -238,15 +267,15 @@ ul.dependencies li.fail.optional {
 }
 
 #install-form input.medium {
-        display: block;
-        width: 290px;
-        margin-top: 3px;
-        padding: 0 5px;
-        height: 30px;
-        line-height: 30px;
-        font-size: 15px;
-        background: url(../i/form-input-text-300.png) no-repeat left top;
-        border: none;
+	display: block;
+	width: 290px;
+	margin-top: 3px;
+	padding: 0 5px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 15px;
+	background: url(../i/form-input-text-300.png) no-repeat left top;
+	border: none;
 }
 
 
@@ -259,11 +288,13 @@ ul.dependencies li.fail.optional {
 	border-bottom: 2px solid #B13321;
 	-moz-border-radius-topleft: 4px;
 	-moz-border-radius-topright: 4px;
+	-khtml-border-top-left-radius: 4px;
+	-khtml-border-top-right-radius: 4px;
 	-webkit-border-top-left-radius: 4px;
 	-webkit-border-top-right-radius: 4px;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;	
 }
-
-
 
 .navigation {
     position: absolute;
@@ -281,8 +312,12 @@ ul.dependencies li.fail.optional {
 	border: none;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-background-clip: padding-box;
     cursor: pointer;
 	outline: none;
+	min-width: 145px;
 }
 
 .navigation .prev {
@@ -303,7 +338,6 @@ ul.dependencies li.fail.optional {
 }
 
 .navigation .submit {
-	width: 145px;
 	float: right;
 	margin: 0 10px 0 20px;
 	background-color: #316480;
@@ -313,7 +347,7 @@ ul.dependencies li.fail.optional {
 	background-color: #0066FF;
 }
 
-.navigation .submit.loading {
+.navigation button.loading {
     background-image: url(../i/ajax-loader-circle.gif);
     background-position: 50% 50%;
 	background-repeat: no-repeat;
@@ -323,4 +357,3 @@ ul.dependencies li.fail.optional {
 .replace {
 	display: none;
 }
-

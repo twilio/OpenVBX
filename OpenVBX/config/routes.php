@@ -40,12 +40,13 @@
 |
 */
 
-#$route['default_controller'] = "messages/message_index";
-$route['default_controller'] = "iframe";
-$route['scaffolding_trigger'] = "";
+$route['default_controller'] = 'iframe';
+$route['scaffolding_trigger'] = '';
 
-$route['install'] = "install";
-$route['upgrade'] = "upgrade";
+$route['install'] = 'install';
+$route['upgrade'] = 'upgrade';
+$route['welcome'] = 'welcome';
+$route['welcome/(:any)'] = 'welcome/$1';
 $route['upgrade/setup'] = "upgrade/setup";
 $route['upgrade/validate'] = "upgrade/validate";
 $route['messages'] = "messages/message_index";
@@ -73,6 +74,8 @@ $route['settings'] = 'settings/settings_index';
 $route['settings/site/(:any)/(:num)'] = 'settings/site/index/$1/$2';
 $route['settings/site/(:any)'] = 'settings/site/index/$1';
 $route['settings/site'] = 'settings/site/index';
+$route['auth/connect/account_deauthorized'] = 'auth/connect/account_deauthorized';
+$route['auth/connect/deauthorize'] = 'auth/connect/deauthorize';
 $route['auth/reset/(:any)'] = "auth/reset/set_password/$1";
 $route['auth'] = "auth";
 $route['twiml/start/voice/(:any)'] = "twiml/start_voice/$1";

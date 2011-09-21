@@ -20,6 +20,41 @@
  * Contributor(s):
  **/
 
+if (!function_exists('generate_capability_token')) {
+	/**
+	 * Generate a capability token for Twilio Client
+	 *
+	 * @param string $allow_incoming 
+	 * @return string
+	 */
+	function generate_capability_token($rest_access, $allow_incoming = true) {
+		$ci =& get_instance();
+		$capability = new Services_Twilio_Capability($ci->twilio_sid, $ci->twilio_token);
+
+		$user_id = intval($ci->session->userdata('user_id'));
+		$user = VBX_user::get(array('id' => $user_id));
+
+		$params = array(
+			'user_id' => $user->user_id,
+			'rest_access' => $rest_access
+		);
+		
+		$token = null;
+		try {
+			$capability->allowClientOutgoing($ci->application_sid, $params);
+			if ($allow_incoming) {
+				$capability->allowClientIncoming($user->id);
+			}
+			$token = $capability->generateToken(VBX_Settings::CLIENT_TOKEN_TIMEOUT);
+		}
+		catch (Exception $e) {
+			error_log($e->getMessage());
+		}
+		
+		return $token;
+	}
+}
+
 if (!function_exists('validate_rest_request')) {
 	/**
 	 * Validate that an incoming rest request is from Twilio
@@ -31,7 +66,9 @@ if (!function_exists('validate_rest_request')) {
 		if (!OpenVBX::validateRequest()) {
 			$response = new TwimlResponse;
 			$response->say($failure_message);
+			$response->hangup();
 			$response->respond();
+			exit;
 		}
 	}
 }
@@ -48,6 +85,25 @@ if (!function_exists('clean_digits')) {
 	function clean_digits($digits) {
 		$trimmed = str_replace(array('#', '*'), '',  $digits);
 		return strlen($trimmed) > 0 ? $trimmed : $digits;
+	}
+}
+
+if (!function_exists('version_url')) {
+	/**
+	 * Append the current site rev to a url to force asset reload on upgrade/change
+	 *
+	 * @param string $url
+	 * @return string
+	 */
+	function version_url($url) {
+		if (strpos($url, 'v=') === false)
+		{
+			$ci =& get_instance();
+			$vers = 'v='.$ci->config->item('site_rev');
+			$pre = (strpos($url, '?') === false ? '?' : '&'); 
+			$url .= $pre.$vers;
+		}
+		return $url;
 	}
 }
 

@@ -24,37 +24,63 @@
 class Iframe extends User_Controller {
 
 	protected $client_token_timeout;
+	
+	protected $tjs_baseurl = '';
+	protected $tjs_file = '';
 
 	public function __construct() {
 		parent::__construct();
-		// make tokens valid for 4 hours
-		$this->client_token_timeout = 3600*8;
+
+		// look at protocol and serve the appropriate file, https comes from amazon aws
+		$this->twilio_js_baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ?
+			'https://s3.amazonaws.com/static.twilio.com' : 'http://static.twilio.com';
+		$this->twilio_js_baseurl = 'http://static.stage.twilio.com';
+		$this->twilio_js_file = 'twilio'.($this->config->item('use_unminimized_js') ? '' : '.min').'.js';
 	}
 
 	function index() {
-		$data = array(
+		$data = $this->init_view_data();
+		$data = array_merge($data, array(
 			'site_title' => 'OpenVBX',
-			'iframe_url' => site_url('/messages')
-		);
+			'iframe_url' => site_url('/messages'),
+			'users' => $this->get_users(),
+			'twilio_js' => $this->twilio_js_baseurl.'/libs/twiliojs/1.0/'.$this->twilio_js_file,
+			'client_capability' => null
+		));
 		
 		// if the 'last_known_url' cookie is set then we've been redirected IN to frames mode
 		if (!empty($_COOKIE['last_known_url'])) {
 			$data['iframe_url'] = $_COOKIE['last_known_url'];
-			setcookie('last_known_url', '', time() - 3600);
+			setcookie('last_known_url', '', time() - 3600, '/');
 		}
 
 		if (!empty($this->application_sid))
 		{
-			// look at protocol and serve the appropriate file, https comes from amazon aws
-			$tjs_baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ?
-				'https://s3.amazonaws.com/static.twilio.com' : 'http://static.twilio.com';
-			//$this->template->add_js($tjs_baseurl.'/libs/twiliojs/1.0/twilio.js', 'absolute');
-			$data['twilio_js'] = $tjs_baseurl.'/libs/twiliojs/1.0/twilio.js';
+			$user_id = intval($this->session->userdata('user_id'));
+			$user = VBX_user::get(array('id' => $user_id));
+			$data['client_capability'] = generate_capability_token($this->make_rest_access(), ($user->online == 1));
 		}
 
-		$data['client_capability'] = $this->capability->generateToken($this->client_token_timeout);
-		$data['capability'] = $this->capability;
-
+		// internal dev haxies
+		if (function_exists('twilio_dev_mods')) {
+			$data = twilio_dev_mods($data);
+		}
+		
 		$this->load->view('iframe', $data);
+	}
+	
+	protected function get_users() {
+		$users = VBX_User::search(array(
+			'is_active' => 1,
+		));
+		
+		$current_user = $this->session->userdata('user_id');
+		foreach ($users as $k => $user) {
+			if ($user->id == $current_user) {
+				unset($users[$k]);
+			}
+		}
+		
+		return $users;
 	}
 }

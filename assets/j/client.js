@@ -35,43 +35,61 @@ var Client = {
 	// after a call ends we set a timeout that waits a little while before
 	// putting the window away
 	close_timeout: null,
-		
+	
+	clients: [],
+	
+	// how we're calling. Via client, or via traditional phone hookup dance
+	call_mode: null,
+	
 	muted: false,
 		
 	options: {
-		cookie_name: 'vbx_client_call'
+		cookie_name: 'vbx_client_call',
+		debug: false
 	},
 	
-	init: function () {
+	init: function (callback) {		
 		try {
-			Twilio.Device.setup(OpenVBX.client_capability);
+			Twilio.Device.setup(OpenVBX.client_capability, OpenVBX.client_params);
 
 			Twilio.Device.ready(function (device) {
+				Client.log('event: ready');
 				Client.ready(device);
 			});
 		
 			Twilio.Device.offline(function (device) {
+				Client.log('event: offline');
 				Client.offline(device);
 			});
 		
 			Twilio.Device.error(function (error) {
+				Client.log('event: error');
 				Client.error(error);
 			});
 		
 			Twilio.Device.connect(function (conn) {
+				Client.log('event: connect');
 				Client.connect(conn);
 			});
 		
 			Twilio.Device.disconnect(function (conn) {
+				Client.log('event: disconnect');
 				Client.disconnect(conn);
 			});
 		
 			Twilio.Device.incoming(function (conn) {
+				Client.log('event: incoming');
 				Client.incoming(conn);
 			});
 		
 			Twilio.Device.cancel(function(conn) {
-				Client.cancel();
+				Client.log('event: cancel');
+				Client.cancel(conn);
+			});
+			
+			Twilio.Device.presence(function(event) {
+				Client.log('event: presence');
+				Client.handleEvent(event);
 			});
 		
 			$('#dialer #client-ui-actions button').hide();
@@ -80,8 +98,14 @@ var Client = {
 			this.disabled = true;
 			// browser most likely doesn't have flash or is using a flash block application
 			Client.ui.disabledBanner(e);
+		}		
+	},
+	
+	log : function(message) {
+		if (Client.options.debug && window.console && window.console.log) {
+			console.log(message);
 		}
-	}, 
+	},
 
 // Helpers
 	
@@ -102,7 +126,7 @@ var Client = {
 		
 		switch(number) {
 			case -13:
-				return '#'
+				return '#';
 			case -6:
 				return '*';
 			case 0:
@@ -119,8 +143,116 @@ var Client = {
 		}
 		return null;
 	},
+	
+	isReady: function() {
+		var status = false;
+		try {
+		 	status = (Twilio.Device.status() == 'ready');
+		}
+		catch (e) {
+			// most likely the connection is delayed, everyone can just wait.
+		}
 
+		return status;
+	},
+
+	triggerError: function(message) {
+		try {
+			if (window.frames['openvbx-iframe'].OpenVBX.error) {
+				window.frames['openvbx-iframe'].OpenVBX.error.trigger(message);
+			}
+		}
+		catch (e) {
+			Client.log(message);
+		}
+	},
+	
 // Actions
+	
+	handleEvent: function(event) {
+		var pos = jQuery.inArray(event.from, Client.clients);
+		if (event.available == true) {
+			if (pos < 0) {
+				Client.clients.push(event.from);
+			}
+		}
+		else {
+			if (pos > -1) {
+				Client.clients.splice(pos, 1);
+			}
+		}
+		
+		// notify the iframe
+		try {
+			if (window.frames['openvbx-iframe'].OpenVBX.presence) {
+				window.frames['openvbx-iframe'].OpenVBX.presence._set(event, Client.clients);
+			}
+		}
+		catch (e) {
+			// fail silently, probably tried during a page load or something fun like that
+		}
+
+		// trigger event for main frame listeners
+		$(this).trigger('presence', [event, Client.clients]);
+	},
+	
+	setCallMode: function() {
+		Client.call_mode = $('#client-mode-status .enabled').attr('id') == 'client-mode-button' ? 'client' : 'phone';		
+	},
+	
+	getCallMode: function() {
+		if (!Client.call_mode) {
+			Client.setCallMode();
+		}
+		return Client.call_mode;
+	},
+	
+	// "magic" caller that analyzes the environment to make appropriate call
+	makeCallTo: function(call_to, online_status) {
+		var mode = Client.getCallMode(),
+			status = online_status == 'online' ? 'online' : 'offline',
+			call_from = $('#caller-id-phone-number').val();
+			
+		if (mode == 'client') {
+			Client.call({
+					to: call_to,
+					callerid: call_from,
+					Digits: '1',
+					online: status
+				}, true);
+		}
+		else {
+			Client.dial({
+				to: call_to,
+				callerid: call_from,
+				online: status
+			});
+		}
+	},
+	
+	dial: function(params) {
+		// ajax call to trigger call connection dance
+		$.ajax({
+			url: OpenVBX.home + '/messages/call',
+			data: params,
+			dataType: 'json',
+			type: 'POST',
+			success: function(response) {
+				if (response.error) {
+					var message = 'Unable to complete call. Message from server: ' + response.message;
+					Client.triggerError(message);
+				}
+				
+				setTimeout(function() {
+						Client.ui.toggleCallView('close');
+					}, 1000);
+			},
+			error: function(xhr, status, error) {
+				var message = 'Unable to complete call. Message from server: ' + error;
+				Client.triggerError(message);
+			}
+		});
+	},
 	
 	answer: function() {
 		this.accept();
@@ -129,7 +261,7 @@ var Client = {
 	
 	call: function (params) {
 		if (Twilio.Device.status() == 'ready') {
-			this.ui.toggleCallView('open');
+			this.ui.toggleCallView('open', true);
 			this.connection = Twilio.Device.connect(params);
 		}
 	},
@@ -173,7 +305,7 @@ var Client = {
 	giveUpIncoming: function(conn) {
 		conn.cancel();
 		clearTimeout(this.incoming_timeout);
-		setTimeout(function() { 
+		setTimeout(function() {
 				Client.ui.reset(); 
 			}, 1000);
 	},
@@ -215,6 +347,7 @@ var Client = {
 		// Show UI
 		Client.ui.hide_actions('button');
 		Client.ui.show_actions('.answer');
+		Client.ui.toggleCallViewState('call');
 		Client.ui.toggleCallView('open');
 	},
 
@@ -272,7 +405,7 @@ var Client = {
 	},
 
 	disconnect: function (connection) {
-		if (connection == this.connection) {
+		if (connection.parameters.CallSid == this.connection.parameters.CallSid) {
 			Twilio.Device.sounds.incoming(true);
 			
 			// reset ui
@@ -292,7 +425,7 @@ var Client = {
 	},
 	
 	cancel: function(connection) {
-		if (connection == this.connection) {
+		if (connection.parameters.CallSid == this.connection.parameters.CallSid) {
 			this.clear_connection();
 		
 			this.ui.endTick();
@@ -301,7 +434,7 @@ var Client = {
 			this.message('Call cancelled');
 			
 			clearTimeout(this.incoming_timeout);
-			setTimeout(function() { 
+			setTimeout(function() {
 					Client.ui.reset(); 
 				}, 1000);
 		}
@@ -327,8 +460,19 @@ Client.ui = {
 		// force reset all conditions
 		Client.message('Ready');
 		this.toggleCallView('close');
+		this.toggleCallViewState('dial');
 		this.hide_actions('button');
+		$('#dial-phone-number').val('');
+		$('#caller-id-phone-number').val('');
 		this.endTick();
+	},
+	
+	state : function() {
+		var state = $('#dialer').hasClass('open') ? 'open' : 'closed';
+		if (state == 'open') {
+			state = $('#dialer .client-ui-tab').hasClass('open') ? 'open' : 'tab';
+		}
+		return state;
 	},
 
 // Buttons	
@@ -346,6 +490,25 @@ Client.ui = {
 	
 	hide_actions: function(elements) {
 		$(elements, $('#client-ui-actions')).removeClass('muted').hide();
+	},
+	
+	addDialSpinner: function(elm, text) {
+		var button = $(elm),
+			span = $('<span />').addClass('button-spinner'),
+			img = $('<img />').attr('src', OpenVBX.assets + '/assets/i/ajax-loader-circle-dark.gif');
+			
+		span.append(img);
+		if (!text) {
+			text = 'Calling';
+		}
+		span.append(text);
+		button.find('.button-text').css({'display': 'none'})
+			.end().append(span);
+	},
+	
+	removeDialSpinner: function(elm) {
+		$(elm).find('.button-spinner').remove()
+			.end().find('button-text').show();
 	},
 	
 // Timer
@@ -373,10 +536,10 @@ Client.ui = {
 	},
 
 	displayTime: function() {
-		var seconds = Math.floor(this.getTicks() / 1000);
+		var totalseconds = Math.floor(this.getTicks() / 1000);
 
-		var minutes = Math.floor(seconds / 60);
-		var seconds = seconds % 60;
+		var minutes = Math.floor(totalseconds / 60);
+		var seconds = totalseconds % 60;
 
 		if(minutes < 10) {
 			minutes = '0' + minutes;
@@ -391,48 +554,57 @@ Client.ui = {
 	
 	// open & close the call tab
 	toggleTab: function(clicked) {
-		var tab = $(clicked).closest('.client-ui-tab'),
+		var dialer = $('#dialer'),
+			tab = $('.client-ui-tab', dialer),
 			animate_speed = 500,
 			dialer_offset = $('#dialer .client-ui-content').css('width'),
-			tab_status_offset = $('#dialer .client-ui-tab').css('height')
+			tab_status_offset = $('#dialer .client-ui-tab').css('height');
 		
-		if (tab.hasClass('open')) {
-			dialer_offset_mod = '-=';
-			tab_status_offset_mod = '-=';
-			tab.removeClass('open');
-		}
-		else {
-			dialer_offset_mod = '+=';
-			tab_status_offset_mod = '+=';
-			tab.addClass('open');
-		}
-	
-		$('#dialer').animate({
-				right: dialer_offset_mod + dialer_offset
-			},
-			animate_speed,
-			function() {});
+		if (!dialer.hasClass('closed')) {
+			if (tab.hasClass('open')) {
+				dialer_offset_mod = '-=';
+				tab_status_offset_mod = '-=';
+				tab.removeClass('open');
+			}
+			else {
+				dialer_offset_mod = '+=';
+				tab_status_offset_mod = '+=';
+				tab.addClass('open');
+			}
+		
+			$('#dialer').animate({
+					right: dialer_offset_mod + dialer_offset
+				},
+				animate_speed,
+				function() {});
 			
-		$('#client-ui-tab-status').animate({
-				top: tab_status_offset_mod + tab_status_offset
-			},
-			animate_speed,
-			function() {});
+			$('#client-ui-tab-status').animate({
+					top: tab_status_offset_mod + tab_status_offset
+				},
+				animate_speed,
+				function() {});
+		}
 	},
 	
 	// show hide the dial tab/status slider
-	toggleCallView: function(status) {
+	toggleCallView: function(status, calling) {
 		var dialer = $('#dialer'),
-			dialer_offset_mod = false,
-			dialer_offset = parseInt($('#dialer').css('width').replace('px', '')) + parseInt($('#dialer .client-ui-tab').css('width').replace('px', '')) + 'px';
+			dialer_offset_mod = false, // by default we don't want to move
+			dialer_offset = parseInt($('#dialer').css('width').replace('px', ''), 10) + parseInt($('#dialer .client-ui-tab').css('width').replace('px', ''), 10) + 'px';
 		
 		if (status == 'open' && dialer.hasClass('closed')) {
 			dialer_offset_mod = '+=';
-			dialer.removeClass('closed');
+			dialer.removeClass('closed').addClass('open');
 		}
 		else if (status == 'close' && !dialer.hasClass('closed')) {
 			dialer_offset_mod = '-=';
-			dialer.addClass('closed');
+			dialer.addClass('closed').removeClass('open');
+		}
+		
+		if (calling == true) {
+			// pre-switch to dial-pad
+			var state = calling ? 'call' : 'dial';
+			Client.ui.toggleCallViewState(state);
 		}
 
 		if (dialer_offset_mod != false) {
@@ -445,8 +617,66 @@ Client.ui = {
 				if (status == 'close') {
 					Client.ui.reset();
 				}
+				else {
+					$('#dial-phone-number').focus();
+				}
 			});
 		}
+	},
+	
+	// toggle between the in-call view & dial (choose who to call) view
+	toggleCallViewState: function(state) {
+		var chooser = $('#client-make-call'),
+			callview = $('#client-on-call');
+		if (state == 'call') {
+			// we're ready to call
+			chooser.hide();
+			callview.show();
+		}
+		else if (state == 'dial') {
+			// we need to choose who to call
+			chooser.show();
+			callview.hide();
+		}
+	},
+	
+	// switch the dial mode (phone vs. client)
+	toggleCallMode: function(clicked) {
+		var _this = $(clicked);
+		if (!_this.hasClass('enabled')) {
+			_this.addClass('enabled').removeClass('disabled')
+				.siblings('a').removeClass('enabled').addClass('disabled');
+		}
+		Client.setCallMode();
+	},
+	
+	// toggle status by classname for a user in the list
+	toggleUserStatus: function(userid, available) {
+		var	user = $('#client-ui-user-list li#user-' + userid);
+		if (available) {
+			user.addClass('online');
+		}
+		else {
+			user.removeClass('online');
+		}
+	},
+	
+	// when someone purchases a number we need to make it available
+	refreshNumbers: function(number) {
+		$.ajax({
+			url: OpenVBX.home + '/numbers/refresh_select',
+			data: {},
+			dataType: 'json',
+			type: 'POST',
+			success: function(response) {
+				if (response.error) {
+					Client.triggerError('Unable to refresh phone numbers. Message from server: ' + reponse.message);
+				}
+				else {
+					$('#dialer #callerid-container').html(response.html);
+				}
+			}
+		});
 	},
 	
 // banner to show that client is disabled
@@ -468,14 +698,28 @@ Client.status = {
 		this.getCookieVal(on_call);
 	},
 	
-	setWindowStatus: function (status) {
+	setWindowStatus: function (status, callback) {
 		this.setCookieVal('window_open', status);
 		$.ajax({
-			url: OpenVBX.home + '/account/edit',
+			url: OpenVBX.home + '/account/client_status',
 			data: {
-				'online': (status ? 1 : 0).toString()
+				'online': (status ? 1 : 0).toString(),
+				'clientstatus' : true
 			},
-			success: function(r) {},
+			success: function(r) {
+				if (!r.error) {
+					// reset the device with returned token
+					OpenVBX.client_capability = r.client_capability;
+					var response = r,
+						old_onready = Client.onready;
+						
+					Client.onready = function() {
+						callback.apply(null, [response]);						
+					};
+					
+					Twilio.Device.setup(OpenVBX.client_capability, OpenVBX.client_params);
+				}
+			},
 			async: false,
 			type : 'POST',
 			dataType : 'json'
@@ -512,36 +756,76 @@ Client.status = {
 };
 
 $(function () {
-	$('#client-ui-answer').live('click', function(event) {
+	var dialer = $('#dialer');
+	var stopEvent = function(event) {
 		event.preventDefault();
 		event.stopPropagation();
+	};
+	
+	// Answer Call button clicked
+	$('#client-ui-answer', dialer).live('click', function(event) {
+		stopEvent(event);
 		Client.answer();
 	});
 
-	$('#client-ui-hangup, #client-ui-close').live('click', function(event) {
-		event.preventDefault();
-		event.stopPropagation();
+	// Hangup Call button clicked
+	$('#client-ui-hangup, #client-ui-close', dialer).live('click', function(event) {
+		stopEvent(event);
 		Client.hangup();
 	});
-	
-	$('#client-ui-mute').live('click', function(event) {
-		event.preventDefault();
-		event.stopPropagation();
+
+	// Mute Call button clicked
+	$('#client-ui-mute', dialer).live('click', function(event) {
+		stopEvent(event);
 		Client.togglemute();
 	});
 
-	$('.client-ui-button').live('click', function(event) {
-		event.preventDefault();
-		event.stopPropagation();
+	// Button on Keypad clicked
+	$('.client-ui-button', dialer).live('click', function(event) {
+		stopEvent(event);
 		var key = $(this).children('.client-ui-button-number').text();
 		Client.ui.pressKey(key);
 	});
-	
-	$('.client-ui-tab-wedge a, .client-ui-tab-status-inner', $('#dialer')).live('click', function(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		Client.ui.toggleTab(this);
+
+	// Dialer tab clicked
+	$('.client-ui-tab-wedge a, .client-ui-tab-status-inner', dialer).live('click', function(event) {
+		stopEvent(event);
+		if (Client.isReady()) {
+			Client.ui.toggleCallView('close');
+		}
+		else {
+			Client.ui.toggleTab(this);
+		}
 	});
 	
-	Client.init();
+	// Dial button on custom input form clicked
+	$('#make-call-form', dialer).live('submit', function(event) {
+		stopEvent(event);
+		Client.makeCallTo($('#dial-phone-number').val());
+	});
+	
+	// Dial button on user list clicked
+	$('.user-dial-button', dialer).live('click', function(event) {
+		stopEvent(event);
+		Client.makeCallTo($(this).closest('li').find('input[name="email"]').val());
+	});
+	
+	// "Client"/"Phone" toggle clicked
+	$('#client-mode-status a', dialer).live('click', function(event) {
+		stopEvent(event);
+		Client.ui.toggleCallMode(this);
+	});
+	
+	// init presence
+	
+	// bind to event handler on Client object to get presence events
+	$(Client).bind('presence', function(e, event, clients) {
+		var userid = event.from.replace('client:', '');
+		Client.ui.toggleUserStatus(userid, event.available);
+	});
+	
+	if (OpenVBX.client_capability) {
+		Client.setCallMode();
+		Client.init();
+	}
 });

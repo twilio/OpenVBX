@@ -18,6 +18,18 @@
  * Contributor(s):
  **/
 
+OpenVBX.error = {
+	trigger: function(message, code) {
+		var error_message = message || 'An unknown error has occurred',
+			error_code = code || '';
+		
+		$('.error-dialog')
+			.find('.error-code').text(error_code).end()
+			.find('.error-message').text(error_message).end()
+			.dialog('open');
+	}
+}
+
 var _st = window.setTimeout;
 
 window.setTimeout = function(fRef, mDelay) {
@@ -302,4 +314,16 @@ $(document).ready(function() {
 	if ($('.vbx-login-form #iEmail').size() > 0) {
 		$('.vbx-login-form #iEmail').focus();
 	}
+	
+	if ($('.login-reset').size() > 0) {
+		$('#iEmail').focus();
+		$("form").validate({
+			rules: {
+				email: {required: true,	minlength: 2}
+			},
+			messages: {
+				email: {required: "E-Mail required",	minlength: "E-Mail too short"}
+			}
+		});
+	};
 });

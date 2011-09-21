@@ -446,162 +446,158 @@ class CI_Template {
 
    }
 
-   // --------------------------------------------------------------------
-   
-   /**
-	* Dynamically include javascript in the template
-	* 
-	* NOTE: This function does NOT check for existence of .js file
-	*
-	* @access  public
-	* @param   string   script to import or embed
-	* @param   string  'import' to load external file or 'embed' to add as-is
-	* @param   boolean  TRUE to use 'defer' attribute, FALSE to exclude it
-	* @return  TRUE on success, FALSE otherwise
-	*/
-   
-   function add_js($script, $type = 'import', $defer = FALSE)
-   {
-	  $success = TRUE;
-	  $js = NULL;
-	  
-	  $this->CI->load->helper('url');
-	  if(!$this->CI->config->item('use_unminimized_js'))
-	  {
-		  $revnum = $this->CI->config->item('site_rev');
-		  $compiled_script = str_replace('assets/j', 'assets/j/compiled/'.$revnum, $script);
-		  if(is_file($compiled_script)) {
-			  $script = $compiled_script;
-		  }
-	  }
-	  
-	  switch ($type)
-	  {
-		 case 'dynamic':
-			$filepath = site_url() .'/'. $script;
-			$js = '<script type="text/javascript" src="'. $filepath .'"';
-			if ($defer)
-			{
-			   $js .= ' defer="defer"';
-			}
-			$js .= "></script>";
-			break;
 
-		 case 'import':
-			$filepath = base_url() . $script;
-			$js = '<script type="text/javascript" src="'. $filepath .'"';
-			if ($defer)
-			{
-			   $js .= ' defer="defer"';
-			}
-			$js .= "></script>";
-			break;
+	/**
+	 * Dynamically include javascript in the template
+	 * 
+	 * NOTE: This function does NOT check for existence of .js file
+	 *
+	 * @access  public
+	 * @param   string   script to import or embed
+	 * @param   string  'import' to load external file or 'embed' to add as-is
+	 * @param   boolean  TRUE to use 'defer' attribute, FALSE to exclude it
+	 * @return  TRUE on success, FALSE otherwise
+	 */
+	function add_js($script, $type = 'import', $defer = FALSE)
+	{
+		$success = TRUE;
+		$js = NULL;
 
-		  case 'absolute':
-			$filepath = $script;
-			$js = '<script type="text/javascript" src="'. $filepath .'"';
-			if ($defer)
-			{
-			   $js .= ' defer="defer"';
-			}
-			$js .= "></script>";
-			break;
-			
-		 case 'embed':
-			$js = '<script type="text/javascript"';
-			if ($defer)
-			{
-			   $js .= ' defer="defer"';
-			}
-			$js .= ">";
-			$js .= $script;
-			$js .= '</script>';
-			break;
-			
-		 default:
-			$success = FALSE;
-			break;
-	  }
-	  
-	  // Add to js array if it doesn't already exist
-	  if ($js != NULL && !in_array($js, $this->js))
-	  {
-		 $this->js[] = $js;
-		 $this->write('_scripts', $js);
-	  }
-	  
-	  return $success;
-   }
-   
-   // --------------------------------------------------------------------
-   
-   /**
-	* Dynamically include CSS in the template
-	* 
-	* NOTE: This function does NOT check for existence of .css file
-	*
-	* @access  public
-	* @param   string   CSS file to link, import or embed
-	* @param   string  'link', 'import' or 'embed'
-	* @param   string  media attribute to use with 'link' type only, FALSE for none
-	* @return  TRUE on success, FALSE otherwise
-	*/
-   
-   function add_css($style, $type = 'link', $media = FALSE)
-   {
-	  $success = TRUE;
-	  $css = NULL;
-	  
-	  $this->CI->load->helper('url');
-	  $filepath = base_url() . $style;
-	  
+		$this->CI->load->helper('url');
+		if (!function_exists('version_url')) {
+			$this->CI->load->helper('twilio');
+		}
+		
 		switch ($type)
 		{
 			case 'dynamic':
-				$filepath = site_url() .'/'. $style;
-				$css = '<link type="text/css" rel="stylesheet" href="'. $filepath . '"';
+				$siteurl = site_url();
+				if (!preg_match('|.*?/$|', $siteurl)) {
+					$siteurl .= '/';
+				}
+				$filepath = $siteurl.preg_replace('|^(/)|', '', $script);
+				$js = '<script type="text/javascript" src="'.version_url($filepath).'"';
+				if ($defer)
+				{
+				   $js .= ' defer="defer"';
+				}
+				$js .= "></script>";
+				break;
+
+			case 'import':
+				$filepath = base_url() . $script;
+				$js = '<script type="text/javascript" src="'.version_url($filepath).'"';
+				if ($defer)
+				{
+				   $js .= ' defer="defer"';
+				}
+				$js .= "></script>";
+				break;
+
+			case 'absolute':
+				$filepath = $script;
+				$js = '<script type="text/javascript" src="'.version_url($filepath).'"';
+				if ($defer)
+				{
+				   $js .= ' defer="defer"';
+				}
+				$js .= "></script>";
+				break;
+
+			case 'embed':
+				$js = '<script type="text/javascript"';
+				if ($defer)
+				{
+				   $js .= ' defer="defer"';
+				}
+				$js .= ">";
+				$js .= $script;
+				$js .= '</script>';
+				break;
+
+			default:
+				$success = FALSE;
+				break;
+		}
+
+		// Add to js array if it doesn't already exist
+		if ($js != NULL && !in_array($js, $this->js))
+		{
+			$this->js[] = $js;
+			$this->write('_scripts', $js);
+		}
+
+		return $success;
+	}
+   
+	/**
+	 * Dynamically include CSS in the template
+	 * 
+	 * NOTE: This function does NOT check for existence of .css file
+	 *
+	 * @access  public
+	 * @param   string   CSS file to link, import or embed
+	 * @param   string  'link', 'import' or 'embed'
+	 * @param   string  media attribute to use with 'link' type only, FALSE for none
+	 * @return  TRUE on success, FALSE otherwise
+	 */
+	function add_css($style, $type = 'link', $media = FALSE)
+	{
+		$success = TRUE;
+		$css = NULL;
+
+		$this->CI->load->helper('url');
+		if (!function_exists('version_url')) {
+			$this->CI->load->helper('twilio');
+		}
+
+		switch ($type)
+		{
+			case 'dynamic':
+				$filepath = site_url() . preg_replace('|^(/)|', '', $style);
+				$css = '<link type="text/css" rel="stylesheet" href="'.version_url($filepath).'"';
 				if ($media)
 				{
 					$css .= ' media="'. $media .'"';
 				}
 				$css .= ' />';
-			break;
+				break;
 
-		 case 'link':
-			
-			$css = '<link type="text/css" rel="stylesheet" href="'. $filepath .'"';
-			if ($media)
-			{
-			   $css .= ' media="'. $media .'"';
-			}
-			$css .= ' />';
-			break;
-		 
-		 case 'import':
-			$css = '<style type="text/css">@import url('. $filepath .');</style>';
-			break;
-		 
-		 case 'embed':
-			$css = '<style type="text/css">';
-			$css .= $style;
-			$css .= '</style>';
-			break;
-			
-		 default:
-			$success = FALSE;
-			break;
-	  }
-	  
-	  // Add to js array if it doesn't already exist
-	  if ($css != NULL && !in_array($css, $this->css))
-	  {
-		 $this->css[] = $css;
-		 $this->write('_styles', $css);
-	  }
-	  
-	  return $success;
-   }
-	  
+			case 'link':
+				$filepath = (preg_match('|https?://|', $style) ? $style : site_url().$style);
+				$css = '<link type="text/css" rel="stylesheet" href="'.version_url($filepath).'"';
+				if ($media)
+				{
+					$css .= ' media="'. $media .'"';
+				}
+				$css .= ' />';
+				break;
+
+			case 'import':
+				$css = '<style type="text/css">@import url('. $filepath .');</style>';
+				break;
+
+			case 'embed':
+				$css = '<style type="text/css">';
+				$css .= $style;
+				$css .= '</style>';
+				break;
+
+			default:
+				$success = FALSE;
+				break;
+		}
+
+		// Add to css array if it doesn't already exist
+		if ($css != NULL && !in_array($css, $this->css))
+		{
+			$this->css[] = $css;
+			$this->write('_styles', $css);
+		}
+
+		return $success;
+	}
+	
    // --------------------------------------------------------------------
    
    /**

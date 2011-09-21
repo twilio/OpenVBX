@@ -45,7 +45,7 @@ class Upgrade extends User_Controller {
 			$data['plugins'][] = $plugin->getInfo();
 		}
 
-		$data['php_version_min'] = '5.2';
+		$data['php_version_min'] = MIN_PHP_VERSION;
 		$data['php_version'] = phpversion();
 		if (!version_compare($data['php_version'], $data['php_version_min'], '>=')) {
 			$data['error'] = '<p>Your server doesn\'t meet the minimum PHP requirements necessary to run this version of OpenVBX.</p>'.
@@ -56,31 +56,38 @@ class Upgrade extends User_Controller {
 		$this->load->view('upgrade/main', $data);
 	}
 
+	/**
+	 * There's no validation done during upgrade
+	 * This method is not necessarily deprecated, just unused... 
+	 * Reserving the right to use it in the future.
+	 *
+	 * @return void
+	 */
 	public function validate()
 	{
 		$step = $this->input->post('step');
 		$json = array('success' => true);
-		if($step == 1) {
-			echo json_encode($json);
-			return;
-		}
 
-		$tplvars = $this->input_args();
-		switch($step)
-		{
-			case 2:
-				$json = $this->validate_step2();
-				break;
-		}
-
-		$json['tplvars'] = $tplvars;
+		// if($step == 1) {
+		// 	echo json_encode($json);
+		// 	return;
+		// }
+		// 
+		// $tplvars = $this->input_args();
+		// switch($step)
+		// {
+		// 	case 2:
+		// 		$json = $this->validate_step2();
+		// 		break;
+		// }
+		// 
+		// $json['tplvars'] = $tplvars;
 		echo json_encode($json);
 	}
 
 	private function input_args()
 	{
 		$tplvars = array();
-
 		return $tplvars;
 	}
 

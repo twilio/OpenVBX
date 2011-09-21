@@ -138,6 +138,7 @@ Flows.link = {
 						case 'string':
 							data[this.name] = new Array(data[this.name]);
 						case 'object':
+						case 'array':
 							data[this.name].push(val);
 							break;
 						default:

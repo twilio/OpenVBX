@@ -62,7 +62,7 @@ class VBX_Incoming_numbers extends Model
 			}
 		}
 		catch (Exception $e) {
-			throw new VBX_IncomingNumbersException($e->getMessage);
+			throw new VBX_IncomingNumberException($e->getMessage);
 		}
 
 		return $sandbox;
@@ -91,7 +91,7 @@ class VBX_Incoming_numbers extends Model
 			}
 		}
 		catch (Exception $e) {
-			throw new VBX_IncomingNumbersException($e->getMessage());
+			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 		
 		$ci = &get_instance();

@@ -56,6 +56,14 @@
 	border-color: #9EED77;
 }
 
+#vbx-client-status.loading .client-button {
+	background: #404040 url(../i/ajax-loader.gif) 50% 50% no-repeat;
+}
+#vbx-client-status.loading .isonline,
+#vbx-client-status.loading .isoffline {
+	display: none;
+}
+
 #vbx-client-status .isonline,
 #vbx-client-status.online .isoffline {
 	display: none;

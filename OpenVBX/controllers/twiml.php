@@ -84,7 +84,7 @@ class Twiml extends MY_Controller {
 		}
 		else
 		{
-			$this->response->say('Error 4 0 4 - Flow not found.');
+			$this->response->say('Error 4-oh-4 - Flow not found.');
 			$this->response->respond();
 		}
 	}
@@ -111,7 +111,7 @@ class Twiml extends MY_Controller {
 		}
 		else
 		{
-			$this->response->say('Error 4 0 4 - Flow not found.');
+			$this->response->say('Error 4-oh-4 - Flow not found.');
 			$this->response->respond();
 		}
 	}
@@ -255,7 +255,7 @@ class Twiml extends MY_Controller {
 		$name =	$this->input->get_post('name');
 		if(empty($name))
 		{
-			$name = "Open-V-B-X";
+			$name = "Open VeeBee Ex";
 		}
 
 		/* If we've received any input */
@@ -343,34 +343,56 @@ class Twiml extends MY_Controller {
 
 			$dial_client = false;
 			$to = normalize_phone_to_E164($to);
+			if (!($client_status = $this->input->get_post('online')))
+			{
+				$client_status = 'offline';
+			}
+
 			if (!is_numeric($to)) 
 			{
 				// look up user by email address
 				$user = VBX_User::get(array(
 					'email' => $this->input->get_post('to')
 				));
-				if (!empty($user)) 
+				if (!empty($user) && $user->online == 1) 
 				{
 					$dial_client = true;
 					$to = $user->id;
 				}
+				else {
+					$to = null;
+					
+					if (count($user->devices)) 
+					{
+						foreach ($user->devices as $device) 
+						{
+							if ($device->is_active) 
+							{
+								$to = $user->devices[0]->value;
+							}
+						}
+					}					
+				}
 			}
 
-			if (!$dial_client) 
+			if (!$dial_client && !empty($to)) 
 			{
 				$this->response->dial($to, $options);
 			}
-			else 
+			elseif (!empty($to))
 			{
 				$dial = $this->response->dial(NULL, $options);
 				$dial->client($to);
 			}
-
+			else {
+				$this->response->say("We're sorry, this user is currently not reachable. Goodbye.");
+				$this->response->hangup();
+			}
 		} 
 		else 
 		{
 			$gather = $this->response->gather(array('numDigits' => 1));
-			$gather->say("Hello {$name}, this is a call from V-B-X, to accept, press 1.");
+			$gather->say("Hello {$name}, this is a call from VeeBee Ex, to accept, press 1.");
 		}
 
 		$this->response->respond();

@@ -185,7 +185,7 @@ class Inbox extends User_Controller {
 			$max = self::PAGE_SIZE;
 		}
 		
-		$this->template->add_css('assets/c/messages.css');
+		$this->template->add_css(asset_url('assets/c/messages.css'), 'link');
 		$data = $this->init_view_data();
 		$inbox_counts = $data['counts'];
 

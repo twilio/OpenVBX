@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	$('iframe').load(function(e) {
+	$('#openvbx-iframe').load(function(e) {
 		var href = $(this).contents().attr('URL');
 		var title = $(this).contents().attr('title');
 	

@@ -7,8 +7,8 @@
 	 */
 	function runUpdate_54() {
 		$ci = &get_instance();
-		runUpdate_49_add_tenant_type_field();
-		runUpdate_49_update_tenant_type_status();
+		runUpdate_54_add_tenant_type_field();
+		runUpdate_54_update_tenant_type_status();
 		$ci->settings->set('version', '1.1b', 1);
 		$ci->settings->set('schema-version', '54', 1);
 	}
@@ -18,7 +18,7 @@
 	 *
 	 * @return void
 	 */
-	function runUpdate_49_add_tenant_type_field() {					
+	function runUpdate_54_add_tenant_type_field() {					
 		$ci = &get_instance();
 		if (!$ci->db->field_exists('type', 'tenants')) {
 			$ci->load->dbforge();
@@ -39,7 +39,7 @@
 	 * 
 	 * @return void
 	 */
-	function runUpdate_49_update_tenant_type_status() {
+	function runUpdate_54_update_tenant_type_status() {
 		$ci = &get_instance();
 		
 		$parent_account_sid = $ci->vbx_settings->get('twilio_sid', 1);

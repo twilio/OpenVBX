@@ -44,6 +44,13 @@ class VBX_Settings extends Model
 	private $cache_key;
 
 	const CACHE_TIME_SEC = 1;
+	
+	const CLIENT_TOKEN_TIMEOUT = 28800; // 8 hours
+	
+	const AUTH_TYPE_PARENT = 0;
+	const AUTH_TYPE_FULL = 1; // @note currently not used, this is for future expansion
+	const AUTH_TYPE_SUBACCOUNT = 2;
+	const AUTH_TYPE_CONNECT = 3;
 
 	function __construct()
 	{
@@ -284,6 +291,29 @@ class VBX_Settings extends Model
 		}
 		
 		return false;
+	}
+	
+	function delete($name, $tenant_id) {
+		$ci =& get_instance();
+		
+		if($this->get($name, $tenant_id) === false)
+		{
+			return false;
+		}
+		
+		$query = $ci->db
+					->where(array(
+						'name' => $name, 
+						'tenant_id' => $tenant_id
+					))
+					->delete($this->settings_table);
+		
+		if (function_exists('apc_delete')) 
+		{
+			apc_delete($this->cache_key.$tenant_id.$name);
+		}
+
+		return ($ci->db->affected_rows() > 0 ? true : false);
 	}
 
 	function get_all_by_tenant_id($tenant_id)

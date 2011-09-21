@@ -28,7 +28,8 @@ class Install extends Controller {
 	public $tests;
 	public $pass;
 	
-	protected $min_php_version = '5.2';
+	private $account;
+	protected $min_php_version = MIN_PHP_VERSION;
 
 	function Install()
 	{
@@ -59,8 +60,11 @@ class Install extends Controller {
 
 		$this->openvbx_settings = array();
 		$this->openvbx = array();
+		
 		$this->openvbx_settings['twilio_sid'] = trim($this->input->post('twilio_sid'));
 		$this->openvbx_settings['twilio_token'] = trim($this->input->post('twilio_token'));
+		$this->openvbx_settings['connect_application_sid'] = trim($this->input->post('connect_application_sid'));
+
 		$this->openvbx['salt'] = md5(rand(10000, 99999));
 		$this->openvbx_settings['from_email'] = trim($this->input->post('from_email') == ""?
 													 ''
@@ -171,16 +175,19 @@ class Install extends Controller {
 		$database['dbdriver'] = 'mysql';
 		$database['dbprefix'] = '';
 		$database['pconnect'] = FALSE;
-		$database['db_debug'] = TRUE;
+		$database['db_debug'] = FALSE;
 		$database["cache_on"] = FALSE;
 		$database["cachedir"] = "";
 		$database["char_set"] = "utf8";
 		$database["dbcollat"] = "utf8_general_ci";
 
-		return array('global' => array('active_group' => "default",
-									   'active_record' => TRUE,
-									   ),
-					 'default' => $database);
+		return array(
+			'global' => array(
+				'active_group' => "default",
+				'active_record' => TRUE,
+			),
+			'default' => $database
+		);
 	}
 
 	public function setup()
@@ -210,6 +217,21 @@ class Install extends Controller {
 											. mysql_error(), 2 );
 			}
 
+			// test for mysqli compat
+			if (function_exists('mysqli_connect')) {
+				// server info won't work without first selecting a table
+				mysql_select_db($database['default']['database']);
+				$server_version = mysql_get_server_info($dbh);
+				if (!empty($server_version)) {
+					if (version_compare($server_version, '4.1.13', '>=') && version_compare($server_version, '5', '<')) {
+						$database['default']['dbdriver'] = 'mysqli';
+					}
+					elseif (version_compare($server_version, '5.0.7', '>=')) {
+						$database['default']['dbdriver'] = 'mysqli';
+					}
+				}
+			}
+
 			$this->setup_database($database, $dbh);
 
 			$this->setup_config($database, $openvbx);
@@ -218,6 +240,10 @@ class Install extends Controller {
 
 			$this->setup_openvbx_settings($openvbx_settings);
 
+			if (!empty($openvbx_settings['connect_application_sid']))
+			{
+				$this->setup_connect_app($openvbx_settings);
+			}
 
 		}
 		catch(InstallException $e)
@@ -232,6 +258,55 @@ class Install extends Controller {
 		}
 
 		echo json_encode($json);
+	}
+	
+	private function setup_connect_app($settings) {
+		try {
+			$account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
+			$connect_application = $account->connect_apps->get($settings['connect_application_sid']);
+			
+			if ($connect_application->sid == $settings['connect_application_sid'])
+			{
+				$site_url = site_url();
+				if ($settings['rewrite_enabled']) {
+					$site_url = str_replace('/index.php', '', $site_url);
+				}
+			
+				$required_settings = array(
+					'HomepageUrl' => $site_url,
+					'AuthorizeRedirectUrl' => $site_url.'/auth/connect',
+					'DeauthorizeCallbackUrl' => $site_url.'/auth/connect/deauthorize',
+					'Permissions' => array(
+						'get-all',
+						'post-all'
+					)
+				);
+		
+				$updated = false;
+				foreach ($required_settings as $key => $setting) {
+					$app_key = Services_Twilio::decamelize($key);
+					if ($connect_application->$app_key != $setting) {
+						$connect_application->$app_key = $setting;
+						$updated = true;
+					}
+				}
+
+				if ($updated) {
+					$connect_application->update(array(
+						'FriendlyName' => $connect_application->friendly_name,
+						'Description' => $connect_application->description,
+						'CompanyName' => $connect_application->company_name,
+						'HomepageUrl' => $required_settings['HomepageUrl'],
+						'AuthorizeRedirectUrl' => $required_settings['AuthorizeRedirectUrl'],
+						'DeauthorizeCallbackUrl' => $required_settings['DeauthorizeCallbackUrl'],
+						'Permissions' => implode(',', $required_settings['Permissions'])
+					));
+				}
+			}
+		}
+		catch (Exception $e) {
+			throw new InstallException($e->getMessage(), $e->getCode());
+		}
 	}
 
 	private function setup_database($database, $dbh)
@@ -397,11 +472,14 @@ class Install extends Controller {
 			$app_token = md5($_SERVER['REQUEST_URI']);
 			$app_name = "OpenVBX - {$app_token}";
 
-			$account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
-			$applications = $account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
+			if (empty($this->account)) 
+			{
+				$this->account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
+			}
+			$applications = $this->account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
 
 			$application = false;
-			foreach ($applications as $_application) 
+			foreach ($applications as $_application)
 			{
 				if ($_application->friendly_name == $app_name) 
 				{
@@ -420,13 +498,13 @@ class Install extends Controller {
 				'SmsMethod' => 'POST'
 			);
 
-			if (!empty($application)) 
+			if (!empty($application))
 			{
 				$application->update($params);
 			}
 			else 
 			{
-				$application = $account->applications->create($params);
+				$application = $this->account->applications->create($app_name, $params);
 			}
 		}
 		catch(Exception $e)
@@ -494,7 +572,6 @@ class Install extends Controller {
 				$json['errors'] = array('database_name' => $error );
 				throw new InstallException("Failed to access database: $error", 2);
 			}
-
 		}
 		catch(InstallException $e)
 		{
@@ -515,15 +592,46 @@ class Install extends Controller {
 	 */
 	function validate_step3()
 	{
+		$this->load->model('vbx_settings');
+		
 		$json = array('success' => true, 'step' => 2, 'message' => 'success');
 		$twilio_sid = $this->openvbx_settings['twilio_sid'];
 		$twilio_token = $this->openvbx_settings['twilio_token'];
+		$connect_app = $this->openvbx_settings['connect_application_sid'];
 
 		try
 		{
 			// call for most basic of information to see if we have access
 			$account = OpenVBX::getAccount($twilio_sid, $twilio_token);
-			$accounts = $account->accounts;			
+			
+			/**
+			 * We'll get an account back with empty members, even if we supplied
+			 * bunk credentials, we need to verify that something is there to be
+			 * confident of success.
+			 */
+			$status = $account->type;
+			if (empty($status)) 
+			{
+				throw new InstallException('Unable to access Twilio Account');
+			}
+
+			// check the connect app if a sid is provided
+			if (!empty($connect_app)) {
+				try {
+					$connect_application = $account->connect_apps->get($connect_app);
+					$friendly_name = $application->friendly_name;
+				}
+				catch (Exception $e) {
+					switch ($e->getCode()) {
+						case 0:
+							// return a better message than "resource not found"
+							throw new InstallException('The Connect Application SID &ldquo;'.$connect_app.'&rdquo; was not found.', 0);
+							break;
+						default:
+							throw new InstallException($e->getMessage, $e->getCode);
+					}
+				}
+			}
 		}
 		catch(Exception $e)
 		{
@@ -537,9 +645,7 @@ class Install extends Controller {
 				default:
 					$json['message'] = $e->getMessage();
 			}
-			
-			// include code in error message so that users can better 
-			// communicate error conditions in support requests
+
 			$json['message'] .= ' ('.$e->getCode().')';
 		}
 
