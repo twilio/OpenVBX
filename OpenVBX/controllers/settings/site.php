@@ -126,11 +126,17 @@ class Site extends User_Controller
 			);
 		}
 
+		$apache_version = $_SERVER['SERVER_SOFTWARE'];
+		if (function_exists('apache_get_version'))
+		{
+			$apache_version = apache_get_version();
+		}
+
 		$data['server_info'] = array(
 			'php_version' => phpversion(),
 			'mysql_version' => $this->db->conn_id->server_info,
 			'mysql_driver' => $this->db->dbdriver,
-			'apache_version' => apache_get_version()
+			'apache_version' => $apache_version
 		);
 
 		$data['available_themes'] = $this->vbx_theme->get_all();
