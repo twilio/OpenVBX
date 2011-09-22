@@ -62,7 +62,8 @@ class TwimlDial {
 		{
 			$this->dial = $this->response->dial(NULL, array(
 					'action' => current_url(),
-					'callerId' => $this->callerId
+					'callerId' => $this->callerId,
+					'timeout' => $this->default_timeout
 				));
 		}
 		return $this->dial;
