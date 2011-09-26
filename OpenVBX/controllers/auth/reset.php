@@ -73,10 +73,28 @@ class Reset extends MY_Controller
 		$this->template->write('title', 'Reset Password');
 		$data = array();
 		$email = $this->input->post('email');
+		$phone = $this->input->post('phone');
+
+		// Check for voice vault 
+		if ($this->voicevault_username &&
+				$this->voicevault_password &&
+				$this->voicevault_config &&
+				$this->voicevault_organisation) {
+			$data['voicevault_enabled'] = true;
+		} else {
+			$data['voicevault_enabled'] = false;
+		}
+
+		if ($data['voicevault_enabled'] && $phone && $email) {
+			// Initiate a curl request to voicevault
+			return redirect("voicevault/web/reset/$email");
+		}
 
 		if(empty($email))
 		{
-			$data['error'] = $this->session->flashdata('error');
+			// $data['error'] = $this->session->flashdata('error');
+			if (isset($_POST['email']))
+				$data['error'] = "Email field required.";
 			return $this->respond('', 'reset', $data, 'login-wrapper', 'layout/login');
 		}
 

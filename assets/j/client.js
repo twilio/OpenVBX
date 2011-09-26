@@ -21,6 +21,8 @@
 var Client = {
 	// if we've detected no-flash, or flashblock, or ???
 	disabled: false,
+
+	phono: null,
 		
 	connection: false,
 	
@@ -45,35 +47,118 @@ var Client = {
 	
 	init: function () {
 		try {
-			Twilio.Device.setup(OpenVBX.client_capability);
+			if (typeof Twilio != 'undefined' && Twilio) {
+				Twilio.Device.setup(OpenVBX.client_capability);
 
-			Twilio.Device.ready(function (device) {
-				Client.ready(device);
-			});
-		
-			Twilio.Device.offline(function (device) {
-				Client.offline(device);
-			});
-		
-			Twilio.Device.error(function (error) {
-				Client.error(error);
-			});
-		
-			Twilio.Device.connect(function (conn) {
-				Client.connect(conn);
-			});
-		
-			Twilio.Device.disconnect(function (conn) {
-				Client.disconnect(conn);
-			});
-		
-			Twilio.Device.incoming(function (conn) {
-				Client.incoming(conn);
-			});
-		
-			Twilio.Device.cancel(function(conn) {
-				Client.cancel();
-			});
+				Twilio.Device.ready(function (device) {
+					Client.ready(device);
+				});
+			
+				Twilio.Device.offline(function (device) {
+					Client.offline(device);
+				});
+			
+				Twilio.Device.error(function (error) {
+					Client.error(error);
+				});
+			
+				Twilio.Device.connect(function (conn) {
+					Client.connect(conn);
+				});
+			
+				Twilio.Device.disconnect(function (conn) {
+					Client.disconnect(conn);
+				});
+			
+				Twilio.Device.incoming(function (conn) {
+					Client.incoming(conn);
+				});
+			
+				Twilio.Device.cancel(function(conn) {
+					Client.cancel();
+				});
+			}
+
+			/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+			// Connect phono
+			var phono_api_key = $('#phono_api_key').val();
+			if (phono_api_key) {
+				this.phono = $.phono({
+					apiKey: $('#phono_api_key').val(),
+					onReady: function() {
+						// var status = this.connected(); // Returns true if connected
+						// alert(status);
+						// Tell VBX our phono endpoint
+						$.ajax({
+							url: OpenVBX.home + '/devices/phono/'+this.sessionId
+						});
+					},
+					phone: {
+						onIncomingCall: function(event) {
+							if (Client.phono && 
+								Client.phono.connected() &&
+								this.phonoconnection) {
+								event.call.hangup();
+								return;
+							}
+							
+							Client.phonoconnection = event.call;
+
+							Phono.events.bind(Client.phonoconnection, {
+	         	    		   onHangup: function(event) {
+			                    	// reset ui
+									Client.ui.endTick();
+									Client.ui.hide_actions('button');
+									Client.status.setCallStatus(false);
+									Client.message('Call ended');
+					
+									clearTimeout(Client.incoming_timeout);
+					
+									Client.close_timeout = setTimeout(
+										function() {
+											Client.ui.toggleCallView('close');
+										}, 3000);
+								}
+		         	   		});
+
+							clearTimeout(Client.incoming_timeout);
+							clearTimeout(Client.close_timeout);
+							Client.incoming_timeout = setTimeout(function() {
+									var conn = Client.phonoconnection;
+									conn.hangup();
+									Client.phonoconnection = null;
+								}, 15000);
+									
+							// Notification Message
+							var incoming_message = 'Incoming Call';
+							if (Client.phonoconnection.initiator) {
+								// Parse the from address
+								var from = Client.phonoconnection.initiator;
+								if (from.indexOf('@') != -1)
+									from = from.substr(0, from.indexOf('@'));
+								if (from.indexOf('+') != -1) {
+									// From doesn't always get passed
+									incoming_message += ' From: ' + from;
+								}
+							}
+							Client.message(incoming_message);
+							
+							// Show UI
+							Client.ui.hide_actions('button');
+							Client.ui.show_actions('.answer');
+							Client.ui.toggleCallView('open');
+						}
+					}	
+				});
+			}
+
+			// Set interval to update last connected time
+			setInterval(function() {
+				$.ajax({
+					url: OpenVBX.home + '/devices/ping'
+				});
+			}, 10000);
+			/** End Disruptive Technologies code **/
 		
 			$('#dialer #client-ui-actions button').hide();
 		}
@@ -129,17 +214,79 @@ var Client = {
 	},
 	
 	call: function (params) {
-		if (Twilio.Device.status() == 'ready') {
-			this.ui.toggleCallView('open');
-			this.connection = Twilio.Device.connect(params);
+		// Check clientType
+		if (!params.clientType || params.clientType == 'twilio') {
+			if (Twilio.Device.status() == 'ready') {
+				this.ui.toggleCallView('open');
+				this.connection = Twilio.Device.connect(params);
+			}
+		} else if (params.clientType && params.clientType == 'tropo') {
+			if (this.phono && this.phono.connected()) {
+				// TODO: Fix UI for tropo
+				this.ui.toggleCallView('open');
+				// Initiate outbound call to app: address, not phone number
+				this.phonoconnection = this.phono.phone.dial(
+					params.appAddress, {
+                    headers: [
+                        {
+                            name:"x-phono-call",
+                            value:true
+                        },
+                        {
+                            name:"x-to",
+                            value:params.to
+                        },
+                        {
+                            name:"x-callerid",
+                            value:params.callerid
+                        },
+                    ],
+
+                    onAnswer: function() {
+                    	Client.ui.startTick();
+						Client.ui.hide_actions('button');
+						Client.ui.show_actions('.hangup, .mute');
+
+						var message = 'Call in Progress';
+						// if (connection.parameters.From) {
+							// message += ' with ' + connection.parameters.From;
+						// }
+						
+						Client.message(message);
+
+						Client.status.setCallStatus(true);
+		
+						// dismiss incoming dial auto-dismiss action
+						clearTimeout(Client.incoming_timeout);
+						clearTimeout(Client.close_timeout);
+                    },
+                    onHangup: function() {
+                    	// reset ui
+						Client.ui.endTick();
+						Client.ui.hide_actions('button');
+						Client.status.setCallStatus(false);
+						Client.message('Call ended');
+		
+						clearTimeout(Client.incoming_timeout);
+		
+						Client.close_timeout = setTimeout(function() {
+								Client.ui.toggleCallView('close');
+							}, 3000);
+                    }
+                });
+			}
 		}
 	},
 
 	hangup: function () {
 		if (this.connection) {
 			this.connection.disconnect();
-		}
-		else {
+			this.ui.toggleCallView('close');
+		} else if (this.phono && this.phonoconnection) {
+			this.phonoconnection.hangup();
+			this.phonoconnection = null;
+			this.ui.toggleCallView('close');
+		} else {
 			this.ui.toggleCallView('close');
 		}
 	},
@@ -149,6 +296,10 @@ var Client = {
 			this.muted = true;
 			$('#client-ui-mute').addClass('muted').text('Unmute');
 			this.connection.mute();
+		} else if (this.phonoconnection && this.phono.connected() && !this.muted) {
+			this.muted = true;
+			$('#client-ui-mute').addClass('muted').text('Unmute');
+			this.phonoconnection.mute(true);
 		}
 	},
 	
@@ -157,11 +308,16 @@ var Client = {
 			this.muted = false;
 			$('#client-ui-mute').removeClass('muted').text('Mute');
 			this.connection.unmute();
+		} else if (this.phonoconnection && this.phono.connected() && this.muted) {
+			this.muted = false;
+			$('#client-ui-mute').removeClass('muted').text('Mute');
+			this.phonoconnection.mute(false);
 		}
 	},
 	
 	togglemute: function() {
-		if (this.connection && this.connection.status() == 'open') {
+		if ((this.connection && this.connection.status() == 'open') ||
+				(this.phonoconnection && this.phono.connected())) {
 			if (this.muted) {
 				this.unmute();
 			}
@@ -220,21 +376,39 @@ var Client = {
 	},
 
 	accept: function () {
-		this.connection.accept();
-		this.status.setCallStatus(true);
-		
-		Twilio.Device.sounds.incoming(false);
-		
-		var connection_message = 'Connected';
-		if (this.connection.parameters.From) {
-			connection_message += ' To: ' + this.connection.parameters.From;
-		}
-		this.message(connection_message);
-		
-		clearTimeout(this.close_timeout);
-		clearTimeout(this.incoming_timeout);
+		if (this.connection) {
+			this.connection.accept();
+			this.status.setCallStatus(true);
+			
+			Twilio.Device.sounds.incoming(false);
+			
+			var connection_message = 'Connected';
+			if (this.connection.parameters.From) {
+				connection_message += ' To: ' + this.connection.parameters.From;
+			}
+			this.message(connection_message);
+			
+			clearTimeout(this.close_timeout);
+			clearTimeout(this.incoming_timeout);
 
-		this.ui.hide_actions('.answer');		
+			this.ui.hide_actions('.answer');		
+		} else if (this.phono && this.phonoconnection) {
+			this.phonoconnection.answer();
+			this.status.setCallStatus(true);
+
+			this.ui.startTick();
+			
+			var connection_message = 'Connected';
+			if (this.phonoconnection.from) {
+				connection_message += ' To: ' + this.phonoconnection.from;
+			}
+			this.message(connection_message);
+			
+			clearTimeout(this.close_timeout);
+			clearTimeout(this.incoming_timeout);
+
+			this.ui.hide_actions('.answer');		
+		}
 	}, 
 
 	error: function (error) {
@@ -316,8 +490,8 @@ var Client = {
 	ready: function (device) {
 		this.message('Ready');
 		this.status.setCallStatus(false);
-		$('#client-ui-dial').show();
-		if ($.type(this.onready) == 'function') {
+		$('#client-ui-dial').show();	
+		if (typeof this.onready == 'function') {
 			this.onready.call();
 		}
 	}
@@ -335,10 +509,14 @@ Client.ui = {
 // Buttons	
 	pressKey: function(key) {
 		$('#client-ui-number').focus().val($('#client-ui-number').val() + key);
-		if(!Client.connection || !key) {
+		if(!(Client.connection || Client.phonoconnection) || !key) {
 			return;
 		}
-		Client.connection.sendDigits(key);
+		console.log(key);
+		if (Client.connection)
+			Client.connection.sendDigits(key);
+		else if (Client.phonoconnection)
+			Client.phonoconnection.digit(key);
 	},
 	
 	show_actions: function(elements) {

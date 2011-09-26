@@ -29,6 +29,7 @@ class PhoneNumber
 	const TYPE_UNKNOWN = 4;
 	const TYPE_TOLLFREE = 5;
 	const TYPE_DOMESTIC_INVALID = 6;
+	const TYPE_SIP = 7;
 		
 	public function validatePhoneNumber($number) {
 
@@ -39,6 +40,7 @@ class PhoneNumber
 			case self::TYPE_DOMESTIC:
 			case self::TYPE_TOLLFREE:
 			case self::TYPE_INTERNATIONAL:
+			case self::TYPE_SIP:
 				return $type;
 			default:
 				throw new PhoneNumberException("Number is not a US, Canadian or toll free phone number");
@@ -56,6 +58,9 @@ class PhoneNumber
 	}
 		
 	public static function normalizePhoneNumberToE164($phone) {
+		if (strpos($phone, 'sip:') !== false)
+			return $phone;
+
 		// convert letters to numbers
 		$phone = self::convertAlphaNumeric($phone);
 
@@ -88,6 +93,9 @@ class PhoneNumber
 	}
 		
 	public static function analyzePhoneNumber($phone) {
+		if (strpos($phone, 'sip:') !== false) {
+			return self::TYPE_SIP;
+		}
 
 		// normalize for letters
 		$phone = self::normalizePhoneNumberToE164($phone);

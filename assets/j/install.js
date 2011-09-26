@@ -79,6 +79,33 @@ OpenVBX.Installer = {
 		return false;
 	},
 	nextStep : function(e) {
+		/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+		// Check for install tabs.
+		if (OpenVBX.Installer.currentStep == 3) {
+			if (!$('.install-tabs a:last').hasClass('install-tab-active')) {
+				// Get the current active tab
+				var newTab = null;
+				var currentTab = null;
+				var done = false;
+				$('.install-tabs a').each(function() {
+					if (done)
+						return;
+					if ($(this).hasClass('install-tab-active') && !currentTab) {
+						currentTab = $(this);
+					} else if (!$(this).hasClass('install-tab-active') && currentTab && !newTab) {
+						newTab = $(this);
+					} 
+					if (currentTab && newTab && !done) {
+						done = true;
+						changeInstallTab(newTab);
+						return;
+					}
+				});
+				return false;
+			}
+		}
+		/** End Disruptive Technologies code **/
+
 		OpenVBX.Installer.tabsDisabled = false;
 		if(typeof(e) != "undefined") {
 			e.preventDefault();
@@ -237,6 +264,32 @@ $(document).ready(function() {
 			} 
 		});
 	}, 1000);
+
+	/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+	changeInstallTab = function(newTab) {
+		// Mark all tabs as inactive
+		$('.install-tabs a').each(function() {
+			$(this).removeClass("install-tab-active");
+		});
+		// Mark as active
+		newTab.addClass("install-tab-active");
+		// Slide up all tabs
+		$('.install-tab:visible').each(function() {
+			$(this).slideUp();
+		});
+		// Slide down the relevant install tab
+		var installTabName = newTab.attr('id').replace('-header', '');
+		$('#'+installTabName).slideDown();
+		return false;
+	}
+	// Tropo install tabs
+	$('.install-tab').hide();
+	$('.install-tabs a').click(function() {
+		changeInstallTab($(this));
+	});
+	$('.install-tab:first').show();
+	$('.install-tabs a:first').addClass("install-tab-active");
+	/** End Disruptive Technologies code **/
 
 
 });

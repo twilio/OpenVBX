@@ -2,14 +2,6 @@
 
 /*
 |--------------------------------------------------------------------------
-| Server Name
-|--------------------------------------------------------------------------
-*/
-// @TODO: xss protection
-$config['server_name'] = $_SERVER['HTTP_HOST'];
-
-/*
-|--------------------------------------------------------------------------
 | Base Site URL
 |--------------------------------------------------------------------------
 |
@@ -21,7 +13,7 @@ $config['server_name'] = $_SERVER['HTTP_HOST'];
 */
 $config['base_url']= "http"
 	  . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')? 's' : '')
-	  . "://" . $config['server_name']
+	  . "://" . $_SERVER['HTTP_HOST']
 	  . preg_replace('@/+$@','',
 					 str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']))
 					 )
@@ -35,7 +27,7 @@ $config['base_url']= "http"
 | Used for js versioning.
 |
 */
-$config['site_rev'] = 1011;
+$config['site_rev'] = 1010;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +38,8 @@ $config['site_rev'] = 1011;
 | you're developing, you'll want to see the plain javascript for debugging.
 |
 */
-$config['use_unminimized_js'] = FALSE;
+// $config['use_unminimized_js'] = FALSE;
+$config['use_unminimized_js'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +50,8 @@ $config['use_unminimized_js'] = FALSE;
 | you're developing, you'll want to see the plain javascript for debugging.
 |
 */
-$config['use_unminimized_css'] = FALSE;
+// $config['use_unminimized_css'] = FALSE;
+$config['use_unminimized_css'] = true;
 
 /*
 |--------------------------------------------------------------------------
@@ -351,7 +345,7 @@ $config['sess_time_to_update'] 	= 300;
 |
 */
 $config['cookie_prefix']	= "";
-$config['cookie_domain']	= $config['server_name'];
+$config['cookie_domain']	= ($_SERVER['SERVER_NAME'] == 'localhost')? '' : $_SERVER['SERVER_NAME'];
 $config['cookie_path']		= str_replace('\\', '/', preg_replace('@/+$@','',dirname($_SERVER['SCRIPT_NAME'])));
 if(empty($config['cookie_path']))
 	$config['cookie_path'] = '/';

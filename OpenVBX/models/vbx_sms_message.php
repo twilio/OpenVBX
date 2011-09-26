@@ -20,6 +20,7 @@
  **/
 	
 require_once(APPPATH . 'libraries/twilio.php');
+require_once(APPPATH . 'libraries/tropo/tropo.class.php');
 class VBX_Sms_messageException extends Exception {}
 
 /*
@@ -45,6 +46,9 @@ class VBX_Sms_message extends Model {
 		$this->twilio = new TwilioRestClient($ci->twilio_sid,
 											 $ci->twilio_token,
 											 $ci->twilio_endpoint);
+
+		$this->tropo_username = $ci->tropo_username;
+		$this->tropo_password = $ci->tropo_password;
 		
 		$this->cache_key = $this->twilio_sid . '_sms';
 	}
@@ -104,29 +108,79 @@ class VBX_Sms_message extends Model {
 		return $output;
 	}
 
-	function send_message($from, $to, $message)
+	function send_message($from, $to, $message, $api_type='twilio')
 	{
 		$from = PhoneNumber::normalizePhoneNumberToE164($from);
 		$to = PhoneNumber::normalizePhoneNumberToE164($to);
 
-		$twilio = new TwilioRestClient($this->twilio_sid,
-									   $this->twilio_token,
-									   $this->twilio_endpoint);
-		error_log("Sending sms from $from to $to with content: $message");
-		$response = $twilio->request("Accounts/{$this->twilio_sid}/SMS/Messages",
-									 'POST',
-									 array( "From" => $from,
-											"To" => $to,
-											"Body" => $message,
-											)
-									 );
-		$status = isset($response->ResponseXml)? $response->ResponseXml->SMSMessage->Status : 'failed';
-		if($response->IsError ||
-		   ($status != 'sent' && $status != 'queued'))
-		{
-			error_log("SMS not sent - Error Occurred");
-			error_log($response->ErrorMessage);
-			throw new VBX_Sms_messageException($response->ErrorMessage);
+		if ($api_type == 'twilio') {
+
+			$twilio = new TwilioRestClient($this->twilio_sid,
+										   $this->twilio_token,
+										   $this->twilio_endpoint);
+			error_log("Sending sms from $from to $to with content: $message");
+			$response = $twilio->request("Accounts/{$this->twilio_sid}/SMS/Messages",
+										 'POST',
+										 array( "From" => $from,
+												"To" => $to,
+												"Body" => $message,
+												)
+										 );
+			$status = isset($response->ResponseXml)? $response->ResponseXml->SMSMessage->Status : 'failed';
+			if($response->IsError ||
+			   ($status != 'sent' && $status != 'queued'))
+			{
+				error_log("SMS not sent - Error Occurred");
+				error_log($response->ErrorMessage);
+				throw new VBX_Sms_messageException($response->ErrorMessage);
+			}
+
+		} else if ($api_type == 'tropo') {
+
+			/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+			// Loop through each application, and get a listing of all phone numbers
+			try {
+				$provisioner = new ProvisioningAPI($this->tropo_username,
+					$this->tropo_password);
+				$applications = json_decode($provisioner->viewApplications());
+			} catch (Exception $e) {
+				throw new VBX_Sms_messageException("Failed to connect to Tropo.");
+			}
+			$tokenMatch = false;
+			foreach ($applications as $application) {
+				if ($tokenMatch && $messagingToken)
+					break;
+				$tokenMatch = false;
+				// Get the numbers for this application
+				$numbersResult = json_decode($provisioner->viewAddresses($application->id));
+				$messagingToken = null;
+				foreach ($numbersResult as $number) {
+					if ($number->type == 'number' 
+					&& $number->number == $from) {
+						$tokenMatch = true;
+						if ($messagingToken)
+							break;
+					} else if ($number->type == 'token' 
+					&& $number->channel == 'messaging') {
+						$messagingToken = $number->token;
+						if ($tokenMatch) 
+							break;
+					}
+				}
+			}
+			if ($tokenMatch && $messagingToken) {
+				// Send SMS message by initiating the token 
+				$ch = curl_init("http://api.tropo.com/1.0/sessions?action=create&token=$messagingToken&to=".urlencode($to)."&message=".urlencode($message)."&from=".urlencode($from));
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+				$result = curl_exec($ch);
+				curl_close($ch);
+			} else {
+				throw new VBX_Sms_messageException("Error sending SMS message - no token defined.");
+			}
+			/** End Disruptive Technologies code **/
+
+		} else {
+			throw new VBX_Sms_messageException('Cannot send SMS message - invalid API type.');
 		}
 	}
 

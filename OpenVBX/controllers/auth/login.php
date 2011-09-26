@@ -36,7 +36,11 @@ class Login extends MY_Controller
 	public function index()
 	{
 		$redirect = $this->input_redirect();
-		
+
+		if (strpos($redirect, '/') === 0) {
+			$redirect = substr($redirect, 1);
+		}
+
 		if($this->session->userdata('loggedin'))
 		{
 			if(VBX_User::signature($this->user_id) == $this->session->userdata('signature'))

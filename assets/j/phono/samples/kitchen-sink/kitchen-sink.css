@@ -1,0 +1,175 @@
+/* kitchen-sink.css */
+.phonoHldr{
+	margin:0 auto;
+	width:750px;
+}
+.phono{
+	background:#F5F5F5;
+	border:1px solid #D9D9D9;
+	margin:15px 0;
+	position: relative;
+}
+.chatInput{
+	float:right;
+}
+.phonoHeader{
+	position:relative;
+	background:#D9D9D9;
+	padding:8px 10px;
+}
+.phonoHeader .phonoIDLabel{
+	font-weight: bold;
+}
+.phonoHeader .phonoID{
+	padding-right:10px;
+}
+.phonoHeader .sessionID{
+	color:#5F5F5F;
+}
+a.closePhono, a.closeChat{
+	position:absolute;
+	width:26px;
+	height:26px;
+	background:url("images/close.png") no-repeat;
+	top:7px;
+	right:5px;
+}
+a.closeChat{
+	top:2px;
+	right:-5px;
+}
+.phoneControl{
+	background:#E9E9E9;
+	border-bottom:1px solid #D9D9D9;
+	padding:7px 10px;
+	font-size:90%;
+	display:none;
+}
+.inputDivider{
+	padding:0 10px;
+	font-weight:bold;
+}
+.calls, .chats{
+	margin:0 10px;
+}
+.callHldr, .chatHldr{
+	border:1px solid #D9D9D9;
+	margin:10px 0;
+	background: #FBFBFB;
+}
+.chatHldr .chatBox{
+	overflow: auto;
+	height:100px;
+	padding:10px;
+}
+.chatHldr .chatInputHldr{
+	background:#D9D9D9;
+	padding:3px 5px;
+}
+.chatInputHldr .chatTxtInput{
+	border:1px solid #DDDDDD;
+	padding:4px;
+	width:650px;
+}
+.callControlHolder{
+	padding:10px;
+}
+.callHeader, .chatHeader{
+	position:relative;
+	background:#D9D9D9;
+	padding:4px 10px;
+	font-size:85%;
+}
+.callHeader .callID, .chatHeader .chatID{
+	font-weight:bold;
+	padding-right:10px;
+}
+.callControls, .callInputs{
+	display:none;
+}
+input.pretty{
+	border:2px solid #DDDDDD;
+	padding:4px 8px;
+	width:270px;
+	color:#666;
+	-moz-border-radius: 100px;
+	-webkit-border-radius: 100px;
+}
+#logConsole{
+	position: fixed; 
+	left: 0px; 
+	right: 0px; 
+	bottom: 0px;
+	height: 25px;
+	width: 100%;
+	background:#F1EFE7;
+}
+a.logToggler{
+	display:block;
+	padding:0 5px;
+	line-height:27px;
+	height:25px;
+	background:gray;
+	color:#FFF;
+	text-align:center;
+}
+a.addPhono{
+	background:#000;
+	padding:7px 13px;
+	color:#FFF;
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	border-radius:10px;
+	font-weight:bold;
+}
+a.addPhono:hover{
+	background: #fa1937;
+}
+.error{
+	padding:6px;
+	background:#FFFFE6;
+	border:1px solid #FFCC00;
+	text-align:center;
+	line-height:1.5em;
+	font-size:95%;
+}
+span.tiny{
+	color:#999;
+	font-size:87%;
+	padding-left:12px;
+}
+.phone-settings{
+	margin:8px 0 4px 0;
+	font-size:12px;
+	color:#666;
+	height:40px;
+}
+.phone-settings .setting{
+	float:left;
+	margin-right:45px;
+}
+/* chat styles */
+.chatEntry{
+	-moz-box-shadow:1px 1px 1px rgba(0, 0, 0, 0.1);
+	-webkit-box-shadow:1px 1px 1px rgba(0, 0, 0, 0.1);
+	box-shadow:1px 1px 1px rgba(0, 0, 0, 0.1);
+	margin:5px 0;
+}
+.inbound, .outbound{
+	border:1px solid #EBEBEB;
+}
+.chatEntry .from{
+	font-size:11px;
+	font-weight:bold;
+	color:#666;
+	padding:3px 5px;
+}
+.fromInbound, .fromOutbound{
+	background:#EBEBEB;
+}
+.chatEntry .body{
+	font-size:11px;
+	color:#666;
+	padding:3px 5px;
+	background:#FFF;
+}

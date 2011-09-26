@@ -31,6 +31,18 @@ class User_Controller extends MY_Controller
 	public $twilio_sid;
 	public $twilio_token;
 	public $twilio_endpoint;
+	/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+	public $web_client;
+	public $tropo_username;
+	public $tropo_password;
+	public $tropo_hostname;
+	public $phono_api_key;
+	public $voicevault_id;
+	public $voicevault_app;
+	public $voicevault_password;
+	public $voicevault_config;
+	public $voicevault_organisation;
+	/** End Disruptive Technologies code **/
 
 	public $testing_mode = false;
 	public $domain;
@@ -80,6 +92,18 @@ class User_Controller extends MY_Controller
 		$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
 		$this->twilio_token = $this->settings->get('twilio_token', $this->tenant->id);
 		$this->twilio_endpoint = $this->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
+		/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+		$this->tropo_username = $this->settings->get('tropo_username', $this->tenant->id);
+		$this->tropo_password = $this->settings->get('tropo_password', $this->tenant->id);
+		$this->web_client = $this->settings->get('web_client', $this->tenant->id);
+		$this->tropo_hostname = $this->settings->get('tropo_hostname', $this->tenant->id);
+		$this->phono_api_key = $this->settings->get('phono_api_key', $this->tenant->id);
+		$this->voicevault_id = $this->settings->get('voicevault_id', $this->tenant->id);
+		$this->voicevault_app = $this->settings->get('voicevault_app', $this->tenant->id);
+		$this->voicevault_password = $this->settings->get('voicevault_password', $this->tenant->id);
+		$this->voicevault_config = $this->settings->get('voicevault_config', $this->tenant->id);
+		$this->voicevault_organisation = $this->settings->get('voicevault_organisation', $this->tenant->id);
+		/** End Disruptive Technologies code **/
 
 		if(!$this->tenant->active)
 		{

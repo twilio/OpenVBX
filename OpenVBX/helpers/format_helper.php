@@ -41,6 +41,12 @@ function format_phone($number)
 }
 
 function normalize_phone_to_E164($phone) {
+	/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+	// sip: and app: addresses are valid (for tropo)
+	if (strpos($phone, 'sip:') !== false ||
+			strpos($phone, 'app:') !== false)
+		return $phone;
+	/** End Disruptive Technologies code **/
 
 	// get rid of any non (digit, + character)
 	$phone = preg_replace('/[^0-9+]/', '', $phone);

@@ -10,6 +10,7 @@
 	<script type="text/javascript" src="<?php echo asset_url('assets/j/frameworks/jquery-1.6.2.min.js'); ?>"></script>
 	<script type="text/javascript" src="<?php echo asset_url('assets/j/frameworks/jquery-ui-1.8.14.custom.min.js'); ?>"></script>
 	<script type="text/javascript" src="<?php echo asset_url('/assets/j/plugins/jquery.cookie.js'); ?>"></script>
+	<script type="text/javascript" src="<?php echo asset_url('/assets/j/phono/jquery.phono.js'); ?>"></script>
 	<script type="text/javascript" src="<?php echo asset_url('/assets/j/client.js'); ?>"></script>
 	<script type="text/javascript" src="<?php echo $twilio_js; ?>"></script>
 	
@@ -112,5 +113,7 @@
 
 <?php $this->load->view('js-init'); ?>
 <script type="text/javascript" src="<?php echo asset_url('assets/j/iframe.js') ?>"></script>
+<?php $ci = &get_instance(); ?>
+<input type="hidden" id="phono_api_key" value="<?php echo $ci->phono_api_key; ?>" />
 </body>
 </html>

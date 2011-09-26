@@ -8,8 +8,16 @@
 }
 
 .login-wrapper #openvbx-logo {
-	margin: 50px 0 10px 50px;
+	margin: 23px 0 10px 23px;
 }
+/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+.login-wrapper #openvbx-logo-tropo {
+	margin: 35px 0 10px 35px;
+}
+.login-wrapper #openvbx-logo-twilio {
+	margin: 35px 0 10px 35px;
+}
+/** End Disruptive Technologies code **/
 
 .login-wrapper #vbx-main {
     min-height: 0px;

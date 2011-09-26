@@ -134,10 +134,12 @@ class OpenVBX {
 										 $sid,
 										 $to,
 										 $from,
-										 $body)
+										 $body,
+										 $api_type='twilio')
 	{
 		return self::addMessage($owner, $sid, $to, $from, '',
-								0, VBX_Message::TYPE_SMS, $body, true);
+								0, VBX_Message::TYPE_SMS, $body, true, 
+								$api_type);
 	}
 
 	public static function addMessage($owner,
@@ -148,7 +150,8 @@ class OpenVBX {
 									  $duration,
 									  $type = VBX_Message::TYPE_VOICE,
 									  $text = null,
-									  $notify = false)
+									  $notify = false,
+									  $api_type = 'twilio')
 	{
 		try
 		{
@@ -179,6 +182,10 @@ class OpenVBX {
 
 			$message->type = $type;
 			$message->status = VBX_Message::STATUS_NEW;
+
+			/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+			$message->api_type = $api_type;
+			/** End Disruptive Technologies code **/
 
 			return $ci->vbx_message->save($message, $notify);
 		}

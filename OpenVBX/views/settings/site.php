@@ -8,7 +8,13 @@
 				<?php if($tenant_mode == Site::MODE_MULTI): ?>
 				<li><a href="#multi-tenant">Tenants</a></li>
 				<?php endif; ?>
+				<?php /** Updated, Disruptive Technologies, for Tropo VBX conversion **/ ?>
+				<li><a href="#api-accounts">API Accounts</a></li>
+				<?php /** End Disruptive Technologies code **/ 
+				/*
 				<li><a href="#twilio-account">Twilio Account</a></li>
+				<li><a href="#tropo-account">Tropo Account</a></li>
+				*/ ?>
 				<?php if($tenant_mode == Site::MODE_MULTI): ?>
 				<li><a href="#system-config">System Config</a></li>
 				<?php endif; ?>
@@ -33,6 +39,12 @@
 					<label for="override" class="field-label">Hostname to use in recording URLs (must be a CNAME for api.twilio.com)
 						<input class="medium" id="override" name="site[recording_host]" value="<?php echo @$recording_host["value"]; ?>">
 				</div>
+
+				<div class="vbx-input-complex vbx-input-container">
+					<label for="tropo_hostname" class="field-label">Alternate Hostname to use in recording URLs (must be a CNAME for your OpenVBX server)
+						<input class="medium" id="tropo_hostname" name="site[tropo_hostname]" value="<?php echo @$tropo_hostname["value"]; ?>">
+				</div>
+
 				<button class="submit-button" type="submit"><span>Update</span></button>
 			</form>
 
@@ -121,7 +133,82 @@
 		</div><!-- .vbx-tab-view -->
 
 
-		<div id="settings-twilio-account" class="vbx-tab-view">
+		<?php /** Updated, Disruptive Technologies, for Tropo VBX conversion **/ ?>
+
+		<div id="settings-api-accounts" class="vbx-tab-view">
+			<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#api-accounts" method="POST" class="vbx-settings-form vbx-form">
+				<div class="settings-pane">
+					<div class="twilio-logo-small"><span class="replace">Twilio Account</span></div>
+					<!-- <h3>Twilio Account</h3> -->
+					<fieldset class="vbx-input-container">
+						<label for="site-twilio-sid" class="field-label">Twilio SID
+							<input id="site-twilio-sid" type="text" name="site[twilio_sid]" value="<?php echo @$twilio_sid['value'] ?>" class="medium" />
+						</label>
+						<label for="site-twilio-token" class="field-label">Twilio Token
+							<input id="site-twilio-token" type="password" name="site[twilio_token]" value="<?php echo @$twilio_token['value'] ?>" class="medium" />
+						</label>
+						<label for="site-twilio-application-sid" class="field-label">Twilio Client Application SID
+							<input id="site-twilio-application-sid" type="text" name="site[application_sid]" value="<?php echo @$application_sid['value']; ?>" class="medium" />
+						</label>
+						<label for="site-from-email" class="field-label">From Email
+							<input id="site-from-email" type="text" name="site[from_email]" value="<?php echo @$from_email['value'] ?>" class="medium" />
+						</label>
+					</fieldset>
+				</div>
+				<div class="settings-pane">
+					<div class="tropo-logo-small"><span class="replace">Tropo Account</span></div>
+					<!-- <h3>Tropo Account</h3> -->
+					<fieldset class="vbx-input-container">
+						<label for="site-tropo-username" class="field-label">Tropo Username
+							<input id="site-tropo-username" type="text" name="site[tropo_username]" value="<?php echo @$tropo_username['value'] ?>" class="medium" />
+						</label>
+						<label for="site-tropo-password" class="field-label">Tropo Password
+							<input id="site-tropo-password" type="password" name="site[tropo_password]" value="<?php echo @$tropo_password['value'] ?>" class="medium" />
+						</label>
+						<label for="site-phono-api-key" class="field-label">Phono API Key
+							<input id="site-phono-api-key" type="text" name="site[phono_api_key]" value="<?php echo @$phono_api_key['value'] ?>" class="medium" />
+						</label>
+						<label for="site-from-email" class="field-label">From Email
+							<input id="site-from-email" type="text" name="site[from_email]" value="<?php echo @$from_email['value'] ?>" class="medium" />
+						</label>
+					</fieldset>
+				</div>
+				<div class="settings-pane">
+					<div class="voicevault-logo-small"><span class="replace">VoiceVault Account</span></div>
+					<!-- <h3>VoiceVault Account</h3> -->
+					<fieldset class="vbx-input-container">
+						<label for="site-voicevault-username" class="field-label">VoiceVault Username
+							<input id="site-voicevault-username" type="text" name="site[voicevault_username]" value="<?php echo @$voicevault_username['value'] ?>" class="medium" />
+						</label>
+						<label for="site-voicevault-password" class="field-label">VoiceVault Password
+							<input id="site-voicevault-password" type="text" name="site[voicevault_password]" value="<?php echo @$voicevault_password['value'] ?>" class="medium" />
+						</label>
+						<label for="site-voicevault-config" class="field-label">VoiceVault Config ID
+							<input id="site-voicevault-config" type="text" name="site[voicevault_config]" value="<?php echo @$voicevault_config['value'] ?>" class="medium" />
+						</label>
+						<label for="site-voicevault-organisation" class="field-label">VoiceVault Organisation ID
+							<input id="site-voicevault-organisation" type="text" name="site[voicevault_organisation]" value="<?php echo @$voicevault_organisation['value'] ?>" class="medium" />
+						</label>
+						<label for="site-voicevault-number" class="field-label">Phone Number 
+							<select id="site-voicevault-number" name="site[voicevault_number]" class="medium">
+								<?php foreach ($numbers as $raw_number => $friendly_number): ?>
+									<option value="<?php echo $raw_number ?>" <?php echo ($raw_number == $voicevault_number['value']) ? 'selected="selected"' : ''; ?>>
+										<?php echo $friendly_number ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
+						</label>
+					</fieldset>
+				</div>
+				<p style="clear: both">&nbsp;</p>
+				<button class="submit-button" type="submit"><span>Update</span></button>
+			</form>
+		</div><!-- .vbx-tab-view -->
+
+		<?php /** End Disruptive Technologies code **/ ?>
+
+
+		<?php /*<div id="settings-twilio-account" class="vbx-tab-view">
 			<h3>Twilio Account</h3>
 			<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#twilio-account" method="POST" class="vbx-settings-form vbx-form">
 				<fieldset class="vbx-input-container">
@@ -141,6 +228,28 @@
 				<button class="submit-button" type="submit"><span>Update</span></button>
 			</form>
 		</div><!-- .vbx-tab-view -->
+
+		<?php /** Updated, Disruptive Technologies, for Tropo VBX conversion **/ ?>
+		
+		<?php /*<div id="settings-tropo-account" class="vbx-tab-view">
+			<h3>Tropo Account</h3>
+			<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#tropo-account" method="POST" class="vbx-settings-form vbx-form">
+				<fieldset class="vbx-input-container">
+					<label for="site-tropo-username" class="field-label">Tropo Username
+						<input id="site-tropo-username" type="text" name="site[tropo_username]" value="<?php echo @$tropo_username['value'] ?>" class="medium" />
+					</label>
+					<label for="site-tropo-password" class="field-label">Tropo Password
+						<input id="site-tropo-password" type="password" name="site[tropo_password]" value="<?php echo @$tropo_password['value'] ?>" class="medium" />
+					</label>
+					<label for="site-from-email" class="field-label">From Email
+						<input id="site-from-email" type="text" name="site[from_email]" value="<?php echo @$from_email['value'] ?>" class="medium" />
+					</label>
+				</fieldset>
+				<button class="submit-button" type="submit"><span>Update</span></button>
+			</form>
+		</div>
+
+		<?php /** End Disruptive Technologies code **/ ?>
 
 
 		<div id="settings-about" class="vbx-tab-view">

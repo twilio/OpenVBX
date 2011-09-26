@@ -2,14 +2,16 @@
 
 class TwimlDial {
 	/**
-	 * Use the CodeIgniter session class to set the cookie
-	 * Not using this has caused issues on some systems, but
-	 * until we know that this squashes our bugs we'll leave
-	 * the toggle to allow the legacy method of tracking
+	 * For testing only. Some proxies and firewalls 
+	 * don't properly pass or set the server name so 
+	 * cookies may not set due to a mismatch. Use this
+	 * only in testing if you're having trouble setting
+	 * cookies as it will break in load-balanced
+	 * server configurations
 	 *
 	 * @var bool
 	 */
-	private $use_ci_session = true;
+	private $use_sessions = false;
 	
 	static $hangup_stati = array('completed', 'answered');
 	static $default_voicemail_message = 'Please leave a message. Press the pound key when you are finished.';
@@ -18,13 +20,6 @@ class TwimlDial {
 		
 	public $state;
 	public $response;
-	
-	/**
-	 * Default timeout is the same as the Twilio default timeout
-	 *
-	 * @var int
-	 */
-	public $default_timeout = 30;
 	
 	public function __construct(){
 		$this->response = new Response();
@@ -46,8 +41,6 @@ class TwimlDial {
 		$this->no_answer_group_voicemail = AppletInstance::getAudioSpeechPickerValue('no-answer-group-voicemail');
 		$this->no_answer_redirect = AppletInstance::getDropZoneUrl('no-answer-redirect');
 		$this->no_answer_redirect_number = AppletInstance::getDropZoneUrl('no-answer-redirect-number');
-		
-		$this->dial_whom_instance = get_class($this->dial_whom_user_or_group);
 	}
 	
 // Actions
@@ -80,13 +73,12 @@ class TwimlDial {
 		if ($device->is_active) {
 			$user = VBX_User::get($device->user_id);
 			$call_opts = array(
-							'url' => site_url('twiml/whisper?name='.urlencode($user->first_name))
+							'url' => site_url('twiml/whisper?name='.urlencode($user->first_name)),
 						);
 				
 			$dial = new Dial(NULL, array(
 					'action' => current_url(),
-					'callerId' => $this->callerId,
-					'timeout' => $this->default_timeout
+					'callerId' => $this->callerId
 				));
 
 			if (strpos($device->value, 'client:') !== false) {
@@ -115,12 +107,11 @@ class TwimlDial {
 		if (count($user->devices)) {
 			$dial = new Dial(NULL, array(
 					'action' => current_url(), 
-					'callerId' => $this->callerId,
-					'timeout' => $this->default_timeout
+					'callerId' => $this->callerId
 				));
 
 			$call_opts = array(
-							'url' => site_url('twiml/whisper?name='.urlencode($user->first_name))
+							'url' => site_url('twiml/whisper?name='.urlencode($user->first_name)),
 						);
 						
 			foreach ($user->devices as $device) {
@@ -151,9 +142,7 @@ class TwimlDial {
 	 */
 	public function dialNumber($number) {
 		$dialed = false;
-		$this->response->addDial($number, array(
-				'timeout' => $this->default_timeout
-			));
+		$this->response->addDial($number);
 		return true;
 	}
 	
@@ -306,15 +295,12 @@ class TwimlDial {
 	 * @return string json or std
 	 */
 	private function _get_state() {
-		$state = null;
-		if ($this->use_ci_session) {
+		if ($this->use_sessions) {
 			$CI =& get_instance();
 			$state = $CI->session->userdata($this->cookie_name);
 		}
 		else {
-			if (!empty($_COOKIE[$this->cookie_name])) {
-				$state = $_COOKIE[$this->cookie_name];
-			}
+			$state = $_COOKIE[$this->cookie_name];
 		}
 
 		return $state;
@@ -332,7 +318,7 @@ class TwimlDial {
 		}
 		$state = (!empty($state)) ? $state : '{}';
 		
-		if ($this->use_ci_session) {
+		if ($this->use_sessions) {
 			$CI =& get_instance();
 			$CI->session->set_userdata($this->cookie_name, $state);
 		}
@@ -342,3 +328,4 @@ class TwimlDial {
 	}
 }
 
+?>

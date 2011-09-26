@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"> 
+<html>
+<head>
+    <title>
+       Phono - callme plugin
+    </title>
+    <meta http-equiv="PRAGMA" content="NO-CACHE" />
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- CSS for sample layout -->
+    <link type="text/css"rel="stylesheet" href="../samples.css"/>
+    <link type="text/css" rel="stylesheet" href="http://s.phono.com/deps/prettify/prettify.css"/>
+    
+    <!-- jQuery - required -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script> 
+    
+    <!-- Libraries/plugins for sample display - not required -->
+	<script type="text/javascript" src="http://s.phono.com/deps/prettify/prettify.js"></script>
+    <script type="text/javascript" src="http://s.phono.com/deps/themeswitcher/jquery.themeswitcher.min.js"></script> 
+    
+    <!-- Phono and callme plugin - required -->
+    <script type="text/javascript" src="../../jquery.phono.js"></script>
+    <script type="text/javascript" src="http://s.phono.com/addons/callme/79a53b7/jquery.callme.js"></script>
+    
+    <!-- Sample styles -->
+    <style type="text/css">
+    	#phone-hldr, #switcher{
+    		width:925px;
+    		position:relative;
+    		margin:0 auto;
+    		margin-top:25px;
+    	}
+    	#sample-1{
+    		float:left;
+    	}
+    	#sample-2{
+    		float:right;
+    	}
+    	.sample-hldr{
+    		width:430px;
+    		min-height:200px;
+    		text-align:center;
+    		font-size: 120%;
+    		padding:10px;
+    		background:#efefef;
+    		border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;
+    		min-height:225px;
+    	}
+    	pre{
+    		height:250px;
+    		margin-top:20px;
+    		overflow-y: auto;
+    		overflow-x: auto;
+    		text-align:left;
+    		font-size:11px;
+			padding:5px !important;
+			background:#FFF;
+			border:3px solid #CCC !important;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;
+			font-family: monaco, 'Bitstream Vera Sans Mono', 'Courier New', courier, monospace;
+    	}
+    </style>
+    
+    <script type="text/javascript">
+		$(document).ready(function(){
+	    	prettyPrint();
+	    	$("#switcher").themeswitcher({
+	    		loadTheme:"UI darkness",
+	    		width:210,
+	    		imgPath:"http://s.phono.com/deps/themeswitcher/images/"
+	    	})
+
+	    	$("#sample-1 .sample-phone").append(
+	    		$("<div/>")
+	    			.css({"width":"220px","margin":"0 auto"})
+	    			.callme({
+	    				apiKey: "C17D167F-09C6-4E4C-A3DD-2025D48BA243",
+	    				numberToDial: "8003544487",
+	    				buttonTextReady: "1-800-FLIGHTS",
+	    				slideOpen:false,
+	    				dialPad: false
+	    			})
+	    	)
+	    	
+	    	$("#sample-2 .sample-phone").append(
+	    		$("<div/>")
+	    			.css({"width":"220px","margin":"0 auto"})
+	    			.callme({
+	    				apiKey: "C17D167F-09C6-4E4C-A3DD-2025D48BA243",
+	    				numberToDial: "8007773456",
+	    				buttonTextReady: "1-800-777-FILM",
+	    				slideOpen:true
+	    			})
+	    	)
+
+	    });
+	</script>     
+</head>
+<body>
+	<div id="sample-header">
+		<div class="header">
+			<div class="logo">
+				<a href="http://www.phono.com/demos" title="Phono Home"><img src="../logo-home-big.png" width="120" border="0" height="153"/></a>
+			</div>
+			<div class="intro">
+				<h1>Callme</h1>
+				<p>
+					A jQuery plugin and Phono add-on that makes it easy to drop a callme button directly into any webpage with just a few lines of code. 
+					The callme plugin depends on the Phono library to make calls and uses <a href="http://jqueryui.com/themeroller/">jQuery UI theming</a> for styling. 
+				</p>
+				<p>
+					Checkout the <a href="https://github.com/phono/callme">Github repository</a> for the project source and full documentation. 
+				</p>	
+			</div>
+		</div>
+	</div>
+	
+	<div id="switcher"></div>
+	
+	<div id="phone-hldr">
+		<div id="sample-2" class="sample-hldr">
+			<h2>Callme button with sliding dialpad</h2>
+			<div class="sample-phone"></div>
+<pre class="prettyprint" style="margin-top:47px;">
+&lt;html&gt;
+&lt;head&gt;
+ &lt;link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/ui-darkness/jquery-ui.css"/&gt;
+ &lt;script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"&gt;&lt;/script&gt;
+ &lt;script type="text/javascript" src="http://s.phono.com/releases/0.2/jquery.phono.js"&gt;&lt;/script&gt;
+ &lt;script type="text/javascript" src="http://s.phono.com/addons/callme/79a53b7/jquery.callme.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ &lt;script type="text/javascript"&gt;
+  $("body").append(
+   $("&lt;div/&gt;")
+    .css("width","210px")
+    .callme({
+      apiKey: "C17D167F-09C6-4E4C-A3DD-2025D48BA243",
+      numberToDial: "8007773456",
+      buttonTextReady: "1-800-777-FILM",
+      slideOpen:true
+    })
+  )
+ &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+		</div>
+		
+		<div id="sample-1" class="sample-hldr">
+			<h2>Callme button with no dialpad</h2>
+			<div class="sample-phone"></div>
+<pre class="prettyprint">
+&lt;html&gt;
+&lt;head&gt;
+ &lt;link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/ui-darkness/jquery-ui.css"/&gt;
+ &lt;script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"&gt;&lt;/script&gt;
+ &lt;script type="text/javascript" src="http://s.phono.com/releases/0.2/jquery.phono.js"&gt;&lt;/script&gt;
+ &lt;script type="text/javascript" src="http://s.phono.com/addons/callme/79a53b7/jquery.callme.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+ &lt;script type="text/javascript"&gt;
+  $("body").append(
+   $("&lt;div/&gt;")
+    .css("width","210px")
+    .callme({
+      apiKey: "C17D167F-09C6-4E4C-A3DD-2025D48BA243",
+      numberToDial: "8003544487",
+      buttonTextReady: "1-800-FLIGHTS",
+      slideOpen:false,
+      dialPad: false
+    })
+  )
+ &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+		</div>
+	</div>
+	
+	
+</body>
+</html>

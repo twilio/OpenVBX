@@ -22,6 +22,7 @@
 				<p class="error"><?php echo $error_edit ?></p>
 				<?php endif; ?>
 
+				<h3>General Account Settings</h3>
 				<fieldset class="vbx-input-container">
 				<label class="field-label">First Name
 				<input type="text" class="medium" name="first_name" value="<?php echo $user->first_name; ?>" />
@@ -33,10 +34,21 @@
 				<input type="text" class="medium" name="email" value="<?php echo $user->email; ?>" />
 				</label>
 				</fieldset>
-					
 
 				<button type="submit" class="inline-button submit-button"><span>Save</span></button>
 				<button type="button" class="change-password inline-button normal-button"><span>Change password</span></button>
+
+				<p style="clear: both">&nbsp;</p>
+				<h3>VoiceVault Settings</h3>
+				<?php if ($claimant_id): ?>
+				<p><strong>ID</strong>: <?php echo $claimant_id; ?></p>
+				<p>&nbsp;</p>
+				<button type="submit" class="inline-button submit-button voicevault-setup"><span>Re-Enroll</span></button>
+				<?php else: ?>
+				<p>VoiceVault not setup. Click the button below to setup your account.</p>
+				<p>&nbsp;</p>
+				<button type="submit" class="inline-button submit-button voicevault-setup"><span>Setup</span></button>
+				<?php endif; ?>
 
 				</form>
 

@@ -98,7 +98,7 @@ class VBX_Device extends MY_Model
 		{
 			throw new VBX_DeviceException($e->getMessage());
 		}
-		
+
 		$ci =& get_instance();
 		
 		if(!($ci->db

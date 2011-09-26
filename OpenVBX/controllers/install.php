@@ -1,5 +1,5 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-/**
+ /**
  * "The contents of this file are subject to the Mozilla Public License
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
@@ -27,15 +27,13 @@ class Install extends Controller {
 
 	public $tests;
 	public $pass;
-	
-	protected $min_php_version = '5.0.0';
 
 	function Install()
 	{
 		parent::Controller();
 		if(file_exists(APPPATH . 'config/openvbx.php')) $this->config->load('openvbx');
 
-		if(file_exists(APPPATH . 'config/database.php') AND version_compare(PHP_VERSION, $this->min_php_version, '>=')) {
+		if(file_exists(APPPATH . 'config/database.php') AND version_compare(PHP_VERSION, '5.0.0', '>=')) {
 			$this->load->database();
 
 			redirect('');
@@ -61,6 +59,17 @@ class Install extends Controller {
 		$this->openvbx = array();
 		$this->openvbx_settings['twilio_sid'] = trim($this->input->post('twilio_sid'));
 		$this->openvbx_settings['twilio_token'] = trim($this->input->post('twilio_token'));
+		/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+		$this->openvbx_settings['tropo_username'] = trim($this->input->post('tropo_username'));
+		$this->openvbx_settings['tropo_password'] = trim($this->input->post('tropo_password'));
+		$this->openvbx_settings['tropo_hostname'] = trim($this->input->post('tropo_hostname'));
+		$this->openvbx_settings['phono_api_key'] = trim($this->input->post('phono_api_key'));
+		$this->openvbx_settings['voicevault_username'] = trim($this->input->post('voicevault_username'));
+		$this->openvbx_settings['voicevault_password'] = trim($this->input->post('voicevault_password'));
+		$this->openvbx_settings['voicevault_config'] = trim($this->input->post('voicevault_config'));
+		$this->openvbx_settings['voicevault_organisation'] = trim($this->input->post('voicevault_organisation'));
+		$this->openvbx_settings['voicevault_number'] = '';
+		/** End Disruptive Technologies code **/
 		$this->openvbx['salt'] = md5(rand(10000, 99999));
 		$this->openvbx_settings['from_email'] = trim($this->input->post('from_email') == ""?
 													 ''
@@ -96,10 +105,10 @@ class Install extends Controller {
 		$this->tests = array();
 		$this->pass = TRUE;
 
-		$this->add_test(version_compare(PHP_VERSION, $this->min_php_version, '>='),
+		$this->add_test(version_compare(PHP_VERSION, '5.0.0', '>='),
 						'PHP version',
 						PHP_VERSION,
-						'You must be running at least PHP '.$this->min_php_version.'; you are using ' . PHP_VERSION);
+						'You must be running at least PHP 5.0; you are using ' . PHP_VERSION);
 
 		$this->add_test(function_exists('mysql_connect'),
 						'MySQL',
@@ -188,8 +197,10 @@ class Install extends Controller {
 		$tplvars = $this->input_args();
 
 		$this->run_tests();
-		$this->openvbx_settings['application_sid'] = $this->get_application($this->openvbx_settings);
-
+		
+		if ($this->openvbx_settings['twilio_sid'])
+			$this->openvbx_settings['application_sid'] = $this->get_application($this->openvbx_settings);
+		
 		$json['tests'] = $this->tests;
 		$json['pass'] = $this->pass;
 		$json['success'] = true;
@@ -530,36 +541,69 @@ class Install extends Controller {
 		$json = array('success' => true, 'step' => 2, 'message' => 'success');
 		$twilio_sid = $this->openvbx_settings['twilio_sid'];
 		$twilio_token = $this->openvbx_settings['twilio_token'];
+		$tropo_username = $this->openvbx_settings['tropo_username'];
+		$tropo_password = $this->openvbx_settings['tropo_password'];
+
+		if (!($twilio_sid && $twilio_token) &&
+			!($tropo_username && $tropo_password)) {
+			$json['success'] = false;
+			$json['message'] = "You must have either a Twilio or Tropo account.";
+			return $json;
+		}
 
 		require_once(APPPATH . 'libraries/twilio.php');
 
-		try
-		{
-			$twilio = new TwilioRestClient($twilio_sid,
-										   $twilio_token);
+		if ($twilio_sid && $twilio_token) {
+			try
+			{
+				$twilio = new TwilioRestClient($twilio_sid,
+											   $twilio_token);
 
-			$response = $twilio->request("Accounts/{$twilio_sid}",
-										 'GET',
-										 array());
+				$response = $twilio->request("Accounts/{$twilio_sid}",
+											 'GET',
+											 array());
 
-			if($response->IsError) {
-				if($response->HttpStatus > 400) {
-					$json['errors'] = array('twilio_sid' => $response->ErrorMessage,
-											'twilio_token' => $response->ErrorMessage );
+				if($response->IsError) {
+					if($response->HttpStatus > 400) {
+						$json['errors'] = array('twilio_sid' => $response->ErrorMessage,
+												'twilio_token' => $response->ErrorMessage );
 
-					throw new InstallException('Invalid Twilio SID or Token');
+						throw new InstallException('Invalid Twilio SID or Token');
+					}
+
+					throw new InstallException($response->ErrorMessage);
 				}
 
-				throw new InstallException($response->ErrorMessage);
+			}
+			catch(InstallException $e)
+			{
+				$json['success'] = false;
+				$json['message'] = $e->getMessage();
+				$json['step'] = $e->getCode();
+			}
+		}
+
+		/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+
+		require_once(APPPATH . 'libraries/tropo/tropo.class.php');
+
+		if ($tropo_username && $tropo_password) {
+
+			// Tropo User Account details
+
+			try {
+				// Get (or create) the Tropo application
+				$provisioner = new ProvisioningAPI($tropo_username, $tropo_password);
+				$applications = json_decode($provisioner->viewApplications());
+			} catch (Exception $e) {
+				// Invalid tropo account
+				$json['success'] = false;
+				$json['message'] = 'Invalid Tropo credentials.';
 			}
 
 		}
-		catch(InstallException $e)
-		{
-			$json['success'] = false;
-			$json['message'] = $e->getMessage();
-			$json['step'] = $e->getCode();
-		}
+
+		/** End Disruptive Technologies code **/
 
 		return $json;
 	}

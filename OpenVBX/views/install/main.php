@@ -41,11 +41,7 @@
 			</ul>
 
 			<div class="information">
-			<?php if ($pass): ?>
-				<p><strong>Heads up&hellip;</strong> have your database credentials and <br />Twilio Account information handy.</p>
-			<?php else: ?>
-				<p><strong>Tests did not pass. Please correct the problems listed above before continuing.</strong></p>
-			<?php endif; ?>
+				<p><strong>Heads up&hellip;</strong> have your database credentials and <br />API Account information handy.</p>
 			</div>
 
 		</div>
@@ -86,13 +82,25 @@
 
 
 		<div id="step-3" class="step">
-			<a target="_blank" class="help" href="http://openvbx.org/install#step3" title="Get help at OpenVBX.org">Help</a>
-			<h1><span class="number">3.</span>Connect to Twilio</h1>
+			<h1><span class="number">3.</span>API Accounts</h1>
 
-			<p class="step-desc">Login to <a target="_blank" href="https://www.twilio.com/user/account/">your dashboard</a> for your Twilio SID and Token.</p>
+			<ul class="install-tabs">
+				<li><a href="#" id="install-tab-twilio-header">Twilio</a></li>
+				<li><a href="#" id="install-tab-tropo-header">Tropo</a></li>
+				<li><a href="#" id="install-tab-voicevault-header">VoiceVault</a></li>
+			</ul>
 
-			<fieldset>
-				<input type="hidden" name="step" value="3" />
+			<div id="install-tab-twilio" class="install-tab">
+				<a target="_blank" class="help" href="http://openvbx.org/install#step3" title="Get help at OpenVBX.org">Help</a>
+
+				<p><strong>Twilio Account</strong></p>
+
+				<p>&nbsp;</p>
+
+				<p class="step-desc">Login to <a target="_blank" href="https://www.twilio.com/user/account/">your dashboard</a> for your Twilio SID and Token.</p>
+
+				<fieldset>
+					<input type="hidden" name="step" value="3" />
 
 					<label for="iTwilioSID">Twilio SID
 					<input id="iTwilioSID" class="medium" type="text" name="twilio_sid" value="<?php echo htmlspecialchars($twilio_sid)?>"  />
@@ -101,11 +109,70 @@
 					<label for="iTwilioToken">Twilio Token
 					<input id="iTwilioToken" class="medium" type="password" name="twilio_token" value="<?php echo htmlspecialchars($twilio_token)?>" />
 					</label>
-			</fieldset>
+				</fieldset>
+			</div>
+
+			<div id="install-tab-tropo" class="install-tab">
+				<a class="help" href="http://www.tropo.com/" target="_blank">Help</a>
+
+				<p><strong>Tropo Account</strong></p>
+
+				<p>&nbsp;</p>
+
+				<p class="step-desc">Register a <a target="_blank" href="https://www.tropo.com/">Tropo account</a> for your unique Tropo username and password.</p>
+
+				<fieldset>
+					<?php /** Updated, Disruptive Technologies, for Tropo VBX conversion **/ ?>
+
+					<label for="iTropoUsername">Tropo Username
+					<input id="iTropoUsername" class="medium" type="text" name="tropo_username" value="<?php echo htmlspecialchars($tropo_username)?>"  />
+					</label>
+
+					<label for="iTropoPassword">Tropo Password
+					<input id="iTropoPassword" class="medium" type="password" name="tropo_password" value="<?php echo htmlspecialchars($tropo_passwod)?>" />
+					</label>
+
+					<label for="iPhonoApiKey">Phono API Key
+					<input id="iPhonoApiKey" class="medium" type="password" name="phono_api_key" value="<?php echo htmlspecialchars($phono_api_key)?>" title="Register an account at phono.com to make calls via the Phono web client." />
+					</label>
+
+					<?php /** End Disruptive Technologies code **/ ?>
+				</fieldset>
+			</div>
+
+			<div id="install-tab-voicevault" class="install-tab">
+				<a class="help" href="http://www.voicevault.com/" target="_blank">Help</a>
+
+				<p><strong>VoiceVault Account</strong></p>
+
+				<p>&nbsp;</p>
+				
+				<p class="step-desc">Register a <a target="_blank" href="http://www.voicevault.com/">VoiceVault account</a> for access to your secure Voice Vault.</p>
+
+				<fieldset>
+					<?php /** Updated, Disruptive Technologies, for Tropo VBX conversion **/ ?>
+
+					<label for="iVoiceVaultUsername">VoiceVault Username
+					<input id="iVoiceVaultUsername" class="medium" type="text" name="voicevault_username" value="<?php echo htmlspecialchars($voicevault_username)?>"  />
+					</label>
+
+					<label for="iVoiceVaultPassword">VoiceVault Password
+					<input id="iVoiceVaultPassword" class="medium" type="password" name="voicevault_password" value="<?php echo htmlspecialchars($voicevault_password)?>" />
+					</label>
+
+					<label for="iVoiceVaultConfiguration">VoiceVault Configuration ID
+					<input id="iVoiceVaultConfiguration" class="medium" type="text" name="voicevault_config" value="<?php echo htmlspecialchars($voicevault_config)?>"  />
+					</label>
+
+					<label for="iVoiceVaultOrganisation">VoiceVault Organisation ID
+					<input id="iVoiceVaultOrganisation" class="medium" type="password" name="voicevault_organisation" value="<?php echo htmlspecialchars($voicevault_organisation)?>" />
+					</label>
+
+					<?php /** End Disruptive Technologies code **/ ?>
+				</fieldset>
+			</div>
 
 		</div>
-
-
 
 
 		<div id="step-4" class="step">

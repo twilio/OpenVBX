@@ -27,6 +27,9 @@ class ErrorMessages
 									  400 => 'Twilio authentication error.	Please contact your OpenVBX provider',
 									  500 => 'Twilio authentication error.	Please contact <a href="http://www.twilio.com/user/account">twilio</a>',
 									  503 => 'Twilio service unavailable due to network connectivity issues.',
+									  /** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+									  999 => 'Tropo connection error. Does your account information match your tropo account?',
+									  /** End Disruptive Technologies code **/
 									  );
 
 	public static function message($group, $code)

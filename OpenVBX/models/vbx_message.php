@@ -33,6 +33,8 @@ class VBX_Message extends Model {
 
 	var $ticket_status_options = array('open', 'closed', 'pending');
 
+	var $api_type = 'twilio';
+
 	const TYPE_VOICE = 'voice';
 	const TYPE_FAX = 'fax';
 	const TYPE_SMS = 'sms';
@@ -176,6 +178,8 @@ class VBX_Message extends Model {
 
 	function save($message, $notify = false)
 	{
+		$api_type = $message->api_type;
+
 		$ci =& get_instance();
 
 		if(isset($message->id) && intval($message->id) > 0)
@@ -243,6 +247,10 @@ class VBX_Message extends Model {
 
 		// refetch the message after persistence completed to update created, updated value
 		$message = $this->get_message(array('call_sid' => $message->call_sid));
+		/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+		// Hack to add api_type to message (isn't needed in DB)
+		$message->api_type = $api_type;
+		/** End Disruptive Technologies code **/
 
 		if($result)
 		{
@@ -392,14 +400,6 @@ class VBX_Message extends Model {
 		$ci =& get_instance();
 		$ci->load->model('vbx_user');
 		$ci->load->model('vbx_group');
-		
-		$recording_host = $ci->settings->get('recording_host', VBX_PARENT_TENANT);
-		
-		$vm_url = $message->content_url;
-		if (trim($recording_host) != '') {
-			$vm_url = str_replace('api.twilio.com',trim($recording_host), $vm_url);
-		}
-		$message->content_url = $vm_url;
 
 		$users = array();
 		if($message->owner_type == 'user')
@@ -444,7 +444,7 @@ class VBX_Message extends Model {
 							 "New $owner $message_type Notification - {$message->caller}",
 							 'message',
 							 compact('message'));
-				error_log("message queued for $user->email");
+				error_log("message queued for $email");
 			}
 
 			foreach($numbers as $number)
@@ -455,9 +455,27 @@ class VBX_Message extends Model {
 				{
 					try
 					{
-						$ci->vbx_sms_message->send_message($message->called,
-														   $number->value,
-														   $this->tiny_notification_message($message));
+						switch ($message->api_type) {
+							case 'twilio':
+								$ci->vbx_sms_message->send_message(
+									$message->called,
+									$number->value,
+									$this->tiny_notification_message($message)
+									);
+								break;
+							case 'tropo':
+								$ci->vbx_sms_message->send_message(
+									$message->called,
+									$number->value,
+									$this->tiny_notification_message($message),
+									'tropo'
+									);
+								break;
+
+							default:
+								throw new Exception("Invalid message API type.");
+								break;
+						}
 						error_log("sms queued for {$number->value}");
 					}
 					catch(Sms_messageException $e)

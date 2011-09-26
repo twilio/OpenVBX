@@ -75,19 +75,26 @@ class Message_Text extends User_Controller
 			try
 			{
 				$this->vbx_sms_message->send_message($from, $to, $content);
-				if($message_id)
-				{
-					error_log("SMS Message ID: $message_id");
-					$annotation_id = $this->vbx_message->annotate($message_id,
-																  $this->user_id,
-																  "$from to ".format_phone($to).": $content",
-																  'sms');
-				}
-				
 			}
 			catch(VBX_Sms_MessageException $e)
 			{
-				throw new Message_TextException($e->getMessage());
+				if (strpos($e->getMessage(), 'From phone number provided is not a valid')
+				|| strpos($e->getMessage(), 'resource was not found') !== false) {
+					// Try with tropo
+					$this->vbx_sms_message->send_message($from, $to, $content, 
+						'tropo');
+				} else {
+					throw new Message_TextException($e->getMessage());
+				}
+			}
+
+			if($message_id)
+			{
+				error_log("SMS Message ID: $message_id");
+				$annotation_id = $this->vbx_message->annotate($message_id,
+															  $this->user_id,
+															  "$from to ".format_phone($to).": $content",
+															  'sms');
 			}
 			
 		}

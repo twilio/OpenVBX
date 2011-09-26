@@ -32,7 +32,7 @@
 							<label class="field-label left">From
 								<select name="callerid" class="small">
 									<?php foreach($callerid_numbers as $number): ?>
-									<option value="<?php echo $number->phone ?>"><?php echo $number->phone ?></option>
+									<option value="<?php echo $number->phone ?>"  rel="<?php echo @$number->api_type; ?>" app="<?php echo @$number->app_address; ?>"><?php echo $number->phone ?></option>
 									<?php endforeach; ?>
 								</select>
 							</label>
@@ -56,7 +56,7 @@
 
 							<label class="field-label left">Using
 								<select name="device" class="small">
-									<option value="client">Twilio Client</option>
+									<option value="client">Web Client</option>
 									<option value="primary-device">Primary Device</option>
 								</select>
 							</label>

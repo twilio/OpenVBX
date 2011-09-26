@@ -26,6 +26,18 @@ $().ready(function() {
 				</label>
 		</fieldset>
 
+		<?php if ($voicevault_enabled): ?>
+		<br />
+
+		<fieldset class="vbx-input-container">
+			<p class="instruct"><input type="checkbox" name="phone" /> Reset your password by phone</p>
+
+			<p class="voicevault-pw">
+				<img src="<?php echo base_url(); ?>assets/i/voicevault-logo-big.png" />
+			</p>
+		</fieldset>
+		<?php endif; ?>
+
 		<button type="submit" class="submit-button"><span>Reset Password</span></button>
 
 		<a class="remember-password" href="../auth/login">Remember your password?</a>

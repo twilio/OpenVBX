@@ -364,15 +364,6 @@
 		}
 
 		function Respond($sendHeader = true) {
-			// if headers haven't already been sent we need to persist 
-			// the session before sending content
-			if (!headers_sent()) {
-				$ci = &get_instance();
-				if(is_object($ci) && isset($ci->session) && is_object($ci->session)) {
-					$ci->session->persist();
-				}
-			}
-			
 			// try to force the xml data type
 			// this is generally unneeded by Twilio, but nice to have
 			if($sendHeader)

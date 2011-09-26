@@ -22,7 +22,7 @@
 <div id="wrapper">
 
 		<div id="hd">
-		<h1 id="openvbx-logo"><a href="#" class="navigate-away"><span class="replace">OpenVBX</span></a></h1>
+		<h1 id="<?php echo get_logo_class(); ?>"><a href="#" class="navigate-away"><span class="replace">OpenVBX</span></a></h1>
 		</div><!-- #hd -->
 
 		<div id="bd" class="error-page">

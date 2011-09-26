@@ -24,18 +24,32 @@
 					</fieldset>
 
 					<fieldset id="tenant-settings" class="vbx-input-container">
-						<label for="tenant-setting-twilio-sid" class="field-label">Twilio SID
-							<input id="tenant-setting-twilio-sid" class="medium" type="text" name="tenant_settings[twilio_sid]" value="<?php echo @$tenant_settings['twilio_sid']['value'] ?>" />
-						</label>
-						<label for="tenant-setting-twilio-token" class="field-label">Twilio Token
-							<input id="tenant-setting-twilio-token" class="medium" type="text" name="tenant_settings[twilio_token]" value="<?php echo @$tenant_settings['twilio_token']['value'] ?>" />
-						</label>
-						<label for="tenant-setting-from-email" class="field-label">From Email
-							<input id="tenant-setting-from-email" class="medium" type="text" name="tenant_settings[from_email]" value="<?php echo @$tenant_settings['from_email']['value'] ?>" />
-						</label>
-						<label for="tenant-setting-application-sid" class="field-label">Application SID
-							<input id="tenant-setting-application-sid" class="medium" type="text" name="tenant_settings[application_sid]" value="<?php echo @$tenant_settings['application_sid']['value'] ?>" />
-						</label>
+						<div class="settings-pane">
+							<label for="tenant-setting-twilio-sid" class="field-label">Twilio SID
+								<input id="tenant-setting-twilio-sid" class="medium" type="text" name="tenant_settings[twilio_sid]" value="<?php echo @$tenant_settings['twilio_sid']['value'] ?>" />
+							</label>
+							<label for="tenant-setting-twilio-token" class="field-label">Twilio Token
+								<input id="tenant-setting-twilio-token" class="medium" type="text" name="tenant_settings[twilio_token]" value="<?php echo @$tenant_settings['twilio_token']['value'] ?>" />
+							</label>
+							<label for="tenant-setting-from-email" class="field-label">From Email
+								<input id="tenant-setting-from-email" class="medium" type="text" name="tenant_settings[from_email]" value="<?php echo @$tenant_settings['from_email']['value'] ?>" />
+							</label>
+							<label for="tenant-setting-application-sid" class="field-label">Application SID
+								<input id="tenant-setting-application-sid" class="medium" type="text" name="tenant_settings[application_sid]" value="<?php echo @$tenant_settings['application_sid']['value'] ?>" />
+							</label>
+						</div>
+						<div class="settings-pane">
+							<label for="tenant-settings-tropo-username" class="field-label">Tropo Username
+								<input id="tenant-settings-tropo-username" type="text" name="tenant_settings[tropo_username]" value="<?php echo @$tenant_settings['tropo_username']['value'] ?>" class="medium" />
+							</label>
+							<label for="tenant-settings-tropo-password" class="field-label">Tropo Password
+								<input id="tenant-settings-tropo-password" type="password" name="tenant_settings[tropo_password]" value="<?php echo @$tenant_settings['tropo_password']['value'] ?>" class="medium" />
+							</label>
+							<label for="tenant-settings-phono-api-key" class="field-label">Phono API Key
+								<input id="tenant-settings-phono-api-key" type="text" name="tenant_settings[phono_api_key]" value="<?php echo @$tenant_settings['phono_api_key']['value'] ?>" class="medium" />
+							</label>
+						</div>
+						<p style="clear: both">&nbsp;</p>
 						<label for="tenant-setting-theme" class="field-label">Theme
 					        <select id="tenant-setting-theme" class="medium" name="tenant_settings[theme]">
 						        <?php foreach($available_themes as $available_theme): ?>

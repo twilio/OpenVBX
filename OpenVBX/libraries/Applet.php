@@ -374,5 +374,43 @@ class Applet
 
 		return $output;
 	}
+
+	public function tropoJSON($flow, $baseURI, $instance = null)
+	{
+		$path = $this->applet_dir . '/tropo.php';
+		if(!is_null($instance))
+		{
+			AppletInstance::setInstance($instance);
+			AppletInstance::setFlow($flow);
+			AppletInstance::setBaseURI($baseURI);
+			FlowStore::setFlowId($flow->id);
+			// Plugin directory name is the natural key until a proper guid system is developed
+			$plugin = new Plugin($this->plugin_dir_name);
+			PluginData::setPluginId($plugin->getPluginId());
+			OpenVBX::$currentPlugin = $plugin;
+
+			$instance = isset($instance->data) && is_array($instance->data)? $instance->data : array();
+		}
+		else
+		{
+			$instance = isset($this->data) && is_array($this->data)? $this->data : array();
+		}
+		
+		AppletInstance::setFlowType($this->flow_type);
+
+		if(!file_exists($path))
+		{
+			return '';
+		}
+
+		ob_start();
+		require_once(APPPATH.'libraries/tropo/tropo.class.php');
+
+		require_once($path);
+		$output = ob_get_contents();
+		ob_end_clean();
+
+		return $output;
+	}
 	
 }	// END: applet classs

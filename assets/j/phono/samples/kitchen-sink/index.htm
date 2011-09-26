@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"> 
+<html>
+<head>
+    <title>
+        Kitchen Sink
+    </title>
+    <meta http-equiv="PRAGMA" content="NO-CACHE" />
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link type="text/css"rel="stylesheet" href="../samples.css"/>
+    <link type="text/css"rel="stylesheet" href="kitchen-sink.css"/>
+
+    <script type="text/javascript" src="jquery_1_4_2.js"></script>
+    <script type="text/javascript" src="log4javascript.js"></script>    
+    <script type="text/javascript" src="../../jquery.phono.js"></script>
+    <script type="text/javascript" src="kitchen-sink.js"></script>
+        
+</head>
+<body>
+	<div id="sample-header">
+		<div class="header">
+			<div class="logo">
+				<a href="http://www.phono.com/demos" title="Phono Home"><img src="images/logo-home-big.png" width="120" border="0" height="153"/></a>
+			</div>
+			<div class="intro">
+				<h1>The Kitchen Sink</h1>
+				<p>
+					The kitchen sink sample showcases all of the functionality available to you in the Phono SDK. With it, you can create 
+					multiple phono instances; each able to make and receive multiple calls and chats. The log viewer, located at the bottom of this sample, monitors client/server events and errors. 
+					You can make calls to any Phono session ID, US domestic phone numbers, as well as any <a href="http://www.tropo.com" target="_blank">Tropo</a> or <a target="_blank" href="http://evolution.voxeo.com">Voxeo Evolution</a> application. 
+					You can learn more about how to use Phone by visiting the <a href="http://www.phono.com/docs">documentation</a> page and the <a href="http://www.phono.com/forums">forums</a>.
+				</p>	
+			</div>
+		</div>
+	</div>
+	
+	<div class="phonoHldr">
+   		<div class="phono" style="display:none;">
+   		 	<div class="phonoHeader">
+   		 		<a href="#" title="Remove" class="closePhono"></a>
+   		 		<span class="phonoIDLabel phonoID"></span> <span class="phonoIDLabel">Session Id:</span> <span class="sessionId"><img style="margin-left:10px;" align="absmiddle" src="images/spinner.gif"/></span>
+   		 	</div>
+   		 	<div class="phoneControl"> 
+   		 	    <div class="inputs">
+   		 	    	<input type="text" class="callTo pretty" value="app:9991443046"/>
+   		 	    	<input type="button" class="call" value="Call"/>
+					<span class="inputDivider">or</span>
+   		 	    	<input type="text" class="chatTo pretty" value="phono-weather@tropo.im"/>
+   		 			<input type="button" class="chat" value="Chat"/>
+   		 			<div class="phone-settings">
+   		 				<div class="setting">
+   		 					<input class="headset" type="checkbox" />Wearing a headset?<br/>
+   		 					<input class="push-to-talk" type="checkbox" />Enable push to talk for calls?
+   		 				</div>
+   		 				<div class="setting">
+   		 					Ringtone:<br/>
+   		 					<select class="ring-tone">
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Marimba.mp3">Marimba (Default Ringtone)</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Agent94.mp3">Agent 94</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_AngryBirds.mp3">Angry Birds</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Countdown.mp3">Countdown</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_DigitalSanity.mp3">Digital Sanity</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_DigitalSymmetry.mp3">Digital Symmetry</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Lambchops.mp3">Lambchops</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Piano.mp3">Piano</option>
+   		 						<option value="http://s.phono.com/ringtones/ringback-uk.mp3">Standard Europe</option>
+   		 						<option value="http://s.phono.com/ringtones/ringback-us.mp3">Standard US</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Vibe.mp3">Vibe</option>
+   		 					</select>
+   		 				</div>
+   		 				<div class="setting" style="margin-right:0;">
+   		 					Ringback Tone:<br/>
+   		 					<select class="ringback-tone">
+   		 						<option value="http://s.phono.com/ringtones/ringback-us.mp3">Standard US (Default Ringback Tone)</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Marimba.mp3">Marimba</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Agent94.mp3">Agent 94</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_AngryBirds.mp3">Angry Birds</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Countdown.mp3">Countdown</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_DigitalSanity.mp3">Digital Sanity</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_DigitalSymmetry.mp3">Digital Symmetry</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Lambchops.mp3">Lambchops</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Piano.mp3">Piano</option>
+   		 						<option value="http://s.phono.com/ringtones/ringback-uk.mp3">Standard Europe</option>
+   		 						<option value="http://s.phono.com/ringtones/Diggztone_Vibe.mp3">Vibe</option>
+   		 					</select>
+   		 				</div>
+   		 				<br class="clearfix"/>
+   		 			</div>
+   		 		</div>
+   		 	</div>
+   		 	<div class="calls">
+				<div class="callHldr" style="display:none;">
+   		 			<div class="callHeader">
+   		 				<span class="callID"></span>
+   		 				<span class="callDetail"></span>
+   		 			</div>
+   		 			<div class="callControlHolder">
+   		 				<div class="callControls">
+   		 					<input type="button" class="answer" value="Answer"/> 
+   		 					<input type="button" class="hangup" value="Hangup" style="margin-right:20px;"/>
+   		 				</div>
+   		 				<div class="callInputs">
+   		 					<input type="button" class="btn hangup" value="Hangup"/>
+   		 					<input type="button" class="btn talkStart" value="Talk Start"/>
+   		 					<input type="button" class="btn mute" value="Mute"/>            
+   		 					<input type="button" class="btn unMute" value="Unmute">
+   		 					<br/>
+   		 					<br/>            
+   		 					<input type="button" class="btn digit" value="1"/>
+   		 					<input type="button" class="btn digit" value="2"/>
+   		 					<input type="button" class="btn digit" value="3"/>
+   		 					<input type="button" class="btn digit" value="4"/>
+   		 					<input type="button" class="btn digit" value="5"/>
+   		 					<input type="button" class="btn digit" value="6"/>
+   		 					<input type="button" class="btn digit" value="7"/>
+   		 					<input type="button" class="btn digit" value="8"/>
+   		 					<input type="button" class="btn digit" value="9"/>
+   		 					<input type="button" class="btn digit" value="0"/>
+   		 					<input type="button" class="btn digit" value="*"/>
+   		 					<input type="button" class="btn digit" value="#"/>
+   		 				</div>
+   		 			</div>
+   		 		</div>
+   		 	</div>
+   		 	<div class="chats">
+   		 		<div class="chatHldr" style="display:none;">
+   		 			<div class="chatHeader">
+   		 				<a href="#" title="Remove" class="closeChat"></a>
+   		 				<span class="chatID"></span>
+   		 				<span class="chatDetail"></span>
+   		 			</div>
+   		 			<div class="chatBox"></div>
+   		 			<div class="chatInputHldr">
+   		 				<input type="text" class="chatTxtInput"/> 
+   		 				<input type="button" class="sendMsg" value="send"/>
+   		 			</div>
+   		 		</div>
+   		 	</div>
+   		 </div>
+	</div>
+	
+	<p style="text-align:center;margin-top:25px;">
+		<a href="#" class="addPhono" style="font-size:125%;">Add a New Phono</a>
+	</p>
+	
+	<div id="logConsole">
+		<a href="#" class="logToggler">Show Log Viewer</a>
+		<div id="logHldr"></div>
+	</div>
+</body>
+</html>

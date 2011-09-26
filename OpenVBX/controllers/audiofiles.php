@@ -1,5 +1,4 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-/**
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); /**
  * "The contents of this file are subject to the Mozilla Public License
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
@@ -37,6 +36,24 @@ class AudioFiles extends User_Controller
 	function index()
 	{
 		$this->respond('', 'library', $data);
+	}
+
+	public function test()
+	{
+		$sessionId = @$_GET['session'];
+
+		if (!$sessionId)
+			die('Invalid session ID.');
+
+		// $file = VBX_Audio_File::get(array('recording_call_sid'=>$sessionId));
+		// $file = VBX_Audio_File::get(array('id'=>21));
+		$this->db->select('*');
+		$this->db->from('audio_files');
+		$this->db->where(array('id'=>21));
+		
+		$file = $this->db->get()->result();
+
+		die(var_dump($file));
 	}
 
 	function add_file()
@@ -146,7 +163,16 @@ class AudioFiles extends User_Controller
 		$this->respond('', null, $data);
 	}
 
+	/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+	// This method is now a alias for the new (more meaningful) 
+	// "add_recording" method
+	/** End Disruptive Technologies code **/
 	function add_from_twilio_recording()
+	{
+		return $this->add_recording();
+	}
+
+	function add_recording()
 	{
 		$json = array(
 			'error' => false,
@@ -168,6 +194,8 @@ class AudioFiles extends User_Controller
 		}
 		else
 		{
+			// Try twilio then tropo for the number
+			$useTropo = false;
 			$rest_access_token = $this->make_rest_access();
 
 			$twilio = new TwilioRestClient($this->twilio_sid,
@@ -187,6 +215,11 @@ class AudioFiles extends User_Controller
 
 			if ($response->IsError)
 			{
+				if (strpos($response->ErrorMessage, 'is not yet verified')
+				|| strpos($response->ErrorMessage, 'resource was not found')) {
+					// use tropo 
+					$useTropo = true;
+				}
 				$json['message'] = $response->ErrorMessage;
 				$json['error'] = true;
 			}
@@ -205,6 +238,80 @@ class AudioFiles extends User_Controller
 				$audioFile->save();
 
 				$json['id'] = $audioFile->id;
+			}
+
+			if ($useTropo) {
+				// try using tropo for the phone number
+				if ($this->tropo_username && $this->tropo_password) {
+					try {
+						require_once(APPPATH.'libraries/tropo/tropo.class.php');
+						$provisioner = new ProvisioningAPI(
+							$this->tropo_username,
+							$this->tropo_password);
+						$applications = json_decode($provisioner->viewApplications());
+
+						// just get the first available phone number
+						foreach ($applications as $application) {
+							$callerid = null;
+							$voiceToken = null;
+
+							$numbersResult = json_decode($provisioner->viewAddresses($application->id));
+
+							if (count($numbersResult) > 0) {
+								// Get first number
+								foreach ($numbersResult as $number) {
+									if ($number->type == 'number') {
+										$callerid = $number->number;
+									} else if ($number->type == 'token'
+									&& $number->channel == 'voice') {
+										$voiceToken = $number->token;
+									}
+									if ($callerid && $voiceToken)
+										break;
+								}
+							}
+							if ($callerid && $voiceToken)
+								break;
+						}
+
+						// Mark request as successful
+						if ($callerid && $voiceToken) {
+							// Initiate outbound call
+					        $ch = curl_init("http://api.tropo.com/1.0/sessions?action=create&token=$voiceToken&to=".urlencode($to)."&from=".urlencode($callerid)."&type=recordGreeting");
+					        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+					        $response = curl_exec($ch);
+					        curl_close($ch);
+
+							if ($response &&
+							 strpos($response, '<session>') !== false) {
+							 	$responseObj = new SimpleXMLElement($response);
+								$sessionId = trim(strval(
+									$responseObj->id
+								));
+							} else {
+								$sessionId = null;
+							}
+
+							if ($sessionId) {
+								$ci =& get_instance();
+
+								// Create a place holder for our recording
+								$audioFile = new VBX_Audio_File();
+								$audioFile->label = "Recording with " . format_phone($to);
+								$audioFile->user_id = intval($this->session->userdata('user_id'));
+								$audioFile->recording_call_sid = "$sessionId";
+								$audioFile->tag = $this->input->post('tag');
+								$audioFile->save();
+
+								$json['id'] = $audioFile->id;
+								$json['message'] = '';
+								$json['error'] = false;
+							}
+						}
+					} catch (Exception $e) {
+						// error
+					}
+				}
 			}
 		}
 

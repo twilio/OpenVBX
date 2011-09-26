@@ -30,11 +30,24 @@ class Message_Call extends User_Controller
 	
 	function index($message_id = false)
 	{
+
 		try
 		{
-			$to = $this->input->post('to');
-			$callerid = $this->input->post('callerid');
-			$from = $this->input->post('from');
+			$to = normalize_phone_to_E164($this->input->post('to'));
+			$callerid = normalize_phone_to_E164($this->input->post('callerid'));
+			$from = normalize_phone_to_E164($this->input->post('from'));
+
+			// First check if this is a twilio or tropo number
+			$this->load->model('vbx_incoming_numbers');
+			$numbers = $this->vbx_incoming_numbers->get_numbers();
+
+            $numberMatch = null;
+            foreach ($numbers as $numberObj) {
+                if ($numberObj->raw_phone == $callerid) {
+                    $numberMatch = $numberObj;
+                    break;
+                }
+            }
 			
 			$this->load->model('vbx_call');
 			$json['error'] = false;
@@ -54,14 +67,26 @@ class Message_Call extends User_Controller
 				}
 			}
 			
-			$rest_access = $this->make_rest_access();
-			$this->vbx_call->make_call($from, $to, $callerid, $rest_access);
-			if($message_id)
-			{
-				$annotation_id = $this->vbx_message->annotate($message_id,
-															  $this->user_id,
-															  'Called back from voicemail',
-															  'called');
+			if ($numberMatch->api_type == 'twilio') {
+				$rest_access = $this->make_rest_access();
+				$this->vbx_call->make_call($from, $to, $callerid, $rest_access);
+				if($message_id)
+				{
+					$annotation_id = $this->vbx_message->annotate($message_id,
+																  $this->user_id,
+																  'Called back from voicemail',
+																  'called');
+				}
+			} else {
+				// $rest_access = $this->make_rest_access();
+				$this->vbx_call->make_call_tropo($from, $to, $callerid, $numberMatch->voice_token);
+				if($message_id)
+				{
+					$annotation_id = $this->vbx_message->annotate($message_id,
+																  $this->user_id,
+																  'Called back from voicemail',
+																  'called');
+				}
 			}
 			
 		}

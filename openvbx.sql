@@ -301,7 +301,7 @@ INSERT INTO settings
 	   VALUES
 	   ('dash_rss', '', 1),
 	   ('theme', '', 1),
-	   ('version', '1.0.4', 1),
+	   ('version', '2.0.0', 1),
 	   ('iphone_theme', '', 1),
 	   ('enable_sandbox_number', 1, 1),
 	   ('twilio_endpoint', 'https://api.twilio.com/2010-04-01', 1),
@@ -314,3 +314,4 @@ INSERT INTO groups
        ('Sales', 1, 1),
        ('Support', 1, 1);
 
+ALTER TABLE  `users` ADD  `data` TEXT NOT NULL COMMENT  'Stores VoiceVault claimant identifier.';

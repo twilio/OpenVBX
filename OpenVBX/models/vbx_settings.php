@@ -29,6 +29,17 @@ class VBX_Settings extends Model
 	public $setting_options = array('twilio_sid',
 									'twilio_token',
 									'twilio_endpoint',
+									/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+									'tropo_username',
+									'tropo_password',
+									'tropo_hostname',
+									'phono_api_key',
+									'voicevault_username',
+									'voicevault_password',
+									'voicevault_config',
+									'voicevault_organisation',
+									'voicevault_number',
+									/** End Disruptive Technologies code **/
 									'from_email',
 									'recording_host',
 									'theme');

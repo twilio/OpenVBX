@@ -36,4 +36,5 @@ class Message_Index extends User_Controller {
 	{
 		redirect('messages/inbox');
 	}
+
 }

@@ -167,3 +167,64 @@ em {
   clear: both;
   visibility: hidden;
 }
+
+
+
+/** Numbers page info box **/
+.incoming-number-phone .infobox {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid #000000;
+    width: 200px;
+}
+.incoming-number-phone .infobox h1 {
+    line-height: 18px;
+    font-size: 18px;
+    margin: 10px 0;
+}
+.incoming-number-phone .infobox p {
+    margin: 10px 0;
+}
+.incoming-number-phone .infobox strong {
+    font-weight: bold;
+}
+.incoming-number-phone .infobox .siblings ul {
+    font-size: 10px;
+}
+.incoming-number-phone .infobox .siblings ul li {
+    font-size: 10px;
+    display: block;
+    margin-left: 15px;
+}
+
+.settings-pane {
+    float: left;
+    width: 320px;
+    margin-right: 80px;
+}
+
+.twilio-logo-small {
+    background: url(../i/twilio-logo.png) no-repeat top left;
+    width: 80px;
+    height: 30px;
+}
+.tropo-logo-small {
+    background: url(../i/tropo-logo.png) no-repeat top left;
+    width: 85px;
+    height: 30px;
+}
+.voicevault-logo-small {
+    background: url(../i/voicevault-logo.png) no-repeat top left;
+    width: 110px;
+    height: 45px;
+    position: relative;
+    margin-top: -7px;
+}
+.voicevault-pw {
+    text-align: center;
+}
+.voicevault-pw img {
+    position: relative;
+    top: -15px;
+}

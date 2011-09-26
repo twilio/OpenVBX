@@ -40,6 +40,7 @@ var currentDialogType = null;
  * @return void 
  */
 OpenVBX.clientDial = function(params) {
+	console.log(params);
 	params = $.extend(params, { 'Digits': 1 });
 	window.parent.Client.call(params);
 };
@@ -75,35 +76,25 @@ OpenVBX.clientUnMute = function() {
 // Call Dialog
 
 $(function () {	
-	if ((window.parent.Client) && (window.parent.Client.disabled || window.parent.Twilio.Device.status() == 'offline')) {
+	if ((window.parent.Client) && 
+			((window.parent.Client.disabled
+				|| typeof window.parent.Twilio == 'undefined'
+				|| window.parent.Twilio.Device.status() == 'offline') 
+			&& (!window.parent.Client.phono 
+				|| !window.parent.Client.phono.connected()))) {
 		// Twilio Client is offline, probably due to an error, so lets
 		// disable the use of Client to prevent unexpected behavior
 		
 		// disable calls using Twilio Client, replace selector with hidden element to pre-set the device type
-		var _devices = $('#vbx-context-menu .call-dialog select[name="device"]').closest('label');
-		var _primarydevice = $('<input type="hidden" name="device" value="primary-device" />');
-		_devices.replaceWith(_primarydevice);
+		$('#vbx-context-menu .call-dialog select[name="device"]').closest('label')
+			.replaceWith($('<input type="hidden" name="device" value="primary-device" />'));
 		
 		// neuter the online/offline button
 		var _status = $('#vbx-client-status');
 		if (_status.hasClass('online')) {
-			_status.removeClass('online').addClass('offline').addClass('disabled');
+			_status.removeClass('online').addClass('offline');
 			window.parent.Client.status.setWindowStatus(false);
 		}
-			
-		var enableClient = function() {
-			var status = _status;
-			var devices = _devices;
-			var primarydevice = _primarydevice;
-			return function() {
-				if (status.hasClass('disabled')) {
-					status.removeClass('disabled').find('button').trigger('click');
-				}
-				primarydevice.replaceWith(devices);
-			}
-		}
-		window.parent.Client.onready = enableClient();
-
 		_status.addClass('disabled');
 	}
 	
@@ -207,7 +198,7 @@ $(function () {
 					link.shown = true;
 				});
 			$('.call-button').data('link', link);
-			$('input[name="to"]', dialog).val(phone).focus();
+			$('input[name="to"]', dialog).val(phone);
 			$('input[name="target"]', dialog).val(target);
 			$('.screen').show();
 			
@@ -262,7 +253,9 @@ $(function () {
 		window.parent.Client.call({
 			'to': $('#dial-number', dialog).val(),
 			'callerid': $(':input[name="callerid"]', dialog).val(),
-			'Digits': 1
+			'Digits': 1,
+			'clientType': $(':input[name="callerid"] :selected').attr('rel'),
+			'appAddress': $(':input[name="callerid"] :selected').attr('app')
 		});
 		$('.close', dialog).click();
 	};
@@ -320,7 +313,13 @@ $(function () {
 			client_status = true,
 			status = null;
 		
-		if (window.parent.Client.disabled || window.parent.Twilio.Device.status() == 'offline') {
+		// if (window.parent.Client.disabled || window.parent.Twilio.Device.status() == 'offline' || (!window.parent.Client.phono || !window.parent.Client.phono.connected())) {
+		if ((window.parent.Client) && 
+				((window.parent.Client.disabled
+					|| typeof window.parent.Twilio == 'undefined'
+					|| window.parent.Twilio.Device.status() == 'offline') 
+				&& (!window.parent.Client.phono 
+					|| !window.parent.Client.phono.connected()))) {
 			client_status = false;
 		}
 		

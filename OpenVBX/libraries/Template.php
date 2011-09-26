@@ -375,30 +375,37 @@ class CI_Template {
 
    }
 
-	function clean_output($data)
-	{
-		if (is_string($data)) {
-			if (version_compare(phpversion(), '5.2.3', '<')) {
-				$data = htmlspecialchars($data);
-			}
-			else {
-				$data = htmlspecialchars($data, ENT_COMPAT, 'UTF-8', false);
-			}
-		}
-		elseif (is_object($data)) {
-			$vars = get_object_vars($data);
-			foreach ($vars as $key => $propval) {
-				$data->{$key} = self::clean_output($propval);
-			}
-		}
-		elseif (is_array($data)) {		
-			foreach ($data as &$item) {
-				$item = self::clean_output($item);
-			}
-		}
-	
-		return $data;
-	}
+   function clean_output($data)
+   {
+	   if(is_string($data))
+	   {
+		   return htmlspecialchars($data);
+	   }
+
+	   if(is_array($data))
+	   {
+		   foreach($data as $key => $val)
+		   {
+			   if(is_string($val))
+			   {
+				   $data[$key] = htmlspecialchars($val);
+			   }
+			   else if(is_array($val))
+			   {
+				   $data[$key] = self::clean_output($val);
+			   }
+			   else if(is_object($val) && !($val instanceof TemplateLiteral))
+			   {
+				   $object_vars = get_object_vars($val);
+				   foreach($object_vars as $prop => $propval)
+				   {
+					   $data[$key]->{$prop} = self::clean_output($propval);
+				   }
+			   }
+		   }
+	   }
+	   return $data;
+   }
 
    static function literal($data)
    {

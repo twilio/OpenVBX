@@ -78,14 +78,19 @@ var Pickers = {
 
 			// We steal our caller ID information from the Call Popup
 			var callerIdAsSelect = $('select[name="callerid"] option:first');
+			var callerIdAsSelectLast = $('select[name="callerid"] option:last');
 			var callerIdAsInput = $('input[name="callerid"]');
-			var callerId;
 
 			if (callerIdAsSelect.length > 0) {
 			    callerId = callerIdAsSelect.val();
+			    if (callerId == '') {
+			    	callerId = callerIdAsSelectLast.val();
+			    }
 			} else {
 		        callerId = callerIdAsInput.val();
 			}
+
+			console.log(callerId);
 
 			var numberToCall = audioChoice.find('.audio-choice-record').find('input[name="number"]').val();
 

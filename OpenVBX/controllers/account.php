@@ -92,6 +92,14 @@ class Account extends User_Controller {
 			}
 		}
 
+		// Get voicevault claimant identifier
+		$user = VBX_User::get(array('id'=>$this->user_id));
+		$userData = unserialize($user->data);
+		if ($userData && isset($userData['claimant_id']))
+			$data['claimant_id'] = $userData['claimant_id'];
+		else
+			$data['claimant_id'] = null;
+
 		return $this->respond('', 'account', $data);
 	}
 
@@ -122,6 +130,10 @@ class Account extends User_Controller {
 		}
 		
 		$success = $user->update($this->user_id, $params);
+
+		// Update vbx settings
+		$voicevault_id = $this->input->post('voicevault_id');
+		$this->vbx_settings->set('voicevault_id', $voicevault_id, 1);
 
 		if ($this->response_type == 'json') {
 			$data = array(

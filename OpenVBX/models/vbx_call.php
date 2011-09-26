@@ -138,6 +138,58 @@ class VBX_Call extends Model {
 		}
 	}
 
+	function make_call_tropo($from, $to, $callerid, $voice_token)
+	{
+        /** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+        // Loop through each application, and get a listing of all phone numbers
+        try {
+            $provisioner = new ProvisioningAPI($this->tropo_username,
+                    $this->tropo_password);
+            $applications = json_decode($provisioner->viewApplications());
+        } catch (Exception $e) {
+            throw new VBX_Sms_messageException("Failed to connect to Tropo.");
+        }
+        // Send SMS message by initiating the token 
+        $ch = curl_init("http://api.tropo.com/1.0/sessions?action=create&token=$voice_token&to=".urlencode($to)."&callerid=".urlencode($callerid)."&from=".urlencode($from));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        /** End Disruptive Technologies code **/
+
+		// try
+		// {
+		// 	PhoneNumber::validatePhoneNumber($from);
+		// 	PhoneNumber::validatePhoneNumber($to);
+		// }
+		// catch(PhoneNumberException $e)
+		// {
+		// 	throw new VBX_CallException($e->getMessage());
+		// }
+
+		// $callerid = PhoneNumber::normalizePhoneNumberToE164($callerid);
+		// $from = PhoneNumber::normalizePhoneNumberToE164($from);
+		// $to = PhoneNumber::normalizePhoneNumberToE164($to);
+		// 
+		// $twilio = new TwilioRestClient($this->twilio_sid,
+		// 							   $this->twilio_token,
+		// 							   $this->twilio_endpoint);
+		// 
+		// $recording_url = site_url("tropo/dial").'?'.http_build_query(compact('callerid', 'to'));
+		// 
+		// $response = $twilio->request("Accounts/{$this->twilio_sid}/Calls",
+		// 							 'POST',
+		// 							 array( "Caller" => $callerid,
+		// 									"Called" => $from,
+		// 									"Url" => $recording_url,
+		// 									)
+		// 							 );
+		// 
+		// if($response->IsError) {
+		// 	error_log($from);
+		// 	throw new VBX_CallException($response->ErrorMessage);
+		// }
+	}
+
 
 	function make_call_path($to, $callerid, $path, $rest_access)
 	{

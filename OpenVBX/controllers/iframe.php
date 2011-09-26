@@ -32,12 +32,20 @@ class Iframe extends User_Controller {
 			'site_title' => 'OpenVBX',
 			'iframe_url' => site_url('/messages')
 		);
-		
+
 		// if the 'last_known_url' cookie is set then we've been redirected IN to frames mode
 		if (!empty($_COOKIE['last_known_url'])) {
 			$data['iframe_url'] = $_COOKIE['last_known_url'];
 			setcookie('last_known_url', '', time() - 3600);
 		}
+
+		/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+		// hack to ensure devices/ping isn't redirect URL (ajax only)
+		if (strpos($_COOKIE['last_known_url'], 'devices/ping') !== false) {
+			$data['iframe_url'] = site_url('/messages');
+			setcookie('last_known_url', '');
+		}
+		/** End Disruptive Technologies code **/
 
 		if (!empty($this->application_sid))
 		{
@@ -48,8 +56,10 @@ class Iframe extends User_Controller {
 			$data['twilio_js'] = $tjs_baseurl.'/libs/twiliojs/1.0/twilio.js';
 		}
 
-		$data['client_capability'] = $this->capability->generateToken();
-		$data['capability'] = $this->capability;
+		if ($this->capability) {
+			$data['client_capability'] = $this->capability->generateToken();
+			$data['capability'] = $this->capability;
+		}
 
 		$this->load->view('iframe', $data);
 	}

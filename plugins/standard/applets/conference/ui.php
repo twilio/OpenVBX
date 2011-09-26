@@ -34,6 +34,9 @@ $musicOptions = array(
 		</fieldset>
 		</div><!-- .vbx-full-pane -->
 
+		<h2>Note</h2>
+		<p>Twilio and Tropo numbers use seperate channels for conferences. You cannot access the same conference through a Tropo and a Twilio number.</p>
+
 </div><!-- .vbx-applet -->
 
 	

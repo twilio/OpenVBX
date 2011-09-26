@@ -283,6 +283,22 @@ class Twiml extends MY_Controller {
 		$this->response->Respond();
 	}
 
+	function voicevault()
+	{
+		$from = $this->input->get('from');
+		$to = $this->input->get('to');
+		$user_id = $this->input->get('user_id');
+
+		$this->session->set_userdata(array(
+			'from'=>$from,
+			'to'=>$to,
+			'user_id'=>$user_id
+		));
+
+		$this->response->addRedirect(site_url('voicevault/twiml'));
+		$this->response->Respond();
+	}
+
 	function dial()
 	{
 		$rest_access = $this->input->get_post('rest_access');

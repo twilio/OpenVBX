@@ -24,7 +24,7 @@ function openvbx_mail($recipient, $subject, $template, $maildata = array())
 	error_log('mailing');
 	$path = APPPATH . 'views/emails/' . $template . '.php';
 	$ci = &get_instance();
-	$domain = $ci->config->item('server_name');
+	$domain = $_SERVER['HTTP_HOST'];
 	$from_email = $ci->settings->get('from_email', $ci->tenant->id);
 	if(empty($from_email))
 	{

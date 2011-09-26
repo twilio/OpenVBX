@@ -96,6 +96,44 @@ class Devices extends User_Controller {
 		}
 	}
 
+	/**
+	 * Log the phono address in the user's Devices.
+	 */
+	public function phono($sessionId)
+	{
+		if (!$this->session->userdata('loggedin')) redirect('auth/login');
+
+		$device = $this->vbx_device->get(array(
+			'user_id'=>$this->user_id,
+			'name'=>"Phono"));
+
+		$number = array(
+			'name'=>"Phono",
+			'value'=>"sip:$sessionId",
+			'user_id'=>$this->user_id,
+			'sms'=>0
+			);
+
+		if ($device) {
+			$device->value = $number['value'];
+			$device->save();
+		} else {
+			$this->vbx_device->add($number);
+		}
+	}
+
+	/**
+	 * Ping the user's account. Updates a user's "last_seen" date time
+	 * stamp in the database with a new timestamp.
+	 */
+	public function ping()
+	{
+		$user = $this->vbx_user->get(array(
+			'id'=>$this->user_id));
+		$user->last_seen = date('Y-m-d H:i:s');
+		$user->save();
+	}
+
 	public function password()
 	{
 		if (!$this->session->userdata('loggedin')) redirect('auth/login');

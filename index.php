@@ -19,6 +19,9 @@
  * Contributor(s):
  **/
 
+if (file_exists('development.php'))
+	include('development.php');
+
 $script_dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 if($script_dir == '/') $script_dir = '';
 
@@ -50,8 +53,16 @@ function shutdown()
 |
 */
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
-ini_set('display_errors', 'Off');
-ini_set('log_errors', 'On');
+if (!defined('DEBUG'))
+{
+	ini_set('display_errors', 'Off');
+	ini_set('log_errors', 'On');
+}
+else
+{
+	ini_set('display_errors', 'On');
+	ini_set('log_errors', 'On');
+}
 
 /*
  |---------------------------------------------------------------

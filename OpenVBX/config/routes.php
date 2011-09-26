@@ -80,6 +80,26 @@ $route['twiml/start/sms/(:any)'] = "twiml/start_sms/$1";
 $route['twiml/applet/voice/(:any)/(:any)'] = "twiml/voice/$1/$2";
 $route['twiml/applet/sms/(:any)/(:any)'] = "twiml/sms/$1/$2";
 $route['twiml'] = "twiml";
+/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+$route['tropo/start/voice/(:any)'] = "tropojson/start_voice/$1";
+$route['tropo/start/sms/(:any)'] = "tropojson/start_sms/$1";
+$route['tropo/applet/voice/(:any)/(:any)'] = "tropojson/voice/$1/$2";
+$route['tropo/applet/sms/(:any)/(:any)'] = "tropojson/sms/$1/$2";
+$route['tropo'] = "tropojson";
+$route['tropojson'] = "tropojson";
+// VoiceVault endpoings. These are initiated from tropo/twilio.
+$route['voicevault'] = "voicevault";
+$route['voicevault/tropojson'] = "voicevault/tropojson";
+$route['voicevault/tropojson/enroll'] = "voicevault/tropojson_enroll";
+$route['voicevault/tropojson/reset'] = "voicevault/tropojson_reset";
+$route['voicevault/tropojson/enroll/(:any)'] = "voicevault/tropojson_enroll/$1";
+$route['voicevault/tropojson/reset/(:any)'] = "voicevault/tropojson_reset/$1";
+$route['voicevault/twiml'] = "voicevault/twiml";
+$route['voicevault/twiml/enroll'] = "voicevault/twiml_enroll";
+$route['voicevault/twiml/reset'] = "voicevault/twiml_reset";
+$route['voicevault/twiml/enroll/(:any)'] = "voicevault/twiml_enroll/$1";
+$route['voicevault/twiml/reset/(:any)'] = "voicevault/twiml_reset/$1";
+/** End Disruptive Technologies code **/
 $route['p/(:any)'] = "page/index/$1";
 $route['p/(:any)/(:any)'] = "page/index/$1/$2";
 $route['p'] = "page/index/$1";
@@ -97,6 +117,7 @@ $route['external'] = "external";
 $route['iphone/messages/details/(:any)'] = 'iphone/message_details/$1';
 $route['iphone'] = "iphone";
 $route['iframe'] = "iframe";
+$route['test'] = 'test';
 
 /* End of file routes.php */
 /* Location: ./system/application/config/routes.php */

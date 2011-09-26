@@ -1838,8 +1838,7 @@ class CI_Email {
 	 */
 	function _get_hostname()
 	{
-		$CI =& get_instance();
-		return (!empty($CI->config->item('server_name'))) ? $CI->config->item('server_name') : 'localhost.localdomain';
+		return (isset($_SERVER['SERVER_NAME'])) ? $_SERVER['SERVER_NAME'] : 'localhost.localdomain';
 	}
   
 	// --------------------------------------------------------------------

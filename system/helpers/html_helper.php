@@ -412,5 +412,44 @@ if ( ! function_exists('nbs'))
 }
 
 
+/**
+ * Checks if the user has a tropo account enabled.
+ */
+function has_tropo()
+{
+	// Check for tropo
+	$ci = &get_instance();
+	return true == $ci->tropo_username;
+}
+
+
+/**
+ * Checks if the user has a twilio account enabled.
+ */
+function has_twilio()
+{
+	// Check for tropo
+	$ci = &get_instance();
+	return true == $ci->twilio_sid;
+}
+
+
+/**
+ * Get the logo class for the header logo. 
+ *
+ * @return string
+ */
+function get_logo_class()
+{
+	// Check for tropo/twilio
+	$logo_txt = '';
+	if (has_twilio() && !has_tropo())
+		$logo_txt = "-twilio";
+	else if (has_tropo() && !has_twilio())
+		$logo_txt = "-tropo";
+	return "openvbx-logo".$logo_txt;
+}
+
+
 /* End of file html_helper.php */
 /* Location: ./system/helpers/html_helper.php */

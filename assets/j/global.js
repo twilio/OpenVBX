@@ -298,8 +298,4 @@ $(document).ready(function() {
 
 	var mobileAppCookie = $.cookie("mobile-app");
 	mobileAppCookie == "false" ? $('.shout-out').hide() : $('.shout-out').show();
-	
-	if ($('.vbx-login-form #iEmail').size() > 0) {
-		$('.vbx-login-form #iEmail').focus();
-	}
 });

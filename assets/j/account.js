@@ -21,6 +21,17 @@
 $(document).ready(function() {
 	// $.scrollTo('0px');
 
+	/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+	$('.voicevault-setup').click(function() {
+		$.getJSON(OpenVBX.home + '/voicevault/web/setup',
+			function(data) {
+				alert(data.message);
+			}
+		);
+		return false;
+	});
+	/** End Disruptive Technologies code **/
+
 	$("#account-edit").validate({
 		rules: {
 			first_name: {

@@ -37,6 +37,83 @@ $(document).ready(function() {
 				$(this).hide();
 			});
 	});
+
+	/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+	$("#dlg_upgrade").dialog({
+		autoOpen: false,
+		width: 490,
+		buttons: {
+			'Upgrade': function() {
+				var add_button = $('button', $('#dlg_upgrade').parent()).first();
+				var add_button_text = add_button.text();
+				add_button.html('Upgrading <img alt="loading" src="'+OpenVBX.assets+'/assets/i/ajax-loader.gif" />');
+				$.ajax({
+					type: 'POST',
+					url: $('#dlg_upgrade form').attr('action'),
+					data: $('input', $('#dlg_upgrade form')),
+					success: function(data) {
+						$('button').prop('disabled', true);
+						$('#dlg_upgrade .error-message').slideUp();
+						if(data.error) {
+							$('#dlg_upgrade .error-message')
+								.text(data.message)
+								.slideDown();
+
+							$('button').prop('disabled', false);
+							return add_button.text(add_button_text);
+						}
+
+						document.location.reload(true);
+					},
+					error: function(xhr, status, error) {
+						$('#dlg_upgrade .error-message')
+							.text(status + ' :: ' + error)
+							.slideDown();
+						$('button').prop('disabled', false);
+					},
+					dataType: 'json'
+				});
+
+				return false;
+			},
+			'Cancel' : function() {
+				$('#dlg_upgrade .error-message').hide();
+				$(this).dialog('close');
+			}
+		}
+	}).closest('.ui-dialog').addClass('add');
+
+	$('.numberinfo').hover(function() {
+		var phone_id = $(this).closest('tr').attr('rel');
+		var phone = $.trim($(this).text().replace('(', '').replace(')', '').replace(' ', '').replace('-', ''));
+
+		$(this).append('<div class="infobox"><img alt="loading" src="'+OpenVBX.assets+'/assets/i/ajax-loader.gif" /></div>');
+		var numberinfo = $(this).children('.infobox');
+		numberinfo.css('position', 'absolute');
+		$(document).mousemove(function(e) {
+			numberinfo.css('top', e.pageY+'px');
+			numberinfo.css('left', e.pageX+'px');
+		});
+		// Get the number info
+		var ajaxUrl = 'numbers/info/' + phone_id + '/' + phone;
+		$.getJSON(ajaxUrl, function(data) {
+			numberinfo.html('<h1>Info for '+data.number_friendly+'<h1>')
+				.append('<p><strong>Provider:</strong> '+data.info.provider+'</p>')
+				.append('<p><strong>Number Type:</strong> '+data.info.type+'</p>');
+			if (data.info.siblings) {
+				var siblingText = '';
+				for (var i = data.info.siblings.length - 1; i >= 0; i--) {
+					var sibling = data.info.siblings[i];
+					siblingText = siblingText + '<li>' + sibling + '</li>';
+				};
+				numberinfo.append('<div class="siblings"><p><strong>Siblings:</strong></p><ul>'+siblingText+'</ul></div>');
+			}
+		});
+	}, function() {
+		var numberinfo = $(this).children('.infobox');
+		numberinfo.remove();
+	});
+	/** End Disruptive Technologies code **/
 	
 	$('button.add').click(function() {
 		$('#dlg_add').dialog('open');
@@ -62,7 +139,8 @@ $(document).ready(function() {
 		if(select_flow.data('old_val') != select_flow.val()
 		   && select_flow.val() > 0
 		   && select_flow.data('old_val').length > 0) {
-			select_flow.parents('td')
+			$('tr[rel="'+select_flow.closest('tr').attr('rel')+'"] .incoming-number-flow')
+			// select_flow.parents('td')
 				.children('p.dropdown')
 				.html('<span class="option-selected">' 
 					  + $('option:selected', select_flow).text()
@@ -70,7 +148,8 @@ $(document).ready(function() {
 					  +'<a class="action flow"><span class="replace">Select</span></a>');
 			$("#dlg_change").dialog('open');
 		} else {
-			select_flow.parents('td')
+			$('tr[rel="'+select_flow.closest('tr').attr('rel')+'"] .incoming-number-flow')
+			// select_flow.parents('td')
 				.children('p.dropdown')
 				.html('<span class="option-selected">' 
 					  + $('option:selected', select_flow).text()
@@ -83,12 +162,17 @@ $(document).ready(function() {
 			$.getJSON(ajaxUrl, function(data) {
 				if(data.success) {
 					$('option[value="0"]', select_flow).remove();
-					select_flow.data('old_val', data.id);
+					$('tr[rel="'+select_flow.closest('tr').attr('rel')+'"] .incoming-number-flow select[name="flow_id"]').data('old_val', data.id);
+					$('tr[rel="'+select_flow.closest('tr').attr('rel')+'"] .incoming-number-flow select[name="flow_id"]').val(data.id);
+					// select_flow.data('old_val', data.id);
 					$.notify($('.incoming-number-phone', row).text() + ' is now connected to '+$('option:selected', row).text());
 					$('.incoming-number-flow', row).children('select, p, span').toggle();
 				} else {
+					alert('!success');
 					if(data.message) $.notify(data.message);
-					select_flow.val(select_flow.data('old_val'));
+					$('tr[rel="'+select_flow.closest('tr').attr('rel')+'"] .incoming-number-flow select[name="flow_id"]').val(
+					select_flow.data('old_val'));
+					//select_flow.val(select_flow.data('old_val'));
 				}
 			});
 		}
@@ -108,12 +192,13 @@ $(document).ready(function() {
 				$.getJSON(ajaxUrl, function(data) {
 					if(data.success) {
 						$('option[value="0"]', select_flow).remove();
-						select_flow.data('old_val', data.id);
+						$('tr[rel="'+select_flow.closest('tr').attr('rel')+'"] .incoming-number-flow select[name="flow_id"]').data('old_val', data.id);
+						$('tr[rel="'+select_flow.closest('tr').attr('rel')+'"] .incoming-number-flow select[name="flow_id"]').val(data.id);
 						$.notify($('.incoming-number-phone', row).text() + ' is now connected to '+$('option:selected', row).text());
 						$('.incoming-number-flow', row).children('select, p, span').toggle();
 					} else {
 						if(data.message) $.notify(data.message);
-						select_flow.val(select_flow.data('old_val'));
+						$('tr[rel="'+select_flow.closest('tr').attr('rel')+'"] .incoming-number-flow select[name="flow_id"]').val(select_flow.data('old_val'));
 					}
 					$('button').prop('disabled', false);
 				});
@@ -151,7 +236,7 @@ $(document).ready(function() {
 		$.ajax({
 			type: 'POST',
 			url: $('#dlg_add form').attr('action'),
-			data: $('input[type="text"], input[type="radio"]:checked', $('#dlg_add form')),
+			data: $('input[type="text"], select, input[type="radio"]:checked', $('#dlg_add form')),
 			success: function(data) {
 				$('button').prop('disabled', true);
 				$('#dlg_add .error-message').slideUp();
@@ -259,7 +344,23 @@ $(document).ready(function() {
 			$('#pAreaCode').slideUp();
 		}
 	});
-	
+
+	$('select[name="api_type"]').change(function() {
+		if ($(this).val() == 'twilio') {
+			// Change country code
+			// Twilio only supports US phone numbers
+			$('#country-code').html('1');
+			$('#twilio-api-type').show();
+			$('#tropo-api-type').hide();
+		} else {
+			// Change country code
+			// Tropo supports international phone numbers
+			$('#country-code').html('<input type="text" name="country_code" id="iCountryCode" maxlength="3" value="1" />');
+			$('#tropo-api-type').show();
+			$('#twilio-api-type').hide();
+		}
+	});
+
 	$('.delete').click(function() {
 		$(this).addClass('selected');
 		$("#dlg_delete").dialog('open');

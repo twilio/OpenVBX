@@ -75,14 +75,17 @@ class Numbers extends User_Controller
 
 				$incoming_numbers[] = array(
 											'id' => $item->id,
+											'sandbox' => $item->sandbox,
 											'name' => $item->name,
 											'trial' => (isset($item->trial) && $item->trial == 1)? 1 : 0,
 											'phone' => format_phone($item->phone),
+											'raw_phone' => $item->raw_phone,
 											'pin' => $item->pin,
 											'status' => $item_msg,
 											'flow_id' => $item->flow_id,
 											'flow_name' => $flow_name,
 											'flows' => $flows,
+											'api_type' => $item->api_type,
 											);
 			}
 
@@ -110,6 +113,28 @@ class Numbers extends User_Controller
 		$this->respond('', 'numbers', $data);
 	}
 
+	function info($phone_id, $phone) 
+	{
+		$phone_friendly = format_phone($phone);
+		$phone = normalize_phone_to_E164($phone);
+
+		if (strlen($phone_friendly) > 16) {
+			$phone_friendly = $phone;
+			if (strlen($phone_friendly) > 16) {
+				$phone_friendly = substr($phone_friendly, 0, 16).'...';
+			}
+		}
+
+		// Get the number information
+		$info = 
+			$this->vbx_incoming_numbers->get_number_info($phone_id, $phone);
+
+		echo json_encode(array('id'=>$phone_id, 
+			'number'=>$phone,
+			'number_friendly'=>$phone_friendly,
+			'info'=>$info));
+	}
+
 	function add()
 	{
 		$this->admin_only($this->section);
@@ -119,7 +144,14 @@ class Numbers extends User_Controller
 		{
 			$is_local = ($this->input->post('type') == 'local');
 			$area_code = $this->input->post('area_code');
-			$this->new_number = $this->vbx_incoming_numbers->add_number($is_local, $area_code);
+			/** Updated, Disruptive Technologies, for Tropo VBX conversion **/
+			$api_type = $this->input->post('api_type');
+			// Get the country code
+			$country_code = $this->input->post('country_code') 
+				? $this->input->post('country_code') : '1';
+			$number_sibling = $this->input->post('number_sibling');
+			$this->new_number = $this->vbx_incoming_numbers->add_number($is_local, $area_code, $api_type, $number_sibling, $country_code);
+			/** End Disruptive Technologies code **/
 
 			$json['number'] = $this->new_number;
 
@@ -141,7 +173,25 @@ class Numbers extends User_Controller
 		$this->respond('', 'numbers', $data);
 	}
 
-	function delete($phone_id)
+	function upgrade()
+	{
+		$this->admin_only($this->section);
+
+		$json = array( 'error' => false, 'message' => 'Upgraded' );
+
+		try {
+			$this->vbx_incoming_numbers->upgrade_tropo_app($this->input->post('phone_upgrade_id'));
+		} catch (VBX_IncomingNumberException $e) {
+			$code = $e->getCode();
+			$json['message'] = $e->getMessage();
+			$json['error'] = true;
+		}
+
+		$data = compact('json');
+		$this->respond('', 'numbers', $data);
+	}
+
+	function delete($phone_id, $phone_number='')
 	{
 		$this->admin_only($this->section);
 		$confirmed = $this->input->post('confirmed');
@@ -162,7 +212,7 @@ class Numbers extends User_Controller
 
 			try
 			{
-				$this->vbx_incoming_numbers->delete_number($phone_id);
+				$this->vbx_incoming_numbers->delete_number($phone_id, $phone_number);
 			}
 			catch(VBX_IncomingNumberException $e)
 			{

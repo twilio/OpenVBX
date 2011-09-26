@@ -3,7 +3,7 @@ MIN_STYLES := $(patsubst %.css,%.min.css,$(shell cat site-css.sources))
 
 LITERAL_STYLES = 
 STYLES = $(LITERAL_STYLES) $(MIN_STYLES)
-REVNUM = 1011
+REVNUM = 1010
 TARGET = site
 TMPDIR := $(shell mktemp -d /tmp/openvbx.XXXXXXXXXXXXXXXXXXXXXX)
 

@@ -113,4 +113,32 @@ class AudioSpeechPickerWidget extends AppletUIWidget
 			return new Say($value);
 		}
 	}
+	
+	public static function getJsonForValue($value, $defaultVerb)
+	{
+		$matches = array();
+
+		if (empty($value))
+		{
+			return $defaultVerb;
+		}
+		else if (preg_match('/^vbx-audio-upload:\/\/(.*)/i', $value, $matches))
+		{
+			// This is a locally hosted file, and we need to return the correct
+			// absolute URL for the file.
+			//return new Play(asset_url("audio-uploads/" . $matches[1]));
+			return "<audio src='".asset_url('audio-uploads/'.$matches[1])."'></audio>";
+		}
+		else if (preg_match('/^http(s)?:\/\/(.*)/i', $value))
+		{
+			// it's already an absolute URL
+			//return new Play($value);
+			return "<audio src='".$value."'></audio>";
+		}
+		else
+		{
+			//return new Say($value);
+			return $value;
+		}
+	}
 }
