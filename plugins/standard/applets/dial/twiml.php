@@ -4,8 +4,10 @@ define('DIAL_COOKIE', 'state-'.AppletInstance::getInstanceId());
 
 $CI =& get_instance();
 $CI->load->library('DialList');
-$dialer = new TwimlDial();
+$transcribe = (bool) $CI->vbx_settings->get('transcriptions', $CI->tenant->id);
 
+$dialer = new TwimlDial();
+$dialer->setTranscribe($transcribe);
 $dialer->set_state();
 
 /**

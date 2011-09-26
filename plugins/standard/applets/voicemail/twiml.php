@@ -1,9 +1,10 @@
 <?php
+$CI =& get_instance();
+$transcribe = (bool) $CI->vbx_settings->get('transcriptions', $CI->tenant->id);
 
 $response = new TwimlResponse; // start a new Twiml response
 if(!empty($_REQUEST['RecordingUrl'])) // if we've got a transcription
 {
-	$CI =& get_instance();
 	// add a voice message 
 	OpenVBX::addVoiceMessage(
 						 AppletInstance::getUserGroupPickerValue('permissions'),
@@ -35,9 +36,12 @@ else
 	}
 
 	// add a <Record>, and use VBX's default transcription handler
-	$response->record(array(
-		'transcribeCallback' => site_url('/twiml/transcribe') 
-	));
+	$record_params = array();
+	if ($transcribe) {
+		$record_params['transcribeCallback'] = site_url('/twiml/transcribe');
+	}
+
+	$response->record($record_params);
 }
 
 $response->respond(); // send response

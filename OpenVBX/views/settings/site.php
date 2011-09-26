@@ -5,13 +5,13 @@
 			<ul>
 				<li><a href="#theme">Theme</a></li>
 				<li><a href="#plugins">Plugins</a></li>
-				<?php if($tenant_mode == Site::MODE_MULTI): ?>
+			<?php if($tenant_mode == Site::MODE_MULTI): ?>
 				<li><a href="#multi-tenant">Tenants</a></li>
-				<?php endif; ?>
+			<?php endif; ?>
 				<li><a href="#twilio-account">Twilio Account</a></li>
-				<?php if($tenant_mode == Site::MODE_MULTI): ?>
+			<?php if($tenant_mode == Site::MODE_MULTI): ?>
 				<li><a href="#system-config">System Config</a></li>
-				<?php endif; ?>
+			<?php endif; ?>
 				<li><a href="#about">About</a></li>
 			</ul>
 		</div><!-- .vbx-content-tabs -->
@@ -21,11 +21,18 @@
 			<form name="vbx-system" action="<?php echo site_url('settings/site') ?>" method="POST" class="vbx-system-form vbx-form">
 				<div class="vbx-input-complex vbx-input-container">
 					<label for="rewrite" class="field-label">Do you want to enable mod_rewrite support?
-						<select id="rewrite" class="medium" name="site[rewrite_enabled]">
-							<?php foreach(array(0 => "No", 1 => "Yes" ) as $value => $option): ?>
-							<option value="<?php echo $value ?>" <?php echo ($value == $rewrite_enabled['value'])? 'selected="selected"' : ''?>><?php echo $option ?></option>
-							<?php endforeach; ?>
-						</select>
+						<?php
+							$params = array(
+								'name' => 'site[rewrite_enabled]',
+								'id' => 'rewrite',
+								'class' => 'medium'
+							);
+							$options = array(
+								0 => 'No',
+								1 => 'Yes'
+							);
+							echo t_form_dropdown($params, $options, $rewrite_enabled['value']);
+						?>
 					</label>
 				</div>
 
@@ -33,6 +40,29 @@
 					<label for="override" class="field-label">Hostname to use in recording URLs (must be a CNAME for api.twilio.com)
 						<input class="medium" id="override" name="site[recording_host]" value="<?php echo @$recording_host["value"]; ?>">
 				</div>
+
+				<fieldset class="activate-tenant vbx-input-complex vbx-input-container">
+					<label class="field-label">Transcribe Recordings</label>
+					<div class="vbx-content-section" style="min-height: 50px;">
+						<label for="transcribe-on" class="field-label-inline">Transcriptions ON
+							<?php 
+								$radio = array(
+									'id' => 'transcribe-on',
+									'name' => 'site[transcriptions]',
+								);
+								echo form_radio($radio, '1', ($transcriptions['value'] == 1)); 
+							?>
+						</label>
+						<label for="transcribe-off" class="field-label-inline">Transcriptions OFF
+							<?php
+								$radio = array_merge(array(
+										'id' => 'transcribe-off'
+									), $radio);
+								echo form_radio($radio, '0', ($transcriptions['value'] == 0));
+							?>
+						</label>						
+					</div>
+				</fieldset>
 				
 				<!-- @todo: add setting to select male/female voice option for speech -->
 				
@@ -46,11 +76,14 @@
 			<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#theme" method="POST" class="vbx-settings-form vbx-form">
 				<fieldset class="vbx-input-container">
 				<label for="site-theme" class="field-label">Choose a theme
-					<select id="site-theme" class="medium" name="site[theme]">
-						<?php foreach($available_themes as $available_theme): ?>
-						<option value="<?php echo $available_theme ?>" <?php echo ($available_theme == $theme)? 'selected="selected"' : '' ?>><?php echo $available_theme ?></option>
-						<?php endforeach; ?>
-					</select>
+					<?php
+						$params = array(
+							'name' => 'site[theme]',
+							'id' => 'site-theme',
+							'class' => 'medium'
+						);
+						echo t_form_dropdown($params, $available_themes, $theme);
+					?>
 				</label>
 				</fieldset>
 				<button class="submit-button" type="submit"><span>Update</span></button>

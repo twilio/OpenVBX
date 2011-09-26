@@ -179,7 +179,8 @@ class Inbox extends User_Controller {
 	{
 		$max = $this->input->get_post('max');
 		$offset = $this->input->get_post('offset');
-		
+		$do_transcriptions = $this->vbx_settings->get('transcriptions', $this->tenant->id);
+
 		if(!$max)
 		{
 			$max = self::PAGE_SIZE;
@@ -258,7 +259,11 @@ class Inbox extends User_Controller {
 				
 				if (is_null($item->content_text))
 				{
-					$short_summary = "(no transcription)";
+					$short_summary = '&nbsp;';
+					if ($do_transcriptions)
+					{
+						$short_summary = "(no transcription)";
+					}
 				}
 				else
 				{
@@ -315,6 +320,7 @@ class Inbox extends User_Controller {
 		$data['items'] = $json['messages']['items'] = $items;
 		// render to output array
 		$data['pagination'] = CI_Template::literal($this->pagination->create_links());
+		$data['transcribe'] = $do_transcriptions;
 
 		/* Return current group */
 		if($group !== false && $group >= 0)

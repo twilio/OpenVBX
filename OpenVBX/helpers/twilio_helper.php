@@ -128,4 +128,28 @@ if (!function_exists('_deprecated_notice')) {
 	}
 }
 
+if (!function_exists('t_form_dropdown')) {
+	/**
+	 * An easier to use version of form_dropdown
+	 *
+	 * @param array $params 
+	 * @param array $options 
+	 * @param string $selected 
+	 * @return string HTML
+	 */
+	function t_form_dropdown($params, $options, $selected = false)
+	{
+		$name = $params['name'];
+		
+		$extra = '';
+		foreach (array('id', 'class', 'tabindex') as $key) {
+			if (!empty($params[$key])) {
+				$extra .= ' '.$key.'="'.$params[$key].'"';
+			}
+		}
+		
+		return form_dropdown($name, $options, $selected, $extra);
+	}
+}
+
 ?>

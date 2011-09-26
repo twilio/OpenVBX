@@ -20,6 +20,8 @@ class TwimlDial {
 	public $response;
 	
 	public $dial;
+	
+	protected $transcribe = true;
 
 	/**
 	 * Default timeout is the same as the Twilio default timeout
@@ -77,6 +79,10 @@ class TwimlDial {
 		}
 		
 		return $opts;
+	}
+	
+	public function setTranscribe($val = true) {
+		$this->transcribe = (bool) $val;
 	}
 	
 // Actions
@@ -252,7 +258,15 @@ class TwimlDial {
 				// fallback to default voicemail message
 				$this->response->say(self::$default_voicemail_message);
 			}
-			$this->response->record(array('transcribeCallback' => site_url('twiml/transcribe')));
+			
+			$record_params = array();
+
+			if ($this->transcribe)
+			{
+				$record_params['transcribeCallback'] = site_url('twiml/transcribe');
+			}
+
+			$this->response->record($record_params);
 			$this->state = 'recording';
 		}
 		else if ($this->no_answer_action === 'redirect') 

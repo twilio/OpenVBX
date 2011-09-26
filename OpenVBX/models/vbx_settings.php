@@ -26,20 +26,28 @@ class VBX_Settings extends Model
 	protected $settings_table = 'settings';
 	protected $tenants_table = 'tenants';
 
-	public $setting_options = array('twilio_sid',
-									'twilio_token',
-									// 'twilio_endpoint',
-									'from_email',
-									'recording_host',
-									'theme');
+	public $setting_options = array(
+								'twilio_sid',
+								'twilio_token',
+								// 'twilio_endpoint',
+								'from_email',
+								'recording_host',
+								'theme',
+								'transcriptions'
+							);
 
-	protected $settings_params = array('name',
-									   'value',
-									   'tenant_id');
-	protected $tenants_params = array('active',
-									  'name',
-									  'url_prefix',
-									  'type');
+	protected $settings_params = array(
+								'name',
+								'value',
+								'tenant_id'
+							);
+
+	protected $tenants_params = array(
+								'active',
+								'name',
+								'url_prefix',
+								'type'
+							);
 
 	private $cache_key;
 

@@ -126,20 +126,15 @@ class Site extends User_Controller
 			);
 		}
 
-		$apache_version = $_SERVER['SERVER_SOFTWARE'];
-		if (function_exists('apache_get_version'))
-		{
-			$apache_version = apache_get_version();
-		}
-
 		$data['server_info'] = array(
 			'php_version' => phpversion(),
 			'mysql_version' => $this->db->conn_id->server_info,
 			'mysql_driver' => $this->db->dbdriver,
-			'apache_version' => $apache_version
+			'apache_version' => $_SERVER['SERVER_SOFTWARE']
 		);
 
-		$data['available_themes'] = $this->vbx_theme->get_all();
+		$data['available_themes'] = $this->get_available_themes();
+		
 		$plugins = Plugin::all();
 		foreach($plugins as $plugin)
 		{
@@ -279,8 +274,15 @@ class Site extends User_Controller
 			}
 			catch(SiteException $e) {
 				$data['error'] = true;
-				$data['message'] = $e->getMessage();
-				$this->session->set_flashdata('error', $e->getMessage());
+				switch($e->getCode()) {
+					case '0':
+						$data['message'] = $message = 'Could not Authenticate with Twilio. Please check your Sid & Token values.';
+						break;
+					default:
+						$data['message'] = $message = $e->getMessage();
+				}
+
+				$this->session->set_flashdata('error', $message);
 			}
 		}
 
@@ -425,7 +427,8 @@ class Site extends User_Controller
 
 				$this->settings->update_tenant(array(
 					'id' => $data['id'],
-					'type' => $auth_type
+					'type' => $auth_type,
+					'transcriptions' => 1
 				));
 				$this->settings->add('tenant_first_run', 1, $data['id']);
 				
@@ -463,8 +466,8 @@ class Site extends User_Controller
 		$tenant_settings = $this->get_current_settings($id);
 
 		$data['tenant'] = $tenant;
-		$data['tenant_settings'] = $tenant_settings;
-		$data['available_themes'] = $this->vbx_theme->get_all();
+		$data['tenant_settings'] = $tenant_settings;		
+		$data['available_themes'] = $this->get_available_themes();
 		$data['rewrite_enabled'] = array(
 			'value' => intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT))
 		);
@@ -504,4 +507,12 @@ class Site extends User_Controller
 		$this->respond('', 'settings/tenant', $data);
 	}
 
+	private function get_available_themes() {
+		$available_themes = array();
+		$all_themes = $this->vbx_theme->get_all();
+		foreach ($all_themes as $theme) {
+			$available_themes[$theme] = ucwords($theme);
+		}
+		return $available_themes;
+	}
 }
