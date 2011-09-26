@@ -49,6 +49,8 @@ class MY_Controller extends Controller
 	public $twilio_endpoint;
 
 	public $testing_mode = false;
+	
+	protected $suppress_warnings_notices = false;
 
 	public function __construct()
 	{
@@ -146,6 +148,14 @@ class MY_Controller extends Controller
 			} else {
 				$this->template->add_css(asset_url('/assets/min/?g='.$css_assets), 'link');
 			}
+		}
+		
+		/**
+		 * Controllers can elect to suppress the error reporting - this is mainly to
+		 * keep API & Ajax responses from failing due to Warnings & Notices. Use carefully.
+		 */
+		if ($this->suppress_warnings_notices) {
+			ini_set('display_errors', 'off');
 		}
 	}
 	

@@ -307,7 +307,9 @@ INSERT INTO settings
 	   ('enable_sandbox_number', 1, 1),
 	   ('twilio_endpoint', 'https://api.twilio.com/2010-04-01', 1),
 	   ('recording_host','',1),
-	   ('transcriptions', '1', 1);
+	   ('transcriptions', '1', 1),
+	   ('voice', 'man', 1),
+	   ('voice_language', 'en', 1);
 
 
 INSERT INTO groups

@@ -118,7 +118,11 @@ class AudioSpeechPickerWidget extends AppletUIWidget
 		}
 		else
 		{
-			return $response->say($value);
+			$ci =& get_instance();
+			return $response->say($value, array(
+					'voice' => $ci->vbx_settings->get('voice', $ci->tenant->id),
+					'language' => $ci->vbx_settings->get('voice_language', $ci->tenant->id)
+				));
 		}		
 	}
 	

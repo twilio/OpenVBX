@@ -428,7 +428,8 @@ class Site extends User_Controller
 				$this->settings->update_tenant(array(
 					'id' => $data['id'],
 					'type' => $auth_type,
-					'transcriptions' => 1
+					'transcriptions' => 1,
+					'voice' => 'man'
 				));
 				$this->settings->add('tenant_first_run', 1, $data['id']);
 				

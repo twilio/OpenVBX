@@ -27,13 +27,20 @@ class AudioFiles extends User_Controller
 {
 	protected $response;
 	protected $request;
-
+	protected $say_params;
+	
+	protected $suppress_warnings_notices = true;
+	
 	function __construct()
-	{
+	{	
 		parent::__construct();
 		$this->load->helper('twilio');
 		$this->load->library('TwimlResponse');
 		$this->load->model('vbx_audio_file');
+		$this->say_params = array(
+			'voice' => $this->vbx_settings->get('voice', $this->tenant->id),
+			'language' => $this->vbx_settings->get('voice_language', $this->tenant->id)
+		);
 	}
 
 	function index()
@@ -214,14 +221,14 @@ class AudioFiles extends User_Controller
 
 		if (!$audioFile->cancelled)
 		{
-			$response->say("Re-chord your message after the beep, press the pound key when finished.");
+			$response->say("Re-chord your message after the beep, press the pound key when finished.", $this->say_params);
 			$response->record(array('action' => site_url('audiofiles/replay_recording_twiml')));
-			$response->say("We didn't get a recording from you, try again.");
+			$response->say("We didn't get a recording from you, try again.", $this->say_params);
 			$response->redirect(site_url('audiofiles/prompt_for_recording_twiml'));
 		}
 		else
 		{
-			$response->say("The recording was cancelled.");
+			$response->say("The recording was cancelled.", $this->say_params);
 			$response->hangup();
 		}
 
@@ -242,13 +249,13 @@ class AudioFiles extends User_Controller
 		}
 
 		$response->pause(array('length' => 1));
-		$response->say('Recorded the following: ');
+		$response->say('Recorded the following: ', $this->say_params);
 		$gather = $response->gather(array('numDigits' => 1,
 										  'method' => 'POST',
 										  'action' => site_url('audiofiles/accept_or_reject_recording_twiml')
 										));
 		$gather->play($this->session->userdata('current-recording'));
-		$gather->say('If you like this message, press 1. ... To record a different message, press 2.');
+		$gather->say('If you like this message, press 1. ... To record a different message, press 2.', $this->say_params);
 
 		// If they don't enter anything at the prompt, do the replay again.
 		$response->redirect(site_url('audiofiles/replay_recording_twiml'));
@@ -279,7 +286,7 @@ class AudioFiles extends User_Controller
 					$audioFile->save();
 				}
 
-				$response->say('Your recording has been saved.');
+				$response->say('Your recording has been saved.', $this->say_params);
 				$response->hangup();
 				break;
 			case 2:
@@ -343,7 +350,7 @@ class AudioFiles extends User_Controller
 					}
 					else {
 						$params = array(
-							'Status' => 'complete'
+							'Status' => 'completed'
 						);
 					}
 					
@@ -353,8 +360,9 @@ class AudioFiles extends User_Controller
 					$audioFile->save();
 				}
 				catch (Exception $e) {
-					//throw new AudioFilesException($e->getMessage());
 					trigger_error($e->getMessage());
+					$json['error'] = true;
+					$json['message'] = $e->getMessage();
 				}
 			}
 		}

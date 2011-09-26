@@ -63,9 +63,14 @@ if (!function_exists('validate_rest_request')) {
 	 * @return void
 	 */
 	function validate_rest_request($failure_message = 'Could not validate this request. Goodbye.') {
+		$ci =& get_instance();
+		
 		if (!OpenVBX::validateRequest()) {
 			$response = new TwimlResponse;
-			$response->say($failure_message);
+			$response->say($failure_message, array(
+					'voice' => $ci->vbx_settings->get('voice', $ci->tenant->id),
+					'language' => $ci->vbx_settings->get('voice_language', $ci->tenant->id)
+				));
 			$response->hangup();
 			$response->respond();
 			exit;

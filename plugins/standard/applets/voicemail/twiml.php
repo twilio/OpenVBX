@@ -32,7 +32,10 @@ else
 	if (!AudioSpeechPickerWidget::setVerbForValue($prompt, $response)) 
 	{
 		// fallback to default voicemail message
-		$response->say('Please leave a message. Press the pound key when you are finished.');
+		$response->say('Please leave a message. Press the pound key when you are finished.', array(
+				'voice' => $CI->vbx_settings->get('voice', $CI->tenant->id),
+				'language' => $CI->vbx_settings->get('voice_language', $CI->tenant->id)
+			));
 	}
 
 	// add a <Record>, and use VBX's default transcription handler

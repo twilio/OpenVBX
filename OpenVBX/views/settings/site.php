@@ -17,33 +17,38 @@
 		</div><!-- .vbx-content-tabs -->
 
 	    <div id="settings-system-config" class="vbx-tab-view">
-			<h3>System Config</h3>
 			<form name="vbx-system" action="<?php echo site_url('settings/site') ?>" method="POST" class="vbx-system-form vbx-form">
-				<div class="vbx-input-complex vbx-input-container">
-					<label for="rewrite" class="field-label">Do you want to enable mod_rewrite support?
-						<?php
-							$params = array(
-								'name' => 'site[rewrite_enabled]',
-								'id' => 'rewrite',
-								'class' => 'medium'
-							);
-							$options = array(
-								0 => 'No',
-								1 => 'Yes'
-							);
-							echo t_form_dropdown($params, $options, $rewrite_enabled['value']);
-						?>
-					</label>
-				</div>
+				<fieldset>
+					<h3>System Config</h3>
+					<div class="vbx-input-complex vbx-input-container">
+						<label for="rewrite" class="field-label">Do you want to enable mod_rewrite support?
+							<?php
+								$params = array(
+									'name' => 'site[rewrite_enabled]',
+									'id' => 'rewrite',
+									'class' => 'medium'
+								);
+								$options = array(
+									0 => 'No',
+									1 => 'Yes'
+								);
+								echo t_form_dropdown($params, $options, $rewrite_enabled['value']);
+							?>
+						</label>
+					</div>
 
-				<div class="vbx-input-complex vbx-input-container">
-					<label for="override" class="field-label">Hostname to use in recording URLs (must be a CNAME for api.twilio.com)
-						<input class="medium" id="override" name="site[recording_host]" value="<?php echo @$recording_host["value"]; ?>">
-				</div>
+					<div class="vbx-input-complex vbx-input-container">
+						<label for="override" class="field-label">Hostname to use in recording URLs
+							<input class="medium" id="override" name="site[recording_host]" value="<?php echo @$recording_host["value"]; ?>">
+						</label>
+						<p class="instruction">(must be a CNAME for api.twilio.com)</p>
+					</div>
+				</fieldset>
 
-				<fieldset class="activate-tenant vbx-input-complex vbx-input-container">
-					<label class="field-label">Transcribe Recordings</label>
-					<div class="vbx-content-section" style="min-height: 50px;">
+				<fieldset>
+					<h3>Transcriptions</h3>
+					<fieldset class="vbx-input-complex vbx-input-container">
+						<label class="field-label">Transcribe Recordings</label>
 						<label for="transcribe-on" class="field-label-inline">Transcriptions ON
 							<?php 
 								$radio = array(
@@ -61,11 +66,48 @@
 								echo form_radio($radio, '0', ($transcriptions['value'] == 0));
 							?>
 						</label>						
-					</div>
+					</fieldset>
 				</fieldset>
 				
-				<!-- @todo: add setting to select male/female voice option for speech -->
-				
+				<fieldset>
+					<h3>TwiML Settings</h3>
+					<div class="vbx-input-complex vbx-input-container">
+						<label class="field-label">Playback Voice
+							<?php
+								$params = array(
+									'name' => 'site[voice]',
+									'id' => 'site-voice',
+									'class' => 'medium'
+								);
+								$options = array(
+									'man' => 'Man',
+									'woman' => 'Woman'
+								);
+								echo t_form_dropdown($params, $options, $voice['value']);
+							?>
+						</label>
+					</div>
+			
+					<div class="vbx-input-complex vbx-input-container">
+						<label class="field-label">Playback Voice Language
+							<?php
+								$params = array(
+									'name' => 'site[voice_language]',
+									'id' => 'site-voice-lang',
+									'class' => 'medium'
+								);
+								$options = array(
+									'en' => 'English',
+									'es' => 'Spanish',
+									'fr' => 'French',
+									'de' => 'German'
+								);
+								echo t_form_dropdown($params, $options, $voice_language['value']);
+							?>
+						</label>
+					</div>
+				</fieldset>
+							
 				<button class="submit-button" type="submit"><span>Update</span></button>
 			</form>
 

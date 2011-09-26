@@ -13,6 +13,8 @@ function runUpdate_57()
 		foreach($tenants as $tenant) 
 		{
 			$ci->vbx_settings->add('transcriptions', '1', $tenant->id);
+			$ci->vbx_settings->add('voice', 'man', $tenant->id);
+			$ci->vbx_settings->add('voice_language', 'en', $tenant->id);
 		}
 	}
 	

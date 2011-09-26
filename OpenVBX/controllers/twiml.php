@@ -34,9 +34,19 @@ class Twiml extends MY_Controller {
 	private $flow;
 	private $flow_id;
 	private $flow_type = 'voice';
+	
+	protected $say_params;
+	
+	// This is an API response controller, suppress warnings & notices
+	// to avoid breakage in operation
+	protected $suppress_warnings_notices = true;
 
 	public function __construct()
 	{
+		// this is an API controller, suppress warnings & notices
+		// to avoid XML breakage
+		error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
+		
 		parent::__construct();
 
 		$this->load->helper('twilio');
@@ -49,6 +59,11 @@ class Twiml extends MY_Controller {
 		$this->load->model('vbx_rest_access');
 		$this->load->model('vbx_user');
 		$this->load->model('vbx_message');
+
+		$this->say_params = array(
+			'voice' => $this->vbx_settings->get('voice', $this->tenant->id),
+			'language' => $this->vbx_settings->get('voice_language', $this->tenant->id)
+		);
 
 		$this->flow_id = get_cookie('flow_id');
 		$this->response = new TwimlResponse;
@@ -84,7 +99,7 @@ class Twiml extends MY_Controller {
 		}
 		else
 		{
-			$this->response->say('Error 4-oh-4 - Flow not found.');
+			$this->response->say('Error 4-oh-4 - Flow not found.', $this->say_params);
 			$this->response->respond();
 		}
 	}
@@ -111,7 +126,7 @@ class Twiml extends MY_Controller {
 		}
 		else
 		{
-			$this->response->say('Error 4-oh-4 - Flow not found.');
+			$this->response->say('Error 4-oh-4 - Flow not found.', $this->say_params);
 			$this->response->respond();
 		}
 	}
@@ -238,14 +253,14 @@ class Twiml extends MY_Controller {
 
 			if(!is_object($applet))
 			{
-				$this->response->say("Unknown applet instance in flow $flow_id.");
+				$this->response->say('Unknown applet instance in flow '.$flow_id, $this->say_params);
 				$this->response->respond();
 			}
 
 		}
 		catch(Exception $ex)
 		{
-			$this->response->say('Error: ' + $ex->getMessage());
+			$this->response->say('Error: ' + $ex->getMessage(), $this->say_params);
 			$this->response->respond();
 		}
 	}
@@ -268,7 +283,7 @@ class Twiml extends MY_Controller {
 			/* Prompt the user to answer the call */
 			$gather = $this->response->gather(array('numDigits' => '1'));
 			$say_number = implode(' ', str_split($this->request->From));
-			$gather->say("This is a call for {$name}. To accept, Press 1.");
+			$gather->say("This is a call for {$name}. To accept, Press 1.", $this->say_params);
 			$this->response->hangup();
 		}
 
@@ -280,7 +295,7 @@ class Twiml extends MY_Controller {
 		if(!$this->session->userdata('loggedin')
 		   && !$this->login_call($singlepass))
 		{
-			$this->response->say("Unable to authenticate this call.	Goodbye");
+			$this->response->say("Unable to authenticate this call.	Goodbye", $this->say_params);
 			$this->response->hangup();
 			$this->response->respond();
 			return;
@@ -314,7 +329,7 @@ class Twiml extends MY_Controller {
 		if(!$this->session->userdata('loggedin')
 		   && !$this->login_call($rest_access))
 		{
-			$this->response->say("Unable to authenticate this call.	Goodbye");
+			$this->response->say("Unable to authenticate this call.	Goodbye", $this->say_params);
 			$this->response->hangup();
 			$this->response->respond();
 			return;
@@ -385,14 +400,14 @@ class Twiml extends MY_Controller {
 				$dial->client($to);
 			}
 			else {
-				$this->response->say("We're sorry, this user is currently not reachable. Goodbye.");
+				$this->response->say("We're sorry, this user is currently not reachable. Goodbye.", $this->say_params);
 				$this->response->hangup();
 			}
 		} 
 		else 
 		{
 			$gather = $this->response->gather(array('numDigits' => 1));
-			$gather->say("Hello {$name}, this is a call from VeeBee Ex, to accept, press 1.");
+			$gather->say("Hello {$name}, this is a call from VeeBee Ex, to accept, press 1.", $this->say_params);
 		}
 
 		$this->response->respond();
@@ -402,7 +417,7 @@ class Twiml extends MY_Controller {
 	{
 		if($this->input->get_post('DialCallStatus') == 'failed')
 		{
-			$this->response->say('The number you have dialed is invalid. Goodbye.');
+			$this->response->say('The number you have dialed is invalid. Goodbye.', $this->say_params);
 		}
 		$this->response->hangup();
 		$this->response->respond();

@@ -22,6 +22,8 @@ class TwimlDial {
 	public $dial;
 	
 	protected $transcribe = true;
+	protected $voice = 'man';
+	protected $language = 'en';
 
 	/**
 	 * Default timeout is the same as the Twilio default timeout
@@ -82,7 +84,12 @@ class TwimlDial {
 	}
 	
 	public function setTranscribe($val = true) {
-		$this->transcribe = (bool) $val;
+		$this->transcribe = (bool) trim($val);
+	}
+	
+	public function setVoice($voice = 'man', $language = 'en') {
+		$this->voice = trim($voice);
+		$this->language = trim($language);
 	}
 	
 // Actions
@@ -256,7 +263,10 @@ class TwimlDial {
 			if (!AudioSpeechPickerWidget::setVerbForValue($voicemail, $this->response))
 			{
 				// fallback to default voicemail message
-				$this->response->say(self::$default_voicemail_message);
+				$this->response->say(self::$default_voicemail_message, array(
+					'voice' => $this->voice,
+					'language' => $this->language
+				));
 			}
 			
 			$record_params = array();
