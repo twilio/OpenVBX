@@ -46,7 +46,7 @@ OpenVBX is open source and extensible so feel free to skin it, hack it, and sell
 
 ## Installing on Godaddy
 
-OpenVBX does not function properly on GoDaddy without Mod Rewrite. Make sure that root directory of your OpenVBX install contains the `.htaccess` file that was distributed with OpenVBX. If not, rename the `htaccess_dist` file to `.htaccess`.
+OpenVBX does not function properly on GoDaddy without Mod Rewrite. Make sure that root directory of your OpenVBX install contains the `.htaccess` file that was distributed with OpenVBX. If not, copy the `htaccess_dist` file to `.htaccess`.
 
 Add this to the bottom of `OpenVBX/config/config.php`:
 
