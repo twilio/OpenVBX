@@ -359,24 +359,15 @@ class MY_Controller extends Controller
 			unset($payload['json']);
 		}
 
-		$theme = 'default';
-		if($this->tenant)
-		{
-			$theme = $this->settings->get('theme', $this->tenant->id);
-			if(empty($theme))
-			{
-				$theme = 'default';
-			}
+		$theme = $this->getTheme();
+
+		if (empty($payload['user'])) {
+			$payload['user'] = VBX_user::get(array('id' => $this->session->userdata('user_id')));
 		}
 
 		$css = array("themes/$theme/style");
 
-		$theme_config = @parse_ini_file('assets/themes/'.$theme.'/config.ini');
-		if(!$theme_config)
-		{
-			$theme_config = array();
-			$theme_config['site_title'] = 'VBX';
-		}
+		$theme_config = $this->getThemeConfig($theme);
 
 		$payload['session_id'] = $this->session->userdata('session_id');
 		$payload['theme'] = $theme;
@@ -477,6 +468,36 @@ class MY_Controller extends Controller
 	public function getTenant()
 	{
 		return $this->tenant;
+	}
+	
+	public function getTheme() {
+		$theme = 'default';
+		
+		if($this->tenant)
+		{
+			$theme_setting = $this->settings->get('theme', $this->tenant->id);
+			if(!empty($theme_setting))
+			{
+				$theme = $theme_setting;
+			}
+		}
+		
+		return $theme;
+	}
+	
+	public function getThemeConfig($theme) {
+		$theme_config = array(
+			'site_title' => 'VBX'
+		);
+		
+		$theme_config_file = 'assets/themes/'.$theme.'/config.ini';
+		if (is_file($theme_config_file)) 
+		{
+			$imported_theme_config = @parse_ini_file($theme_config_file);
+			$theme_config = array_merge($imported_theme_config, $theme_config);
+		}
+		
+		return $theme_config;
 	}
 }
 

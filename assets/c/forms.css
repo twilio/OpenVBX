@@ -153,58 +153,57 @@
 }
 
 .vbx-input-container select {
-        display: block;
-        margin-top: 3px;
-        padding: 6px 5px 5px 5px;
-        height: 30px;
-        font-size: 14px;
-        border: none;
+	display: block;
+	margin-top: 3px;
+	padding: 6px 5px 5px 5px;
+	height: 30px;
+	font-size: 14px;
+	border: none;
 }
 
 .vbx-input-container select.tiny {
-        width: 50px;
-        background: url(../i/form-input-text-50.png) no-repeat left top;
+	width: 50px;
+	background: url(../i/form-input-text-50.png) no-repeat left top;
 }
 
 .vbx-input-container select.small {
-        width: 150px;
-        background: url(../i/form-input-text-150.png) no-repeat left top;
+	width: 150px;
+	background: url(../i/form-input-text-150.png) no-repeat left top;
 }
 
 .vbx-input-container select.smedium {
-        width: 200px;
-        background: url(../i/form-input-text-200.png) no-repeat left top;
+	width: 200px;
+	background: url(../i/form-input-text-200.png) no-repeat left top;
 }
 
 .vbx-input-container select.medium {
-        width: 300px;
-        background: url(../i/form-input-text-300.png) no-repeat left top;
+	width: 300px;
+	background: url(../i/form-input-text-300.png) no-repeat left top;
 }
 
 .vbx-input-container select.large {
-        width: 600px;
-        background: url(../i/form-input-text-600.png) no-repeat left top;
+	width: 600px;
+	background: url(../i/form-input-text-600.png) no-repeat left top;
 }
 
-
 .vbx-input-container option {
-        padding: 4px 5px;
+	padding: 4px 5px;
 }
 
 .vbx-form .field-label-checkbox,
 .vbx-form .field-label-radio {
-        float: left;
-        margin: 10px 20px 10px 0;
-        font-weight: bold;
-        color: #444;
-        background-color: #FFF;
-        cursor: pointer;
+	float: left;
+	margin: 10px 20px 10px 0;
+	font-weight: bold;
+	color: #444;
+	background-color: #FFF;
+	cursor: pointer;
 }
 
 .vbx-form .checkbox,
 .vbx-form .radio {
-        float: left;
-        margin: 2px 5px 0 0;
+	float: left;
+	margin: 2px 5px 0 0;
 }
 
 .vbx-form>fieldset {
@@ -212,4 +211,27 @@
 }
 .vbx-form .field-label-inline {
 	margin: 0 15px 0 0;
+}
+
+.vbx-form .info {
+	background: #ccc;
+	margin: 10px 0;
+	padding: 10px;
+	border: 1px solid gray;
+	-moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
+}
+
+.vbx-form .info p {
+	margin: 0 0 10px 0;
+}
+.vbx-form .info p:last-child {
+	margin: 0;
 }

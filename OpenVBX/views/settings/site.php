@@ -182,17 +182,18 @@
 							<option value="connect">Twilio Connect (OAuth)</option>
 						</select>
 					</label>
-				<?php else: /* In case anybody foobars their Connect App sid we can fail gracefully */?>
-					<div style="width: 50%; margin: 15px 0;">
-						<p>You don&rsquo;t have a <a href="http://twilio.com/docs/connect">Twilio Connect</a> Application defined. Your Tenants will be created as a sub-account of your account.</p>
-						<p>To create Tenants with Twilio Connect create a Connect Application in your account and enter the Application Sid in the &ldquo;Twilio Connect Application SID&rdquo; field in your Twilio Account Settings screen.</p>
-					</div>
-					<input type="hidden" name="auth_type" value="subaccount" />
 				<?php endif; ?>
 				</div>
 				<div class="vbx-input-complex vbx-input-container">
 				    <button class="add-tenant-button normal-button" type="submit"><span>Add tenant</span></button>
 				</div>
+				<?php if (!isset($connect_application_sid) || empty($connect_application_sid['value'])): ?>
+					<div class="info" style="width: 50%;">
+						<p>You don&rsquo;t have a <a href="http://twilio.com/docs/connect" onclick="window.open(this.href); return false;">Twilio Connect</a> Application defined. Your Tenants will be created as a sub-account of your account.</p>
+						<p>To create Tenants with Twilio Connect create a Connect Application in your account and enter the Application Sid in the &ldquo;Twilio Connect Application SID&rdquo; field in your Twilio Account Settings screen.</p>
+					</div>
+					<input type="hidden" name="auth_type" value="subaccount" />
+				<?php endif; ?>
 			</form>
 			<br class="clear" />
 

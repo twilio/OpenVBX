@@ -1,7 +1,7 @@
 <div id="vbx-util-menu">
 	<ul class="util-menu">
 		<?php if($logged_in): ?>
-		<li class="vbx-util-item"><span class="username"><?php echo $email ?></span></li>
+		<li class="vbx-util-item"><span class="username"><?php echo $user->email ?></span></li>
 		<?php endif; ?>
 		<!-- Disabled for now... 
 		<?php if(!empty($callerid_numbers)): ?>

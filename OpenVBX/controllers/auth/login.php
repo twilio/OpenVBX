@@ -60,7 +60,6 @@ class Login extends MY_Controller
 			if(!empty($error)) $data['error'] = CI_Template::literal($error);
 		}
 
-
 		return $this->respond('', 'login', $data, 'login-wrapper', 'layout/login');
 	}
 
@@ -77,7 +76,7 @@ class Login extends MY_Controller
 			$redirect = $this->session->flashdata('redirect');
 		}
 
-		return $redirect;
+		return ltrim($redirect, '/');
 	}
 	
 	private function redirect($redirect)
