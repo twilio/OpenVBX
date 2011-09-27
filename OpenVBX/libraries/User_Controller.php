@@ -40,7 +40,7 @@ class User_Controller extends MY_Controller
 		foreach ($_POST as $key => $value)
 		{
 			// Copy any key that looks like an Openvbx session over to $_COOKIE where it's expected
-			if (preg_match("/^\d+\-openvbx_session$/", $key))
+			if (preg_match("/^(\d+\-)?openvbx_session$/", $key))
 			{
 				$_COOKIE[$key] = urldecode($_POST[$key]);
 			}
