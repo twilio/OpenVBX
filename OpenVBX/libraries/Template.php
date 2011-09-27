@@ -554,7 +554,7 @@ class CI_Template {
 		switch ($type)
 		{
 			case 'dynamic':
-				$filepath = site_url() . preg_replace('|^(/)|', '', $style);
+				$filepath = asset_url() . preg_replace('|^(/)|', '', $style);
 				$css = '<link type="text/css" rel="stylesheet" href="'.version_url($filepath).'"';
 				if ($media)
 				{
@@ -564,7 +564,7 @@ class CI_Template {
 				break;
 
 			case 'link':
-				$filepath = (preg_match('|https?://|', $style) ? $style : site_url().$style);
+				$filepath = (preg_match('|^(https?://|//)|', $style) ? $style : asset_url().$style);
 				$css = '<link type="text/css" rel="stylesheet" href="'.version_url($filepath).'"';
 				if ($media)
 				{

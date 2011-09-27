@@ -40,18 +40,20 @@ Navigate to the URL of your OpenVBX installation and login using the account you
 
 ## Step 6: Profit!
 
-__That's it, you're all set.__
+__That's it, you're all set.__  
 OpenVBX is open source and extensible so feel free to skin it, hack it, and sell it!
 
 
 ## Installing on Godaddy
 
-Add this to the bottom of `OpenVBX/config/config.php`
+OpenVBX does not function properly on GoDaddy without Mod Rewrite. Make sure that root directory of your OpenVBX install contains the `.htaccess` file that was distributed with OpenVBX. If not, rename the `htaccess_dist` file to `.htaccess`.
+
+Add this to the bottom of `OpenVBX/config/config.php`:
 
 	$config['uri_protocol'] = 'REQUEST_URI';
 	$config['index_page'] = '';
 
-If you're still having issues at this point, modify your .htaccess file to be the following:
+If you're still having issues at this point, modify your `.htaccess` file to be the following:
 
 	RewriteEngine ON
 
@@ -68,7 +70,7 @@ Now that you've got a working installation you can:
 * Extend OpenVBX by installing a plugin or writing your own - [http://www.openvbx.org/plugins](http://www.openvbx.org/plugins)
 * Scratch your own itch and help improve OpenVBX - [http://www.openvbx.org/get-involved/](http://www.openvbx.org/get-involved/)
 * Read the documentation - documents [http://www.openvbx.org/docs](http://www.openvbx.org/docs)
-* Get support - [http://getsatisfaction.com/support](http://getsatisfaction.com/support)
+* Get support - [http://getsatisfaction.com/openvbx](http://getsatisfaction.com/openvbx)
 
 
 ----
@@ -94,6 +96,7 @@ OpenVBX requires the software listed below. It is all available for free and is 
 1. **SimpleXML support:** OpenVBX requires SimpleXML. If you don't meet this requirement, install the SimpleXML module.
 1. **JSON support:** OpenVBX requires JSON. If you don't meet this requirement install the JSON module.
 1. **Upload directory writable:** The upload directory must be writable by the user your webserver is running as for the OpenVBX installation to complete. The path to the configuration directory is `<webroot>/OpenVBX/audio-uploads`. On unix systems you can adjust the permissions with the `chown` and `chmod` commands.
+1. **.htaccess File:** OpenVBX works best with Mod Rewrite enabled. If you've uploaded the contents of OpenVBX using an FTP application then its possible that the .htaccess file was ignored. If the .htaccess file is missing from your install rename the `htaccess_dist` file to `.htaccess` before beginning the install process. Some hosts do not run OpenVBX properly with Mod Rewrite disabled.
 
 
 ## Configure Database

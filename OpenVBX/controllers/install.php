@@ -101,7 +101,7 @@ class Install extends Controller {
 		$this->pass = TRUE;
 
 		$this->add_test(version_compare(PHP_VERSION, $this->min_php_version, '>='),
-						'PHP version',
+						'PHP Version',
 						PHP_VERSION,
 						'You must be running at least PHP '.$this->min_php_version.'; you are using ' . PHP_VERSION);
 
@@ -109,19 +109,23 @@ class Install extends Controller {
 						'MySQL',
 						'supported',
 						'missing');
+
 		$this->add_test(function_exists('simplexml_load_file'),
 						'SimpleXML',
 						'supported',
 						'missing');
+
 		$this->add_test(extension_loaded("curl"),
 						'CURL',
 						'supported',
 						'missing');
+
 		$this->add_test(extension_loaded("apc"),
 						'APC',
 						'supported',
 						'missing, but optional',
 						false);
+
 		$this->add_test(function_exists('json_encode'),
 						'JSON',
 						'supported',
@@ -129,7 +133,7 @@ class Install extends Controller {
 
 		$apache_version = function_exists('apache_get_version')? apache_get_version() : '';
 		$this->add_test(function_exists('apache_request_headers'),
-						'Apache version',
+						'Apache Version',
 						preg_replace('/[^0-9.]/', '', $apache_version),
 						'missing, but optional',
 						false);
@@ -138,10 +142,17 @@ class Install extends Controller {
 						'Config Dir',
 						'writable',
 						'permission denied: '. APPPATH . 'config');
+						
 		$this->add_test(is_writable(APPPATH . '../audio-uploads'),
 						'Upload Dir',
 						'writable',
-						'permission denied: '. APPPATH . '../audio-uploads');
+						'permission denied: '. realpath(APPPATH . '../audio-uploads'));
+
+		$this->add_test(is_file(APPPATH.'../.htaccess'),
+						'.htaccess File',
+						'found',
+						'missing, HIGHLY recommended',
+						false);
 	}
 
 	public function index()

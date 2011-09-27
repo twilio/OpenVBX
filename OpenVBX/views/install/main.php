@@ -30,16 +30,22 @@
 							<p>OpenVBX requires a few things from your server before it can be installed.<br /> 
 								Check out our <a target="_blank" href="http://openvbx.org/install">installation guide</a> for help.</p>
 						</div>
-						<ul class="dependencies">
-							<input type="hidden" name="step" value="1" />
-							<?php foreach($tests as $test): ?>
-							<li class="<?php echo ($test['pass'] ? 'pass' : 'fail') ?> <?php echo ($test['required'] ? 'required' : 'optional') ?>">
-								<span class="req-status"><?php echo ($test['pass'] ? 'OK' : 'NO') ?></span>
-								<p class="req-name"><?php echo $test['name']; ?></p>
-								<p class="req-info"><?php echo $test['message'] ?></p>
-							</li>
-							<?php endforeach; ?>
-						</ul>
+						<input type="hidden" name="step" value="1" />
+						<?php
+							$open = false;
+							foreach ($tests as $k => $test):
+							 	if (!$open): $open = true; ?>
+								<ul class="dependencies">
+							<?php endif; ?>
+									<li class="<?php echo ($test['pass'] ? 'pass' : 'fail') ?> <?php echo ($test['required'] ? 'required' : 'optional') ?>">
+										<span class="req-status"><?php echo ($test['pass'] ? 'OK' : 'NO') ?></span>
+										<p class="req-name"><?php echo $test['name']; ?></p>
+										<p class="req-info"><?php echo $test['message'] ?></p>
+									</li>
+							<?php if (($k+1) % 3 === 0 || empty($tests[$k+1])): $open = false; ?>
+								</ul>
+							<?php endif; ?>
+						<?php endforeach; /* foreach $tests */ ?>
 
 						<div class="information">
 						<?php if ($pass): ?>
@@ -168,7 +174,7 @@
 							<input type="hidden" name="step" value="6" />
 						</fieldset>
 					</div>
-<?php endif; ?><!-- test pass check -->
+<?php endif; /* test pass check */ ?>
 				</div>
 
 				<div class="navigation">

@@ -77,7 +77,6 @@ class MY_Controller extends Controller
 		$this->settings = new VBX_Settings();
 
 		$rewrite_enabled = intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT));
-		$rewrite_enabled = 1;
 		if($rewrite_enabled)
 		{
 			/* For mod_rewrite */
