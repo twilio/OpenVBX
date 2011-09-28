@@ -20,7 +20,7 @@ $config['server_name'] = $_SERVER['HTTP_HOST'];
 |
 */
 $config['base_url']= "http"
-	  . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')? 's' : '')
+	  . ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')? 's' : '')
 	  . "://" . $config['server_name']
 	  . preg_replace('@/+$@','',
 					 str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']))

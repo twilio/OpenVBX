@@ -220,7 +220,7 @@
 	$.fn.Steps.triggerError = function(message) {
 		_error.html(message);
 		if (!_error.is(':visible')) {
-			toggleError(true);
+			this.toggleError(true);
 		}
 	};
 	
