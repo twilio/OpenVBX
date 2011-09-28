@@ -404,6 +404,12 @@
 	overflow: hidden;
 }
 
+#group-container .group .members li.members-ui-draggable-placeholder {
+	border: 1px dotted #ccc;
+	background: transparent;
+	height: 12px;
+}
+
 #group-container .members .remove {
     display:block;
     width: 16px;

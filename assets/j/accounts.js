@@ -380,14 +380,17 @@ function addGroupEvents(el) {
 
 				var username = ui.draggable.find('.user-name').text();
 				var groupname = group_el.find('.group-name').text();
-
-				params = { group_id: group_el.attr('rel'), user_id: user_id };
+			
+				params = { 
+					group_id: group_el.attr('rel'), 
+					user_id: user_id
+				};
 
 				$('.group-counter', group_el).hide();
 				$('.group-counter-loader', group_el).show();
 
 				$.ajax({
-					url : 'accounts/group_user/add',
+					url : OpenVBX.home + '/accounts/group_user/add',
 					data : params, 
 					success : function(data) {
 						if (!data.error) {
@@ -404,7 +407,55 @@ function addGroupEvents(el) {
 				});
 			}
 		}
-	});
+	})
+	.find('.members').sortable({
+		axis: 'y',
+		containment: 'parent',
+		items: 'li',
+		opacity: 0.5,
+		revert: true,
+		tolerance: 'pointer',
+		placeholder: 'members-ui-draggable-placeholder',
+		update: function(event, ui) {
+			var group_el = $(ui.item[0]).closest('.group'),
+				groupname = group_el.find('.group-name').text(),
+				group_id = group_el.attr('rel'),
+				members = $(ui.item[0]).closest('.members');
+			
+			// we're not quite working how sortable tends to work
+			// so we need to gather the user_ids ourselves
+			var order = [];
+			members.find('li').each(function(i) {
+						order.push($(this).attr('rel'));
+					});
+			
+			if (order.length) {
+				members.sortable('disable');
+				$('.group-counter', group_el).hide();
+				$('.group-counter-loader', group_el).show();
+				
+				$.post(
+					OpenVBX.home + '/accounts/group/order',
+					{
+						group_id: group_el.attr('rel'),
+						group_order: order
+					},
+					function(data) {
+						if (data.success) {
+							$.notify(groupname + ' group order updated');
+						}
+						else {
+							$.notify(groupname + ' group could not be updated: ' + data.message);
+						}
+						members.sortable('enable');
+						$('.group-counter', group_el).show();
+						$('.group-counter-loader', group_el).hide();
+					},
+					'json'
+				);
+			}
+		}
+	}).disableSelection();
 }
 
 function addUserEvents(el) {

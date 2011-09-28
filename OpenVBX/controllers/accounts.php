@@ -56,6 +56,8 @@ class Accounts extends User_Controller {
 				return $this->save_group();
 			case 'delete':
 				return $this->delete_group();
+			case 'order':
+				return $this->order_group();
 			default:
 				$json = array('success' => FALSE,
 							  'error' => "No such method [$method]");
@@ -70,6 +72,7 @@ class Accounts extends User_Controller {
 	{
 		$group_id = $this->input->post('group_id');
 		$user_id = $this->input->post('user_id');
+
 		$success = false;
 		$message = '';
 
@@ -102,7 +105,7 @@ class Accounts extends User_Controller {
 				}
 				break;
 		}
-
+		
 		if($this->response_type != 'json')
 		{
 			redirect('accounts');
@@ -404,6 +407,29 @@ class Accounts extends User_Controller {
 
 		$data['json'] = $json;
 		$this->respond('', 'accounts', $data);
+	}
+
+	protected function order_group() {
+		$group_order = $this->input->post('group_order');
+		$group_id = intval($this->input->post('group_id'));
+		
+		$group = VBX_Group::get($group_id);
+		
+		$json = array(
+			'success' => true,
+			'message' => ''
+		);
+		
+		try {
+			$group->order_group($group_order);
+		}
+		catch (VBX_GroupException $e) {
+			$json['success'] = false;
+			$json['message'] = $e->getMessage();
+		}
+		
+		$data['json'] = $json;
+		return $this->respond('', 'accounts', $data);
 	}
 
 	private function save_group()
