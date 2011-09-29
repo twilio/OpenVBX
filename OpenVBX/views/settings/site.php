@@ -70,9 +70,9 @@
 				</fieldset>
 				
 				<fieldset>
-					<h3>TwiML Settings</h3>
+					<h3>Text to Speech</h3>
 					<div class="vbx-input-complex vbx-input-container">
-						<label class="field-label">Playback Voice
+						<label class="field-label">Voice
 							<?php
 								$params = array(
 									'name' => 'site[voice]',
@@ -89,7 +89,7 @@
 					</div>
 			
 					<div class="vbx-input-complex vbx-input-container">
-						<label class="field-label">Playback Voice Language
+						<label class="field-label">Voice Language
 							<?php
 								$params = array(
 									'name' => 'site[voice_language]',
