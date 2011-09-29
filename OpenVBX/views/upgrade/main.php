@@ -4,10 +4,6 @@
 <head>
 	<title>Upgrade OpenVBX</title>
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url() ?>/assets/c/install.css" />
-	<!-- <script type="text/javascript" src="<?php echo base_url() ?>/assets/j/frameworks/jquery-1.6.2.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/plugins/jquery.validate.js"></script>
-	<?php $this->load->view('js-init'); ?>
-	<script type="text/javascript" src="<?php echo base_url() ?>/assets/j/upgrade.js"></script> -->
 
 	<?php $this->load->view('js-init'); ?>	
 	<?php if ($this->config->item('use_unminimized_js')): ?>
