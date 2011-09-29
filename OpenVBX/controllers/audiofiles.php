@@ -34,7 +34,6 @@ class AudioFiles extends User_Controller
 	function __construct()
 	{	
 		parent::__construct();
-		$this->load->helper('twilio');
 		$this->load->library('TwimlResponse');
 		$this->load->model('vbx_audio_file');
 		$this->say_params = array(

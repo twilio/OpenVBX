@@ -49,7 +49,6 @@ class Twiml extends MY_Controller {
 		
 		parent::__construct();
 
-		$this->load->helper('twilio');
 		$this->load->helper('cookie');
 
 		$this->load->library('applet');
@@ -356,7 +355,7 @@ class Twiml extends MY_Controller {
 				'callerId' => $callerid
 			);
 
-			$dial_client = false;
+			// $dial_client = false;
 			$to = normalize_phone_to_E164($to);
 			if (!($client_status = $this->input->get_post('online')))
 			{
@@ -369,40 +368,64 @@ class Twiml extends MY_Controller {
 				$user = VBX_User::get(array(
 					'email' => $this->input->get_post('to')
 				));
-				if (!empty($user) && $user->online == 1) 
+				
+				if (count($user->devices))
 				{
-					$dial_client = true;
-					$to = $user->id;
-				}
-				else {
-					$to = null;
+					$options['sequential'] = true;
+					$dial = $this->response->dial(NULL, $options);
 					
-					if (count($user->devices)) 
+					foreach ($user->devices as $device) 
 					{
-						foreach ($user->devices as $device) 
+						if ($device->is_active)
 						{
-							if ($device->is_active) 
+							if (strpos('client:', $device->value) !== false && $user->online == 1)
 							{
-								$to = $user->devices[0]->value;
+								$dial->client($user->id);
+							}
+							else {
+								$dial->number($device->value);
 							}
 						}
-					}					
+					}
 				}
-			}
-
-			if (!$dial_client && !empty($to)) 
-			{
-				$this->response->dial($to, $options);
-			}
-			elseif (!empty($to))
-			{
-				$dial = $this->response->dial(NULL, $options);
-				$dial->client($to);
+				
+				// if (!empty($user) && $user->online == 1) 
+				// {
+				// 	$dial_client = true;
+				// 	$to = $user->id;
+				// }
+				// else {
+				// 	$to = null;
+				// 	
+				// 	if (count($user->devices)) 
+				// 	{
+				// 		foreach ($user->devices as $device) 
+				// 		{
+				// 			if ($device->is_active) 
+				// 			{
+				// 				$to = $user->devices[0]->value;
+				// 			}
+				// 		}
+				// 	}					
+				// }
 			}
 			else {
-				$this->response->say("We're sorry, this user is currently not reachable. Goodbye.", $this->say_params);
-				$this->response->hangup();
+				$this->response->dial($to, $options);
 			}
+
+			// if (!$dial_client && !empty($to)) 
+			// {
+			// 	$this->response->dial($to, $options);
+			// }
+			// elseif (!empty($to))
+			// {
+			// 	$dial = $this->response->dial(NULL, $options);
+			// 	$dial->client($to);
+			// }
+			// else {
+			// 	$this->response->say("We're sorry, this user is currently not reachable. Goodbye.", $this->say_params);
+			// 	$this->response->hangup();
+			// }
 		} 
 		else 
 		{

@@ -72,6 +72,7 @@ class MY_Controller extends Controller
 		$this->load->model('vbx_flow_store');
 		$this->load->model('vbx_plugin_store');
 		$this->load->helper('file');
+		$this->load->helper('twilio');
 		$this->load->library('session');
 		
 		$this->settings = new VBX_Settings();

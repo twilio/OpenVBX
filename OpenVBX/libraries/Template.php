@@ -464,9 +464,6 @@ class CI_Template {
 		$js = NULL;
 
 		$this->CI->load->helper('url');
-		if (!function_exists('version_url')) {
-			$this->CI->load->helper('twilio');
-		}
 		
 		switch ($type)
 		{
@@ -547,9 +544,6 @@ class CI_Template {
 		$css = NULL;
 
 		$this->CI->load->helper('url');
-		if (!function_exists('version_url')) {
-			$this->CI->load->helper('twilio');
-		}
 
 		switch ($type)
 		{
@@ -564,7 +558,7 @@ class CI_Template {
 				break;
 
 			case 'link':
-				$filepath = (preg_match('|^(https?://|//)|', $style) ? $style : asset_url().$style);
+				$filepath = (preg_match('/^(https?:\/\/|\/\/)/', $style) ? $style : asset_url().$style);
 				$css = '<link type="text/css" rel="stylesheet" href="'.version_url($filepath).'"';
 				if ($media)
 				{

@@ -204,20 +204,37 @@ class Account extends User_Controller {
 	}
 	
 	public function client_status() {
-		$this->load->helper('twilio');
+		$data = array(
+			'json' => array(
+				'error' => true,
+				'message' => 'Invalid Request'
+			)
+		);
+		
 		if ($this->input->post('clientstatus')) {
-			$accept_incoming = ($this->input->post('online') == 1 ? true : false);
-			$this->data = array(
-				'json' => array(
-					'client_status' => ($accept_incoming ? 'online' : 'offline'),
-					'client_capability' => generate_capability_token($this->make_rest_access(), $accept_incoming)
-				)
-			);
-			$this->edit();
+			$online = ($this->input->post('online') == 1);
+
+			$user = VBX_User::get($this->session->userdata('user_id'));
+			$user->online = intval($online);
+			try {
+				$user->save();
+				$rest_access = $this->make_rest_access();
+
+				$data['json'] = array(
+					'error' => false,
+					'message' => 'status updated',
+					'client_status' => ($online ? 'online' : 'offline'),
+					'client_capability' => generate_capability_token($rest_access, $online)
+				);
+			}
+			catch (VBX_UserException $e) {
+				$data['json'] = array(
+					'error' => true,
+					'message' => $e->getMessage()
+				);
+			}
 		}
-		else {
-			throw new TwilioException('Invalid Request', 400);
-			exit;
-		}
+		
+		$this->respond('', null, $data);
 	}
 }
