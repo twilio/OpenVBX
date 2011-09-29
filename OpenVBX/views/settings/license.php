@@ -2,13 +2,17 @@
 <h3>License</h3>
 
 <p>All of the source code to this product is available  under licenses which are both free and open source. Most is available under the Mozilla Public License (MPL). That is, you may copy and distribute such software according to the terms of the MPL.</p>
+
 <br />
+
 <ul>
 	<li>Mozilla Public License</li>
 </ul>
 
 <br />
+
 <p>The remainder of the software which is not under the MPL is available under one of a variety of more permissive licenses. Those that require reproduction of the license text in the distribution are given below. (Note: your copy of this product may not contain code covered by one or more of the licenses listed here, depending on the exact product and version you choose.) </p>
+
 <br />
 
 <ul>
