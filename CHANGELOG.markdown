@@ -13,12 +13,10 @@
 	- modify internal calls & standard applets to use new library for API calls & TwiML generation
 - updated install, upgrade & welcome JS to abstract out the steps slider
 - updated install routine to detect & use mysqli if available
-- hardened install/upgrade error handling js
-- fix for audio uploads 302 error
+- hardened install/upgrade error handling JavaScript
 - added form dropdown convenience helper to Twilio Helper
 - added Upgrade instructions file
-- added Changelog file
-- improved Twilio Client init & user online status handling when Client takes a while to init\
+- improved Twilio Client init & user online status handling when Client takes a while to init
 - added deprecation notices to old api library items
 - added new Twilio helper file with:
 	- request validation
@@ -34,7 +32,9 @@
 - fixing database debug setting default. Now defaults to off
 - adding local config override option for `OpenVBX/config/config.php`
 	- overrides are ignored via .gitignore
-	
+- fix for audio uploads 302 error
+- added Changelog file
+
 	
 ## OpenVBX 1.0.4
 

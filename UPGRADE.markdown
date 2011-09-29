@@ -14,7 +14,7 @@ Make a backup copy of your database and your OpenVBX installation because there 
 
 ## Upload OpenVBX
 
-The next step is to get the latest version of OpenVBX from the [https://github.com/twilio/OpenVBX](OpenVBX GitHub Repository). There are two ways to get the new code on to your server:
+The next step is to get the latest version of OpenVBX from the [OpenVBX GitHub Repository](https://github.com/twilio/OpenVBX). There are two ways to get the new code on to your server:
 
 Upload the archive NEXT to your current install of OpenVBX. Do not overwrite the current install of OpenVBX.
 
@@ -69,7 +69,7 @@ Now log in to your install and follow the upgrade instructions (which, really, c
 
 ## Rollback
 
-Should something go wrong you can roll back your install by reverting the folder names on your OpenVBX install and restoring the database from your backup. If this does happen then please open a ticket on [http://getsatisfaction.com/openvbx](http://getsatisfaction.com/openvbx). 
+Should something go wrong you can roll back your install by reverting the folder names on your OpenVBX install and restoring the database from your backup. If this does happen then please open a ticket on (the Forums)[http://getsatisfaction.com/openvbx]. 
 
 Be sure to include:
 
