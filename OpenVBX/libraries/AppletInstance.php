@@ -205,7 +205,7 @@ class AppletInstance
 		}
 		else if ($mode === 'say')
 		{
-			return htmlentities($say);
+			return $say;
 		}
 		else
 		{
