@@ -91,11 +91,9 @@ OpenVBX.presence = {
 		$(this).trigger('presence', [client, OpenVBX.presence.onlineClients]);
 	}
 };
-jQuery(function($) {
-	if (window.parent.Client) {
-		OpenVBX.presence.onlineClients = $(window.parent.Client.clients);
-	}
-});
+if (window.parent.Client) {
+	OpenVBX.presence.onlineClients = window.parent.Client.clients;
+}
 	
 /////////////////////////////////////////////////////
 // Call Dialog
@@ -205,7 +203,7 @@ jQuery(function($) {
 				top: '-=' + distance + 'px',
 				opacity: 0
 			}, time, 'swing', function () {
-					// once the animate is complete, set the tracker variables
+				// once the animate is complete, set the tracker variables
 				globalTwilioSmsLock = false;
 				// hide the dialog entirely after the effect (opacity alone doesn't do the job)
 				dialog.css('display', 'none');

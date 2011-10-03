@@ -19,10 +19,6 @@
  * Contributor(s):
  **/
 
-
-require_once(APPPATH.'libraries/twilio.php');
-#require_once(APPPATH.'libraries/Applet.php'); // moved in favor of using load->library()
-
 class TwimlException extends Exception {}
 
 /* This controller handles incomming calls from Twilio and outputs response
@@ -45,7 +41,8 @@ class Twiml extends MY_Controller {
 	{
 		// this is an API controller, suppress warnings & notices
 		// to avoid XML breakage
-		error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
+		// error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE); // no, we still want them triggered
+		ini_set('display_errors', 'Off');
 		
 		parent::__construct();
 
@@ -249,7 +246,7 @@ class Twiml extends MY_Controller {
 					}
 					break;
 			}
-
+			
 			if(!is_object($applet))
 			{
 				$this->response->say('Unknown applet instance in flow '.$flow_id, $this->say_params);
@@ -281,7 +278,7 @@ class Twiml extends MY_Controller {
 		} else {
 			/* Prompt the user to answer the call */
 			$gather = $this->response->gather(array('numDigits' => '1'));
-			$say_number = implode(' ', str_split($this->request->From));
+			$say_number = implode(' ', str_split($this->input->get_post('From')));
 			$gather->say("This is a call for {$name}. To accept, Press 1.", $this->say_params);
 			$this->response->hangup();
 		}
@@ -317,7 +314,7 @@ class Twiml extends MY_Controller {
 	 *
 	 * @return void
 	 */
-	function dial()
+	public function dial()
 	{
 		validate_rest_request();
 		
@@ -335,7 +332,6 @@ class Twiml extends MY_Controller {
 		}
 		
 		// Response
-		log_message('info', $rest_access. ':: Session for phone call: '.var_export($this->session->userdata('user_id'), true));
 		$user = VBX_User::get($this->session->userdata('user_id'));
 		$name = '';
 		if(empty($user))
@@ -355,92 +351,98 @@ class Twiml extends MY_Controller {
 				'callerId' => $callerid
 			);
 
-			// $dial_client = false;
-			$to = normalize_phone_to_E164($to);
-			if (!($client_status = $this->input->get_post('online')))
+			if (filter_var($this->input->get_post('to'), FILTER_VALIDATE_EMAIL)) 
 			{
-				$client_status = 'offline';
-			}
-
-			if (!is_numeric($to)) 
-			{
-				// look up user by email address
-				$user = VBX_User::get(array(
-					'email' => $this->input->get_post('to')
-				));
-				
-				if (count($user->devices))
-				{
-					$options['sequential'] = true;
-					$dial = $this->response->dial(NULL, $options);
-					
-					foreach ($user->devices as $device) 
-					{
-						if ($device->is_active)
-						{
-							if (strpos('client:', $device->value) !== false && $user->online == 1)
-							{
-								$dial->client($user->id);
-							}
-							else {
-								$dial->number($device->value);
-							}
-						}
-					}
-				}
-				
-				// if (!empty($user) && $user->online == 1) 
-				// {
-				// 	$dial_client = true;
-				// 	$to = $user->id;
-				// }
-				// else {
-				// 	$to = null;
-				// 	
-				// 	if (count($user->devices)) 
-				// 	{
-				// 		foreach ($user->devices as $device) 
-				// 		{
-				// 			if ($device->is_active) 
-				// 			{
-				// 				$to = $user->devices[0]->value;
-				// 			}
-				// 		}
-				// 	}					
-				// }
+				$this->dial_user_by_email($this->input->get_post('to'), $options);
 			}
 			else {
+				$to = normalize_phone_to_E164($to);
 				$this->response->dial($to, $options);
 			}
-
-			// if (!$dial_client && !empty($to)) 
-			// {
-			// 	$this->response->dial($to, $options);
-			// }
-			// elseif (!empty($to))
-			// {
-			// 	$dial = $this->response->dial(NULL, $options);
-			// 	$dial->client($to);
-			// }
-			// else {
-			// 	$this->response->say("We're sorry, this user is currently not reachable. Goodbye.", $this->say_params);
-			// 	$this->response->hangup();
-			// }
 		} 
 		else 
 		{
 			$gather = $this->response->gather(array('numDigits' => 1));
-			$gather->say("Hello {$name}, this is a call from VeeBee Ex, to accept, press 1.", $this->say_params);
+			$gather->say("Hello {$name}, this is a call from VeeBee Ex, to accept, press 1.", 
+						$this->say_params);
 		}
 
 		$this->response->respond();
+	}
+	
+	/**
+	 * Dial a user identified by their email address
+	 *
+	 * Uses $user->online to determine if user "wants" to be contacted via
+	 * Twilio Client. Passed in "online" status via $_POST can override the
+	 * attempt to dial Twilio Client even if the person has set their status
+	 * to online. The $_POST var should be representative of the Presence 
+	 * Status of the user being dialed (if known).
+	 * 
+	 * @param string $user_email 
+	 * @param array $options 
+	 * @return void
+	 */
+	protected function dial_user_by_email($user_email, $options) {
+		$user = VBX_User::get(array(
+			'email' => $user_email
+		));
+		
+		if ($user instanceof VBX_User)
+		{
+			$dial_client = ($user->online == 1);
+			
+			/**
+			 * Only override the user status if we've been given
+			 * an explicit opinion on the user's online status
+			 */
+			$client_status = $this->input->get_post('online');
+			if (!empty($client_status) && $client_status == 'offline') 
+			{
+				$dial_client = false;
+			}
+
+			if (count($user->devices))
+			{
+				$options['sequential'] = 'true';
+				$dial = $this->response->dial(NULL, $options);
+			
+				foreach ($user->devices as $device) 
+				{
+					if ($device->is_active)
+					{
+						if (strpos($device->value, 'client:') !== false && $dial_client)
+						{
+							if ($dial_client) 
+							{
+								$dial->client($user->id);
+							}
+						}
+						else {
+							$dial->number($device->value);
+						}
+					}
+				}
+			}
+			else 
+			{
+				$this->response->say("We're sorry, this user is currently not reachable.".
+									" Goodbye.");
+			}
+		}
+		else
+		{
+			$this->response->say("We're sorry, that user doesn't exist in our system.".
+								" Please contact your system administrator.");
+		}		
 	}
 
 	function dial_status()
 	{
 		if($this->input->get_post('DialCallStatus') == 'failed')
 		{
-			$this->response->say('The number you have dialed is invalid. Goodbye.', $this->say_params);
+			$this->response->say('The number you have dialed is invalid. Goodbye.', 
+								$this->say_params);
 		}
 		$this->response->hangup();
 		$this->response->respond();
@@ -448,7 +450,6 @@ class Twiml extends MY_Controller {
 
 	function transcribe()
 	{
-		error_log("transcribing: {$this->request->CallSid}");
 		// attatch transcription to the recording
 		$notify = TRUE;
 		$this->load->model('vbx_message');
@@ -462,7 +463,9 @@ class Twiml extends MY_Controller {
 
 			try
 			{
-				$message = $this->vbx_message->get_message(array('call_sid' => $_REQUEST['CallSid']));
+				$message = $this->vbx_message->get_message(array(
+													'call_sid' => $this->input->get_post('CallSid')
+												));
 
 				$message->content_text = $this->input->get_post('TranscriptionText');
 				$this->vbx_message->save($message, $notify);
@@ -474,7 +477,7 @@ class Twiml extends MY_Controller {
 		}
 		catch(TwimlException $e)
 		{
-			error_log($e->getMessage());
+			log_message('error', 'Could not transcribe message: '.$e->getMessage());
 		}
 	}
 
@@ -522,9 +525,16 @@ class Twiml extends MY_Controller {
 	// fetch the current flow and set up shared objects if necessary
 	private function get_flow($flow_id = 0)
 	{
-		if($flow_id < 1) $flow_id = $this->flow_id;
-		if(is_null($this->flow)) $this->flow = VBX_Flow::get(array( 'id' => $flow_id, 'numbers' => false));
-
+		if($flow_id < 1) 
+		{
+			$flow_id = $this->flow_id;
+		}
+		
+		if(is_null($this->flow)) 
+		{
+			$this->flow = VBX_Flow::get(array( 'id' => $flow_id, 'numbers' => false));
+		}
+		
 		if($flow_id > 0)
 		{
 			if(!empty($this->flow))

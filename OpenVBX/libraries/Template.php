@@ -558,7 +558,7 @@ class CI_Template {
 				break;
 
 			case 'link':
-				$filepath = (preg_match('/^(https?:\/\/|\/\/)/', $style) ? $style : asset_url().$style);
+				$filepath = (preg_match('/^(https?:\/\/|\/\/)/', $style) ? $style : asset_url('').$style);
 				$css = '<link type="text/css" rel="stylesheet" href="'.version_url($filepath).'"';
 				if ($media)
 				{

@@ -239,7 +239,8 @@ var Client = {
 			type: 'POST',
 			success: function(response) {
 				if (response.error) {
-					var message = 'Unable to complete call. Message from server: ' + response.message;
+					var message = 'Unable to complete call. Message from server: ' +
+					 				response.message;
 					Client.triggerError(message);
 				}
 				
@@ -590,7 +591,9 @@ Client.ui = {
 	toggleCallView: function(status, calling) {
 		var dialer = $('#dialer'),
 			dialer_offset_mod = false, // by default we don't want to move
-			dialer_offset = parseInt($('#dialer').css('width').replace('px', ''), 10) + parseInt($('#dialer .client-ui-tab').css('width').replace('px', ''), 10) + 'px';
+			dialer_offset = parseInt($('#dialer').css('width').replace('px', ''), 10) +
+			 				parseInt($('#dialer .client-ui-tab').css('width').replace('px', ''), 10)
+			 				+ 'px';
 		
 		if (status == 'open' && dialer.hasClass('closed')) {
 			dialer_offset_mod = '+=';
@@ -670,7 +673,8 @@ Client.ui = {
 			type: 'POST',
 			success: function(response) {
 				if (response.error) {
-					Client.triggerError('Unable to refresh phone numbers. Message from server: ' + reponse.message);
+					Client.triggerError('Unable to refresh phone numbers. Message from server: ' 
+											+ reponse.message);
 				}
 				else {
 					$('#dialer #callerid-container').html(response.html);
@@ -681,8 +685,8 @@ Client.ui = {
 	
 // banner to show that client is disabled
 	disabledBanner: function(exception) {
-		var err_message = '<p><b>An error has occurred while initializing the Phone Client:</b><br />' +
-							exception.message + '</p>';
+		var err_message = '<p><b>An error has occurred while initializing the Phone Client:</b>' +
+							'<br />' + exception.message + '</p>';
 		$('body').append($('<div id="client-error"><div>' + err_message + '</div></div>'));
 	}
 };
@@ -706,19 +710,9 @@ Client.status = {
 				'online': (status ? 1 : 0).toString(),
 				'clientstatus' : true
 			},
-			success: function(r) {
-				if (!r.error) {
-					// reset the device with returned token
-					OpenVBX.client_capability = r.client_capability;
-					var response = r,
-						old_onready = Client.onready;
-						
-					Client.onready = function() {
-						callback.apply(null, [response]);						
-					};
-					
-					Twilio.Device.setup(OpenVBX.client_capability, OpenVBX.client_params);
-				}
+			success: function(response) {
+				if (response.error) {}
+				callback.apply(null, [response]);
 			},
 			async: false,
 			type : 'POST',
@@ -807,7 +801,9 @@ $(function () {
 	// Dial button on user list clicked
 	$('.user-dial-button', dialer).live('click', function(event) {
 		stopEvent(event);
-		Client.makeCallTo($(this).closest('li').find('input[name="email"]').val());
+		var to = $(this).closest('li').find('input[name="email"]').val(),
+			online_status = $(this).closest('li').hasClass('online') ? 'online' : 'offline';
+		Client.makeCallTo(to, online_status);
 	});
 	
 	// "Client"/"Phone" toggle clicked

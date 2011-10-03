@@ -1,5 +1,7 @@
 <?php
 
+class TwimlDialException extends Exception {};
+
 class TwimlDial {
 	/**
 	 * Use the CodeIgniter session class to set the cookie
@@ -12,6 +14,7 @@ class TwimlDial {
 	private $use_ci_session = true;
 	
 	static $hangup_stati = array('completed', 'answered');
+	static $voicemail_stati = array('no-answer', 'failed');
 	static $default_voicemail_message = 'Please leave a message. Press the pound key when you are finished.';
 	
 	protected $cookie_name;
@@ -24,6 +27,8 @@ class TwimlDial {
 	protected $transcribe = true;
 	protected $voice = 'man';
 	protected $language = 'en';
+	
+	protected $sequential = false;
 
 	/**
 	 * Default timeout is the same as the Twilio default timeout
@@ -32,7 +37,7 @@ class TwimlDial {
 	 */
 	public $default_timeout = 20;
 	
-	public function __construct()
+	public function __construct($settings = array())
 	{
 		$this->response = new TwimlResponse;
 		
@@ -56,6 +61,14 @@ class TwimlDial {
 		$this->no_answer_redirect_number = AppletInstance::getDropZoneUrl('no-answer-redirect-number');
 		
 		$this->dial_whom_instance = get_class($this->dial_whom_user_or_group);
+		
+		if (count($settings)) {
+			foreach ($settings as $setting => $value) {
+				if (isset($this->$setting)) {
+					$this->$setting = $value;
+				}
+			}
+		}
 	}
 	
 // Helpers
@@ -67,7 +80,8 @@ class TwimlDial {
 			$this->dial = $this->response->dial(NULL, array(
 					'action' => current_url(),
 					'callerId' => $this->callerId,
-					'timeout' => $this->default_timeout
+					'timeout' => $this->default_timeout,
+					'sequential' => ($this->sequential ? 'true' : 'false')
 				));
 		}
 		return $this->dial;
@@ -81,15 +95,6 @@ class TwimlDial {
 		}
 		
 		return $opts;
-	}
-	
-	public function setTranscribe($val = true) {
-		$this->transcribe = (bool) trim($val);
-	}
-	
-	public function setVoice($voice = 'man', $language = 'en') {
-		$this->voice = trim($voice);
-		$this->language = trim($language);
 	}
 	
 // Actions
@@ -143,6 +148,7 @@ class TwimlDial {
 				$dial->number($device->value, $call_opts);
 			}
 			
+			$this->state = 'calling';
 			$dialed = true;
 		}
 		return $dialed;
@@ -180,6 +186,8 @@ class TwimlDial {
 					{
 						$dial->number($device->value, $call_opts);
 					}
+					
+					$this->state = 'calling';
 					$dialed = true;
 					break;
 				}
@@ -199,6 +207,7 @@ class TwimlDial {
 	{
 		$dial = $this->getDial();
 		$dial->number($number);
+		$this->state = 'calling';
 		return true;
 	}
 	
@@ -294,7 +303,7 @@ class TwimlDial {
 		}
 		else 
 		{
-			trigger_error("Unexpected no_answer_action");
+			throw new TwimlDialException("Unexpected no_answer_action");
 		}
 	}
 	
@@ -313,6 +322,8 @@ class TwimlDial {
 							$_REQUEST['RecordingUrl'],
 							$_REQUEST['RecordingDuration']
 						);
+		$this->response->say('Your message has been recorded. Goodbye.');
+		$this->hangup();
 	}
 	
 	/**
@@ -340,44 +351,32 @@ class TwimlDial {
 	/**
 	 * Figure out our state
 	 * 
-	 * - First check the dialCallStatus, that'll tell us if we're done or not
+	 * - First check the DialCallStatus & CallStatus, they'll tell us if we're done or not
 	 * - then check our state from the cookie to see if its empty, if so, we're new
-	 * - then use the cookie value. this can be a little hairy because '{}' json_decodes as empty...
+	 * - then use the cookie value
 	 *
 	 * @return void
 	 */
 	public function set_state() 
 	{
-		$dial_status = isset($_REQUEST['DialCallStatus'])? $_REQUEST['DialCallStatus'] : null;
-		$state = $this->_get_state();
+		$call_status = isset($_REQUEST['CallStatus']) ? $_REQUEST['CallStatus'] : null;
+		$dial_call_status = isset($_REQUEST['DialCallStatus']) ? $_REQUEST['DialCallStatus'] : null;
+		
+		$this->state = $this->_get_state();
 
-		// Process state from cookie
-		if (in_array($dial_status, self::$hangup_stati)) 
+		if (in_array($dial_call_status, self::$hangup_stati) 
+			|| in_array($call_status, self::$hangup_stati) 
+			&& $this->state != 'recording')
 		{
 			$this->state = 'hangup';
 		}
-		elseif (!$state) 
+		elseif(in_array($dial_call_status, self::$voicemail_stati))
+		{
+			$this->state = 'voicemail';
+		}
+		elseif (!$this->state) 
 		{
 			$this->state = 'new';
-		}
-		else 
-		{
-			// check to see if we need to json_decode
-			if (preg_match('|^\{.*?\}$|', $state)) 
-			{
-				$state = json_decode($state);
-				// empty objects don't unserialize to anything, so set an
-				// empty array of nothing unserializes from the json
-				if (empty($state)) 
-				{
-					$state = array();
-				}
-				elseif (is_object($state)) 
-				{
-					$state = (array) $state;
-				}
-			}
-			$this->state = $state;
 		}
 	}
 	
@@ -413,12 +412,6 @@ class TwimlDial {
 	public function save_state() 
 	{
 		$state = $this->state;
-		if (is_array($state)) 
-		{
-			$state = json_encode((object) $state);
-		}
-		$state = (!empty($state)) ? $state : '{}';
-		
 		if ($this->use_ci_session) 
 		{
 			$CI =& get_instance();

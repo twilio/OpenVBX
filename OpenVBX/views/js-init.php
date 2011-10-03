@@ -9,8 +9,11 @@
 <?php 
 	if (isset($openvbx_js) && !empty($openvbx_js))
 	{
-		foreach ($openvbx_js as $var => $val) {
-			if (!preg_match('|{.*}|', $val)) {
+		foreach ($openvbx_js as $var => $val) 
+		{
+			// wrap output in quotes, with exceptions
+			if (!is_int($val) && !is_bool($val) && !preg_match('|^{.*}$|', $val)) 
+			{
 				$val = '"'.$val.'"';
 			}
 			echo "\tOpenVBX.{$var} = {$val};".PHP_EOL;

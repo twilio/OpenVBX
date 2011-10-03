@@ -48,7 +48,7 @@ if (!function_exists('generate_capability_token')) {
 			$token = $capability->generateToken(VBX_Settings::CLIENT_TOKEN_TIMEOUT);
 		}
 		catch (Exception $e) {
-			error_log($e->getMessage());
+			log_message('error', $e->getMessage());
 		}
 		
 		return $token;
@@ -129,6 +129,7 @@ if (!function_exists('_deprecated_notice')) {
 		else {
 			$message = sprintf('`%s` is deprecated since version %f.');			
 		}
+		log_message('error', $message);
 		trigger_error($message, E_WARNING);
 	}
 }
