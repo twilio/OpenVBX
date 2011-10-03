@@ -13,6 +13,7 @@
 	- modify internal calls & standard applets to use new library for API calls & TwiML generation
 - updated install, upgrade & welcome JS to abstract out the steps slider
 - updated install routine to detect & use mysqli if available
+- added native sequential="true" attribute to dialing
 - hardened install/upgrade error handling JavaScript
 - added form dropdown convenience helper to Twilio Helper
 - added Upgrade instructions file
