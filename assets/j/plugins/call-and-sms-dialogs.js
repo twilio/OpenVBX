@@ -126,10 +126,17 @@ jQuery(function($) {
 			case 'closed':
 				window.parent.Client.ui.toggleCallView('open');
 				break;
+			case 'open':
+				if (window.parent.Client.status.getCallStatus()) {
+					window.parent.Client.ui.toggleTab();
+				}
+				else {
+					window.parent.Client.ui.toggleCallView('close');
+				}
+				break;
 			case 'tab':
 				window.parent.Client.ui.toggleTab();
 				break;
-			case 'open':
 			default:
 				// do nothing
 		}

@@ -699,7 +699,7 @@ Client.status = {
 	},
 	
 	getCallStatus: function () {
-		this.getCookieVal(on_call);
+		return this.getCookieVal('on_call');
 	},
 	
 	setWindowStatus: function (status, callback) {
@@ -718,10 +718,6 @@ Client.status = {
 			type : 'POST',
 			dataType : 'json'
 		});
-	},
-	
-	getWindowStatus: function () {
-		return this.getCookieVal('window_open');
 	},
 
 // Cookie Helpers
