@@ -136,7 +136,8 @@ abstract class Services_Twilio_ListResource
     {
         return new Services_Twilio_AutoPagingIterator(
             array($this, 'getPageGenerator'),
-            create_function('$page, $size', 'return array($page + 1, $size);'),
+            create_function('$page, $size, $filters',
+                'return array($page + 1, $size, $filters);'),
             array($page, $size, $filters)
         );
     }
