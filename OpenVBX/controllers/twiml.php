@@ -19,6 +19,8 @@
  * Contributor(s):
  **/
 
+require_once(APPPATH.'libraries/twilio.php'); // @deprecated in 1.1
+
 class TwimlException extends Exception {}
 
 /* This controller handles incomming calls from Twilio and outputs response
@@ -39,9 +41,7 @@ class Twiml extends MY_Controller {
 
 	public function __construct()
 	{
-		// this is an API controller, suppress warnings & notices
-		// to avoid XML breakage
-		// error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE); // no, we still want them triggered
+		// this is an API controller, suppress warning & notice output to avoid XML breakage
 		ini_set('display_errors', 'Off');
 		
 		parent::__construct();

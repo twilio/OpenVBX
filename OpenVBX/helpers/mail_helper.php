@@ -20,11 +20,7 @@
  **/
 	
 function openvbx_mail($recipient, $subject, $template, $maildata = array())
-{
-	log_message('debug', 'mailing');
-
-	//$path = APPPATH . 'views/emails/' . $template . '.php';
-	
+{	
 	$ci = &get_instance();
 	
 	$domain = $ci->config->item('server_name');
@@ -34,16 +30,9 @@ function openvbx_mail($recipient, $subject, $template, $maildata = array())
 		$from_email = "$from <do-not-reply@$domain>";
 	}
 	$headers = "From: $from_email";
+	$message = $ci->load->view('emails/'.$template, $maildata, true);
 
-	// /* Render the mail template */
-	// ob_start();
-	// extract($maildata);
-	// include($path);
-	// $message = ob_get_contents();
-	// ob_end_clean();
-	$message = $ci->load->view('emails/'.$template, $data, true);
-
-	log_message('debug', $message);
+	log_message('debug', 'MAILING -- to: '.$recipient.' -- body: '.$message);
 
 	return mail($recipient, '[OpenVBX] '.$subject, $message, $headers);
 }
