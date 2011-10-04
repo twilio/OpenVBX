@@ -1,7 +1,15 @@
 <?php
 	$ci =& get_instance();
 	$ci->load->model('vbx_incoming_numbers');
-	$numbers = $ci->vbx_incoming_numbers->get_numbers(false);
+	
+	try {
+		$numbers = $ci->vbx_incoming_numbers->get_numbers(false);
+	}
+	catch (VBX_IncomingNumberException $e) {
+		log_message('Incoming numbers exception: '.$e->getMessage.' :: '.$e->getCode());
+		$numbers = array();
+	}
+	
 	$callerId = AppletInstance::getValue('callerId', null);
 	$version = AppletInstance::getValue('version', null);
 
