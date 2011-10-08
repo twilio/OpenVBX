@@ -32,7 +32,7 @@
 							<label class="field-label left">From
 								<select name="callerid" class="small">
 									<?php foreach($callerid_numbers as $number): ?>
-									<option value="<?php echo $number->phone ?>"><?php echo $number->phone ?></option>
+									<option value="<?php echo $number->phone ?>"><?php echo $number->name ?></option>
 									<?php endforeach; ?>
 								</select>
 							</label>
@@ -76,13 +76,13 @@
 				<form action="<?php echo site_url('messages/sms') ?>" method="POST" class="sms-dialog-form vbx-form">
 					<fieldset class="vbx-input-complex vbx-input-container">
 						<label class="field-label left">To
-							<input class="small" name="to" type="text" placeholder="(555) 867 5309" value="" />
+							<input class="small" name="to" type="text" value="" />
 						</label>
 						<?php if(isset($callerid_numbers) && count($callerid_numbers) > 1): ?>
 						<label class="field-label left">From
 							<select name="from" class="small">
 								<?php foreach($callerid_numbers as $number): ?>
-								<option value="<?php echo $number->phone ?>"><?php echo $number->phone ?></option>
+								<option value="<?php echo $number->phone ?>"><?php echo $number->name ?></option>
 								<?php endforeach; ?>
 							</select>
 						</label>
