@@ -7,23 +7,46 @@ if(!isset($tenants)) { return; }
 	
 	<div class="vbx-input-complex vbx-input-container">
 		<label for="tenant-admin-email" class="field-label">Adminstrator email:
-			<input id="tenant-admin-email" type="text" name="tenant[admin_email]" value="" class="medium" />
+			<?php
+				pp($tenant);
+				$email_data = array(
+					'name' => 'tenant[admin_email]',
+					'id' => 'tenant-admin-email',
+					'class' => 'medium'
+				);
+				echo t_form_input($email_data, '');
+			?>
 		</label>
 	</div>
 	
 	<div class="vbx-input-complex vbx-input-container">
 		<label for"tenant-url-prefix" class="field-label">Tenant Name:
-		    <input id="tenant-url-prefix" type="text" name="tenant[url_prefix]" value="" class="medium" />
+			<?php
+				$url_data = array(
+					'name' => 'tenant[url_prefix]',
+					'id' => 'tenant-url-prefix',
+					'class' => 'medium'
+				);
+				echo t_form_input($url_data, '');
+			?>
 		</label>
     </div>
 	
 	<div class="vbx-input-complex vbx-input-container">
 	<?php if (isset($connect_application_sid) && !empty($connect_application_sid['value'])): ?>
 		<label for="auth-type" class="field-label">Authentication Type:
-			<select class="medium" name="auth_type" id="auth-type">
-				<option value="subaccount">Sub-Account</option>
-				<option value="connect">Twilio Connect (OAuth)</option>
-			</select>
+			<?php
+				$params = array(
+					'name' => 'auth_type',
+					'id' => 'auth-type',
+					'class' => 'medium'
+				);
+				$options = array(
+					'subaccount' => 'Sub-Account',
+					'connect' => 'Twilio Connect'
+				);
+				echo t_form_dropdown($params, $options);
+			?>
 		</label>
 	<?php endif; ?>
 	</div>

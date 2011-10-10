@@ -148,13 +148,36 @@ if (!function_exists('t_form_dropdown')) {
 		$name = $params['name'];
 		
 		$extra = '';
-		foreach (array('id', 'class', 'tabindex') as $key) {
-			if (!empty($params[$key])) {
+		foreach (array('id', 'class', 'tabindex') as $key) 
+		{
+			if (!empty($params[$key])) 
+			{
 				$extra .= ' '.$key.'="'.$params[$key].'"';
 			}
 		}
 		
 		return form_dropdown($name, $options, $selected, $extra);
+	}
+}
+
+if (!function_exists('t_form_input'))
+{
+	function t_form_input($params, $value)
+	{
+		$data = array(
+			'name' => $params['name']
+		);
+		
+		$extra = '';
+		foreach (array('id', 'class', 'tabindex') as $key)
+		{
+			if (!empty($params[$key]))
+			{
+				$extra .= ' '.$key.'="'.$params[$key].'"';
+			}
+		}
+
+		return form_input($data, $value, $extra);
 	}
 }
 
