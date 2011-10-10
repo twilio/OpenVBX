@@ -178,7 +178,7 @@ class MY_Controller extends Controller
 		if (isset($this->assets[$type])) {
 			$_assets = $this->assets[$type];
 			foreach ($_assets as &$asset) {
-				$asset = preg_replace('|^(//)|', '', $asset);
+				$asset = preg_replace('|^(\.\.)|', 'assets', $asset);
 			}
 			return $_assets;
 		}
