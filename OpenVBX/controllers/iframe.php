@@ -30,11 +30,12 @@ class Iframe extends User_Controller {
 
 	public function __construct() {
 		parent::__construct();
-
-		// look at protocol and serve the appropriate file, https comes from amazon aws
-		$this->twilio_js_baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ?
-			'https://s3.amazonaws.com/static.twilio.com' : 'http://static.twilio.com';
-		$this->twilio_js_file = 'twilio'.($this->config->item('use_unminimized_js') ? '' : '.min').'.js';
+		
+		$this->twilio_js_baseurl = 'http'.
+							(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').
+							'://static.twilio.com';
+		$this->twilio_js_file = 'twilio'.
+							($this->config->item('use_unminimized_js') ? '' : '.min').'.js';
 	}
 
 	function index() {

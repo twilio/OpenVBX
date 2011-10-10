@@ -31,7 +31,13 @@
 				<tbody>
 					<?php foreach($items as $item): ?>
 					<tr rel="<?php echo $item['id'] ?>" class="items-row <?php if(in_array($item['id'], $highlighted_numbers)): ?>highlight-row<?php endif;?> <?php echo ($item['id'] == 'Sandbox')? 'sandbox-row' :'' ?>">
-						<td class="incoming-number-phone"><?php echo ($item['id'] == 'Sandbox')? '<span class="sandbox-label">SANDBOX</span>' : ''?><?php echo $item['phone'] ?> <?php echo !empty($item['pin'])? ' Pin: '.implode('-', str_split($item['pin'], 4)) : '' ?></td>
+						<td class="incoming-number-phone"> 
+							<?php if ($item['id'] == 'Sandbox'): ?>
+								<span class="sandbox-label">SANDBOX</span>
+							<?php elseif ($item['phone'] != $item['name']): ?>
+								<span class="number-label"><?php echo $item['name']; ?></span>
+							<?php endif; ?>
+							<?php echo $item['phone'] ?> <?php echo !empty($item['pin'])? ' Pin: '.implode('-', str_split($item['pin'], 4)) : '' ?></td>
 						<td class="incoming-number-flow">
 							<select name="flow_id">
 								<option value="">Connect a Flow</option>

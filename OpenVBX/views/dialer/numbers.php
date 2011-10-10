@@ -3,7 +3,7 @@
 	<label class="field-label"><span class="label-text">From</span>
 		<select id="caller-id-phone-number">
 		<?php foreach ($callerid_numbers as $number): ?>
-			<option value="<?php echo $number->phone ?>"><?php echo $number->phone ?></option>
+			<option value="<?php echo $number->phone ?>"><?php echo $number->name ?></option>
 		<?php endforeach; ?>
 		</select>
 	</label>

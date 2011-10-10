@@ -76,10 +76,12 @@
     width: 150px;
 }
 
-#phone-numbers-table .sandbox-row .sandbox-label {
+#phone-numbers-table .sandbox-row .sandbox-label,
+#phone-numbers-table .number-label {
     font-weight: bolder;
-    float: left;
-    width: 100%;
+	float: left;
+	width: 100%;
+	text-transform: uppercase;
 }
 
 #phone-numbers-table .sandbox-row td {

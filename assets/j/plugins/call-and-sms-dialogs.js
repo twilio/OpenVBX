@@ -111,17 +111,16 @@ jQuery(function($) {
 			if (_userstatus == 'online') {
 				_status.addClass('online');
 			}
-		};
-		
-		return;
+			return;
+		};		
 	}
 	
 	// @todo pull out when html is deleted from view
 	var dialog = $('.call-dialog').css('opacity', 0);
-	
+
 	$('.twilio-call').live('click', function(e) {
 		e.preventDefault();
-		
+
 		switch (window.parent.Client.ui.state()) {
 			case 'closed':
 				window.parent.Client.ui.toggleCallView('open');
