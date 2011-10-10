@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `groups_users` (
   `group_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `tenant_id` BIGINT(20) NOT NULL,
+  `order` TINYINT(3) DEFAULT 0,
   PRIMARY KEY  (`id`),
   KEY `group_id` (`group_id`),
   INDEX(`tenant_id`)

@@ -8,7 +8,7 @@ function runUpdate_58() {
 		$ci->dbforge->add_column('groups_users', array(
 			'order' => array(
 				'type' => 'TINYINT',
-				'constraint' => '1',
+				'constraint' => '3',
 				'default' => '0'
 			)
 		));
