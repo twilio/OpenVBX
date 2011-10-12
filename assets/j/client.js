@@ -271,7 +271,7 @@ var Client = {
 						Client.connection = Twilio.Device.connect(params);
 					}
 					else {
-					
+						Client.triggerError(r.message);
 					}
 				},
 				'json'

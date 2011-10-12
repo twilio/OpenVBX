@@ -3,23 +3,31 @@
 	// is a trial account this will be flipped to true
 	$dial_disabled = false;
 ?>
-<div id="client-mode-status">
-	<a id="client-mode-button" class="enabled" href="">Client</a>
-	<a id="phone-mode-button" class="disabled" href="">Phone</a>
-</div>
 
 <form id="make-call-form" action="" method="POST">
 	<fieldset>
+		<legend>From</legend>
 		
-		<label class="field-label"><span class="label-text">Call</span>
-			<input id="dial-phone-number" type="text" placeholder="Phone number" />
+		<label class="field-label"><span class="label-text">Using</span>
+			<div id="client-mode-status">
+				<a id="client-mode-button" class="enabled" href="">Browser</a>
+				<a id="phone-mode-button" class="disabled" href="">Phone</a>
+			</div>
 		</label>
 		
 		<div id="callerid-container">
 			<?php $this->load->view('dialer/numbers'); ?>
 		</div><!-- #callerid-container -->
-		
 	</fieldset>
+	
+	<fieldset>
+		<legend>To</legend>
+				
+		<label class="field-label"><span class="label-text">To</span>
+			<input id="dial-phone-number" type="text" placeholder="Phone number" />
+		</label>
+	</fieldset>
+	
 	<button id="dial-input-button" type="submit" <?php echo ($dial_disabled ? ' disabled="disabled"' : ''); ?>><span class="button-text">Dial</span></button>	
 </form><!-- #make-call-form -->
 

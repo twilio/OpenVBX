@@ -122,8 +122,15 @@
     margin: 10px 0;
     padding: 20px;
     background-color: #EEE;
-    -moz-border-radius: 8px;
-    -webkit-border-radius: 8px;
+	-moz-border-radius: 8px; /* FF1+ */
+	-webkit-border-radius: 8px; /* Saf3+, Chrome */
+	-khtml-border-radius: 8px; /* Konqueror */
+	border-radius: 8px; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
 }
 
 #dlg_add .error {
@@ -226,8 +233,15 @@
     padding: 8px 0 0 8px;
     background-color: #EEE;
     border: 1px solid #999;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
 	overflow: auto;
 }
 
@@ -242,8 +256,15 @@
     cursor: move;
     overflow: hidden;
     border: 1px solid #777;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
 }
 
 #user-container .user-info {
@@ -300,8 +321,15 @@
     background-color: #FFF;
     cursor: pointer;
     border: 1px dashed #555;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
 }
 
 #group-container .ui-state-hover {
@@ -318,9 +346,16 @@
     font-weight: bold;
     color: #FFF;
     background-color: #444;
-    border: 3px solid #FFF;
-    -moz-border-radius: 24px;
-    -webkit-border-radius: 24px;
+    border: 3px solid #FFF; /* there's an issue with this in IE9 - ugh... */
+	-moz-border-radius: 50%; /* FF1+ */
+	-webkit-border-radius: 50%; /* Saf3+, Chrome */
+	-khtml-border-radius: 50%; /* Konqueror */
+	border-radius: 50%; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
 }
 
 #group-container .group-counter-loader {

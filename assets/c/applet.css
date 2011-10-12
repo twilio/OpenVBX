@@ -90,8 +90,15 @@
     padding: 10px;
     background-color: #EEE;
     border: 1px solid #DDD;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
 }
 
 .vbx-applet .vbx-split-pane {
@@ -99,8 +106,15 @@
     padding: 10px;
     background-color: #FFF;
     border: 1px solid #DDD;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
 	overflow: auto;
 }
 
@@ -191,8 +205,15 @@
     text-align: center;
     background-color: #FFF;
     border: 1px dashed #555;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px; /* FF1+ */
+    -webkit-border-radius: 4px; /* Saf3+, Chrome */
+    -khtml-border-radius: 4px; /* Konqueror */
+    border-radius: 4px; /* Standard. IE9 */
+    /**
+     * @bugfix border-radius background bleed
+     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+     */
+    -webkit-background-clip: padding-box;
 }
 
 .settings-panel .filled-item .item-body {
@@ -221,8 +242,15 @@
     text-align: center;
     background-color: #EFEFEF;
     border: 2px solid #666;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px; /* FF1+ */
+    -webkit-border-radius: 4px; /* Saf3+, Chrome */
+    -khtml-border-radius: 4px; /* Konqueror */
+    border-radius: 4px; /* Standard. IE9 */
+    /**
+     * @bugfix border-radius background bleed
+     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+     */
+    -webkit-background-clip: padding-box;
 }
 
 .settings-panel .filled-item a.item-box:hover {
@@ -242,8 +270,15 @@
     padding: 10px;
     background-color: #EEE;
     border: 1px solid #DDD;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px; /* FF1+ */
+    -webkit-border-radius: 4px; /* Saf3+, Chrome */
+    -khtml-border-radius: 4px; /* Konqueror */
+    border-radius: 4px; /* Standard. IE9 */
+    /**
+     * @bugfix border-radius background bleed
+     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+     */
+    -webkit-background-clip: padding-box;
 }
 
 .settings-panel .selected-usergroup {
@@ -254,10 +289,14 @@
     background-color: #FFF;
     border: 1px solid #999;
     border-right: none;
-    -moz-border-radius-topleft: 4px;
-    -moz-border-radius-bottomleft: 4px;
-    -webkit-border-radius-topleft: 4px;
-    -webkit-border-radius-bottomleft: 4px;
+	-moz-border-radius-topleft: 4px; /* FF1+ */
+	-webkit-border-top-left-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-top-left-radius: 4px; /* Konqueror */
+	border-top-left-radius: 4px; /* Standard. IE9 */
+	-moz-border-radius-bottomleft: 4px; /* FF1+ */
+	-webkit-border-bottom-left-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-bottom-left-radius: 4px; /* Konqueror */
+	border-bottom-left-radius: 4px; /* Standard. IE9 */
 }
 
 .settings-panel .placeholder {
@@ -274,11 +313,15 @@
     background-color: #FFF;
     border: 1px solid #999;
     border-left: 1px solid #444;
-    -moz-border-radius-topright: 4px;
-    -moz-border-radius-bottomright: 4px;
-    -webkit-border-radius-topright: 4px;
-    -webkit-border-radius-bottomright: 4px;
     cursor: pointer;
+	-moz-border-radius-topright: 4px; /* FF1+ */
+	-webkit-border-top-right-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-top-right-radius: 4px; /* Konqueror */
+	border-top-right-radius: 4px; /* Standard. IE9 */
+	-moz-border-radius-bottomright: 4px; /* FF1+ */
+	-webkit-border-bottom-right-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-bottom-right-radius: 4px; /* Konqueror */
+	border-bottom-right-radius: 4px; /* Standard. IE9 */
 }
 
 
@@ -290,10 +333,17 @@
     padding: 0px;
     background-color: rgb(238, 238, 238);
     border: 1px solid rgb(221, 221, 221);
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
     width: 100%;
     text-align: left;
+	-moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
 }
 
 .audio-choice table {
@@ -390,27 +440,42 @@
     width: 100%;
     height: 100%;
     position: relative;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
+	-moz-border-radius: 2px; /* FF1+ */
+	-webkit-border-radius: 2px; /* Saf3+, Chrome */
+	-khtml-border-radius: 2px; /* Konqueror */
+	border-radius: 2px; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
 }
 
 .audio-choice .audio-choice-current-value td.left-indicator {
     background-color: rgb(200, 200, 200);
     padding: 8px 12px 8px 12px;
-    -moz-border-bottom-left-radius: 4px;
-    -webkit-border-bottom-left-radius: 4px;
-    -moz-border-top-left-radius: 4px;
-    -webkit-border-top-left-radius: 4px;
+	-moz-border-radius-topleft: 4px; /* FF1+ */
+	-webkit-border-top-left-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-top-left-radius: 4px; /* Konqueror */
+	border-top-left-radius: 4px; /* Standard. IE9 */
+	-moz-border-radius-bottomleft: 4px; /* FF1+ */
+	-webkit-border-bottom-left-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-bottom-left-radius: 4px; /* Konqueror */
+	border-bottom-left-radius: 4px; /* Standard. IE9 */
     white-space: nowrap;
 }
 
 .audio-choice .audio-choice-current-value td.right-indicator {
     background-color: rgb(200, 200, 200);
     padding: 8px 10px 8px 8px;
-    -moz-border-bottom-right-radius: 4px;
-    -webkit-border-bottom-right-radius: 4px;
-    -moz-border-top-right-radius: 4px;
-    -webkit-border-top-right-radius: 4px;
+	-moz-border-radius-topright: 4px; /* FF1+ */
+	-webkit-border-top-right-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-top-right-radius: 4px; /* Konqueror */
+	border-top-right-radius: 4px; /* Standard. IE9 */
+	-moz-border-radius-bottomright: 4px; /* FF1+ */
+	-webkit-border-bottom-right-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-bottom-right-radius: 4px; /* Konqueror */
+	border-bottom-right-radius: 4px; /* Standard. IE9 */
 }
 
 .audio-choice .audio-choice-current-value td.middle {
@@ -441,8 +506,15 @@
 }
 
 .audio-choice .audio-choice-editor .audio-choice-upload .upload-bar {
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px; /* FF1+ */
+    -webkit-border-radius: 4px; /* Saf3+, Chrome */
+    -khtml-border-radius: 4px; /* Konqueror */
+    border-radius: 4px; /* Standard. IE9 */
+    /**
+     * @bugfix border-radius background bleed
+     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+     */
+    -webkit-background-clip: padding-box;
     float: left;
     background: rgb(195, 195, 195);
     border: 1px solid #aaa;
@@ -535,8 +607,15 @@
 
 .radio-table {
     border: 1px solid #bbb;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px; /* FF1+ */
+    -webkit-border-radius: 4px; /* Saf3+, Chrome */
+    -khtml-border-radius: 4px; /* Konqueror */
+    border-radius: 4px; /* Standard. IE9 */
+    /**
+     * @bugfix border-radius background bleed
+     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+     */
+    -webkit-background-clip: padding-box;
 }
 
 .radio-table .radio-cell {
@@ -551,13 +630,17 @@
 .radio-table .radio-table-row.off .content-cell input { background-color: #cccccc; }
 
 .radio-table .radio-table-row.first .radio-cell {
-    -moz-border-top-left-radius: 4px;
-    -webkit-border-top-left-radius: 4px;
+	-moz-border-radius-topleft: 4px; /* FF1+ */
+	-webkit-border-top-left-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-top-left-radius: 4px; /* Konqueror */
+	border-top-left-radius: 4px; /* Standard. IE9 */
 }
 
 .radio-table .radio-table-row.last .radio-cell {
-    -moz-border-bottom-left-radius: 4px;
-    -webkit-border-bottom-left-radius: 4px;
+	-moz-border-radius-bottomleft: 4px; /* FF1+ */
+	-webkit-border-bottom-left-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-bottom-left-radius: 4px; /* Konqueror */
+	border-bottom-left-radius: 4px; /* Standard. IE9 */
 }
 
 .radio-table td.content-cell {
@@ -568,13 +651,17 @@
 .radio-table .radio-table-row.off .content-cell { background-color: #eee; }
 
 .radio-table .radio-table-row.fist .content-cell {
-    -moz-border-top-right-radius: 4px;
-    -webkit-border-top-right-radius: 4px;
+	-moz-border-radius-topright: 4px; /* FF1+ */
+	-webkit-border-top-right-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-top-right-radius: 4px; /* Konqueror */
+	border-top-right-radius: 4px; /* Standard. IE9 */
 }
 
 .radio-table .radio-table-row.last .content-cell {
-    -moz-border-bottom-right-radius: 4px;
-    -webkit-border-bottom-right-radius: 4px;
+	-moz-border-radius-bottomright: 4px; /* FF1+ */
+	-webkit-border-bottom-right-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-bottom-right-radius: 4px; /* Konqueror */
+	border-bottom-right-radius: 4px; /* Standard. IE9 */
 }
 .radio-table .radio-table-row {
     border-bottom: 1px solid #bbb;

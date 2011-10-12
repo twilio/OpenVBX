@@ -33,8 +33,15 @@
 	color: #999;
 	font-style: italic;
 	border: 1px solid #CCC;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px; /* FF1+ */
+    -webkit-border-radius: 6px; /* Saf3+, Chrome */
+    -khtml-border-radius: 6px; /* Konqueror */
+    border-radius: 6px; /* Standard. IE9 */
+    /**
+     * @bugfix border-radius background bleed
+     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+     */
+    -webkit-background-clip: padding-box;
 }
 
 .device-container .device-list{
@@ -49,8 +56,15 @@
     padding: 0 8px 0 20px;
     background: #FFF url(../i/device-drag-grip.png) no-repeat 2px 2px;
     border: 1px solid #CCC;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px; /* FF1+ */
+    -webkit-border-radius: 6px; /* Saf3+, Chrome */
+    -khtml-border-radius: 6px; /* Konqueror */
+    border-radius: 6px; /* Standard. IE9 */
+    /**
+     * @bugfix border-radius background bleed
+     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+     */
+    -webkit-background-clip: padding-box;
     cursor: move;
 }
 
@@ -119,8 +133,15 @@
     margin: 4px 20px 0 0;
     background-color: #777;
     border: 1px solid #444;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+	/**
+	 * @bugfix border-radius background bleed
+	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+	 */
+	-webkit-background-clip: padding-box;
 }
 
 .device-container .device-status a {
@@ -183,8 +204,15 @@
 .application-container .application {
 	padding: 15px;
     border: 1px solid #CCC;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px; /* FF1+ */
+    -webkit-border-radius: 6px; /* Saf3+, Chrome */
+    -khtml-border-radius: 6px; /* Konqueror */
+    border-radius: 6px; /* Standard. IE9 */
+    /**
+     * @bugfix border-radius background bleed
+     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+     */
+    -webkit-background-clip: padding-box;
 	overflow: auto;
 	clear: both;
 }
