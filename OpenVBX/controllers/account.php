@@ -184,6 +184,25 @@ class Account extends User_Controller {
 
 		echo json_encode($this->data);
 	}
+	
+	public function rest_access_token()
+	{
+		try {
+			$token = $this->make_rest_access();
+			$data = array(
+				'error' => false,
+				'token' => $this->make_rest_access()
+			);
+		}
+		catch (Exception $e) {
+			$data = array(
+				'error' => true,
+				'message' => $e->getMessage()
+			);
+		}
+		
+		echo json_encode($data);
+	}
 
 
 	public function save_voicemail()

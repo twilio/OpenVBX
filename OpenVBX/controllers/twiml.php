@@ -297,6 +297,7 @@ class Twiml extends MY_Controller {
 			$this->response->Respond();
 			return;
 		}
+		
 		/* Response */
 		log_message('info', $rest_access. ':: Session for phone call: '.var_export($this->session->userdata('user_id'), true));
 		$user = VBX_User::get($this->session->userdata('user_id'));
@@ -403,9 +404,8 @@ class Twiml extends MY_Controller {
 				$this->session->set_userdata('user_id', $user_id);
 				$this->session->set_userdata('loggedin', true);
 				$this->session->set_userdata('signature', VBX_User::signature($user_id));
+				return true;
 			}
-
-			return true;
 		}
 
 		return false;
