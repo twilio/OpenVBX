@@ -262,8 +262,20 @@ var Client = {
 	
 	call: function (params) {
 		if (Twilio.Device.status() == 'ready') {
-			this.ui.toggleCallView('open', true);
-			this.connection = Twilio.Device.connect(params);
+			
+			$.post(OpenVBX.home + '/account/rest_access_token', {},
+				function(r) {
+					if (!r.error) {
+						params.rest_access = r.token;						
+						Client.ui.toggleCallView('open', true);
+						Client.connection = Twilio.Device.connect(params);
+					}
+					else {
+					
+					}
+				},
+				'json'
+			);
 		}
 	},
 

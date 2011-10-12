@@ -183,7 +183,25 @@ class Account extends User_Controller {
 
 		echo json_encode($this->data);
 	}
-
+	
+	public function rest_access_token()
+	{
+		try {
+			$token = $this->make_rest_access();
+			$data = array(
+				'error' => false,
+				'token' => $this->make_rest_access()
+			);
+		}
+		catch (Exception $e) {
+			$data = array(
+				'error' => true,
+				'message' => $e->getMessage()
+			);
+		}
+		
+		echo json_encode($data);
+	}
 
 	public function save_voicemail()
 	{
@@ -218,13 +236,11 @@ class Account extends User_Controller {
 			$user->online = intval($online);
 			try {
 				$user->save();
-				$rest_access = $this->make_rest_access();
 
 				$data['json'] = array(
 					'error' => false,
 					'message' => 'status updated',
-					'client_status' => ($online ? 'online' : 'offline'),
-					'client_capability' => generate_capability_token($rest_access, $online)
+					'client_status' => ($online ? 'online' : 'offline')
 				);
 			}
 			catch (VBX_UserException $e) {

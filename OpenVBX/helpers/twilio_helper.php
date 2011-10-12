@@ -27,7 +27,7 @@ if (!function_exists('generate_capability_token')) {
 	 * @param string $allow_incoming 
 	 * @return string
 	 */
-	function generate_capability_token($rest_access, $allow_incoming = true) {
+	function generate_capability_token($allow_incoming = true) {
 		$ci =& get_instance();
 		$capability = new Services_Twilio_Capability($ci->twilio_sid, $ci->twilio_token);
 
@@ -36,7 +36,6 @@ if (!function_exists('generate_capability_token')) {
 
 		$params = array(
 			'user_id' => $user->user_id,
-			'rest_access' => $rest_access
 		);
 		
 		$token = null;

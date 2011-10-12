@@ -495,9 +495,8 @@ class Twiml extends MY_Controller {
 				$this->session->set_userdata('user_id', $user_id);
 				$this->session->set_userdata('loggedin', true);
 				$this->session->set_userdata('signature', VBX_User::signature($user_id));
+				return true;
 			}
-
-			return true;
 		}
 
 		return false;

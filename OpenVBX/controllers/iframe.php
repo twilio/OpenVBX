@@ -58,7 +58,7 @@ class Iframe extends User_Controller {
 		{
 			$user_id = intval($this->session->userdata('user_id'));
 			$user = VBX_user::get(array('id' => $user_id));
-			$data['client_capability'] = generate_capability_token($this->make_rest_access(), ($user->online == 1));
+			$data['client_capability'] = generate_capability_token();
 		}
 
 		// internal dev haxies
