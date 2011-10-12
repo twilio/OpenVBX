@@ -34,6 +34,9 @@
 - adding local config override option for `OpenVBX/config/config.php`
 	- overrides are ignored via .gitignore
 - fix for audio uploads 302 error
+- fix bug in rest access tokens that could allow unauthorized access to twiml controller
+	- each twilio client outbound call now has its own rest access token
+- add more standards compliant rounded corners CSS
 - added Changelog file
 
 	
