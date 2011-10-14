@@ -35,6 +35,7 @@ class Message_Call extends User_Controller
 			$to = $this->input->post('to');
 			$callerid = $this->input->post('callerid');
 			$from = $this->input->post('from');
+			$from = process_device_for_number($from);
 			
 			$this->load->model('vbx_call');
 			$json['error'] = false;

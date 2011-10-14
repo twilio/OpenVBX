@@ -8,6 +8,9 @@
 - adding transcription preference to site options to allow transcriptions to be turned off
 - adding ability to sort users in a group
 - updated Twilio Client UI slider to fully integrate dialing functionality in to slider dialog
+	- dialog now saves state as user specific settings
+	- dialog allows dialing using any configured device wether active or not
+	- dialog shows a list of users in the system along with a quick dial button
 - adding [Minify.php](http://code.google.com/p/minify/) for asset minification in lieu of pre-compiled assets
 - updated API library to latest [Services Twilio library](https://github.com/twilio/twilio-php) & updated all calls to Twilio to use the new library
 	- modify internal calls & standard applets to use new library for API calls & TwiML generation
@@ -15,8 +18,13 @@
 - updated install routine to detect & use mysqli if available
 - added native sequential="true" attribute to dialing
 - hardened install/upgrade error handling JavaScript
+- showing number names in Twilio numbers list
+	- numbers are named in the Twilio Account portal
 - added form dropdown convenience helper to Twilio Helper
 - added Upgrade instructions file
+- added user settings table
+	- added user `setting()` and `setting_set()` interfaces on VBX_User
+	- added /account/settings ajax endpoint for setting preferences
 - improved Twilio Client init & user online status handling when Client takes a while to init
 - added deprecation notices to old api library items
 - added new Twilio helper file with:
@@ -36,7 +44,7 @@
 - fix for audio uploads 302 error
 - fix bug in rest access tokens that could allow unauthorized access to twiml controller
 	- each twilio client outbound call now has its own rest access token
-- add more standards compliant rounded corners CSS
+- add more standards compliant CSS for base UI styling
 - added Changelog file
 
 	

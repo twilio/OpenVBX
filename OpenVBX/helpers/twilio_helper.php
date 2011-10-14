@@ -92,6 +92,24 @@ if (!function_exists('clean_digits')) {
 	}
 }
 
+if (!function_exists('process_device_for_number'))
+{
+	function process_device_for_number($caller_id)
+	{
+		if (preg_match('|device:[0-9]{1,3}|', $caller_id))
+		{
+			$device_id = str_replace('device:', '', $caller_id);
+			$device = VBX_Device::get(array('id' => $device_id));
+			if ($device instanceof VBX_Device)
+			{
+				$caller_id = $device->value;
+			}
+		}
+
+		return $caller_id;
+	}
+}
+
 if (!function_exists('version_url')) {
 	/**
 	 * Append the current site rev to a url to force asset reload on upgrade/change
@@ -144,10 +162,14 @@ if (!function_exists('t_form_dropdown')) {
 	 */
 	function t_form_dropdown($params, $options, $selected = false)
 	{
-		$name = $params['name'];
+		$name = '';
+		if (!empty($params['name']))
+		{
+			$name = $params['name'];
+		}
 		
 		$extra = '';
-		foreach (array('id', 'class', 'tabindex') as $key) 
+		foreach (t_form_valid_extra_attributes() as $key) 
 		{
 			if (!empty($params[$key])) 
 			{
@@ -163,12 +185,15 @@ if (!function_exists('t_form_input'))
 {
 	function t_form_input($params, $value)
 	{
-		$data = array(
-			'name' => $params['name']
-		);
+		if (!empty($params['name']))
+		{
+			$data = array(
+				'name' => $params['name']
+			);
+		}
 		
 		$extra = '';
-		foreach (array('id', 'class', 'tabindex') as $key)
+		foreach (t_form_valid_extra_attributes() as $key)
 		{
 			if (!empty($params[$key]))
 			{
@@ -177,6 +202,58 @@ if (!function_exists('t_form_input'))
 		}
 
 		return form_input($data, $value, $extra);
+	}
+}
+
+if (!function_exists('t_form_button'))
+{
+	function t_form_button($params)
+	{
+		if (!empty($params['name']))
+		{
+			$data = array(
+				'name' => $params['name'],
+			);
+		}
+		
+		$content = $params['value'];
+		
+		$extra = '';
+		foreach (t_form_valid_extra_attributes() as $key)
+		{
+			if (!empty($params[$key]))
+			{
+				$extra .= ' '.$key.'="'.$params[$key].'"';
+			}
+		}
+		
+		if ($params['type'] == 'submit')
+		{
+			return form_submit($data, $content, $extra);
+		}
+		else
+		{
+			return form_button($data, $content, $extra);
+		}
+	}
+}
+
+if (!function_exists('t_form_valid_attributes'))
+{
+	/**
+	 * Since CodeIgniter insists on setting id, class, etc... as 
+	 * extra attributes, we'll help ourselves out with a list of
+	 * valid extras per type
+	 *
+	 * @return array
+	 */
+	function t_form_valid_extra_attributes()
+	{
+		return array('id', 'class', 'tabindex',
+			'disabled',	'readonly', 'placeholder',
+			'src', 'size', 'maxlength',
+			'alt', 'accept'
+		);
 	}
 }
 

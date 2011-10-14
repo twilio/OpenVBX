@@ -221,7 +221,46 @@ class Account extends User_Controller {
 		return $data;
 	}
 	
-	public function client_status() {
+	public function settings() 
+	{
+		$data['json'] = array(
+			'error' => false,
+			'message' => ''
+		);
+
+		if ($this->request_method == 'POST')
+		{
+			$settings = $this->input->post('settings');
+			if (!empty($settings))
+			{
+				try {
+					$user = VBX_User::get($this->session->userdata('user_id'));
+					foreach ($settings as $key => $value)
+					{
+						$user->setting_set($key, $value);
+					}
+				}
+				catch (Exception $e) {
+					$data['json'] = array(
+						'error' => true,
+						'message' => $e->getMessage()
+					);
+				}
+			}
+		}
+		else 
+		{
+			$data['json'] = array(
+				'error' => true,
+				'message' => 'Invalid request'
+			);
+		}
+
+		$this->respond('', null, $data);
+	}
+	
+	public function client_status() 
+	{
 		$data = array(
 			'json' => array(
 				'error' => true,

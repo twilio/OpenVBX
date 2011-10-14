@@ -197,7 +197,7 @@ var Client = {
 	},
 	
 	setCallMode: function() {
-		Client.call_mode = $('#client-mode-status .enabled').attr('id') == 'client-mode-button' ? 'client' : 'phone';		
+		Client.call_mode = $('#client-mode-status').val();	
 	},
 	
 	getCallMode: function() {
@@ -212,8 +212,8 @@ var Client = {
 		var mode = Client.getCallMode(),
 			status = online_status == 'online' ? 'online' : 'offline',
 			call_from = $('#caller-id-phone-number').val();
-			
-		if (mode == 'client') {
+
+		if (mode == 'client' || mode == 'browser') {
 			Client.call({
 					to: call_to,
 					callerid: call_from,
@@ -225,7 +225,8 @@ var Client = {
 			Client.dial({
 				to: call_to,
 				callerid: call_from,
-				online: status
+				online: status,
+				from: $('#client-mode-status').val()
 			});
 		}
 	},
@@ -476,7 +477,6 @@ Client.ui = {
 		this.toggleCallViewState('dial');
 		this.hide_actions('button');
 		$('#dial-phone-number').val('');
-		$('#caller-id-phone-number').val('');
 		this.endTick();
 	},
 	
@@ -659,8 +659,13 @@ Client.ui = {
 	toggleCallMode: function(clicked) {
 		var _this = $(clicked);
 		if (!_this.hasClass('enabled')) {
+			// Button state
 			_this.addClass('enabled').removeClass('disabled')
 				.siblings('a').removeClass('enabled').addClass('disabled');
+			// status text state
+			$('#client-mode-status-text #' + _this.attr('id') + '-text')
+				.addClass('enabled').removeClass('disabled')
+				.siblings().addClass('disabled').removeClass('enabled');
 		}
 		Client.setCallMode();
 	},
@@ -693,6 +698,75 @@ Client.ui = {
 				}
 			}
 		});
+	},
+	
+// user specific settings
+	toggleOptionsSummary: function(clicked) {
+		var toggle = $(clicked).find('#summary-call-toggle'),
+			inputs = $(clicked).siblings('#call-options-inputs');
+		if (toggle.hasClass('open')) {
+			toggle.removeClass('open').html('&raquo;');
+			inputs.slideUp('fast');
+		}
+		else {
+			toggle.addClass('open').html('&laquo;');
+			inputs.slideDown();
+		}
+	},
+	
+	toggleOptionsDescription: function() {
+		var callerid = $('#caller-id-phone-number').val(),
+			device = $('#client-mode-status option:selected');
+
+		if (device.val() == 'browser') {
+			$('#call-option-description-browser').show().siblings().hide();
+		}
+		else {
+			var device_info = $.parseJSON(device.attr('data-device'));
+			$('#call-option-description-device')
+				.find('.device-number').html(device_info.number)
+				.end().show().siblings().hide();			
+		}
+		$('#call-option-description-caller-id').text(callerid);
+	},
+	
+	saveUserSettings: function(elm) {
+		var input = $(elm),
+			container = $(elm).closest('#call-options').find('#call-options-summary');
+		
+		// update the UI
+		switch (input.attr('id')) {
+			case 'caller-id-phone-number':
+				// update the caller id display
+				$('#summary-caller-id span').text(input.val());
+				break;
+			case 'client-mode-status':
+				// update the icon representing the mode
+				$('#summary-call-using').attr('class', input.val());
+				break;
+		}
+		
+		var new_settings = {};
+		$('#call-options-inputs :input').prop('disabled', true)
+			.each(function() {
+				var option_input = $(this);
+				new_settings[option_input.attr('name')] = option_input.val();
+			});
+		
+		$.post(OpenVBX.home + '/account/settings',
+			{
+				settings: new_settings
+			},
+			function (response) {
+				if (response.error) {
+					Client.triggerError(response.message);
+				}
+				$('#call-options-inputs :input').prop('disabled', false);
+				Client.ui.toggleOptionsDescription();
+				Client.setCallMode();
+			},
+			'json'
+		);
 	},
 	
 // banner to show that client is disabled
@@ -805,6 +879,10 @@ $(function () {
 		stopEvent(event);
 		Client.makeCallTo($('#dial-phone-number').val());
 	});
+	$('#dial-input-button', dialer).live('click', function(event) {
+		stopEvent(event);
+		$('#make-call-form').submit();
+	});
 	
 	// Dial button on user list clicked
 	$('.user-dial-button', dialer).live('click', function(event) {
@@ -832,4 +910,16 @@ $(function () {
 		Client.setCallMode();
 		Client.init();
 	}
+	
+	$('#call-options-summary').live('click', function(e) {
+		stopEvent(e);
+		Client.ui.toggleOptionsSummary(this);
+	});
+	
+	$('#call-options-inputs :input').live('change', function(e) {
+		Client.ui.saveUserSettings($(this));
+		return true;
+	});
+	
+	Client.ui.toggleOptionsDescription();
 });

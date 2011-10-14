@@ -1,11 +1,16 @@
 <?php if (!empty($callerid_numbers) && count($callerid_numbers == 1)): /* callerid_number */ ?>
 
-	<label class="field-label"><span class="label-text">From</span>
-		<select id="caller-id-phone-number">
-		<?php foreach ($callerid_numbers as $number): ?>
-			<option value="<?php echo $number->phone ?>"><?php echo $number->name ?></option>
-		<?php endforeach; ?>
-		</select>
+	<label class="field-label"><span class="label-text">Caller ID</span>
+		<?php
+			$params = array(
+				'name' => 'browserphone_caller_id',
+				'id' => 'caller-id-phone-number'
+			);
+			echo t_form_dropdown($params, 
+								$browserphone['number_options'], 
+								$browserphone['caller_id']
+							);
+		?>
 	</label>
 
 <?php elseif (!empty($callerid_numbers) && count($callerid_numbers > 1)): /* callerid_numbers */ ?>
@@ -13,10 +18,15 @@
 	<?php $c = $callerid_numbers[0]; ?>
 	<?php if(isset($c->trial) && $c->trial == 1): /* is-trail */ ?>
 		<label class="field-label"><span class="label-text">From</span>
-			<input type="text" name="callerid" value="" class="small" />
+			<?php
+				echo t_form_input(array(
+						'name' => 'callerid',
+						'class' => 'small'
+					));
+			?>
 		</label>
 	<?php else: /* is-trail */ ?>
-		<input type="hidden" name="callerid" value="<?php echo $c->phone ?>" />
+		<?php echo form_hidden('callerid', $c->phone); ?>
 	<?php endif; /* is-trail */ ?>
 
 <?php else: /* callerid_numbers */ ?>

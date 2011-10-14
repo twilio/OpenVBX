@@ -408,4 +408,80 @@ class VBX_User extends MY_Model {
 
 		return self::salt_encrypt( $list );
 	}
+	
+	/**
+	 * Load the user's settings
+	 * Looks to internal cached set first
+	 *
+	 * @return array
+	 */
+	public function settings()
+	{	
+		if (empty($this->settings))
+		{
+			$ci =& get_instance();
+			$ci->load->model('vbx_user_setting');
+			$settings = VBX_User_Setting::get_by_user($this->id);
+		
+			$this->settings = array();
+			foreach ($settings as $setting)
+			{
+				$this->settings[$setting->key] = $setting;
+			}
+		}
+		
+		return $this->settings;
+	}
+	
+	/**
+	 * Get a single user setting
+	 *
+	 * @param string $key 
+	 * @param string $default_value 
+	 * @return mixed
+	 */
+	public function setting($key, $default_value = '')
+	{
+		$settings = $this->settings();
+		
+		if (!empty($settings[$key]))
+		{
+			return $settings[$key]->value;
+		}
+		
+		return $default_value;
+	}
+	
+	/**
+	 * Save a user setting
+	 * Will create the setting if it doesn't exist
+	 *
+	 * @param string $key 
+	 * @param string $value 
+	 * @return void
+	 */
+	public function setting_set($key, $value)
+	{
+		if (!is_scalar($value))
+		{
+			$value = serialize($value);
+		}
+		
+		$settings = $this->settings();
+		if (empty($settings[$key]))
+		{
+			$data = (object) array(
+				'user_id' => $this->id,
+				'key' => $key,
+				'value' => $value
+			);
+			$settings[$key] = new VBX_User_Setting($data);
+		}
+		else
+		{
+			$settings[$key]->value = $value;
+		}
+		
+		$settings[$key]->save();
+	}
 }

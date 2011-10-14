@@ -118,6 +118,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   INDEX(`tenant_id`)
 ) ENGINE=InnoDB CHARSET=UTF8;
 
+DROP TABLE IF EXISTS `user_settings`;
+CREATE TABLE `user_settings` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `user_id` int(11) NOT NULL,
+  `key` varchar(255) default NULL,
+  `value` text,
+  `tenant_id` int(11) NOT NULL default '1',
+  PRIMARY KEY  (`id`),
+  KEY `user_key` (`user_id`,`key`),
+  KEY `key` (`key`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `auth_types`;
 CREATE TABLE IF NOT EXISTS `auth_types` (
   `id` tinyint NOT NULL AUTO_INCREMENT,

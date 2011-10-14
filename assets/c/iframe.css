@@ -85,9 +85,9 @@ body {
 	width: 100%;
 	height: 100%;
 	background-color: #222;
-	-moz-opacity: 0.95;
-	filter:alpha(opacity=95);
-	opacity: 0.95;
+	-moz-opacity: 0.97;
+	filter:alpha(opacity=97);
+	opacity: 0.97;
 	z-index: -1;
 }
 
@@ -103,65 +103,127 @@ body {
 	padding: 0;
 }
 
-#client-mode-status {
-	float: left;
-	height: 30px;
-	line-height: 28px;
-	margin: 0 0 10px 0;
-	padding: 0;
-	background-color: #888;
-	/*border: 1px solid #000;*/
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;
-	border-radius: 4px;
-}
-
-#client-mode-status a {
-	display: block;
-	float: left;
-	width: 65px;
-	padding: 0 10px;
-	text-decoration: none;
-	text-align: center;
-}
-
-#client-mode-status a.enabled {
-	font-weight: bold;
-	color: #444;
-	background-color: #FFF;
-	border-radius: 4px;
+#call-options {
+	position: relative;
+	margin: 0 0 24px 0;
+	padding: 2px;
+	background: transparent;
 	border: 1px solid #444;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;
-	border-radius: 4px;
+	-moz-border-radius-bottomright: 5px; /* FF1+ */
+	-webkit-border-bottom-right-radius: 5px; /* Saf3+, Chrome */
+	-khtml-border-bottom-right-radius: 5px; /* Konqueror */
+	border-bottom-right-radius: 5px; /* Standard. IE9 */
+	-moz-border-radius-bottomleft: 5px; /* FF1+ */
+	-webkit-border-bottom-left-radius: 5px; /* Saf3+, Chrome */
+	-khtml-border-bottom-left-radius: 5px; /* Konqueror */
+	border-bottom-left-radius: 5px; /* Standard. IE9 */
+	padding: 5px 2px 2px 2px;
+	border-width: 0 1px 1px 1px;
+}
+#call-options-summary {
+	margin: 0;
+	text-align: left;
+	font-size: 12px;
+	cursor: pointer;
 }
 
-#client-mode-status a.disabled {
-	color: #444;
-	background-color: transparent;
-	border-radius: 4px;
-	border: 1px solid transparent;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;
-	border-radius: 4px;
+#call-options-summary p,
+#call-options-inputs p {
+	font-size: 12px;
+}
+
+#call-options-summary span {
+	color: #CCC;
+	line-height: 12px;
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
+#call-options-inputs span.device-number {
+	white-space: nowrap;
+}
+
+#call-options-summary #summary-caller-id span {
+	vertical-align: baseline;
+}
+
+#call-options-summary #summary-call-toggle {
+	display: block;
+	position: absolute;
+	right: 3px;
+	top: 6px;
+	width: 12px;
+	height: 12px;
+	line-height: 9px;
+	text-align: center;
+	margin: 0;
+	color: white;
+	-moz-transform: rotate(90deg); /* FF3.5+ */
+	-webkit-transform: rotate(90deg); /* Saf3.1+, Chrome */
+	-o-transform: rotate(90deg); /* Opera 10.5 */
+	transform: rotate(90deg);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+}
+
+#call-options-summary #summary-caller-id {
+	margin-right: 5px;
+}
+
+#call-options-summary #summary-call-using {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: transparent url(../i/user-list-status-icon-sprite.png) -16px -16px no-repeat;
+	margin-left: 1px;
+}
+#call-options-summary #summary-call-using.browser {
+	background-position: 0 -16px;
+}
+
+#call-options-inputs {
+	padding: 15px 5px 0;
+}
+
+#make-call-form #call-options .label-text {
+	font-size: 11px;
+	width: 45px;
+}
+
+#make-call-form #call-options select {
+	font-size: 12px;
+	padding: 1px 0;
+	width: 133px;
+}
+
+#client-mode-status-text p {
+	color: #FFF;
+	text-align: center;
+	font-size: 12px;
+	margin: 2px 0;
+}
+
+#client-mode-status-text .enabled {
+	display: block;
+}
+
+#client-mode-status-text .disabled {
+	display: none;
 }
 
 #make-call-form {
-	margin: 10px 0;
-	padding: 0 20px;
+	margin: 0 0 10px 0;
+	padding: 0 10px;
 	clear: left;
 }
 
-#make-call-form legend {
+#make-call-form h2 {
 	color: #FFF;
-	margin: 0 0 10px 0;
+	text-align: center;
+	text-shadow: #222 2px 2px 2px;
 }
 
 #make-call-form fieldset {
-	margin: 10px 0;
+	margin: 0 0 10px 0;
 	padding: 0;
 	border: none;
 }
@@ -173,14 +235,13 @@ body {
 }
 
 #make-call-form .label-text {
-	/* display: block;
+	display: block;
 	float: left;
-	width: 40px;
+	width: 30px;
 	margin: 0;
 	padding: 3px;
-	font-size: 15px;
-	color: #FFF; */
-	display: none;
+	font-size: 14px;
+	color: #FFF;
 }
 
 #make-call-form .field-label input,
@@ -189,8 +250,15 @@ body {
 	padding: 0;
 }
 
+#make-call-form .field-label select {
+	width: 129px;
+	font-size: 12px;
+	padding: 4px 0;
+}
+
 #make-call-form #dial-phone-number {
-	width: 164px;
+	width: 130px;
+	height: 18px;
 	padding: 4px 4px;
 	font-size: 12px;
 	background: #FFF;
@@ -200,40 +268,39 @@ body {
 	-webkit-border-radius: 4px;
 	-khtml-border-radius: 4px;
 	border-radius: 4px;
-}
-
-#make-call-form #caller-id-phone-number {
-	width: 174px;
-	font-size: 12px;
-	padding: 4px 0;
+	margin-right: 10px;
+	vertical-align: middle;
 }
 
 #make-call-form #dial-input-button { 
-	height: 32px;
-	line-height: 32px;
-	width: 175px;
+	height: 27px;
+	line-height: 27px;
+	width: 50px;
 	margin: 0;
 	padding: 0;
 	font-size: 15px;
 	color: #FFF;
-	background-color: #222;
-	background: -moz-linear-gradient(100% 100% 90deg, #000, #222);
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#222), to(#000));
-	background-clip: padding-box;
+	background-color: #3DF500;
+	background: -moz-linear-gradient(top, #3DF500 0%, #1D7500 100%); /* Fx3.6+ */
+	background: -o-linear-gradient(top, #3DF500 0%,#1D7500 100%); /* Opera */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3DF500), color-stop(100%,#1D7500)); /* Webkit */
+	background: linear-gradient(0% 100% 90deg, #3DF500, #1D7500);
 	-moz-background-clip: padding;
 	-webkit-background-clip: padding-box;
+	background-clip: padding-box;	
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px;
 	border: none;
 	cursor: pointer;
+	vertical-align: middle;
 	overflow: visible; /* removes extra side padding in IE */
 }
 
 /* Client User List */
 #client-ui-user-list {
 	height: 500px;
-	margin: 0 0 10px 0;
+	margin: 30px 0 10px 0;
 	padding: 0;
 	border-top: 2px solid #000;
 	border-bottom: 2px solid #000;
@@ -250,6 +317,10 @@ body {
 	border-bottom: 1px solid #000;
 	clear: both;
 	overflow: auto;
+}
+
+#client-ui-user-list .user-item:hover {
+	background-color: #333;
 }
 
 #client-ui-user-list .user-item .status-icon {
@@ -319,6 +390,13 @@ body {
 	overflow: visible; /* removes extra side padding in IE */
 }
 
+#client-ui-user-list .user-dial-button:hover {
+	background: -moz-linear-gradient(top, #3DF500 0%, #1D7500 100%); /* Fx3.6+ */
+	background: -o-linear-gradient(top, #3DF500 0%,#1D7500 100%); /* Opera */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3DF500), color-stop(100%,#1D7500)); /* Webkit */
+	background: linear-gradient(0% 100% 90deg, #3DF500, #1D7500);
+}
+
 #client-ui-user-list .user-dial-button[disabled="disabled"],
 #make-call-form #dial-input-button[disabled="disabled"] {
 	opacity: 0.5;
@@ -337,25 +415,6 @@ body {
 	display: none;
 }
 
-#dialer button .button-spinner {
-	display: block;
-	width: 100%;
-	height: auto;
-	text-align: center;
-	line-height: 16px;
-}
-
-#dialer button .button-spinner img {
-	vertical-align: top;
-	margin-right: 7px;
-}
-#dialer .user-dial-button .button-spinner img {
-	display: none;
-}
-#dialer .user-dial-button .button-spinner {
-	text-indent: -9999px;
-	background: transparent url('../i/ajax-loader-circle-dark.gif') 50% 50% no-repeat;
-}
 
 /* Client On Call */
 #client-on-call {

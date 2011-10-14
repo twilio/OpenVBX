@@ -350,12 +350,17 @@ class Twiml extends MY_Controller {
 				'action' => site_url("twiml/dial_status").'?'.http_build_query(compact('to')),
 				'callerId' => $callerid
 			);
-
+			
 			if (filter_var($this->input->get_post('to'), FILTER_VALIDATE_EMAIL)) 
 			{
 				$this->dial_user_by_email($this->input->get_post('to'), $options);
 			}
-			else {
+			elseif(preg_match('|client:[0-9]{1,4}|', $this->input->get_post('to')))
+			{
+				$this->dial_user_by_client_id($this->input->get_post('to'), $options);
+			}
+			else 
+			{
 				$to = normalize_phone_to_E164($to);
 				$this->response->dial($to, $options);
 			}
@@ -368,6 +373,31 @@ class Twiml extends MY_Controller {
 		}
 
 		$this->response->respond();
+	}
+	
+	/**
+	 * Dial a user by 'client:1' format
+	 *
+	 * @todo not implemented
+	 * @param string $client_id 
+	 * @param arrray $options 
+	 * @return void
+	 */
+	protected function dial_user_by_client_id($client_id, $options)
+	{
+		$user_id = intval(str_replace('client:', '', $client_id));
+		
+		$user = VBX_User::get(array('id' => $user_id));
+		if ($user instanceof VBX_User)
+		{		
+			$dial = $this->response->dial(NULL, $options);
+			$dial->client($user_id);
+		}
+		else
+		{
+			$this->reponse->say('Unknown client id: '.$user_id.'. Goodbye.');
+			$this->response->hangup();
+		}
 	}
 	
 	/**

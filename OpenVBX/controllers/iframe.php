@@ -66,7 +66,74 @@ class Iframe extends User_Controller {
 			$data = twilio_dev_mods($data);
 		}
 		
+		$data['browserphone'] = $this->init_browserphone_data($data['callerid_numbers']);
+		
 		$this->load->view('iframe', $data);
+	}
+	
+	protected function init_browserphone_data($callerid_numbers)
+	{
+		// defaults
+		$browserphone = array(
+			'call_using' => 'browser',
+			'caller_id' => '(000) 000-0000',
+			'number_options' => array(),
+			'call_using_options' => array(
+				'browser' => array(
+					'title' => 'Your Computer'
+				)
+			),
+			'devices' => array()
+		);
+		
+		
+		if (is_array($callerid_numbers) && !empty($callerid_numbers))
+		{
+			$numbered = $named = array();
+			$default_caller_id = current($callerid_numbers)->phone;
+			foreach ($callerid_numbers as $number)
+			{
+				if (normalize_phone_to_E164($number->phone)
+						!= normalize_phone_to_E164($number->name))
+				{
+					$named[$number->phone] = $number->name;
+				}
+				else
+				{
+					$numbered[$number->phone] = $number->phone;
+				}
+			}
+			ksort($numbered);
+			asort($named);
+			$browserphone['number_options'] = $named + $numbered;
+		}
+		
+		$user = VBX_User::get(array('id' => $this->session->userdata('user_id')));
+		
+		// User preferences
+		$browserphone['caller_id'] = $user->setting('browserphone_caller_id', $default_caller_id);
+		$browserphone['call_using'] = $user->setting('browserphone_call_using', 'browser');
+		
+		// Wether the user has an active device to use		
+		if (count($user->devices))
+		{
+			foreach ($user->devices as $device)
+			{
+				if (strpos($device->value, 'client:') !== false)
+				{
+					continue;
+				}
+				$browserphone['call_using_options']['device:'.$device->id] = array(
+					'title' => 'Device: '.$device->name,
+					'data' => (object) array(
+						'number' => format_phone($device->value),
+						'name' => $device->name
+					)
+				);
+			}
+		}
+			
+		return $browserphone;
 	}
 	
 	protected function get_users() {
