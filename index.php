@@ -33,10 +33,10 @@ function shutdown()
 	if(function_exists('get_instance') && !headers_sent())
 	{
 		$ci = &get_instance();
-		if(is_object($ci)
-		   && isset($ci->session)
-		   && is_object($ci->session))
+		if(is_object($ci) && isset($ci->session) && is_object($ci->session))
+		{
 			$ci->session->persist();
+		}
 	}
 }
 /*

@@ -35,7 +35,7 @@
 		<?php
 			echo t_form_input(array(
 					'id' => 'dial-phone-number',
-					'placeholder' => 'Phone Number'
+					'placeholder' => '(555) 867 5309'
 				));
 			$call_button_params = array(
 					'name' => 'dial_input_button',
