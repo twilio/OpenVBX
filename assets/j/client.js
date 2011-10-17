@@ -103,7 +103,7 @@ var Client = {
 		
 		switch(number) {
 			case -13:
-				return '#'
+				return '#';
 			case -6:
 				return '*';
 			case 0:
@@ -130,8 +130,19 @@ var Client = {
 	
 	call: function (params) {
 		if (Twilio.Device.status() == 'ready') {
-			this.ui.toggleCallView('open');
-			this.connection = Twilio.Device.connect(params);
+			$.post(OpenVBX.home + '/account/rest_access_token', {},
+				function(r) {
+					if (!r.error) {
+						Client.ui.toggleCallView('open');
+						params.rest_access = r.token;
+						Client.connection = Twilio.Device.connect(params);
+					}
+					else {
+						
+					}
+				},
+				'json'
+			);
 		}
 	},
 
@@ -377,7 +388,7 @@ Client.ui = {
 		var seconds = Math.floor(this.getTicks() / 1000);
 
 		var minutes = Math.floor(seconds / 60);
-		var seconds = seconds % 60;
+		seconds = seconds % 60;
 
 		if(minutes < 10) {
 			minutes = '0' + minutes;
@@ -395,7 +406,7 @@ Client.ui = {
 		var tab = $(clicked).closest('.client-ui-tab'),
 			animate_speed = 500,
 			dialer_offset = $('#dialer .client-ui-content').css('width'),
-			tab_status_offset = $('#dialer .client-ui-tab').css('height')
+			tab_status_offset = $('#dialer .client-ui-tab').css('height');
 		
 		if (tab.hasClass('open')) {
 			dialer_offset_mod = '-=';
@@ -425,7 +436,7 @@ Client.ui = {
 	toggleCallView: function(status) {
 		var dialer = $('#dialer'),
 			dialer_offset_mod = false,
-			dialer_offset = parseInt($('#dialer').css('width').replace('px', '')) + parseInt($('#dialer .client-ui-tab').css('width').replace('px', '')) + 'px';
+			dialer_offset = parseInt($('#dialer').css('width').replace('px', ''), 10) + parseInt($('#dialer .client-ui-tab').css('width').replace('px', ''), 10) + 'px';
 		
 		if (status == 'open' && dialer.hasClass('closed')) {
 			dialer_offset_mod = '+=';

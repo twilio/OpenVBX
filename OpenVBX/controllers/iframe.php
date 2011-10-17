@@ -42,9 +42,9 @@ class Iframe extends User_Controller {
 		if (!empty($this->application_sid))
 		{
 			// look at protocol and serve the appropriate file, https comes from amazon aws
-			$tjs_baseurl = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ?
-				'https://s3.amazonaws.com/static.twilio.com' : 'http://static.twilio.com';
-			//$this->template->add_js($tjs_baseurl.'/libs/twiliojs/1.0/twilio.js', 'absolute');
+			$tjs_baseurl = 'http'.
+							(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').
+							'://static.twilio.com';
 			$data['twilio_js'] = $tjs_baseurl.'/libs/twiliojs/1.0/twilio.js';
 		}
 
