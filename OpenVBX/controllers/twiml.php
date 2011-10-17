@@ -84,7 +84,7 @@ class Twiml extends MY_Controller {
 	}
 
 	function start_voice($flow_id)
-	{
+	{		
 		log_message("info", "Calling Voice Flow $flow_id");
 		$this->flow_type = 'voice';
 
@@ -268,7 +268,7 @@ class Twiml extends MY_Controller {
 	}
 
 	function redirect($path, $singlepass = false)
-	{
+	{	
 		if(!$this->session->userdata('loggedin')
 		   && !$this->login_call($singlepass))
 		{
@@ -284,7 +284,7 @@ class Twiml extends MY_Controller {
 	}
 
 	function dial()
-	{
+	{	
 		$rest_access = $this->input->get_post('rest_access');
 		$to = $this->input->get_post('to');
 		$callerid = $this->input->get_post('callerid');
