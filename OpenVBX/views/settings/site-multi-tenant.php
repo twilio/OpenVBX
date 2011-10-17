@@ -8,7 +8,6 @@ if(!isset($tenants)) { return; }
 	<div class="vbx-input-complex vbx-input-container">
 		<label for="tenant-admin-email" class="field-label">Adminstrator email:
 			<?php
-				pp($tenant);
 				$email_data = array(
 					'name' => 'tenant[admin_email]',
 					'id' => 'tenant-admin-email',
