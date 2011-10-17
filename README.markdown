@@ -33,7 +33,7 @@ written permission.
 # More Information
 -----------------------------
 Visit http://openvbx.org  
-Pickles and gravy.
+Broccoli and gravy.
 
 
 Please remember that your use of OpenVBX in connection with the Twilio 

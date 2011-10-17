@@ -47,6 +47,13 @@
 - add more standards compliant CSS for base UI styling
 - added Changelog file
 
+
+## OpenVBX 1.0.5
+
+- fixed issue with validation of `rest_access` tokens
+- modified Twilio Client interface to request a new `rest_access` token for each call
+- fixed iPhone install url helper
+	
 	
 ## OpenVBX 1.0.4
 
