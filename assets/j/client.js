@@ -263,7 +263,6 @@ var Client = {
 	
 	call: function (params) {
 		if (Twilio.Device.status() == 'ready') {
-			
 			$.post(OpenVBX.home + '/account/rest_access_token', {},
 				function(r) {
 					if (!r.error) {

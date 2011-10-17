@@ -287,7 +287,7 @@ class Twiml extends MY_Controller {
 	}
 
 	function redirect($path, $singlepass = false)
-	{
+	{	
 		if(!$this->session->userdata('loggedin')
 		   && !$this->login_call($singlepass))
 		{
@@ -317,7 +317,7 @@ class Twiml extends MY_Controller {
 	public function dial()
 	{
 		validate_rest_request();
-		
+
 		$rest_access = $this->input->get_post('rest_access');
 		$to = $this->input->get_post('to');
 		$callerid = $this->input->get_post('callerid');

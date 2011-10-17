@@ -419,8 +419,7 @@ class User_Controller extends MY_Controller
 			$user = VBX_user::get(array('id' => $user_id));
 
 			$params = array(
-				'user_id' => $user->user_id,
-				'rest_access' => $this->make_rest_access()
+				'user_id' => $user->user_id
 			);
 
 			try {
