@@ -177,22 +177,24 @@
 				</form>
 				
 				<p class="note-count">Showing <?php echo $annotations['max']; ?> of <?php echo $annotations['total']; ?></p>
-				<ul id="message-details-notes-list">
-					<?php foreach($annotations['items'] as $annotation): ?>
-					<li class="note">
-						<p class="note-created unformatted-relative-timestamp hide"><?php echo strtotime($annotation->created) ?></p>
-						<div class="note-header">
-							<p class="note-user-fullname"><?php echo $annotation->first_name ?> <?php echo $annotation->last_name ?></p>
-							<p class="note-user-email"><?php echo $annotation->email ?></p>
-						</div>
-						<div class="note-content">
-							<?php echo $annotation->description ?>
-						</div>
-					</li>
-					<?php endforeach; ?>
-				</ul>
-				<p class="note-count">Showing <?php echo $annotations['max']; ?> of <?php echo $annotations['total']; ?></p>
-				
+				<?php if($annotations['total'] > 0): ?>
+					<ul id="message-details-notes-list">
+						<?php foreach($annotations['items'] as $annotation): ?>
+						<li class="note">
+							<p class="note-created unformatted-relative-timestamp hide"><?php echo strtotime($annotation->created) ?></p>
+							<div class="note-header clearfix">
+								<img class="note-user-avatar" src="http://www.gravatar.com/avatar/<?php echo md5(strtolower(trim($annotation->email))) ?>?d=retro&s=40&r=pg" style="float: left"/>
+								<p class="note-user-fullname"><?php echo $annotation->first_name ?> <?php echo $annotation->last_name ?></p>
+								<p class="note-user-email"><?php echo $annotation->email ?></p>
+							</div>
+							<div class="note-content">
+								<?php echo $annotation->description ?>
+							</div>
+						</li>
+						<?php endforeach; ?>
+					</ul>
+					<p class="note-count">Showing <?php echo $annotations['max']; ?> of <?php echo $annotations['total']; ?></p>
+				<?php endif; ?>
 			</div><!-- .message-details-notes -->
 		</div><!-- .vbx-content-container -->
 		<?php endif; ?>

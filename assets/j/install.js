@@ -27,6 +27,7 @@ OpenVBX.Installer = {
 	tabsDisabled: true,
 	ready : false,
 	currentStep : 1,
+	moreInfoToggled : false,
 	validate : function(afterValidation) {
 		var step = $('#step-'+OpenVBX.Installer.currentStep);
 		var params = $('textarea, input, select', step);
@@ -54,12 +55,39 @@ OpenVBX.Installer = {
 			async : false,
 			dataType : 'json',
 			error : function(XMLHttpRequest, textStatus, errorThrown) {
-				$('.error').text('An application error occurred.  Please try again.');
-				$('.error').slideDown();
+			  OpenVBX.Installer.displayError('An application error occurred. Please try again');
 			}
 		});
 		return result;
 	},
+	
+	displayError: function(errorText, moreInfo) {
+	  OpenVBX.Installer.moreInfoToggled = false;
+    var html = errorText;
+    if(moreInfo) {
+      html += ' <a id="moreInfoToggler" onclick="OpenVBX.Installer.toggleMoreInfo(event)">(More Information)</a>' 
+           +  '<div id="moreInfo">' 
+           +     moreInfo
+           +  '</div>';
+    }
+	  $('.error').html(html)
+	             .slideDown();
+	},
+	
+	toggleMoreInfo: function(event) {
+	  if(OpenVBX.Installer.moreInfoToggled) {
+	    $('#moreInfo').slideUp();
+	    $('#moreInfoToggler').text('(More Information)');
+	  } else {
+	    $('#moreInfo').slideDown();
+	    $('#moreInfoToggler').text('(Less Information)');
+	  }
+    //Toggle state
+	  OpenVBX.Installer.moreInfoToggled = !OpenVBX.Installer.moreInfoToggled;
+	  //Make sure the error region's click handler doesn't fire
+	  event.stopPropagation();
+	},
+	
 	prevStep : function(e) {
 		if(typeof(e) != "undefined") {
 			e.preventDefault();
@@ -172,9 +200,7 @@ OpenVBX.Installer = {
 				type : 'post',
 				dataType : 'json',
 				error : function(XMLHttpRequest, textStatus, errorThrown) {
-					$('.error')
-						.text('An application error occurred.  Please try again.')
-					.slideDown();
+					OpenVBX.Installer.displayError('An application error occurred.  Please try again');
 				}
 			});
 		}

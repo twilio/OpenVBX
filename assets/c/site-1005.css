@@ -840,7 +840,9 @@ button.inline-button {    float: left;    margin: 0 10px 0 0 !important;}
 
 .message-details-notes #message-details-notes-list .note-header {    margin-bottom: 5px;}
 
-.message-details-notes #message-details-notes-list .note-user-fullname {    float: left;    margin-right: 10px;    font-size: 17px;    font-weight: bold;    color: #444;}
+.message-details-notes #message-details-notes-list .note-user-avatar {  float: left;  margin-right: 10px; }
+
+.message-details-notes #message-details-notes-list .note-user-fullname {    font-size: 17px;    font-weight: bold;    color: #444;}
 
 .message-details-notes #message-details-notes-list .note-user-email {    height: 21px;    line-height: 21px;    color: #777;}
 

@@ -263,7 +263,18 @@ ul.dependencies li.fail.optional {
 	-webkit-border-top-right-radius: 4px;
 }
 
+.error a {
+  cursor: pointer;
+}
 
+.error div {
+  display: none;
+  margin: 5px;
+  padding: 5px;
+  color: #efefef;
+  border: 2px solid #b13321;
+  background: #db4b37;
+}
 
 .navigation {
     position: absolute;

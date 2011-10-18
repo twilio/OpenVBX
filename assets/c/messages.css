@@ -197,9 +197,12 @@
     margin-bottom: 5px;
 }
 
-.message-details-notes #message-details-notes-list .note-user-fullname {
+.message-details-notes #message-details-notes-list .note-user-avatar {
     float: left;
     margin-right: 10px;
+}
+
+.message-details-notes #message-details-notes-list .note-user-fullname {
     font-size: 17px;
     font-weight: bold;
     color: #444;
