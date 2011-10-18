@@ -212,7 +212,6 @@ var Client = {
 		var mode = Client.getCallMode(),
 			status = online_status == 'online' ? 'online' : 'offline',
 			call_from = $('#caller-id-phone-number').val();
-
 		if (mode == 'client' || mode == 'browser') {
 			Client.call({
 					to: call_to,
@@ -418,6 +417,10 @@ var Client = {
 	},
 
 	disconnect: function (connection) {
+		if (!this.connection) {
+			return;
+		}
+		
 		if (connection.parameters.CallSid == this.connection.parameters.CallSid) {
 			Twilio.Device.sounds.incoming(true);
 			
@@ -438,6 +441,10 @@ var Client = {
 	},
 	
 	cancel: function(connection) {
+		if (!this.connection) {
+			return;
+		}
+		
 		if (connection.parameters.CallSid == this.connection.parameters.CallSid) {
 			this.clear_connection();
 		

@@ -16,11 +16,11 @@
 	- modify internal calls & standard applets to use new library for API calls & TwiML generation
 - updated install, upgrade & welcome JS to abstract out the steps slider
 - updated install routine to detect & use mysqli if available
-- added native sequential="true" attribute to dialing
+- added native sequential="true" attribute to Dial actions
 - hardened install/upgrade error handling JavaScript
 - showing number names in Twilio numbers list
 	- numbers are named in the Twilio Account portal
-- added form dropdown convenience helper to Twilio Helper
+- added form convenience helpers to Twilio Helper
 - added Upgrade instructions file
 - added user settings table
 	- added user `setting()` and `setting_set()` interfaces on VBX_User
