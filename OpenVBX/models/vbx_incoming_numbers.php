@@ -36,7 +36,7 @@ class VBX_Incoming_numbers extends Model
 
 	}
 
-	function get_sandbox()
+	public function get_sandbox()
 	{
 		if(function_exists('apc_fetch')) 
 		{
@@ -68,7 +68,7 @@ class VBX_Incoming_numbers extends Model
 		return $sandbox;
 	}
 
-	function get_numbers($retrieve_sandbox = true)
+	public function get_numbers($retrieve_sandbox = true)
 	{
 		if(function_exists('apc_fetch')) 
 		{
@@ -77,7 +77,10 @@ class VBX_Incoming_numbers extends Model
 			if($data AND $success) 
 			{
 				$numbers = @unserialize($data);
-				if(is_array($numbers)) return $numbers;
+				if(is_array($numbers))
+				{
+					return $numbers;
+				}
 			}
 		}
 
@@ -107,6 +110,53 @@ class VBX_Incoming_numbers extends Model
 		}
 
 		return $numbers;
+	}
+	
+	public function get_available_countries()
+	{
+		if (function_exists('apc_fetch'))
+		{
+			$success = FALSE;
+			$data = apc_fetch($this->cache_key.'countries', $success);
+			if ($data AND $success)
+			{
+				$countries = @unserialize($data);
+				if (is_array($countries))
+				{
+					return $countries;
+				}
+			}
+		}
+		
+		$countries = array();
+		try {
+			$account = OpenVBX::getAccount();
+			$page = 0;
+			do {
+				$list = $account->available_phone_numbers->getPage($page);
+				if (is_array($list->countries) && count($list->countries)) 
+				{
+					foreach ($list->countries as $country)
+					{
+						$countries[$country->country_code] = $country;
+					}
+				}
+				$page++;
+			}
+			while (!empty($list->next_page_uri));
+		}
+		catch (Exception $e) {
+			throw new VBX_IncomingNumberException($e->getMessage());
+		}
+
+		ksort($countries);
+		
+		if (function_exists('apc_store'))
+		{
+			apc_store($this->cache_key.'countries', serialize($countries));
+		}
+
+		return $countries;
 	}
 
 	private function clear_cache()
@@ -164,7 +214,7 @@ class VBX_Incoming_numbers extends Model
 	 * @param int $flow_id - flow id
 	 * @return bool
 	 */
-	function assign_flow($phone_id, $flow_id)
+	public function assign_flow($phone_id, $flow_id)
 	{
 		$voice_url = site_url('twiml/start/voice/'.$flow_id);
 		$sms_url = site_url('twiml/start/sms/'.$flow_id);
@@ -206,7 +256,7 @@ class VBX_Incoming_numbers extends Model
 	 * @param string $area_code 
 	 * @return void
 	 */
-	function add_number($is_local, $area_code)
+	public function add_number($is_local, $area_code)
 	{		
 		$voice_url = site_url("twiml/start/voice/0");
 		$sms_url = site_url("twiml/start/sms/0");
@@ -275,7 +325,7 @@ class VBX_Incoming_numbers extends Model
 	 * @param string $phone_id
 	 * @return bool
 	 */
-	function delete_number($phone_id)
+	public function delete_number($phone_id)
 	{
 		try {
 			$account = OpenVBX::getAccount();

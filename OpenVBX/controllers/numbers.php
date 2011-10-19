@@ -44,6 +44,7 @@ class Numbers extends User_Controller
 		try
 		{
 			$numbers = $this->vbx_incoming_numbers->get_numbers();
+			$data['countries'] = $this->vbx_incoming_numbers->get_available_countries();
 		}
 		catch (VBX_IncomingNumberException $e)
 		{
