@@ -176,7 +176,7 @@ class Account extends User_Controller {
 			{
 				$this->data['error'] = true;
 				$message = 'Unable to set password, please try again later.';
-				error_log($e->getMessage());
+				log_message('error', $message.': '.$e->getMessage());
 			}
 		}
 		$this->data['message'] = $message;

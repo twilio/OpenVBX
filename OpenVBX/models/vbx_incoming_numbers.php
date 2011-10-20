@@ -41,7 +41,8 @@ class VBX_Incoming_numbers extends Model
 		if(function_exists('apc_fetch')) 
 		{
 			$success = FALSE;
-			$sandbox = apc_fetch($this->cache_key.'sandbox', $success);
+			$cachekey = $this->cache_key.'sandbox';
+			$sandbox = apc_fetch($cachekey, $success);
 
 			if($sandbox AND $success) 
 			{
@@ -57,7 +58,7 @@ class VBX_Incoming_numbers extends Model
 				$sandbox = $this->parseIncomingPhoneNumber($sandbox);
 				if (function_exists('apc_store')) 
 				{
-					$success = apc_store($this->cache_key.'sandbox', serialize($sandbox), self::CACHE_TIME_SEC);
+					$success = apc_store($cachekey, serialize($sandbox), self::CACHE_TIME_SEC);
 				}
 			}
 		}
@@ -73,7 +74,8 @@ class VBX_Incoming_numbers extends Model
 		if(function_exists('apc_fetch')) 
 		{
 			$success = FALSE;
-			$data = apc_fetch($this->cache_key.'numbers'.$retrieve_sandbox, $success);
+			$cachekey = $this->cache_key.'numbers'.$retrieve_sandbox;
+			$data = apc_fetch($cachekey, $success);
 			if($data AND $success) 
 			{
 				$numbers = @unserialize($data);
@@ -106,7 +108,7 @@ class VBX_Incoming_numbers extends Model
 
 		if(function_exists('apc_store')) 
 		{
-			$success = apc_store($this->cache_key.'numbers'.$retrieve_sandbox, serialize($numbers), self::CACHE_TIME_SEC);
+			$success = apc_store($cachekey, serialize($numbers), self::CACHE_TIME_SEC);
 		}
 
 		return $numbers;
@@ -129,6 +131,9 @@ class VBX_Incoming_numbers extends Model
 		}
 		
 		$countries = array();
+		$ci =& get_instance();
+		$ci->config->load('countrycodes');
+		
 		try {
 			$account = OpenVBX::getAccount();
 			$page = 0;
@@ -138,6 +143,17 @@ class VBX_Incoming_numbers extends Model
 				{
 					foreach ($list->countries as $country)
 					{
+						// no subresource uris means the account can't purchase here
+						// or that the country is not yet available for purchase
+						if (empty($country->subresource_uris))
+						{
+							continue;
+						}
+						
+						if ($countrydata = $ci->config->item($country->country_code,'countrycodes'))
+						{
+							list($country->code, $country->search) = $countrydata;
+						}
 						$countries[$country->country_code] = $country;
 					}
 				}
@@ -150,7 +166,7 @@ class VBX_Incoming_numbers extends Model
 		}
 
 		ksort($countries);
-		
+
 		if (function_exists('apc_store'))
 		{
 			apc_store($this->cache_key.'countries', serialize($countries));
@@ -188,6 +204,8 @@ class VBX_Incoming_numbers extends Model
 		$num->method = $item->voice_method;
 		$num->smsUrl = $item->sms_url;
 		$num->smsMethod = $item->sms_method;
+		$num->capabilities = $item->capabilities;
+		$num->voiceApplicationSid = $item->voice_application_sid;
 
 		// @todo do comparison against url domain, then against 'twiml/start'
 		// then include warning when small differences like www/non-www are encountered
@@ -256,7 +274,7 @@ class VBX_Incoming_numbers extends Model
 	 * @param string $area_code 
 	 * @return void
 	 */
-	public function add_number($is_local, $area_code)
+	public function add_number($is_local, $area_code, $country)
 	{		
 		$voice_url = site_url("twiml/start/voice/0");
 		$sms_url = site_url("twiml/start/sms/0");
@@ -264,8 +282,7 @@ class VBX_Incoming_numbers extends Model
 		if($is_local
 		   && (
 			   !empty($area_code) &&
-			   (strlen(trim($area_code)) != 3 ||
-				preg_match('/([^0-9])/', $area_code) > 0)))
+				preg_match('/([^0-9])/', $area_code) > 0))
 		{
 			throw new VBX_IncomingNumberException('Area code invalid');
 		}
@@ -280,32 +297,52 @@ class VBX_Incoming_numbers extends Model
 				   'SmsMethod' => 'POST',
 				   'ApiVersion' => '2010-04-01',
 				   );
-
 		try {
 			$account = OpenVBX::getAccount();
 			// purchase tollfree, uses AvailablePhoneNumbers to search first.
 			if(!$is_local) 
 			{
-				$country = 'US';
 				$numbers = $account->available_phone_numbers
 													->getTollFree($country)
 													->getList();
 				
 				if (count($numbers->available_phone_numbers)) 
 				{
-					$params['PhoneNumber'] = current($numbers->available_phone_numbers)->phone_number;
+					$params['PhoneNumber'] = $numbers->available_phone_numbers[0]->phone_number;
 				}
 				else 
 				{
-					throw new VBX_IncomingNumberException('Currently out of TollFree numbers. Please try again later.');
+					throw new VBX_IncomingNumberException('Currently out of TollFree numbers. '.
+															'Please try again later.');
 				}
 			}
 			else 
 			{ 
-				// purchase local
-				if(!empty($area_code))
+				$search_params = array();
+				if (!empty($area_code))
 				{
-					$params['AreaCode'] = $area_code;
+					$search_params['AreaCode'] = $area_code;
+				}
+				$numbers = $account->available_phone_numbers
+													->getList($country, 'Local', $search_params);
+
+				if (count($numbers->available_phone_numbers))
+				{
+					$params['PhoneNumber'] = $numbers->available_phone_numbers[0]->phone_number;
+				}
+				else
+				{
+					if (!empty($area_code))
+					{
+						$message = 'Could not find any numbers in Area Code "'.$area_code.'". '.
+								'Please try again later or try a different Area Code.';
+					}
+					else 
+					{
+						$message = 'Could not find any available phone numbers. '.
+								'Please try again later.';
+					}
+					throw new VBX_IncomingNumberException($message);
 				}
 			}
 			$number = $account->incoming_phone_numbers->create($params);

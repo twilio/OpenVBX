@@ -18,9 +18,52 @@
  * Contributor(s):
  **/
 
-$(document).ready(function() {
-	var select_flow = $('select[name="flow_id"]').hide();
-	select_flow.after('<span class="hide cancel"><a class="action close"><span class="replace">Cancel</span></a></span>');
+;(function($, window, document) {
+	$.fn.countrySelect = function(options) {
+		return this.each(function() {
+			$(this).bind('change', function() {
+				var	input = $(this),
+					code = $(this).val(),
+					country = OpenVBX.countries[code],
+					acinput = $('#iAreaCode'),
+					imageurl = '/assets/i/countries/' + code.toLowerCase() + '.png';
+					
+				input.siblings('img').attr('src', OpenVBX.assets + imageurl);
+				
+				// hide invalid options for this country
+				$('.number-order-options .number-type-select').each(function() {
+					var inputwrapper = $(this),
+						type = inputwrapper.attr('id').replace('number-order-', ''),
+						ac_input = '';
+					if ($.inArray(type, country.available) > -1) {
+						inputwrapper.removeClass('disabled').show();
+					}
+					else {
+						inputwrapper.addClass('disabled').hide();
+					}
+				});
+				
+				// swap out the proper regional prefix
+				var acparts = country.search.split('*');
+				$('#area-code-wrapper').html('')
+					.append(acparts[0])
+					.append(acinput)
+					.append(acparts[1]);
+				
+				// if an invalid option is selected, select the first valid option
+				if (!$('.number-type-select input[type="radio"]:checked').is(':visible')) {
+					$('.number-type-select:not(.disabled):first input[type="radio"]')
+						.trigger('click');
+				}
+			}).trigger('change');
+		});
+	};
+})(jQuery, window, document);
+
+jQuery(function($) {
+	var select_flow = $('select[name="flow_id"]').hide(); 
+	select_flow.after('<span class="hide cancel"><a class="action close">' + 
+							'<span class="replace">Cancel</span></a></span>');
 	select_flow.each(function() {
 		var flow = $(this);
 		flow.parent()
@@ -30,7 +73,9 @@ $(document).ready(function() {
 			});
 
 		flow.parent()
-			.append('<p class="dropdown"><span class="option-selected">'+$('option:selected', flow).text()+'</span><a class="action flow"><span class="replace">Select</span></a></p>')
+			.append('<p class="dropdown"><span class="option-selected">' +
+				$('option:selected', flow).text() +
+				'</span><a class="action flow"><span class="replace">Select</span></a></p>')
 			.children('p.dropdown')
 			.click(function() {
 				flow.parents('td').children('select, p, span').toggle();
@@ -84,7 +129,8 @@ $(document).ready(function() {
 				if(data.success) {
 					$('option[value="0"]', select_flow).remove();
 					select_flow.data('old_val', data.id);
-					$.notify($('.incoming-number-phone', row).text() + ' is now connected to '+$('option:selected', row).text());
+					$.notify($('.incoming-number-phone', row).text() + 
+								' is now connected to '+$('option:selected', row).text());
 					$('.incoming-number-flow', row).children('select, p, span').toggle();
 				} else {
 					if(data.message) $.notify(data.message);
@@ -109,7 +155,8 @@ $(document).ready(function() {
 					if(data.success) {
 						$('option[value="0"]', select_flow).remove();
 						select_flow.data('old_val', data.id);
-						$.notify($('.incoming-number-phone', row).text() + ' is now connected to '+$('option:selected', row).text());
+						$.notify($('.incoming-number-phone', row).text() + 
+									' is now connected to '+$('option:selected', row).text());
 						$('.incoming-number-flow', row).children('select, p, span').toggle();
 					} else {
 						if(data.message) $.notify(data.message);
@@ -147,11 +194,12 @@ $(document).ready(function() {
 	var add_number = function() {			
 		var add_button = $('button', $('#dlg_add').parent()).first();
 		var add_button_text = add_button.text();
-		add_button.html('Ordering <img alt="loading" src="'+OpenVBX.assets+'/assets/i/ajax-loader.gif" />');
+		add_button.html('Ordering <img alt="loading" src="' + 
+							OpenVBX.assets + '/assets/i/ajax-loader.gif" />');
 		$.ajax({
 			type: 'POST',
 			url: $('#dlg_add form').attr('action'),
-			data: $('input[type="text"], input[type="radio"]:checked', $('#dlg_add form')),
+			data: $('input[type="text"], input[type="radio"]:checked, select', $('#dlg_add form')),
 			success: function(data) {
 				$('button').prop('disabled', true);
 				$('#dlg_add .error-message').slideUp();
@@ -170,7 +218,8 @@ $(document).ready(function() {
 				setup_button.unbind('click')
 					.prop('disabled', false)
 					.live('click', function(e) {
-						setup_button.append('<img alt="loading" src="'+OpenVBX.assets+'/assets/i/ajax-loader.gif" />');
+						setup_button.append('<img alt="loading" src="' + 
+											OpenVBX.assets + '/assets/i/ajax-loader.gif" />');
 						e.preventDefault();
 						attach_new_flow(number_id);
 					});
@@ -181,12 +230,13 @@ $(document).ready(function() {
 					add_button.text(add_button_text);
 				});
 
-				var number_id = data.number.id;
+				number_id = data.number.id;
 
 				if (window.parent.Client) {
 					window.parent.Client.ui.refreshNumbers();
 				}
 				$('#completed-order').removeClass('hide');
+				return true;
 			},
 			error: function(xhr, status, error) {
 				$('#dlg_add .error-message')
@@ -267,4 +317,6 @@ $(document).ready(function() {
 		$("#dlg_delete").dialog('open');
 		return false;
 	});
+	
+	$('#iCountry').countrySelect();
 });

@@ -166,7 +166,7 @@ class Login extends MY_Controller
 				catch(VBX_IncomingNumberException $e)
 				{
 					/* Handle gracefully but log it */
-					error_log($e->getMessage());
+					log_message('error', $e->getMessage());
 				}
 			}
 

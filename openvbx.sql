@@ -322,7 +322,8 @@ INSERT INTO settings
 	   ('recording_host','',1),
 	   ('transcriptions', '1', 1),
 	   ('voice', 'man', 1),
-	   ('voice_language', 'en', 1);
+	   ('voice_language', 'en', 1),
+	   ('numbers_country', 'US', 1);
 
 
 INSERT INTO groups

@@ -144,6 +144,16 @@ class Site extends User_Controller
 
 		$data['json']['settings'] = $current_settings;
 
+		$this->load->model('vbx_incoming_numbers');
+		$data['countries'] = array();
+		if ($countrydata = $this->vbx_incoming_numbers->get_available_countries())
+		{
+			foreach ($countrydata as $country)
+			{
+				$data['countries'][$country->country_code] = $country->country;
+			}
+		}
+
 		$this->respond('Site Settings', 'settings/site', $data);
 	}
 

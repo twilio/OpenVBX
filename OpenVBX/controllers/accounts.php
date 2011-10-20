@@ -277,7 +277,7 @@ class Accounts extends User_Controller {
 			{
 				$error = true;
 				$message = $e->getMessage();
-				error_log($message);
+				log_message('error', 'Unable to send new user notification: '.$message);
 			}
 
 			if (!$error)
@@ -498,9 +498,9 @@ class Accounts extends User_Controller {
 		}
 		catch(Exception $e)
 		{
-			error_log($e->getMessage());
 			$json['message'] = 'Unable to deactivate';
 			$json['error'] = true;
+			log_message('error', $json['message'].': '.$e->getMessage());
 		}
 
 

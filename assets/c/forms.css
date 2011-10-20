@@ -222,10 +222,7 @@
 	-webkit-border-radius: 4px; /* Saf3+, Chrome */
 	-khtml-border-radius: 4px; /* Konqueror */
 	border-radius: 4px; /* Standard. IE9 */
-	/**
-	 * @bugfix border-radius background bleed
-	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
-	 */
+
 	-webkit-background-clip: padding-box;
 }
 
@@ -234,4 +231,8 @@
 }
 .vbx-form .info p:last-child {
 	margin: 0;
+}
+
+#vbx-settings-forms fieldset {
+	margin-bottom: 20px;
 }

@@ -50,7 +50,7 @@
 
 				<div id="group-container">
 				<h3>Groups</h3>
-				<p>Select a group to view the user list.</p>
+				<p>Select a group to view the user list. Drag users to reorder the group.</p>
 
 				<ul class="group-list">
 				<?php if(isset($groups)) foreach($groups as $group_id => $group): ?>

@@ -454,8 +454,8 @@ class VBX_Message extends Model {
 
 			foreach($numbers as $number)
 			{
-				error_log($number->value);
-				error_log(var_export($number->values, true));
+				log_message('debug', 'Number value: '.$number->value);
+				log_message('debug', 'Number values: '.var_export($number->values, true));
 				if($number->value && $number->sms)
 				{
 					try

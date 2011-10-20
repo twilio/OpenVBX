@@ -337,7 +337,7 @@ class AudioFiles extends User_Controller
 			}
 			else
 			{
-				error_log('canceling call');
+				log_message('debug', 'canceling call');
 				try {
 					$account = OpenVBX::getAccount();
 					$call = $account->calls->get($audioFile->recording_call_sid);

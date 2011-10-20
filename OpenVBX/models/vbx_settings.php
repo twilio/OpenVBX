@@ -35,7 +35,8 @@ class VBX_Settings extends Model
 								'theme',
 								'transcriptions',
 								'voice',
-								'voice_language'
+								'voice_language',
+								'numbers_country'
 							);
 
 	protected $settings_params = array(
