@@ -31,9 +31,7 @@ class Iframe extends User_Controller {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->twilio_js_baseurl = 'http'.
-							(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').
-							'://static.twilio.com';
+		$this->twilio_js_baseurl = 'http'.(is_ssl() ? 's' : '').'://static.twilio.com';
 		$this->twilio_js_file = 'twilio'.
 							($this->config->item('use_unminimized_js') ? '' : '.min').'.js';
 	}

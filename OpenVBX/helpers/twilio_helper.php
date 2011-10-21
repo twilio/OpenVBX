@@ -261,4 +261,25 @@ if (!function_exists('t_form_valid_attributes'))
 	}
 }
 
+if (!function_exists('gravatar_url'))
+{
+	function gravatar_url($email, $size = 30)
+	{
+		$default_image = asset_url().'/assets/i/user-icon.png';
+		$url = 'http://'.(is_ssl() ? 'secure' : 'www').'.gravatar.com/avatar/'.
+				md5(strtolower(trim($email))).
+				'?s='.intval($size).
+				'&d='.urlencode($default_image).
+				'&r=pg';
+				
+		return $url;
+	}
+}
+
+if (!function_exists('is_ssl'))
+{
+	function is_ssl() {
+		return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? true : false;
+	}
+}
 ?>

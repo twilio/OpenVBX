@@ -249,7 +249,7 @@ $(document).ready(function() {
 	});
 
 	$('.device-list').sortable({
-		placeholder: 'device',
+		placeholder: 'device-placeholder',
 		items: 'li:not(.ui-state-disabled)',
 		update : function(event, ui) {
 			var sorted = $.map($('.device-list li'),

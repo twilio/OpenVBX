@@ -287,12 +287,17 @@
     height: 30px;
     width: 35px;
     margin-bottom: 15px;
-    background: url(../i/user-group-icon.png) top no-repeat;
+    /*background: url(../i/user-group-icon.png) top no-repeat;*/
+}
+
+#user-container .user-utilities .gravatar {
+	margin: 0 0 5px 3px;
+	background: #FFF;
 }
 
 #user-container .user-edit {
 	position: absolute;
-	top: 32px;
+	top: 34px;
 	left: 2px;
     display: block;
     height: 13px;
@@ -302,12 +307,23 @@
 
 #user-container .user-remove {
 	position: absolute;
-	top: 32px;
+	top: 34px;
 	left: 20px;
     display: block;
     height: 13px;
     width: 13px;
     background: url(../i/user-group-utilities.png) -17px 0 no-repeat;
+}
+
+#user-container .user .user-utilities a {
+	opacity: 0.25;
+	-moz-opacity: 0.25;
+	filter:alpha(opacity=25);
+}
+#user-container .user:hover .user-utilities a {
+	opacity: 1;
+	-moz-opacity: 15;
+	filter:alpha(opacity=100);
 }
 
 #group-container .group-list {
@@ -386,7 +402,7 @@
 
 #group-container .group-edit {
     background: url(../i/user-group-utilities.png) no-repeat;
-    bottom: -12px;
+    bottom: -14px;
     display: block;
     height: 13px;
     left: 3px;
@@ -398,7 +414,7 @@
 
 #group-container .group-remove {
     background: url(../i/user-group-utilities.png) -17px 0 no-repeat;
-    bottom: -12px;
+    bottom: -14px;
     display: block;
     height: 13px;
     position: absolute;
@@ -406,6 +422,18 @@
     text-indent: -999em;
     width: 13px;
 	outline: none;
+}
+
+#group-container .group .group-utilities a {
+	opacity: 0.25;
+	-moz-opacity: 0.25;
+	filter:alpha(opacity=25);
+}
+
+#group-container .group:hover .group-utilities a {
+	opacity: 1;
+	-moz-opacity: 1;
+	filter:alpha(opacity=100);
 }
 
 #group-container .group .members {
@@ -450,6 +478,11 @@
     right: 3px;
     top: 7px;
 	outline: none;
+	visibility: hidden;
+}
+
+#group-container .members li:hover .remove {
+	visibility: visible;
 }
 
 /* Connect */

@@ -318,6 +318,10 @@
     vertical-align: center;
 }
 
+.vbx-items-grid .items-row:hover td {
+	background-color: #F7F7F7;
+}
+
 .vbx-items-grid .message-row td {
     padding: 6px;
     color: #777;
