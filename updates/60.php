@@ -10,6 +10,7 @@
 
 		foreach($tenants as $tenant) {
 			$ci->vbx_settings->add('numbers_country', 'US', $tenant->id);
+			$ci->vbx_settings->add('gravatars', 0, $tenant->id);
 		}
 
 		$ci->vbx_settings->set('schema-version', '60', 1);

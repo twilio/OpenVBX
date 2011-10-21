@@ -17,10 +17,21 @@
 
 				<ul class="user-list">
 				<?php $admin = OpenVBX::getCurrentUser(); ?>
-				<?php if(isset($users)) foreach($users as $user): ?>
+				<?php if(isset($users)): 
+					$default_avatar = asset_url().'/assets/i/user-icon.png';
+					foreach($users as $user): ?>
 				<li class="user" rel="<?php echo $user->id ?>">
 					<div class="user-utilities">
-						<img class="gravatar" src="<?php echo gravatar_url($user->email); ?>" width="30" height="30" />
+						<img class="gravatar" src="<?php
+							if ($gravatars)
+							{
+								echo gravatar_url($user->email, 30, $default_avatar);
+							}
+							else
+							{
+								echo $default_avatar;
+							}
+						?>" width="30" height="30" />
 						<?php if($user->id != $admin->id): ?>
 						<a class="user-edit" href="#edit"><span class="replace">Edit</span></a>
 						<a class="user-remove" href="#remove"><span class="replace">Remove</span></a>
@@ -31,7 +42,9 @@
 						<p class="user-email"><?php echo $user->email ?></p>
 					</div>
 				</li>
-				<?php endforeach; ?>
+				<?php 
+					endforeach; 
+				endif; ?>
 				<li class="user" rel="prototype" style="display:none;">
 					<div class="user-utilities">
 						<a class="user-edit" href="#edit"><span class="replace">Edit</span></a>

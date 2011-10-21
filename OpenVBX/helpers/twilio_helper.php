@@ -263,9 +263,8 @@ if (!function_exists('t_form_valid_attributes'))
 
 if (!function_exists('gravatar_url'))
 {
-	function gravatar_url($email, $size = 30)
+	function gravatar_url($email, $size = 30, $default_image)
 	{
-		$default_image = asset_url().'/assets/i/user-icon.png';
 		$url = 'http://'.(is_ssl() ? 'secure' : 'www').'.gravatar.com/avatar/'.
 				md5(strtolower(trim($email))).
 				'?s='.intval($size).

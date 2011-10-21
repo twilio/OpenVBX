@@ -44,6 +44,7 @@
 - added integration testing library based on [foostack](http://www.foostack.com/foostack/)
 	- started integration tests for applets
 - fixing database debug setting default. Now defaults to off
+- added [Gravatar](http://gravatar.com) support in theme options
 - adding local config override option for `OpenVBX/config/config.php`
 	- overrides are ignored via .gitignore
 - fix for audio uploads 302 error

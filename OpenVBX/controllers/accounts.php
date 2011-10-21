@@ -42,6 +42,8 @@ class Accounts extends User_Controller {
 		$groups = VBX_Group::search(array('is_active' => 1));
 		if(!empty($groups))
 			$data['groups'] = $groups;
+			
+		$data['gravatars'] = $this->vbx_settings->get('gravatars', $this->tenant->id);
 
 		$this->respond('', 'accounts', $data);
 	}

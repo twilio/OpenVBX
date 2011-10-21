@@ -192,6 +192,11 @@
     border-bottom: 1px solid #DDD;
 }
 
+.message-details-notes .note .gravatar {
+	float: left;
+	margin-right: 10px;
+}
+
 .message-details-notes #message-details-notes-list .note-created {
     float: right;
     padding: 3px;

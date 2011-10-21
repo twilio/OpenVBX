@@ -461,7 +461,8 @@ class Site extends User_Controller
 					'transcriptions' => 1,
 					'voice' => 'man',
 					'voice_language' => 'en',
-					'numbers_country' => 'US'
+					'numbers_country' => 'US',
+					'gravatars' => 0
 				);
 				foreach ($tenant_defaults as $key => $value) {
 					$this->settings->set($key, $value, $data['id']);
