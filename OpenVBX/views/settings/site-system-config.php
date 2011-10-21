@@ -1,5 +1,6 @@
 <form name="vbx-system" action="<?php echo site_url('settings/site') ?>" method="POST" class="vbx-system-form vbx-form">
 	<div class="two-col">
+	<?php if($tenant_mode == Site::MODE_MULTI): /* PARENT TENANT ONLY */ ?>
 		<fieldset>
 	
 			<h3>System Config</h3>
@@ -28,6 +29,7 @@
 				<p class="instruction">(must be a CNAME for api.twilio.com)</p>
 			</div>
 		</fieldset>
+	<?php endif; /* END PARENT TENANT ONLY */ ?>
 	
 	<?php if (count($countries)): ?>
 		<fieldset>
@@ -80,7 +82,7 @@
 		<fieldset>
 	
 			<h3>Text to Speech</h3>
-	
+		
 			<div class="vbx-input-complex vbx-input-container">
 				<label class="field-label">Voice
 					<?php

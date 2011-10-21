@@ -9,9 +9,7 @@
 			<li><a href="#multi-tenant">Tenants</a></li>
 		<?php endif; ?>
 			<li><a href="#twilio-account">Twilio Account</a></li>
-		<?php if($tenant_mode == Site::MODE_MULTI): ?>
 			<li><a href="#system-config">System Config</a></li>
-		<?php endif; ?>
 			<li><a href="#about">About</a></li>
 		</ul>
 	</div><!-- .vbx-content-tabs -->

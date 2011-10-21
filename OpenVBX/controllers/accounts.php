@@ -509,4 +509,29 @@ class Accounts extends User_Controller {
 		$this->respond('', 'accounts', $data);
 	}
 
+	public function refresh_dialer() 
+	{
+		$users = VBX_User::search(array(
+			'is_active' => 1,
+		));
+		
+		$current_user = $this->session->userdata('user_id');
+		foreach ($users as $k => $user) {
+			if ($user->id == $current_user) {
+				unset($users[$k]);
+			}
+		}
+		
+		$data['users'] = $users;
+		
+		$html = $this->load->view('dialer/users-list', $data, true);
+		
+		$response = array(
+			'json' => array(
+				'error' => false,
+				'html' => $html
+			)
+		);
+		$this->respond('', 'dialer/users-list', $response);
+	}
 }

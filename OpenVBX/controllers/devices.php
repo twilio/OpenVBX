@@ -337,4 +337,45 @@ class Devices extends User_Controller {
 		$data['json'] = $response;
 		return $this->respond('', 'account', $data);
 	}
+	
+	/**
+	 * Refresh the user's devices list in the dialer
+	 *
+	 * @return json
+	 */
+	public function refresh_dialer() {
+		$user = VBX_User::get(array('id' => $this->session->userdata('user_id')));
+		$browserphone = array(
+			'call_using_options' => array()
+		);
+		if (count($user->devices)) 
+		{
+			foreach ($user->devices as $device)
+			{
+				if (strpos($device->value, 'client:') !== false)
+				{
+					continue;
+				}
+				$browserphone['call_using_options']['device:'.$device->id] = array(
+					'title' => 'Device: '.$device->name,
+					'data' => (object) array(
+						'number' => format_phone($device->value),
+						'name' => $device->name
+					)
+				);
+			}
+		}
+		
+		$data = array(
+			'browserphone' => $browserphone
+		);
+
+		$html = $this->load->view('dialer/devices', $data, true);
+		
+		$response['json'] = array(
+			'error' => false,
+			'html' => $html
+		);
+		$this->respond('', 'dialer/devices', $response);
+	}
 }

@@ -152,7 +152,15 @@ class VBX_Incoming_numbers extends Model
 						
 						if ($countrydata = $ci->config->item($country->country_code,'countrycodes'))
 						{
-							list($country->code, $country->search) = $countrydata;
+							$country->code = $countrydata[0];
+							if (!empty($countrydata[1]))
+							{
+								$country->search = $countrydata[1];
+							}
+							else
+							{
+								$country->search = '+'.$country->code.' (*)';
+							}
 						}
 						$countries[$country->country_code] = $country;
 					}

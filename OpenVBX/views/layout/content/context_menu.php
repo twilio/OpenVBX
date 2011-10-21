@@ -13,8 +13,6 @@
 		</div>
 	 </div>
 
-
-	<?php if(!empty($user_numbers) && count($user_numbers) > 0):  /* has-numbers */ ?>
 	<div class="sms-dialog">
 		<a class="close action" href=""><span class="replace">close</span></a>
 		<h3>Send a Text Message</h3>
@@ -24,23 +22,25 @@
 					<input class="small" name="to" type="text" placeholder="(555) 867 5309" value="" />
 				</label>
 				<?php if(isset($callerid_numbers) && count($callerid_numbers) > 1): ?>
-				<label class="field-label left">From
-					<select name="from" class="small">
-						<?php foreach($callerid_numbers as $number):
-							if (!$number->capabilities->sms)
-							{
-								continue;
-							} 
-							?>
-						<option value="<?php echo $number->phone ?>">
-							<?php echo $number->phone ?>
-						</option>
-						<?php endforeach; ?>
-					</select>
-				</label>
-				<?php elseif(isset($callerid_numbers) && count($callerid_numbers) == 1): $c = $callerid_numbers[0]; ?>
-				<input type="hidden" name="from" value="<?php echo $c->phone ?>" />
+					<label class="field-label left">From
+						<select name="from" class="small">
+							<?php foreach($callerid_numbers as $number):
+								if (!$number->capabilities->sms)
+								{
+									continue;
+								} 
+								?>
+							<option value="<?php echo $number->phone ?>">
+								<?php echo $number->phone ?>
+							</option>
+							<?php endforeach; ?>
+						</select>
+					</label>
+				<?php elseif(isset($callerid_numbers) && count($callerid_numbers) == 1): 
+					$c = $callerid_numbers[0]; ?>
+					<input type="hidden" name="from" value="<?php echo $c->phone ?>" />
 				<?php endif; ?>
+				
 				<br class="clear" />
 
 				<label class="field-label">Message
@@ -52,7 +52,6 @@
 			<img class="sms-sending hide" src="<?php echo asset_url('assets/i/ajax-loader.gif'); ?>" alt="loading" />
 		</form>
 	</div> <!-- .sms-dialog -->
-	<?php endif; /* has-numbers */ ?>
 
 	<div class="notify <?php echo (isset($error) && !empty($error))? '' : 'hide' ?>">
 	 	<p class="message">

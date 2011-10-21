@@ -146,7 +146,8 @@ class VBX_Settings extends Model
 
 		if(preg_match('/[^0-9A-Za-z_-]/', $name) > 0)
 		{
-			$errors[] = "Tenant name contains invalid characters.  Allowed characters: alphanumeric, dashes, and underscores.";
+			$errors[] = "Tenant name contains invalid characters. ".
+						"Allowed characters: alphanumeric, dashes, and underscores.";
 		}
 
 		if(!empty($errors))
@@ -195,7 +196,8 @@ class VBX_Settings extends Model
 		if(isset($tenant['name'])
 		   && preg_match('/[^0-9A-Za-z_-]/', $name) > 0)
 		{
-			$errors[] = "Tenant name contains invalid characters.  Allowed characters: alphanumeric, dashes, and underscores.";
+			$errors[] = "Tenant name contains invalid characters. ".
+						"Allowed characters: alphanumeric, dashes, and underscores.";
 		}
 
 		foreach($this->tenants_params as $param)
@@ -270,7 +272,8 @@ class VBX_Settings extends Model
 	{
 		if(function_exists('apc_fetch')) {
 			$success = false;
-			if(($data = apc_fetch($this->cache_key.$tenant_id.$name, $success)) && $success) 
+			$cachekey = $this->cache_key.$tenant_id.$name;
+			if(($data = apc_fetch($cachekey, $success)) && $success) 
 			{
 				$result = @unserialize($data);
 				if(!empty($result[0]))
@@ -292,7 +295,7 @@ class VBX_Settings extends Model
 		{
 			$result = $query->result();
 			if(function_exists('apc_store')) {
-				$success = apc_store($this->cache_key.$tenant_id.$name, serialize($result), self::CACHE_TIME_SEC);
+				$success = apc_store($cachekey, serialize($result), self::CACHE_TIME_SEC);
 			}
 
 			if(!empty($result[0]))

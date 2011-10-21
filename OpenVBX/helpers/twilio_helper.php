@@ -63,6 +63,10 @@ if (!function_exists('validate_rest_request')) {
 	 */
 	function validate_rest_request($failure_message = 'Could not validate this request. Goodbye.') {
 		$ci =& get_instance();
+		if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT)
+		{
+			return;
+		}
 		
 		if (!OpenVBX::validateRequest()) {
 			$response = new TwimlResponse;

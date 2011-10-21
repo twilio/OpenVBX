@@ -240,7 +240,6 @@ jQuery(function($) {
 			$('.send-sms-button').attr('rel', $(link).attr('rel'));
 			$('.send-sms-button').prop('disabled', false);
 			
-			
 			if (currentDialogType == 'call') {
 				currentDialogHideFunction();
 			}

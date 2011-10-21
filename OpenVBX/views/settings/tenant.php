@@ -26,7 +26,7 @@
 					<fieldset id="tenant-type" class="vbx-input-container">
 						<label class="field-label">Auth Type: <span class="label-text-plain">
 							<?php if ($tenant->type == VBX_Settings::AUTH_TYPE_CONNECT && empty($tenant_settings['twilio_sid']['value'])): ?>
-								Twilio Connect (OAuth)<br /><span class="instruction">This tenant has not authorized your Twilio Account to make requests on their behalf.</span>
+								Twilio Connect<br /><span class="instruction">This tenant has not authorized your Twilio Account to make requests on their behalf.</span>
 							<?php elseif ($tenant->type == VBX_Settings::AUTH_TYPE_CONNECT && !empty($tenant_settings['twilio_sid']['value'])): ?>
 								Twilio Connect (OAuth)<br /><span class="instruction">This Tenant has authorized your Twilio Account to make requests on their behalf. Billing occurs on the Tenant's account</span>
 							<?php elseif($tenant->type == VBX_Settings::AUTH_TYPE_SUBACCOUNT): ?>
