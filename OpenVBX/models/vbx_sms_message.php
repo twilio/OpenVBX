@@ -76,7 +76,7 @@ class VBX_Sms_message extends Model {
 			$account = OpenVBX::getAccount();
 			$messages = $account->sms_messages->getIterator($page, $page_size, array());
 			if (count($messages)) {
-				$this->total = count($messages); // @TODO need verification that this will work, return may not be Array compatible
+				$this->total = count($messages);
 				foreach ($messages as $message) {
 					$output[] = (object) Array(
 						'id' => $message->sid,
@@ -112,11 +112,12 @@ class VBX_Sms_message extends Model {
 													);
 		}
 		catch (Exception $e) {
-			throw new VBX_Sms_messageException($e->getMessage);
+			throw new VBX_Sms_messageException($e->getMessage());
 		}
 
 		if (!in_array($response->status, array('sent', 'queued'))) {
-			throw new VBX_Sms_messageException('SMS delivery failed. An unknown error occurred during delivery.');
+			throw new VBX_Sms_messageException('SMS delivery failed. An unknown error occurred'.
+												' during delivery.');
 		}
 	}
 

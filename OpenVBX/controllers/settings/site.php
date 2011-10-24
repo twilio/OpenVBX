@@ -144,6 +144,16 @@ class Site extends User_Controller
 
 		$data['json']['settings'] = $current_settings;
 
+		$this->load->model('vbx_incoming_numbers');
+		$data['countries'] = array();
+		if ($countrydata = $this->vbx_incoming_numbers->get_available_countries())
+		{
+			foreach ($countrydata as $country)
+			{
+				$data['countries'][$country->country_code] = $country->country;
+			}
+		}
+
 		$this->respond('Site Settings', 'settings/site', $data);
 	}
 
@@ -344,7 +354,22 @@ class Site extends User_Controller
 	private function add_tenant()
 	{
 		$tenant = $this->input->post('tenant');
-		if(!empty($tenant))
+		
+		if (empty($tenant['url_prefix']))
+		{
+			$data['error'] = true;
+			$data['message'] = 'A valid tenant name is required';
+			$this->session->set_flashdata('error', 'Failed to add new tenant: '.$data['message']);
+		}
+		if (empty($tenant['admin_email']) || 
+			!filter_var($tenant['admin_email'], FILTER_VALIDATE_EMAIL))
+		{
+			$data['error'] = true;
+			$data['message'] = 'A valid admin email address is required';
+			$this->session->set_flashdata('error', 'Failed to add new tenant: '.$data['message']);
+		}
+		
+		if(!empty($tenant) && empty($data['error']))
 		{
 			try {
 				$data['id'] = $this->settings->tenant($tenant['url_prefix'],
@@ -417,20 +442,31 @@ class Site extends User_Controller
 				}
 				elseif ($auth_type === VBX_Settings::AUTH_TYPE_CONNECT)
 				{
-					// when using connect, we won't get a sid, token, or app_sid until user first login
+					// when using connect, we won't get a sid, token, or 
+					// app_sid until user first login
 					$tenant_id = $tenant_token = $app_sid = null;
 				}
 				else 
 				{
-					throw new VBX_SettingsException('Unknown auth-type encountered during tenant creation');
+					throw new VBX_SettingsException('Unknown auth-type encountered during '.
+													'tenant creation');
 				}
 
 				$this->settings->update_tenant(array(
 					'id' => $data['id'],
-					'type' => $auth_type,
-					'transcriptions' => 1,
-					'voice' => 'man'
+					'type' => $auth_type
 				));
+				
+				$tenant_defaults = array(
+					'transcriptions' => 1,
+					'voice' => 'man',
+					'voice_language' => 'en',
+					'numbers_country' => 'US',
+					'gravatars' => 0
+				);
+				foreach ($tenant_defaults as $key => $value) {
+					$this->settings->set($key, $value, $data['id']);
+				}
 				$this->settings->add('tenant_first_run', 1, $data['id']);
 				
 				$this->db->trans_complete();

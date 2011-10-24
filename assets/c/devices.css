@@ -37,10 +37,6 @@
     -webkit-border-radius: 6px; /* Saf3+, Chrome */
     -khtml-border-radius: 6px; /* Konqueror */
     border-radius: 6px; /* Standard. IE9 */
-    /**
-     * @bugfix border-radius background bleed
-     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
-     */
     -webkit-background-clip: padding-box;
 }
 
@@ -49,23 +45,24 @@
     margin: 10px 0 20px 0;
 }
 
-.device-container .device-list .device {
+.device-container .device-list .device,
+.device-container .device-list .device-placeholder {
     height: 39px;
     line-height: 39px;
     margin-bottom: 5px;
     padding: 0 8px 0 20px;
     background: #FFF url(../i/device-drag-grip.png) no-repeat 2px 2px;
     border: 1px solid #CCC;
-    -moz-border-radius: 6px; /* FF1+ */
-    -webkit-border-radius: 6px; /* Saf3+, Chrome */
-    -khtml-border-radius: 6px; /* Konqueror */
-    border-radius: 6px; /* Standard. IE9 */
-    /**
-     * @bugfix border-radius background bleed
-     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
-     */
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
     -webkit-background-clip: padding-box;
     cursor: move;
+}
+.device-container .device-list .device-placeholder {
+	background: #FFF;
+	border: 1px dotted #DDD;
 }
 
 .device-container .device-list .device-hover {
@@ -133,14 +130,10 @@
     margin: 4px 20px 0 0;
     background-color: #777;
     border: 1px solid #444;
-    -moz-border-radius: 4px; /* FF1+ */
-	-webkit-border-radius: 4px; /* Saf3+, Chrome */
-	-khtml-border-radius: 4px; /* Konqueror */
-	border-radius: 4px; /* Standard. IE9 */
-	/**
-	 * @bugfix border-radius background bleed
-	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
-	 */
+    -moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
 	-webkit-background-clip: padding-box;
 }
 
@@ -204,14 +197,10 @@
 .application-container .application {
 	padding: 15px;
     border: 1px solid #CCC;
-    -moz-border-radius: 6px; /* FF1+ */
-    -webkit-border-radius: 6px; /* Saf3+, Chrome */
-    -khtml-border-radius: 6px; /* Konqueror */
-    border-radius: 6px; /* Standard. IE9 */
-    /**
-     * @bugfix border-radius background bleed
-     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
-     */
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
     -webkit-background-clip: padding-box;
 	overflow: auto;
 	clear: both;

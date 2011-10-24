@@ -50,4 +50,11 @@ $(document).ready(function() {
 		history.navigationMode = 'compatible';
 
 	});
+	
+	$('#settings-country-select select').live('change', function() {
+		var select = $(this),
+			img = $(this).siblings('img'),
+			imgpath = '/assets/i/countries/' + select.val().toLowerCase() + '.png';
+			img.attr('src', OpenVBX.assets + imgpath);
+	});
 });

@@ -42,6 +42,8 @@ class Accounts extends User_Controller {
 		$groups = VBX_Group::search(array('is_active' => 1));
 		if(!empty($groups))
 			$data['groups'] = $groups;
+			
+		$data['gravatars'] = $this->vbx_settings->get('gravatars', $this->tenant->id);
 
 		$this->respond('', 'accounts', $data);
 	}
@@ -277,7 +279,7 @@ class Accounts extends User_Controller {
 			{
 				$error = true;
 				$message = $e->getMessage();
-				error_log($message);
+				log_message('error', 'Unable to send new user notification: '.$message);
 			}
 
 			if (!$error)
@@ -498,9 +500,9 @@ class Accounts extends User_Controller {
 		}
 		catch(Exception $e)
 		{
-			error_log($e->getMessage());
 			$json['message'] = 'Unable to deactivate';
 			$json['error'] = true;
+			log_message('error', $json['message'].': '.$e->getMessage());
 		}
 
 
@@ -509,4 +511,29 @@ class Accounts extends User_Controller {
 		$this->respond('', 'accounts', $data);
 	}
 
+	public function refresh_dialer() 
+	{
+		$users = VBX_User::search(array(
+			'is_active' => 1,
+		));
+		
+		$current_user = $this->session->userdata('user_id');
+		foreach ($users as $k => $user) {
+			if ($user->id == $current_user) {
+				unset($users[$k]);
+			}
+		}
+		
+		$data['users'] = $users;
+		
+		$html = $this->load->view('dialer/users-list', $data, true);
+		
+		$response = array(
+			'json' => array(
+				'error' => false,
+				'html' => $html
+			)
+		);
+		$this->respond('', 'dialer/users-list', $response);
+	}
 }

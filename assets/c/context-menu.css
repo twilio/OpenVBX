@@ -34,10 +34,7 @@
 	-webkit-border-radius: 8px; /* Saf3+, Chrome */
 	-khtml-border-radius: 8px; /* Konqueror */
 	border-radius: 8px; /* Standard. IE9 */
-	/**
-	 * @bugfix border-radius background bleed
-	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
-	 */
+
 	-webkit-background-clip: padding-box;
 }
 
@@ -192,10 +189,7 @@
 	-webkit-border-radius: 4px; /* Saf3+, Chrome */
 	-khtml-border-radius: 4px; /* Konqueror */
 	border-radius: 4px; /* Standard. IE9 */
-	/**
-	 * @bugfix border-radius background bleed
-	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
-	 */
+
 	-webkit-background-clip: padding-box;
 }
 
@@ -223,10 +217,7 @@
 	-webkit-border-radius: 4px; /* Saf3+, Chrome */
 	-khtml-border-radius: 4px; /* Konqueror */
 	border-radius: 4px; /* Standard. IE9 */
-	/**
-	 * @bugfix border-radius background bleed
-	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
-	 */
+
 	-webkit-background-clip: padding-box;
 }
 

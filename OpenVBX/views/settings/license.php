@@ -122,6 +122,13 @@
 			http://www.opensource.org/licenses/bsd-license.php
 		</pre>
 	</li>
+	<li><b>Minify</b>
+		<pre>
+			@copyright 2008 Ryan Grove, Stephen Clay. All rights reserved.
+			license http://opensource.org/licenses/bsd-license.php  New BSD License
+			link http://code.google.com/p/minify/
+		</pre>
+	</li>
 	<li><b>CodeIgniter</b>
 		<pre>
 			Copyright (c) 2008, EllisLab, Inc.

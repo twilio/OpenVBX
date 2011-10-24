@@ -706,6 +706,42 @@ Client.ui = {
 		});
 	},
 	
+	refreshDevices: function() {
+		$.ajax({
+			url: OpenVBX.home + '/devices/refresh_dialer',
+			data: {},
+			dataType: 'json',
+			type: 'POST',
+			success: function(response) {
+				if (response.error) {
+					Client.triggerError('Unable to refresh devices. Message from server:'
+											+ response.message);
+				}
+				else {
+					$('#dialer #client-mode-status').replaceWith($(response.html));
+				}
+			}
+		});
+	},
+	
+	refreshUsers: function() {
+		$.ajax({
+			url: OpenVBX.home + '/accounts/refresh_dialer',
+			data: {},
+			dataType: 'json',
+			type: 'POST',
+			success: function(response) {
+				if (response.error) {
+					Client.triggerError('Unable to refresh users. Message from server: '
+											+ response.message);
+				}
+				else {
+					$('#dialer #client-ui-user-list').replaceWith($(response.html));
+				}
+			}
+		});
+	},
+	
 // user specific settings
 	toggleOptionsSummary: function(clicked) {
 		var toggle = $(clicked).find('#summary-call-toggle'),

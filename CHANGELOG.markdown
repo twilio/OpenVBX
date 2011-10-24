@@ -5,13 +5,18 @@
 
 - integrate [Twilio Connect](http://www.twilio.com/docs/connect/) for Tenants
 - adding voice & language preferences to site options to allow administrator to set site wide options for the voice type and language of voice
+	- enable tenant administrators to edit their system settings
 - adding transcription preference to site options to allow transcriptions to be turned off
 - adding ability to sort users in a group
 - updated Twilio Client UI slider to fully integrate dialing functionality in to slider dialog
 	- dialog now saves state as user specific settings
 	- dialog allows dialing using any configured device wether active or not
 	- dialog shows a list of users in the system along with a quick dial button
+	- dialog live updates when user/device/number data changes in the system
+		- for user making the change, other users currently require logging out/in to refresh
 - adding [Minify.php](http://code.google.com/p/minify/) for asset minification in lieu of pre-compiled assets
+- enable the purchase of numbers by specific country
+- display and enforce number capabilities. not all numbers are allowed to use sms
 - updated API library to latest [Services Twilio library](https://github.com/twilio/twilio-php) & updated all calls to Twilio to use the new library
 	- modify internal calls & standard applets to use new library for API calls & TwiML generation
 - updated install, upgrade & welcome JS to abstract out the steps slider
@@ -39,12 +44,14 @@
 - added integration testing library based on [foostack](http://www.foostack.com/foostack/)
 	- started integration tests for applets
 - fixing database debug setting default. Now defaults to off
+- added [Gravatar](http://gravatar.com) support in theme options
 - adding local config override option for `OpenVBX/config/config.php`
 	- overrides are ignored via .gitignore
 - fix for audio uploads 302 error
 - fix bug in rest access tokens that could allow unauthorized access to twiml controller
 	- each twilio client outbound call now has its own rest access token
 - add more standards compliant CSS for base UI styling
+- fixed bug where an error entering basic tenant info could create an incomplete tenant
 - added Changelog file
 
 

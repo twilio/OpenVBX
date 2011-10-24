@@ -53,7 +53,10 @@ $(document).ready(function() {
 							$('#dialog-user-add input[type="text"]').val('');
 							$('#dialog-user-add input[type="checkbox"]').prop('checked', false);
 							$('.error-message', dialog).hide();
-							$(document).trigger('user-added', [data])
+							$(document).trigger('user-added', [data]);
+							if (window.parent.Client) {
+								window.parent.Client.ui.refreshUsers();
+							}
 						} else {
 							$('.error-message', dialog).html(data.message.replace(/\n/g, '<br />')).show();
 						}
@@ -103,6 +106,9 @@ $(document).ready(function() {
 					type : 'POST',
 					success : function(data) {
 						entity.fadeRemove();
+						if (window.parent.Client) {
+							window.parent.Client.ui.refreshUsers();
+						}
 					}
 				});
 				
@@ -173,7 +179,9 @@ $(document).ready(function() {
 						} else {
 							$('.screen .message').append(data.email+' already exists, not modified.<br />');
 						}
-
+						if (window.parent.Client) {
+							window.parent.Client.ui.refreshUsers();
+						}
 					}
 					syncedUsers += 1;
 				},
@@ -596,6 +604,9 @@ function hideUserEdit(save) {
 				} else {
 					$('.error-message', dlgUser).html(data.message.replace(/\n/g, '<br />')).show();
 				}
+			}
+			if (window.parent.Client) {
+				window.parent.Client.ui.refreshUsers();
 			}
 		});
 	} else {

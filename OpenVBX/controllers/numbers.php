@@ -38,12 +38,25 @@ class Numbers extends User_Controller
 	{
 		$this->admin_only($this->section);
 		$this->template->add_js('assets/j/numbers.js');
-
+		
 		$data = $this->init_view_data();
+		$data['selected_country'] = $this->vbx_settings->get('numbers_country', $this->tenant->id);
+		
 		$numbers = array();
+		$data['countries'] = array();
 		try
 		{
 			$numbers = $this->vbx_incoming_numbers->get_numbers();
+			$countries = $this->vbx_incoming_numbers->get_available_countries();
+
+			// lighten the payload as we don't need the url data in the view
+			foreach ($countries as &$country)
+			{
+				$data['countries'][$country->country_code] = $country->country;
+				$country->available = array_keys(get_object_vars($country->subresource_uris));
+				unset($country->uri, $country->subresource_uris);
+			}
+			$data['openvbx_js']['countries'] = json_encode($countries);
 		}
 		catch (VBX_IncomingNumberException $e)
 		{
@@ -73,19 +86,30 @@ class Numbers extends User_Controller
 					}
 				}
 
-				$incoming_numbers[] = array(
-											'id' => $item->id,
-											'name' => $item->name,
-											'trial' => (isset($item->trial) && $item->trial == 1)? 1 : 0,
-											'phone' => format_phone($item->phone),
-											'pin' => $item->pin,
-											'status' => $item_msg,
-											'flow_id' => $item->flow_id,
-											'flow_name' => $flow_name,
-											'flows' => $flows,
-											);
-			}
+				$capabilities = array();
+				if (!empty($item->capabilities)) {
+					foreach ($item->capabilities as $cap => $enabled)
+					{
+						if ($enabled) 
+						{
+							array_push($capabilities, ucfirst($cap));
+						}
+					}
+				}
 
+				$incoming_numbers[] = array(
+					'id' => $item->id,
+					'name' => $item->name,
+					'trial' => (isset($item->trial) && $item->trial == 1)? 1 : 0,
+					'phone' => format_phone($item->phone),
+					'pin' => $item->pin,
+					'status' => $item_msg,
+					'flow_id' => $item->flow_id,
+					'flow_name' => $flow_name,
+					'flows' => $flows,
+					'capabilities' => $capabilities
+				);
+			}
 		}
 		$data['highlighted_numbers'] = array($this->session->flashdata('new-number'));
 		$data['items'] = $incoming_numbers;
@@ -119,7 +143,8 @@ class Numbers extends User_Controller
 		{
 			$is_local = ($this->input->post('type') == 'local');
 			$area_code = $this->input->post('area_code');
-			$this->new_number = $this->vbx_incoming_numbers->add_number($is_local, $area_code);
+			$country = $this->input->post('country');
+			$this->new_number = $this->vbx_incoming_numbers->add_number($is_local, $area_code, $country);
 
 			$json['number'] = $this->new_number;
 

@@ -375,14 +375,21 @@ class CI_Template {
 
    }
 
+	/**
+	 * @todo: this method has to go!
+	 * need to deprecate in favor of scrubbing data on actual output
+	 */
 	function clean_output($data)
 	{
 		if (is_string($data)) {
-			if (version_compare(phpversion(), '5.2.3', '<')) {
-				$data = htmlspecialchars($data);
-			}
-			else {
-				$data = htmlspecialchars($data, ENT_COMPAT, 'UTF-8', false);
+			if (!preg_match("|^{.*}$|", $data)) // ugh, leave json alone
+			{
+				if (version_compare(phpversion(), '5.2.3', '<')) {
+					$data = htmlspecialchars($data);
+				}
+				else {
+					$data = htmlspecialchars($data, ENT_COMPAT, 'UTF-8', false);
+				}
 			}
 		}
 		elseif (is_object($data)) {

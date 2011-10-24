@@ -326,4 +326,10 @@ $(document).ready(function() {
 			}
 		});
 	};
+	
+	$('#ft a').live('click', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		window.open(this.href);
+	});
 });

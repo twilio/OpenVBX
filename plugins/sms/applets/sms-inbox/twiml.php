@@ -46,7 +46,7 @@ if($sms_found)
 							$ci->input->get_post('SmsSid'),
 							$ci->input->get_post('From'),
 							$ci->input->get_post('To'),
-							$ci->input->get_post('Body'])
+							$ci->input->get_post('Body')
 						);
 }
 else

@@ -17,9 +17,21 @@
 
 				<ul class="user-list">
 				<?php $admin = OpenVBX::getCurrentUser(); ?>
-				<?php if(isset($users)) foreach($users as $user): ?>
+				<?php if(isset($users)): 
+					$default_avatar = asset_url().'/assets/i/user-icon.png';
+					foreach($users as $user): ?>
 				<li class="user" rel="<?php echo $user->id ?>">
 					<div class="user-utilities">
+						<img class="gravatar" src="<?php
+							if ($gravatars)
+							{
+								echo gravatar_url($user->email, 30, $default_avatar);
+							}
+							else
+							{
+								echo $default_avatar;
+							}
+						?>" width="30" height="30" />
 						<?php if($user->id != $admin->id): ?>
 						<a class="user-edit" href="#edit"><span class="replace">Edit</span></a>
 						<a class="user-remove" href="#remove"><span class="replace">Remove</span></a>
@@ -30,7 +42,9 @@
 						<p class="user-email"><?php echo $user->email ?></p>
 					</div>
 				</li>
-				<?php endforeach; ?>
+				<?php 
+					endforeach; 
+				endif; ?>
 				<li class="user" rel="prototype" style="display:none;">
 					<div class="user-utilities">
 						<a class="user-edit" href="#edit"><span class="replace">Edit</span></a>
@@ -50,50 +64,50 @@
 
 				<div id="group-container">
 				<h3>Groups</h3>
-				<p>Select a group to view the user list.</p>
+				<p>Select a group to view the user list. Drag users to reorder the group.</p>
 
 				<ul class="group-list">
 				<?php if(isset($groups)) foreach($groups as $group_id => $group): ?>
-						<li class="group" rel="<?php echo $group_id ?>">
-								<img class="group-counter-loader hide" src="<?php echo asset_url('assets/i/ajax-loader-circle.gif'); ?>" alt="loading" />
-								<span class="group-counter"><?php echo count($group->users) ?></span>
+					<li class="group" rel="<?php echo $group_id ?>">
+							<img class="group-counter-loader hide" src="<?php echo asset_url('assets/i/ajax-loader-circle.gif'); ?>" alt="loading" />
+							<span class="group-counter"><?php echo count($group->users) ?></span>
 
-								<div class="group-utilities">
-										<a class="group-edit" href="#edit">Edit Group</a>
-										<a class="group-remove" href="#remove">Remove Group</a>
-								</div>
-
-								<div class="group-info">
-									<p class="group-name"><?php echo $group->name; ?></p>
-								</div>
-
-								<ul class="members">
-								<?php foreach($group->users as $user): ?>
-										<li rel="<?php echo $user->user_id; ?>">
-										<?php if(!empty($user->first_name)) : ?>
-										<span><?php echo $user->first_name; ?> <?php echo $user->last_name; ?></span>
-										<?php else: ?>
-										<span><?php echo $user->email; ?></span>
-										<?php endif;?>
-										<a class="remove">Remove</a>
-										</li>
-								<?php endforeach; ?>
-								</ul>
-
-						</li><?php endforeach; ?>
-
-						<li class="group" rel="prototype" style="display:none;">
-							<span class="group-counter">0</span>
 							<div class="group-utilities">
-								<a class="group-edit" href="#">Edit Group</a>
-								<a class="group-remove" href="#">Remove Group</a>
+									<a class="group-edit" href="#edit">Edit Group</a>
+									<a class="group-remove" href="#remove">Remove Group</a>
 							</div>
 
 							<div class="group-info">
-								<p class="group-name">(Prototype)</p>
+								<p class="group-name"><?php echo $group->name; ?></p>
 							</div>
-							<ul class="members"></ul>
-						</li>
+
+							<ul class="members">
+							<?php foreach($group->users as $user): ?>
+									<li rel="<?php echo $user->user_id; ?>">
+									<?php if(!empty($user->first_name)) : ?>
+									<span><?php echo $user->first_name; ?> <?php echo $user->last_name; ?></span>
+									<?php else: ?>
+									<span><?php echo $user->email; ?></span>
+									<?php endif;?>
+									<a class="remove">Remove</a>
+									</li>
+							<?php endforeach; ?>
+							</ul>
+
+					</li><?php endforeach; ?>
+
+					<li class="group" rel="prototype" style="display:none;">
+						<span class="group-counter">0</span>
+						<div class="group-utilities">
+							<a class="group-edit" href="#">Edit Group</a>
+							<a class="group-remove" href="#">Remove Group</a>
+						</div>
+
+						<div class="group-info">
+							<p class="group-name">(Prototype)</p>
+						</div>
+						<ul class="members"></ul>
+					</li>
 				</ul>
 				</div><!-- #group-container -->
 
