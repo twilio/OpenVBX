@@ -37,7 +37,7 @@ class Accounts extends User_Controller {
 		$data = $this->init_view_data();
 
 		$users = VBX_User::search(array('is_active' => 1));
-		$data['users'] = $users;
+		$data['users'] = $this->sort_users_by_lname($users);
 
 		$groups = VBX_Group::search(array('is_active' => 1));
 		if(!empty($groups))
@@ -172,6 +172,36 @@ class Accounts extends User_Controller {
 							  'groups' => $groups,
 							  );
 		$this->respond('', 'accounts', $data);
+	}
+
+	/**
+	 * Sort users for display
+	 *
+	 * @param array $users 
+	 * @return array
+	 */
+	private function sort_users_by_lname($users)
+	{
+		uasort($users, array($this, 'sort_users_by_lname_sort_callback'));
+		return $users;
+	}
+	
+	/**
+	 * Callback for sorting users
+	 * If users have the same last name then they are compared by their first names
+	 *
+	 * @param object $user1 
+	 * @param object $user2 
+	 * @return int
+	 */
+	private function sort_users_by_lname_sort_callback($user1, $user2)
+	{
+		$ret = strnatcasecmp($user1->last_name, $user2->last_name);					
+		if ($ret == 0)
+		{
+			$ret = strnatcasecmp($user1->first_name, $user2->first_name);
+		}
+		return $ret;
 	}
 
 	private function get_user()
