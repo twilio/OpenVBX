@@ -279,6 +279,11 @@
 #user-container .user-email {
     color: #555;
 }
+#user-container .user-administrator {
+	color: #666;
+	font-size: 0.8em;
+	line-height: 18px;
+}
 
 #user-container .user-utilities {
 	position: relative;
