@@ -352,7 +352,7 @@ class OpenVBX {
 		if (empty($url)) 
 		{
 			// we weren't handed a uri, use the default
-			$url = site_url($_SERVER['REQUEST_URI']);
+			$url = site_url(preg_replace('|^/index.php|', '', $_SERVER['REQUEST_URI']));
 		}
 		elseif (strpos($url, '://') === false) 
 		{

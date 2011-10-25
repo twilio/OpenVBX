@@ -295,6 +295,8 @@ class Site extends User_Controller
 				$this->session->set_flashdata('error', $message);
 			}
 		}
+		
+		flush_minify_caches();
 
 		if($this->response_type == 'html')
 		{
