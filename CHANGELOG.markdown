@@ -1,7 +1,7 @@
 # OpenVBX Change Log
 
 
-## Next
+## OpenVBX 1.1
 
 - integrate [Twilio Connect](http://www.twilio.com/docs/connect/) for Tenants
 - adding voice & language preferences to site options to allow administrator to set site wide options for the voice type and language of voice
@@ -45,6 +45,7 @@
 	- started integration tests for applets
 - fixing database debug setting default. Now defaults to off
 - added [Gravatar](http://gravatar.com) support in theme options
+- users list is now ordered by user last name & administrators are identified in the list
 - adding local config override option for `OpenVBX/config/config.php`
 	- overrides are ignored via .gitignore
 - fix for audio uploads 302 error

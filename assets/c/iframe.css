@@ -310,7 +310,7 @@ body {
 #client-ui-user-list .user-item {
 	position: relative;
 	list-style: none;
-	margin: 0 0 10px 0;
+	margin: 0;
 	padding: 10px 10px 10px 5px;
 	font-size: 13px;
 	color: #FFF;

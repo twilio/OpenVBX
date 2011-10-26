@@ -188,7 +188,7 @@ if (!function_exists('t_form_dropdown')) {
 if (!function_exists('t_form_input'))
 {
 	function t_form_input($params, $value)
-	{
+	{		
 		if (!empty($params['name']))
 		{
 			$data = array(
@@ -231,7 +231,7 @@ if (!function_exists('t_form_button'))
 			}
 		}
 		
-		if ($params['type'] == 'submit')
+		if (isset($params['type']) && $params['type'] == 'submit')
 		{
 			return form_submit($data, $content, $extra);
 		}
@@ -279,6 +279,31 @@ if (!function_exists('is_ssl'))
 {
 	function is_ssl() {
 		return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? true : false;
+	}
+}
+
+if (!function_exists('flush_minify_caches'))
+{
+	function flush_minify_caches()
+	{
+		// flush minify caches on save
+		try {
+			$minpath = realpath(dirname(APPPATH)).'/assets/min/';
+			require_once($minpath.'lib/Solar/Dir.php');
+			$tmppath = rtrim(Solar_Dir::tmp(), DIRECTORY_SEPARATOR);
+			
+			$files = glob(rtrim($tmppath, '/').'/minify_*');
+			foreach ($files as $file)
+			{
+				if (is_writable($file))
+				{
+					unlink($file);
+				}
+			}
+		}
+		catch (Exception $e) {
+			log_message('error', $e->getMessage());
+		}
 	}
 }
 ?>

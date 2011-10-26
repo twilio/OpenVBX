@@ -40,6 +40,9 @@
 					<div class="user-info">
 						<p class="user-name"><?php echo $user->first_name; ?> <?php echo $user->last_name; ?></p>
 						<p class="user-email"><?php echo $user->email ?></p>
+						<?php if ($user->is_admin): ?>
+							<p class="user-administrator">Administrator</p>
+						<?php endif; ?>
 					</div>
 				</li>
 				<?php 

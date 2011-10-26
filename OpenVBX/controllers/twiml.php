@@ -463,7 +463,7 @@ class Twiml extends MY_Controller {
 		else
 		{
 			$this->response->say("We're sorry, that user doesn't exist in our system.".
-								" Please contact your system administrator.");
+								" Please contact your system administrator. Goodbye.");
 		}		
 	}
 

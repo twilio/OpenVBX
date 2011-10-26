@@ -94,7 +94,7 @@
 	<form class="number-order-interface content ui-helper-clearfix vbx-form" action="<?php echo site_url('numbers/add'); ?>" method="post">
 		<div class="number-order-options">
 			<div id="country-select" class="vbx-input-container">
-				<img src="<?php echo asset_url(); ?>assets/i/countries/<?php echo strtolower($selected_country); ?>.png" />
+				<img src="<?php echo asset_url(''); ?>assets/i/countries/<?php echo strtolower($selected_country); ?>.png" />
 				<?php
 					$params = array(
 						'name' => 'country',

@@ -157,7 +157,8 @@ class Upgrade extends User_Controller {
 						break;
 				}
 			}
-
+			
+			flush_minify_caches();
 		} catch(Exception $e) {
 			$json['success'] = false;
 			$json['message'] = $e->getMessage();

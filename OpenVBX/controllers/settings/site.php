@@ -126,9 +126,17 @@ class Site extends User_Controller
 			);
 		}
 
+		if ($this->db->driver == 'mysqli')
+		{
+			$mysql_version = $this->db->conn_id->server_info;
+		}
+		else {
+			$mysql_version = mysql_get_server_info();
+		}
+
 		$data['server_info'] = array(
 			'php_version' => phpversion(),
-			'mysql_version' => $this->db->conn_id->server_info,
+			'mysql_version' => $mysql_version,
 			'mysql_driver' => $this->db->dbdriver,
 			'apache_version' => $_SERVER['SERVER_SOFTWARE']
 		);
@@ -295,6 +303,8 @@ class Site extends User_Controller
 				$this->session->set_flashdata('error', $message);
 			}
 		}
+		
+		flush_minify_caches();
 
 		if($this->response_type == 'html')
 		{
