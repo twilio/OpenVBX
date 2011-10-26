@@ -78,7 +78,8 @@ class Iframe extends User_Controller {
 			'number_options' => array(),
 			'call_using_options' => array(
 				'browser' => array(
-					'title' => 'Your Computer'
+					'title' => 'Your Computer',
+					'data' => array()
 				)
 			),
 			'devices' => array()
