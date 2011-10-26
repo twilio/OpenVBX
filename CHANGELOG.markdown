@@ -1,7 +1,7 @@
 # OpenVBX Change Log
 
 
-## Next
+## 1.1
 
 - integrate [Twilio Connect](http://www.twilio.com/docs/connect/) for Tenants
 - adding voice & language preferences to site options to allow administrator to set site wide options for the voice type and language of voice
