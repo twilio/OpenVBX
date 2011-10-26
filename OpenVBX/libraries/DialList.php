@@ -21,11 +21,15 @@
 	
 class DialListException extends Exception {}
 
-class DialList {
+class DialList implements Countable {
 	protected $users;
 	
 	public function __construct($users = array()) {
 		$this->users = $users;
+	}
+	
+	public function count() {
+		return count($this->users);
 	}
 	
 	/**
@@ -67,25 +71,6 @@ class DialList {
 	}
 	
 	/**
-	 * Repopulate an object from a list of user_ids
-	 * Use DialList::getState() to get the list of user ids
-	 * 
-	 * @param array $user_ids 
-	 * @return object DialList
-	 */
-	public static function load($data) {
-		$users = array();
-		
-		if (!empty($data['user_ids'])) {
-			foreach ($data['user_ids'] as $user_id) {
-				array_push($users, VBX_User::get($user_id));
-			}
-		}
-		
-		return new DialList($users);
-	}
-	
-	/**
 	 * Return the object state as a list of user ids
 	 * Use DialList::load($user_ids); to repopulate an object from the list
 	 * 
@@ -93,7 +78,7 @@ class DialList {
 	 */
 	public function get_state() {
 		$user_ids = array();
-		if (!empty($this->users)) {
+		if (count($this->users)) {
 			foreach ($this->users as $user) {
 				array_push($user_ids, $user->id);
 			}
@@ -106,13 +91,28 @@ class DialList {
 	}
 	
 	/**
-	 * Return the first user in the current list state
+	 * Return the first user's primary device in the current list state
 	 * User is removed from the list, reducing the length of the list by 1
 	 *
-	 * @return mixed VBX_User or NULL
+	 * @return mixed VBX_Device or NULL
 	 */
 	public function next() {
-		return array_shift($this->users);
+		$device = null;
+		
+		while($device == null && count($this->users))
+		{
+			$user = array_shift($this->users);
+			if (count($user->devices)) {
+				foreach ($user->devices as $user_device) {
+					if ($user_device->is_active) {
+						$device = $user_device;
+						break;
+					}
+				}
+			}
+		}
+		
+		return current($device);
 	}
 }
 
@@ -122,41 +122,19 @@ class DialList {
  * @package default
  */
 class DialListUser extends DialList {
-	public static function load($data) {
-		$devices = array();
-		$user = VBX_User::get($data['user_id']);
-
-		// load devices (handle device_id 0 as special condition as a Client reference)
-		if (!empty($data['device_ids'])) {
-			foreach ($data['device_ids'] as $device_id) {
-				if ($device_id > 0) {
-					array_push($devices, VBX_Device::get($device_id));
-				}
-				else {
-					array_push($devices, new VBX_Device((object) array(
-														'id' => 0,
-														'name' => 'client',
-														'value' => 'client:'.$user->id,
-														'sms' => 0,
-														'sequence' => -99,
-														'is_active' => 1,
-														'user_id' => $user->id
-													)));
-				}
-			}
-		} 
-				
-		// replace device list
-		$user->devices = $devices;
-		return new DialListUser(array($user));
+	
+	public function count() {
+		return count(current($this->users)->devices);
 	}
 	
 	public function get_state() {
 		// return list of device IDs left in the user
 		$device_ids = array();
 		
-		foreach (current($this->users)->devices as $device) {
-			array_push($device_ids, $device->id);
+		if (count($this->users)->devices) {
+			foreach (current($this->users)->devices as $device) {
+				array_push($device_ids, $device->id);
+			}
 		}
 		
 		return array(
@@ -167,6 +145,15 @@ class DialListUser extends DialList {
 	}
 	
 	public function next() {
-		return array_shift(current($this->users)->devices);
+		$device = null;
+		
+		while($device == null && count(current($this->users)->devices)) {
+			$user_device = array_shift(current($this->users)->devices);
+			if ($user_device->is_active) {
+				$device = $user_device;
+			}
+		}
+		
+		return $device;
 	}
 }

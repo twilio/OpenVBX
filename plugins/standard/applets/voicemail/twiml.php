@@ -1,17 +1,19 @@
 <?php
+$CI =& get_instance();
+$transcribe = (bool) $CI->vbx_settings->get('transcriptions', $CI->tenant->id);
 
-$response = new Response(); // start a new Twiml response
+$response = new TwimlResponse; // start a new Twiml response
 if(!empty($_REQUEST['RecordingUrl'])) // if we've got a transcription
 {
 	// add a voice message 
 	OpenVBX::addVoiceMessage(
-							 AppletInstance::getUserGroupPickerValue('permissions'),
-							 $_REQUEST['CallSid'],
-							 $_REQUEST['From'],
-							 $_REQUEST['To'], 
-							 $_REQUEST['RecordingUrl'],
-							 $_REQUEST['RecordingDuration']
-							 );		
+						 AppletInstance::getUserGroupPickerValue('permissions'),
+						 $CI->input->get_post('CallSid'),
+						 $CI->input->get_post('From'),
+						 $CI->input->get_post('To'), 
+						 $CI->input->get_post('RecordingUrl'),
+						 $CI->input->get_post('RecordingDuration')
+					 );		
 }
 else
 {
@@ -27,11 +29,22 @@ else
 		$prompt = AppletInstance::getAudioSpeechPickerValue('prompt');
 	}
 
-	$verb = AudioSpeechPickerWidget::getVerbForValue($prompt, new Say("Please leave a message. Press the pound key when you are finished."));
-	$response->append($verb);
+	if (!AudioSpeechPickerWidget::setVerbForValue($prompt, $response)) 
+	{
+		// fallback to default voicemail message
+		$response->say('Please leave a message. Press the pound key when you are finished.', array(
+				'voice' => $CI->vbx_settings->get('voice', $CI->tenant->id),
+				'language' => $CI->vbx_settings->get('voice_language', $CI->tenant->id)
+			));
+	}
 
 	// add a <Record>, and use VBX's default transcription handler
-	$response->addRecord(array('transcribeCallback' => site_url('/twiml/transcribe') ));
+	$record_params = array();
+	if ($transcribe) {
+		$record_params['transcribeCallback'] = site_url('/twiml/transcribe');
+	}
+
+	$response->record($record_params);
 }
 
-$response->Respond(); // send response
+$response->respond(); // send response

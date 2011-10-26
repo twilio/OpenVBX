@@ -265,6 +265,7 @@ class VBX_Message extends Model {
 
 		$ci->db->from($this->table)
 			 ->select("messages.*, $user_group_select", false);
+			
 		if(is_array($id))
 		{
 			$ci->db->where($id);
@@ -285,7 +286,11 @@ class VBX_Message extends Model {
 
 		if(empty($result))
 		{
-			throw new VBX_MessageException("VBX_Message not found: message_id = $id");
+			$_id = $id;
+			if (is_array($id)) {
+				$_id = $id['call_sid'];
+			}
+			throw new VBX_MessageException('VBX_Message not found: message_id = '.$_id);
 		}
 
 		return $result[0];
@@ -385,7 +390,6 @@ class VBX_Message extends Model {
 
 	function notify_message($message, $notify = false)
 	{
-		error_log("Notify message: ".($notify? 'true' : 'false') );
 		if($notify === false)
 			return;
 
@@ -396,7 +400,7 @@ class VBX_Message extends Model {
 		$recording_host = $ci->settings->get('recording_host', VBX_PARENT_TENANT);
 		
 		$vm_url = $message->content_url;
-		if (trim($recording_host) != '') {
+		if (!empty($recording_host) && trim($recording_host) != '') {
 			$vm_url = str_replace('api.twilio.com',trim($recording_host), $vm_url);
 		}
 		$message->content_url = $vm_url;
@@ -441,28 +445,30 @@ class VBX_Message extends Model {
 			if($message->type == 'voice')
 			{
 				openvbx_mail($user->email,
-							 "New $owner $message_type Notification - {$message->caller}",
-							 'message',
-							 compact('message'));
-				error_log("message queued for $user->email");
+								"New $owner $message_type Notification - {$message->caller}",
+								'message',
+								compact('message')
+							);
+				log_message('debug', 'message queued for'.$user->email);
 			}
 
 			foreach($numbers as $number)
 			{
-				error_log($number->value);
-				error_log(var_export($number->values, true));
+				log_message('debug', 'Number value: '.$number->value);
+				log_message('debug', 'Number values: '.var_export($number->values, true));
 				if($number->value && $number->sms)
 				{
 					try
 					{
 						$ci->vbx_sms_message->send_message($message->called,
-														   $number->value,
-														   $this->tiny_notification_message($message));
-						error_log("sms queued for {$number->value}");
+														$number->value,
+														$this->tiny_notification_message($message)
+													);
+						log_message('debug', 'sms queued for '.$number->value);
 					}
 					catch(Sms_messageException $e)
 					{
-						error_log("unable to send sms alert, reason: ".$e->getMessage());
+						log_message('error', 'unable to send sms alert, reason: '.$e->getMessage());
 					}
 				}
 			}

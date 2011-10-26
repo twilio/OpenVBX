@@ -61,6 +61,10 @@
     color: #222;
     text-align: center;
     background-color: #FFF;
-    -moz-border-radius: 12px;
-    -webkit-border-radius: 12px;
+	-moz-border-radius: 12px; /* FF1+ */
+	-webkit-border-radius: 12px; /* Saf3+, Chrome */
+	-khtml-border-radius: 12px; /* Konqueror */
+	border-radius: 12px; /* Standard. IE9 */
+
+	-webkit-background-clip: padding-box;
 }

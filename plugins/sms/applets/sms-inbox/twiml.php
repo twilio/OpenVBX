@@ -1,6 +1,6 @@
 <?php
 
-$response = new Response();
+$response = new TwimlResponse;
 
 $forward = AppletInstance::getUserGroupPickerValue('forward');
 
@@ -41,16 +41,17 @@ foreach($required_params as $param)
 
 if($sms_found)
 {
+	$ci = &get_instance();
 	OpenVBX::addSmsMessage($forward,
-						   $_REQUEST['SmsSid'],
-						   $_REQUEST['From'],
-						   $_REQUEST['To'],
-						   $_REQUEST['Body']
-						   );
+							$ci->input->get_post('SmsSid'),
+							$ci->input->get_post('From'),
+							$ci->input->get_post('To'),
+							$ci->input->get_post('Body')
+						);
 }
 else
 {
-	$response->addSms('Unable to send sms message');
+	$response->sms('Unable to send sms message');
 }
 
-$response->Respond();
+$response->respond();

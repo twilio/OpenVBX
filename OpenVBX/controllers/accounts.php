@@ -37,11 +37,13 @@ class Accounts extends User_Controller {
 		$data = $this->init_view_data();
 
 		$users = VBX_User::search(array('is_active' => 1));
-		$data['users'] = $users;
+		$data['users'] = $this->sort_users_by_lname($users);
 
 		$groups = VBX_Group::search(array('is_active' => 1));
 		if(!empty($groups))
 			$data['groups'] = $groups;
+			
+		$data['gravatars'] = $this->vbx_settings->get('gravatars', $this->tenant->id);
 
 		$this->respond('', 'accounts', $data);
 	}
@@ -56,6 +58,8 @@ class Accounts extends User_Controller {
 				return $this->save_group();
 			case 'delete':
 				return $this->delete_group();
+			case 'order':
+				return $this->order_group();
 			default:
 				$json = array('success' => FALSE,
 							  'error' => "No such method [$method]");
@@ -70,6 +74,7 @@ class Accounts extends User_Controller {
 	{
 		$group_id = $this->input->post('group_id');
 		$user_id = $this->input->post('user_id');
+
 		$success = false;
 		$message = '';
 
@@ -102,7 +107,7 @@ class Accounts extends User_Controller {
 				}
 				break;
 		}
-
+		
 		if($this->response_type != 'json')
 		{
 			redirect('accounts');
@@ -167,6 +172,36 @@ class Accounts extends User_Controller {
 							  'groups' => $groups,
 							  );
 		$this->respond('', 'accounts', $data);
+	}
+
+	/**
+	 * Sort users for display
+	 *
+	 * @param array $users 
+	 * @return array
+	 */
+	private function sort_users_by_lname($users)
+	{
+		uasort($users, array($this, 'sort_users_by_lname_sort_callback'));
+		return $users;
+	}
+	
+	/**
+	 * Callback for sorting users
+	 * If users have the same last name then they are compared by their first names
+	 *
+	 * @param object $user1 
+	 * @param object $user2 
+	 * @return int
+	 */
+	private function sort_users_by_lname_sort_callback($user1, $user2)
+	{
+		$ret = strnatcasecmp($user1->last_name, $user2->last_name);					
+		if ($ret == 0)
+		{
+			$ret = strnatcasecmp($user1->first_name, $user2->first_name);
+		}
+		return $ret;
 	}
 
 	private function get_user()
@@ -274,7 +309,7 @@ class Accounts extends User_Controller {
 			{
 				$error = true;
 				$message = $e->getMessage();
-				error_log($message);
+				log_message('error', 'Unable to send new user notification: '.$message);
 			}
 
 			if (!$error)
@@ -406,6 +441,29 @@ class Accounts extends User_Controller {
 		$this->respond('', 'accounts', $data);
 	}
 
+	protected function order_group() {
+		$group_order = $this->input->post('group_order');
+		$group_id = intval($this->input->post('group_id'));
+		
+		$group = VBX_Group::get($group_id);
+		
+		$json = array(
+			'success' => true,
+			'message' => ''
+		);
+		
+		try {
+			$group->order_group($group_order);
+		}
+		catch (VBX_GroupException $e) {
+			$json['success'] = false;
+			$json['message'] = $e->getMessage();
+		}
+		
+		$data['json'] = $json;
+		return $this->respond('', 'accounts', $data);
+	}
+
 	private function save_group()
 	{
 		$id = intval($this->input->post('id'));
@@ -472,9 +530,9 @@ class Accounts extends User_Controller {
 		}
 		catch(Exception $e)
 		{
-			error_log($e->getMessage());
 			$json['message'] = 'Unable to deactivate';
 			$json['error'] = true;
+			log_message('error', $json['message'].': '.$e->getMessage());
 		}
 
 
@@ -483,4 +541,29 @@ class Accounts extends User_Controller {
 		$this->respond('', 'accounts', $data);
 	}
 
+	public function refresh_dialer() 
+	{
+		$users = VBX_User::search(array(
+			'is_active' => 1,
+		));
+		
+		$current_user = $this->session->userdata('user_id');
+		foreach ($users as $k => $user) {
+			if ($user->id == $current_user) {
+				unset($users[$k]);
+			}
+		}
+		
+		$data['users'] = $users;
+		
+		$html = $this->load->view('dialer/users-list', $data, true);
+		
+		$response = array(
+			'json' => array(
+				'error' => false,
+				'html' => $html
+			)
+		);
+		$this->respond('', 'dialer/users-list', $response);
+	}
 }

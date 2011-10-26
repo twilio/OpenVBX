@@ -211,8 +211,7 @@ class Flows extends User_Controller {
 
 		foreach($applets as $applet)
 		{
-			if ($this->config->item('use_unminimized_js')
-				&& !empty($applet->script_url))
+			if ($this->config->item('use_unminimized_js') && !empty($applet->script_url))
 			{
 				$this->template->add_js($applet->script_url, 'absolute');
 			}
@@ -224,11 +223,12 @@ class Flows extends User_Controller {
 		}
 
 		if (!$this->config->item('use_unminimized_js')) {
-			$this->template->add_js('flows/scripts', 'dynamic');
+			$this->template->add_js(site_url('/flows/scripts'), 'absolute');
 		}
 		if (!$this->config->item('use_unminimized_css')) {
-			$this->template->add_css('flows/styles', 'dynamic');
+			$this->template->add_css(site_url('flows/styles'), 'link');
 		}
+		
 		$flow = VBX_Flow::get($id);
 		
 		if(empty($flow))

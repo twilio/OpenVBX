@@ -79,8 +79,12 @@
     padding: 1px;
     background-color: #FFF;
     border: 1px solid #999;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+
+	-webkit-background-clip: padding-box;
 }
 
 .message-details-header .quick-call-popup .close {
@@ -186,6 +190,11 @@
 .message-details-notes #message-details-notes-list .note {
     padding: 10px;
     border-bottom: 1px solid #DDD;
+}
+
+.message-details-notes .note .gravatar {
+	float: left;
+	margin-right: 10px;
 }
 
 .message-details-notes #message-details-notes-list .note-created {

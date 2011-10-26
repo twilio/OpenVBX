@@ -4,8 +4,6 @@
  * PHP 5.2+
  * MySQL 5+
  * Twilio Account
- * If using less than PHP 5.2
-   requires http://pear.php.net/package/Services_JSON
 
 # Install
 -----------------------------
@@ -35,7 +33,7 @@ written permission.
 # More Information
 -----------------------------
 Visit http://openvbx.org  
-Pickles and gravy.
+Broccoli and gravy.
 
 
 Please remember that your use of OpenVBX in connection with the Twilio 

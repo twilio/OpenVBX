@@ -93,7 +93,8 @@ class VBX_Group extends MY_Model {
 			 ->join('users u', 'u.id = gu.user_id')
 			 ->where('u.is_active', true)
 			 ->where_in('g.id', array_keys($sorted_groups))
-			 ->where('g.is_active', true);
+			 ->where('g.is_active', true)
+			 ->order_by('gu.order', 'asc');
 		
 		$groups_users = $ci->db->get()->result();
 		foreach($groups_users as $gu)
@@ -122,6 +123,7 @@ class VBX_Group extends MY_Model {
 		$ci->db->where('gu.group_id', $group_id);
 		$ci->db->where('u.is_active', true);
 		$ci->db->group_by('gu.user_id');
+		$ci->db->order_by('gu.order', 'asc');
 		$users = $ci->db->get()->result();
 		foreach($users as $gu) {
 			$user_ids[] = $gu->user_id;
@@ -143,10 +145,18 @@ class VBX_Group extends MY_Model {
 	{
 		$ci =& get_instance();
 
+		// get last increment id for group
+		$last = $ci->db
+				->select_max('order', 'max_order')
+				->where('group_id', $this->id)
+				->get('groups_users')
+				->result();
+
 		return $ci->db
 			->set('user_id', $user_id)
 			->set('group_id', $this->id)
 			->set('tenant_id', $ci->tenant->id)
+			->set('order', $last[0]->max_order+1)
 			->insert('groups_users');
 	}
 	
@@ -162,6 +172,35 @@ class VBX_Group extends MY_Model {
 		
 		$result = $ci->db->delete('groups_users');
 		return $result;
+	}
+	
+	function order_group($order) {
+		if (empty($order)) {
+			return false;
+		}
+		
+		$ci =& get_instance();
+		$ci->db->trans_begin();
+		
+		foreach ($order as $i => $user_id) 
+		{
+			$ci->db
+				->where('user_id', $user_id)
+				->where('group_id', $this->id)
+				->update('groups_users', array(
+						'order' => $i
+					));
+		}
+		
+		if ($ci->db->trans_status === false) 
+		{
+			$ci->db->trans_rollback();
+			throw new VBX_GroupException('Could not update group order: '.$ci->db->_error_message());
+		}
+		else 
+		{
+			$ci->db->trans_commit();
+		}
 	}
 
 	function delete()

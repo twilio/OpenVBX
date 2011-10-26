@@ -53,7 +53,8 @@ class Message_Text extends User_Controller
 				}
 				catch(VBX_IncomingNumberException $e)
 				{
-					throw new Message_TextException("Unable to retrieve numbers: ".$e->getMessage());
+					throw new Message_TextException("Unable to retrieve numbers: ".
+														$e->getMessage());
 				}
 			}
 
@@ -77,11 +78,10 @@ class Message_Text extends User_Controller
 				$this->vbx_sms_message->send_message($from, $to, $content);
 				if($message_id)
 				{
-					error_log("SMS Message ID: $message_id");
 					$annotation_id = $this->vbx_message->annotate($message_id,
-																  $this->user_id,
-																  "$from to ".format_phone($to).": $content",
-																  'sms');
+													  $this->user_id,
+													  "$from to ".format_phone($to).": $content",
+													  'sms');
 				}
 				
 			}
@@ -96,6 +96,7 @@ class Message_Text extends User_Controller
 			$json['message'] = $e->getMessage();
 			$json['error'] = true;
 		}
+
 		$data['json'] = $json;
 
 		if($this->response_type == 'html')

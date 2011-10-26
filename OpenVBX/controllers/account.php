@@ -124,10 +124,9 @@ class Account extends User_Controller {
 		$success = $user->update($this->user_id, $params);
 
 		if ($this->response_type == 'json') {
-			$data = array(
-				'error' => !$success,
-				'message' => (!$success ? 'an error occurred while updating the user' : 'user status updated')
-			);
+			$data = (isset($this->data) ? $this->data : array());
+			$data['json']['error'] = !$success;
+			$data['json']['message'] = (!$success ? 'an error occurred while updating the user' : 'user status updated');
 			$this->respond('', null, $data);
 		}
 		else {
@@ -177,7 +176,7 @@ class Account extends User_Controller {
 			{
 				$this->data['error'] = true;
 				$message = 'Unable to set password, please try again later.';
-				error_log($e->getMessage());
+				log_message('error', $message.': '.$e->getMessage());
 			}
 		}
 		$this->data['message'] = $message;
@@ -204,7 +203,6 @@ class Account extends User_Controller {
 		echo json_encode($data);
 	}
 
-
 	public function save_voicemail()
 	{
 		$data['json'] = array('error' => false, 'message' => '');
@@ -223,4 +221,75 @@ class Account extends User_Controller {
 		return $data;
 	}
 	
+	public function settings() 
+	{
+		$data['json'] = array(
+			'error' => false,
+			'message' => ''
+		);
+
+		if ($this->request_method == 'POST')
+		{
+			$settings = $this->input->post('settings');
+			if (!empty($settings))
+			{
+				try {
+					$user = VBX_User::get($this->session->userdata('user_id'));
+					foreach ($settings as $key => $value)
+					{
+						$user->setting_set($key, $value);
+					}
+				}
+				catch (Exception $e) {
+					$data['json'] = array(
+						'error' => true,
+						'message' => $e->getMessage()
+					);
+				}
+			}
+		}
+		else 
+		{
+			$data['json'] = array(
+				'error' => true,
+				'message' => 'Invalid request'
+			);
+		}
+
+		$this->respond('', null, $data);
+	}
+	
+	public function client_status() 
+	{
+		$data = array(
+			'json' => array(
+				'error' => true,
+				'message' => 'Invalid Request'
+			)
+		);
+		
+		if ($this->input->post('clientstatus')) {
+			$online = ($this->input->post('online') == 1);
+
+			$user = VBX_User::get($this->session->userdata('user_id'));
+			$user->online = intval($online);
+			try {
+				$user->save();
+
+				$data['json'] = array(
+					'error' => false,
+					'message' => 'status updated',
+					'client_status' => ($online ? 'online' : 'offline')
+				);
+			}
+			catch (VBX_UserException $e) {
+				$data['json'] = array(
+					'error' => true,
+					'message' => $e->getMessage()
+				);
+			}
+		}
+		
+		$this->respond('', null, $data);
+	}
 }

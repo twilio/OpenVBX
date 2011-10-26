@@ -8,4 +8,3 @@ if(!empty($next))
 	echo "<Redirect>".$next."</Redirect>";
 }
 echo '</Response>';
-?>

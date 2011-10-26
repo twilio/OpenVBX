@@ -60,7 +60,7 @@ class AppletUI {
 		else if (!empty($value))
 		{
 			$mode = 'say';
-			$say = $value;
+			$say = htmlspecialchars($value);
 		}
 		
 		$widget = new AudioSpeechPickerWidget($name, $mode, $say, $play);

@@ -272,7 +272,7 @@ class MY_Router extends CI_Router
 			$this->set_api_version($api_version);
 			$this->uri->segments = $segments;
 		}
-		
+
 		if(($tenant_segments = $this->_validate_tenant($segments)))
 		{
 			$tenant = $segments[0];

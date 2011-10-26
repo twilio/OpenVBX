@@ -22,6 +22,7 @@
 class Login extends MY_Controller
 {
 	protected $user_id;
+	protected $js_assets = 'loginjs';
 
 	function __construct()
 	{
@@ -59,7 +60,6 @@ class Login extends MY_Controller
 			if(!empty($error)) $data['error'] = CI_Template::literal($error);
 		}
 
-
 		return $this->respond('', 'login', $data, 'login-wrapper', 'layout/login');
 	}
 
@@ -76,7 +76,7 @@ class Login extends MY_Controller
 			$redirect = $this->session->flashdata('redirect');
 		}
 
-		return $redirect;
+		return ltrim($redirect, '/');
 	}
 	
 	private function redirect($redirect)
@@ -93,16 +93,23 @@ class Login extends MY_Controller
 										   $this->input->post('pw'),
 										   $this->input->post('captcha'),
 										   $this->input->post('captcha_token'));
-			
-			if($user)
-			{
+
+			if ($user) {
+				$connect_auth = OpenVBX::connectAuthTenant($user->tenant_id);
+
+				// we kick out non-admins, admins will have an opportunity to re-auth the account
+				if (!$connect_auth && !$user->is_admin) {
+					$this->session->set_flashdata('error', 'Connect auth denied');
+					return redirect('auth/connect/account_deauthorized');
+				}
+
 				$userdata = array('email' => $user->email,
 								  'user_id' => $user->id,
 								  'is_admin' => $user->is_admin,
 								  'loggedin' => TRUE,
 								  'signature' => VBX_User::signature($user->id),
 								  );
-				
+			
 				$this->session->set_userdata($userdata);
 
 				if(OpenVBX::schemaVersion() >= 24)
@@ -111,9 +118,8 @@ class Login extends MY_Controller
 				}
 
 				return $this->redirect($redirect);
-				
 			}
-
+			
 			$this->session->set_flashdata('error',
 										  'Email address and/or password is incorrect');
 			return redirect('auth/login?redirect='.urlencode($redirect));
@@ -160,7 +166,7 @@ class Login extends MY_Controller
 				catch(VBX_IncomingNumberException $e)
 				{
 					/* Handle gracefully but log it */
-					error_log($e->getMessage());
+					log_message('error', $e->getMessage());
 				}
 			}
 

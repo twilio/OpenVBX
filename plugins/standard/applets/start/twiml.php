@@ -1,11 +1,11 @@
 <?php 
-$response = new Response();
+$response = new TwimlResponse;
 
 $next = AppletInstance::getDropZoneUrl('next');
 if (!empty($next))
 {
-	$response->addRedirect($next);    
+	$response->redirect($next);    
 }
 
-$response->Respond();
+$response->respond();
 

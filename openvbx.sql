@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `groups_users` (
   `group_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `tenant_id` BIGINT(20) NOT NULL,
+  `order` TINYINT(3) DEFAULT 0,
   PRIMARY KEY  (`id`),
   KEY `group_id` (`group_id`),
   INDEX(`tenant_id`)
@@ -117,6 +118,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   INDEX(`tenant_id`)
 ) ENGINE=InnoDB CHARSET=UTF8;
 
+DROP TABLE IF EXISTS `user_settings`;
+CREATE TABLE `user_settings` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `user_id` int(11) NOT NULL,
+  `key` varchar(255) default NULL,
+  `value` text,
+  `tenant_id` int(11) NOT NULL default '1',
+  PRIMARY KEY  (`id`),
+  KEY `user_key` (`user_id`,`key`),
+  KEY `key` (`key`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `auth_types`;
 CREATE TABLE IF NOT EXISTS `auth_types` (
   `id` tinyint NOT NULL AUTO_INCREMENT,
@@ -203,6 +216,7 @@ CREATE TABLE IF NOT EXISTS `tenants` (
   url_prefix VARCHAR(255) NOT NULL,
   local_prefix VARCHAR(1000) NOT NULL,
   active TINYINT NOT NULL DEFAULT 1,
+  type TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY(id),
   INDEX(name),
   INDEX url_prefix (url_prefix)
@@ -301,11 +315,16 @@ INSERT INTO settings
 	   VALUES
 	   ('dash_rss', '', 1),
 	   ('theme', '', 1),
-	   ('version', '1.0.4', 1),
+	   ('version', '1.1', 1),
 	   ('iphone_theme', '', 1),
 	   ('enable_sandbox_number', 1, 1),
 	   ('twilio_endpoint', 'https://api.twilio.com/2010-04-01', 1),
-	   ('recording_host','',1);
+	   ('recording_host','',1),
+	   ('transcriptions', '1', 1),
+	   ('voice', 'man', 1),
+	   ('voice_language', 'en', 1),
+	   ('numbers_country', 'US', 1),
+	   ('gravatars', 0, 1);
 
 
 INSERT INTO groups
@@ -313,4 +332,3 @@ INSERT INTO groups
        VALUES
        ('Sales', 1, 1),
        ('Support', 1, 1);
-

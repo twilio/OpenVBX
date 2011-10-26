@@ -82,6 +82,10 @@ $(document).ready(function() {
 					$('.device-list').removeClass('hide');
 					$('.no-devices').addClass('hide');
 					$('.vbx-menu-items-right').removeClass('hide');
+					
+					if (window.parent.Client) {
+						window.parent.Client.ui.refreshDevices();
+					}
 				}, 'json');
 			},
 			'Cancel' : function() {
@@ -221,6 +225,11 @@ $(document).ready(function() {
 					$('select[name="number"] option[value="' + deviceValue + '"]').remove();
 
 					$('.device-list').removeClass('hide');
+					
+					if (window.parent.Client) {
+						window.parent.Client.ui.refreshDevices();
+					}
+					
 					return $('button').prop('disabled', false);
 				}
 
@@ -240,7 +249,7 @@ $(document).ready(function() {
 	});
 
 	$('.device-list').sortable({
-		placeholder: 'device',
+		placeholder: 'device-placeholder',
 		items: 'li:not(.ui-state-disabled)',
 		update : function(event, ui) {
 			var sorted = $.map($('.device-list li'),

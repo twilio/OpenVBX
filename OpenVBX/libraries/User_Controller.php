@@ -28,12 +28,8 @@ class User_Controller extends MY_Controller
 	protected $section;
 	protected $request_method;
 	protected $response_type;
-	public $twilio_sid;
-	public $twilio_token;
-	public $twilio_endpoint;
 
 	public $testing_mode = false;
-	public $domain;
 
 	public $capability;
 
@@ -44,7 +40,7 @@ class User_Controller extends MY_Controller
 		foreach ($_POST as $key => $value)
 		{
 			// Copy any key that looks like an Openvbx session over to $_COOKIE where it's expected
-			if (preg_match("/^\d+\-openvbx_session$/", $key))
+			if (preg_match("/^(\d+\-)?openvbx_session$/", $key))
 			{
 				$_COOKIE[$key] = urldecode($_POST[$key]);
 			}
@@ -66,28 +62,10 @@ class User_Controller extends MY_Controller
 		$this->load->model('vbx_rest_access');
 		$this->load->model('vbx_message');
 
-		$this->tenant = $this->settings->get_tenant($this->router->tenant);
-		if($this->tenant === false)
-		{
-			$this->router->tenant = '';
-			return redirect('');
-		}
-
 		// When we're in testing mode, allow access to set Hiccup configuration
 		$this->testing_mode = !empty($_REQUEST['vbx_testing_key'])? $_REQUEST['vbx_testing_key'] == $this->config->item('testing-key') : false;
 		$this->config->set_item('sess_cookie_name', $this->tenant->id . '-' . $this->config->item('sess_cookie_name'));
 		$this->load->library('session');
-		$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
-		$this->twilio_token = $this->settings->get('twilio_token', $this->tenant->id);
-		$this->twilio_endpoint = $this->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
-
-		if(!$this->tenant->active)
-		{
-			$this->session->set_userdata('loggedin', 0);
-			$this->session->set_flashdata('error', 'This tenant is no longer active');
-			return redirect('auth/logout');
-		}
-
 
 		$keys = array('base_url', 'salt');
 		foreach($keys as $key)
@@ -158,14 +136,21 @@ class User_Controller extends MY_Controller
 				error_log($e->getMessage());
 			}
 
+			$this->connect_check();
+
+			/* Check for first run */
+			if ($this->session->userdata('is_admin') && $this->uri->segment(1) != 'welcome') 
+			{
+				$this->welcome_check();
+			}
+
 			/* Check for updates if an admin */
 			if($this->session->userdata('is_admin') && $this->uri->segment(1) != "upgrade")
 			{
 				$this->upgrade_check();
 			}
-		}
 
-		$this->set_client_support();
+		}
 	}
 
 	protected function redirect($url)
@@ -179,6 +164,43 @@ class User_Controller extends MY_Controller
 		$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
 		if($currentSchemaVersion != $upgradingToSchemaVersion)
 			redirect('upgrade');
+	}
+	
+	private function welcome_check() 
+	{
+		if ($this->router->class == 'iframe' || $this->router->class == 'welcome') 
+		{
+			return false;
+		}
+		
+		if ($this->settings->get('tenant_first_run', $this->tenant->id)) 
+		{
+			redirect('welcome');
+		}
+	}
+	
+	private function connect_check() {
+		$section = $this->uri->segment(1);
+		if (!in_array($section, array('welcome', 'auth', 'connect')))
+		{
+			if ($this->twilio_sid == 'unauthorized_client') 
+			{				
+				$redirect_path = 'welcome';
+			}
+		
+			if ($this->twilio_sid == 'deauthorized_client') {
+				if ($this->session->userdata('is_admin')) {
+					$redirect_path = 'welcome';
+				}
+				else {
+					$redirect_path = 'auth/connect/account_deauthorized';
+				}
+			}
+		
+			if (!empty($redirect_path)) {
+				redirect($redirect_path);
+			}	
+		}
 	}
 
 	function digest_parse($digest)
@@ -198,7 +220,8 @@ class User_Controller extends MY_Controller
 	}
 
 
-	function attempt_digest_auth() {
+	function attempt_digest_auth() 
+	{
 		$message = '';
 
 		if(isset($_SERVER['Authorization'])) {
@@ -322,7 +345,8 @@ class User_Controller extends MY_Controller
 		return $data;
 	}
 
-	protected function get_user_numbers() {
+	protected function get_user_numbers() 
+	{
 
 		$this->load->model('vbx_device');
 		$numbers = $this->vbx_device->get_by_user($this->user_id);
@@ -330,13 +354,15 @@ class User_Controller extends MY_Controller
 		return $numbers;
 	}
 
-	protected function message_counts() {
+	protected function message_counts() 
+	{
 		$groups = VBX_User::get_group_ids($this->user_id);
 		$counts = $this->vbx_message->get_folders($this->user_id, $groups);
 		return $counts;
 	}
 
-	protected function get_twilio_numbers() {
+	protected function get_twilio_numbers() 
+	{
 		$this->load->model('vbx_incoming_numbers');
 		$numbers = array();
 		try
@@ -374,15 +400,18 @@ class User_Controller extends MY_Controller
 	 *
 	 * Application SID is always set by the parent tenant
 	 *
+	 * @deprecated 1.1
 	 * @since 0.93
 	 * @return void
 	 */
-	protected function set_client_support() {
-		$this->application_sid = $this->settings->get('application_sid', VBX_PARENT_TENANT);
-		if (!empty($this->application_sid)) {
+	/*
+	protected function set_client_support() 
+	{
+		if (!empty($this->application_sid)) 
+		{
 			if (!class_exists('Services_Twilio_Capability'))
 			{
-				include_once(APPPATH.'libraries/Capability.php');
+				include_once(APPPATH.'libraries/Services/Twilio/Capability.php');
 			}
 			$this->capability = new Services_Twilio_Capability($this->twilio_sid, $this->twilio_token);
 
@@ -395,13 +424,14 @@ class User_Controller extends MY_Controller
 
 			try {
 				$this->capability->allowClientOutgoing($this->application_sid, $params);
-				$this->capability->allowClientIncoming($user->id);
+				if ($user->online == 1) {
+					$this->capability->allowClientIncoming($user->id);
+				}
 			}
 			catch (Exception $e) {
-				//throw new User_ControllerException($e->getMessage());
-				// this shouldn't be fatal, log instead of fail
 				error_log($e->getMessage());
 			}
 		}
 	}
+	*/
 }

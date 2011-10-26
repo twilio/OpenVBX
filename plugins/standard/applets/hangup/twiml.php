@@ -1,6 +1,5 @@
 <?php
 
-$response = new Response();
-$response->addHangup();
-
-$response->Respond();
+$response = new TwimlResponse;
+$response->hangup();
+$response->respond();

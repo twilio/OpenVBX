@@ -33,8 +33,11 @@
 	color: #999;
 	font-style: italic;
 	border: 1px solid #CCC;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px; /* FF1+ */
+    -webkit-border-radius: 6px; /* Saf3+, Chrome */
+    -khtml-border-radius: 6px; /* Konqueror */
+    border-radius: 6px; /* Standard. IE9 */
+    -webkit-background-clip: padding-box;
 }
 
 .device-container .device-list{
@@ -42,7 +45,8 @@
     margin: 10px 0 20px 0;
 }
 
-.device-container .device-list .device {
+.device-container .device-list .device,
+.device-container .device-list .device-placeholder {
     height: 39px;
     line-height: 39px;
     margin-bottom: 5px;
@@ -51,7 +55,14 @@
     border: 1px solid #CCC;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-background-clip: padding-box;
     cursor: move;
+}
+.device-container .device-list .device-placeholder {
+	background: #FFF;
+	border: 1px dotted #DDD;
 }
 
 .device-container .device-list .device-hover {
@@ -120,7 +131,10 @@
     background-color: #777;
     border: 1px solid #444;
     -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-background-clip: padding-box;
 }
 
 .device-container .device-status a {
@@ -185,6 +199,9 @@
     border: 1px solid #CCC;
     -moz-border-radius: 6px;
     -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-background-clip: padding-box;
 	overflow: auto;
 	clear: both;
 }

@@ -20,30 +20,19 @@
  **/
 	
 function openvbx_mail($recipient, $subject, $template, $maildata = array())
-{
-	error_log('mailing');
-	$path = APPPATH . 'views/emails/' . $template . '.php';
+{	
 	$ci = &get_instance();
+	
 	$domain = $ci->config->item('server_name');
 	$from_email = $ci->settings->get('from_email', $ci->tenant->id);
 	if(empty($from_email))
 	{
 		$from_email = "$from <do-not-reply@$domain>";
 	}
-	
 	$headers = "From: $from_email";
+	$message = $ci->load->view('emails/'.$template, $maildata, true);
 
-	/* Render the mail template */
-	ob_start();
-	extract($maildata);
-	include($path);
-	$message = ob_get_contents();
-	ob_end_clean();
+	log_message('debug', 'MAILING -- to: '.$recipient.' -- body: '.$message);
 
-	if($ci->config->item('log_threshold') > 2)
-	{
-		error_log($message);
-	}
-
-	return mail($recipient, "[OpenVBX] " . $subject, $message, $headers);
+	return mail($recipient, '[OpenVBX] '.$subject, $message, $headers);
 }

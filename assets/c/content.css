@@ -121,8 +121,12 @@
     color: #DDD;
     text-decoration: none;
     background-color: #222;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+
+	-webkit-background-clip: padding-box;
 }
 
 .vbx-content-menu .back-link:hover {
@@ -234,10 +238,14 @@
     text-decoration: none;
     background-color: #666;
     border: 1px solid #000;
-    -moz-border-radius-topleft: 4px;
-    -moz-border-radius-topright: 4px;
-    -webkit-border-top-left-radius: 4px;
-    -webkit-border-top-right-radius: 4px;
+	-moz-border-radius-topleft: 4px; /* FF1+ */
+	-webkit-border-top-left-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-top-left-radius: 4px; /* Konqueror */
+	border-top-left-radius: 4px; /* Standard. IE9 */
+	-moz-border-radius-topright: 4px; /* FF1+ */
+	-webkit-border-top-right-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-top-right-radius: 4px; /* Konqueror */
+	border-top-right-radius: 4px; /* Standard. IE9 */
     outline: none;
 }
 
@@ -308,6 +316,10 @@
     border-collapse: collapse;
     border-bottom: 1px solid #CCC;
     vertical-align: center;
+}
+
+.vbx-items-grid .items-row:hover td {
+	background-color: #F7F7F7;
 }
 
 .vbx-items-grid .message-row td {
@@ -439,8 +451,12 @@
     padding: 1px;
     background-color: #FFF;
     border: 1px solid #999;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+	-moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+
+	-webkit-background-clip: padding-box;
 }
 
 .vbx-items-grid .quick-sms-popup {
@@ -449,8 +465,15 @@
     padding: 1px;
     background-color: #FFF;
     border: 1px solid #999;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    -moz-border-radius: 5px; /* FF1+ */
+    -webkit-border-radius: 5px; /* Saf3+, Chrome */
+    -khtml-border-radius: 5px; /* Konqueror */
+    border-radius: 5px; /* Standard. IE9 */
+    /**
+     * @bugfix border-radius background bleed
+     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+     */
+    -webkit-background-clip: padding-box;
 }
 
 .vbx-items-grid .quick-call-popup .close,
@@ -548,8 +571,15 @@
     padding: 4px;
     background-color: #FFF;
     border: 1px solid #999;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px; /* FF1+ */
+    -webkit-border-radius: 4px; /* Saf3+, Chrome */
+    -khtml-border-radius: 4px; /* Konqueror */
+    border-radius: 4px; /* Standard. IE9 */
+    /**
+     * @bugfix border-radius background bleed
+     * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
+     */
+    -webkit-background-clip: padding-box;
 }
 
 .vbx-items-grid .assign-to-popup .close {
@@ -601,5 +631,13 @@
 
 .vbx-items-grid .closed-status {
     background-position: center -36px;
+}
+
+.vbx-items-grid .type-tenant {
+	width: 100px;
+}
+.vbx-items-grid .edit-tenant {
+	width: 40px;
+	text-align: right;
 }
 

@@ -367,8 +367,8 @@ class Applet
 		$output = '<?xml version="1.0" ?><Response />';
 		ob_start();
 		require_once(APPPATH.'libraries/twilio.php');
-
-		require_once($path);
+		// require once was hampering our ability to run an applet multiple times (ie: in integration tests)
+		require($path);
 		$output = ob_get_contents();
 		ob_end_clean();
 

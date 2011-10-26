@@ -26,23 +26,43 @@ class VBX_Settings extends Model
 	protected $settings_table = 'settings';
 	protected $tenants_table = 'tenants';
 
-	public $setting_options = array('twilio_sid',
-									'twilio_token',
-									'twilio_endpoint',
-									'from_email',
-									'recording_host',
-									'theme');
+	public $setting_options = array(
+								'twilio_sid',
+								'twilio_token',
+								'twilio_endpoint',
+								'from_email',
+								'recording_host',
+								'theme',
+								'transcriptions',
+								'voice',
+								'voice_language',
+								'numbers_country',
+								'gravatars'
+							);
 
-	protected $settings_params = array('name',
-									   'value',
-									   'tenant_id');
-	protected $tenants_params = array('active',
-									  'name',
-									  'url_prefix');
+	protected $settings_params = array(
+								'name',
+								'value',
+								'tenant_id'
+							);
+
+	protected $tenants_params = array(
+								'active',
+								'name',
+								'url_prefix',
+								'type'
+							);
 
 	private $cache_key;
 
 	const CACHE_TIME_SEC = 1;
+	
+	const CLIENT_TOKEN_TIMEOUT = 28800; // 8 hours
+	
+	const AUTH_TYPE_PARENT = 0;
+	const AUTH_TYPE_FULL = 1; // @note currently not used, this is for future expansion
+	const AUTH_TYPE_SUBACCOUNT = 2;
+	const AUTH_TYPE_CONNECT = 3;
 
 	function __construct()
 	{
@@ -66,14 +86,20 @@ class VBX_Settings extends Model
 	{
 		$ci =& get_instance();
 
-		$tenant = $ci->db
+		$query = $ci->db
 			 ->from($this->tenants_table)
 			 ->where('url_prefix', strtolower($url_prefix))
-			 ->get()->result();
+			 ->get();
 
-		if(!empty($tenant[0]))
-			return $tenant[0];
-
+		if ($query) 
+		{
+			$tenant = $query->result();
+			if(!empty($tenant[0]))
+			{
+				return $tenant[0];
+			}
+		}
+		
 		return false;
 	}
 
@@ -121,7 +147,8 @@ class VBX_Settings extends Model
 
 		if(preg_match('/[^0-9A-Za-z_-]/', $name) > 0)
 		{
-			$errors[] = "Tenant name contains invalid characters.  Allowed characters: alphanumeric, dashes, and underscores.";
+			$errors[] = "Tenant name contains invalid characters. ".
+						"Allowed characters: alphanumeric, dashes, and underscores.";
 		}
 
 		if(!empty($errors))
@@ -170,7 +197,8 @@ class VBX_Settings extends Model
 		if(isset($tenant['name'])
 		   && preg_match('/[^0-9A-Za-z_-]/', $name) > 0)
 		{
-			$errors[] = "Tenant name contains invalid characters.  Allowed characters: alphanumeric, dashes, and underscores.";
+			$errors[] = "Tenant name contains invalid characters. ".
+						"Allowed characters: alphanumeric, dashes, and underscores.";
 		}
 
 		foreach($this->tenants_params as $param)
@@ -243,35 +271,64 @@ class VBX_Settings extends Model
 
 	function get($name, $tenant_id)
 	{
-		$ci =& get_instance();
-
 		if(function_exists('apc_fetch')) {
 			$success = false;
-			if(($data = apc_fetch($this->cache_key.$tenant_id.$name, $success))
-				&& $success) {
+			$cachekey = $this->cache_key.$tenant_id.$name;
+			if(($data = apc_fetch($cachekey, $success)) && $success) 
+			{
 				$result = @unserialize($data);
 				if(!empty($result[0]))
 					return $result[0]->value;
 			}
 		}
 
-
-		$result = $ci->db
+		$ci =& get_instance();
+		$query = $ci->db
 			->select('value')
-			->from($this->settings_table . ' as s')
-			->where('s.name', $name)
-			->where('s.tenant_id', $tenant_id)
-			->get()->result();
+			->from($this->settings_table)
+			->where(array(
+				'name' => $name, 
+				'tenant_id' => intval($tenant_id)
+			))
+			->get();
+		
+		if ($query) 
+		{
+			$result = $query->result();
+			if(function_exists('apc_store')) {
+				$success = apc_store($cachekey, serialize($result), self::CACHE_TIME_SEC);
+			}
 
-
-		if(function_exists('apc_store')) {
-			$success = apc_store($this->cache_key.$tenant_id.$name, serialize($result), self::CACHE_TIME_SEC);
+			if(!empty($result[0]))
+			{
+				return $result[0]->value;
+			}
+		}
+		
+		return false;
+	}
+	
+	function delete($name, $tenant_id) {
+		$ci =& get_instance();
+		
+		if($this->get($name, $tenant_id) === false)
+		{
+			return false;
+		}
+		
+		$query = $ci->db
+					->where(array(
+						'name' => $name, 
+						'tenant_id' => $tenant_id
+					))
+					->delete($this->settings_table);
+		
+		if (function_exists('apc_delete')) 
+		{
+			apc_delete($this->cache_key.$tenant_id.$name);
 		}
 
-		if(!empty($result[0]))
-			return $result[0]->value;
-
-		return false;
+		return ($ci->db->affected_rows() > 0 ? true : false);
 	}
 
 	function get_all_by_tenant_id($tenant_id)

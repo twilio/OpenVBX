@@ -20,7 +20,7 @@ $config['server_name'] = $_SERVER['HTTP_HOST'];
 |
 */
 $config['base_url']= "http"
-	  . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')? 's' : '')
+	  . ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')? 's' : '')
 	  . "://" . $config['server_name']
 	  . preg_replace('@/+$@','',
 					 str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']))
@@ -35,7 +35,7 @@ $config['base_url']= "http"
 | Used for js versioning.
 |
 */
-$config['site_rev'] = 1012;
+$config['site_rev'] = 1013;
 
 /*
 |--------------------------------------------------------------------------
@@ -426,6 +426,17 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
+/*
+|--------------------------------------------------------------------------
+| Local config overrides
+|--------------------------------------------------------------------------
+|
+| Sometimes your local environment just needs some things to be overridden
+|
+*/
+if (is_file(APPPATH.'config/config-local.php')) {
+	include_once(APPPATH.'config/config-local.php');
+}
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */

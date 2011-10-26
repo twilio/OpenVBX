@@ -38,6 +38,10 @@ class MY_Controller extends Controller
 	protected $section;
 	protected $request_method;
 	protected $response_type;
+	
+	protected $js_assets = 'js';
+	protected $css_assets = 'css';
+
 	public $tenant;
 
 	public $twilio_sid;
@@ -45,14 +49,14 @@ class MY_Controller extends Controller
 	public $twilio_endpoint;
 
 	public $testing_mode = false;
-	public $domain;
+	
+	protected $suppress_warnings_notices = false;
 
 	public function __construct()
 	{
 		parent::__construct();
 
-		if(!file_exists(APPPATH . 'config/openvbx.php')
-		   || !file_exists(APPPATH . 'config/database.php'))
+		if(!file_exists(APPPATH . 'config/openvbx.php') || !file_exists(APPPATH . 'config/database.php'))
 		{
 			redirect('install');
 		}
@@ -68,7 +72,9 @@ class MY_Controller extends Controller
 		$this->load->model('vbx_flow_store');
 		$this->load->model('vbx_plugin_store');
 		$this->load->helper('file');
-
+		$this->load->helper('twilio');
+		$this->load->library('session');
+		
 		$this->settings = new VBX_Settings();
 
 		$rewrite_enabled = intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT));
@@ -79,6 +85,13 @@ class MY_Controller extends Controller
 		}
 
 		$this->tenant = $this->settings->get_tenant($this->router->tenant);
+		if(!$this->tenant || !$this->tenant->active)
+		{
+			$this->session->set_userdata('loggedin', 0);
+			$this->session->set_flashdata('error', 'This tenant is no longer active');
+			return redirect(asset_url('auth/logout'));
+		}
+
 		if($this->tenant === false)
 		{
 			$this->router->tenant = '';
@@ -89,9 +102,13 @@ class MY_Controller extends Controller
 		if($this->tenant)
 		{
 			$this->config->set_item('sess_cookie_name', $this->tenant->id . '-' . $this->config->item('sess_cookie_name'));
-			$this->load->library('session');
+			
 			$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
-			$this->twilio_token = $this->settings->get('twilio_token', $this->tenant->id);
+			$token_from = ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT ? VBX_PARENT_TENANT : $this->tenant->id);
+			$this->twilio_token = $this->settings->get('twilio_token', $token_from);				
+			$this->application_sid = $this->settings->get('application_sid', $this->tenant->id);
+
+			// @deprecated, will be removed in a future release
 			$this->twilio_endpoint = $this->settings->get('twilio_endpoint', VBX_PARENT_TENANT);
 		}
 
@@ -100,37 +117,74 @@ class MY_Controller extends Controller
 		$this->set_response_type();
 		$this->set_request_method();
 
-		$scripts = null;
-		if ($this->config->item('use_unminimized_js'))
+		if ($this->response_type == 'html') 
 		{
-			$sources_file = APPPATH . 'assets/j/site-bootstrap.sources';
-			$scripts = explode("\n", file_get_contents(APPPATH . '../assets/j/site-bootstrap.sources'));
-		}
-		else {
-			$scripts = array('site.js');
-		}
+			$scripts = null;
+			$js_assets = (!empty($this->js_assets) ? $this->js_assets : 'js');
+			if ($this->config->item('use_unminimized_js'))
+			{
+				$scripts = $this->get_assets_list($js_assets);
+				if (is_array($scripts)) {
+					foreach ($scripts as $script)
+					{
+						if ($script) $this->template->add_js($script);
+					}
+				}
+			}
+			else {
+				$this->template->add_js(asset_url('/assets/min/?g='.$js_assets), 'absolute');
+			}
 
-		if ($this->config->item('use_unminimized_css'))
-		{
-			$sources_file = APPPATH . 'assets/c/site-css.sources';
-			$styles = explode("\n", file_get_contents(APPPATH . '../assets/c/site-css.sources'));
-		} else {
-			$styles = array('site-' . $this->config->item('site_rev') . '.css');
+			$css_assets = (!empty($this->css_assets) ? $this->css_assets : 'css');
+			if ($this->config->item('use_unminimized_css'))
+			{				
+				$styles = $this->get_assets_list($css_assets);
+				if (is_array($styles)) {
+					foreach ($styles as $style)
+					{
+						if ($style) $this->template->add_css($style);
+					}
+				}
+			} else {
+				$this->template->add_css(asset_url('/assets/min/?g='.$css_assets), 'link');
+			}
 		}
-
-		foreach ($scripts as $script)
-		{
-			if ($script) $this->template->add_js("assets/j/$script");
-		}
-
-		foreach ($styles as $style)
-		{
-			if ($style) $this->template->add_css("assets/c/$style");
+		
+		/**
+		 * Controllers can elect to suppress the error reporting - this is mainly to
+		 * keep API & Ajax responses from failing due to Warnings & Notices. Use carefully.
+		 */
+		if ($this->suppress_warnings_notices) {
+			ini_set('display_errors', 'off');
 		}
 	}
-
-
-
+	
+	/**
+	 * Called when no minimizing assets
+	 * Import the minification group definitions & cleanse for direct inclusion
+	 *
+	 * @param string $type 
+	 * @return mixed array | false
+	 */
+	protected function get_assets_list($type) {
+		$_assets = array();
+		if (empty($this->assets)) {
+			$min_config = BASEPATH.'../assets/min/groupsConfig.php';
+			if (is_file($min_config)) {
+				include($min_config);
+				$this->assets = $sources;
+			}
+		}
+		if (isset($this->assets[$type])) {
+			$_assets = $this->assets[$type];
+			foreach ($_assets as &$asset) {
+				$asset = preg_replace('|^(\.\.)|', 'assets', $asset);
+			}
+			return $_assets;
+		}
+		return false;
+	}
+	
 	protected function set_request_method($method = null)
 	{
 		$this->request_method = $_SERVER['REQUEST_METHOD'];
@@ -148,8 +202,8 @@ class MY_Controller extends Controller
 		if(isset($_SERVER['HTTP_ACCEPT']))
 		{
 			$accepts = explode(',', $_SERVER['HTTP_ACCEPT']);
-			if(in_array('application/json', $accepts)
-			   && strtolower($this->router->class) != 'page') {
+			if(in_array('application/json', $accepts) && strtolower($this->router->class) != 'page') 
+			{
 				header('Content-Type: application/json');
 				$this->response_type = 'json';
 			}
@@ -158,7 +212,9 @@ class MY_Controller extends Controller
 		if($type)
 		{
 			$this->response_type = $type;
-		} else if(!$this->response_type) {
+		} 
+		else if(!$this->response_type) 
+		{
 			$this->response_type = 'html';
 		}
 	}
@@ -175,6 +231,7 @@ class MY_Controller extends Controller
 		/* Filter out standard templates vars */
 		$json = $this->build_json_response($json);
 		$json_str = json_encode($json);
+		header('content-type: text/javascript');
 		if(!$pprint)
 		{
 			echo $json_str;
@@ -302,24 +359,15 @@ class MY_Controller extends Controller
 			unset($payload['json']);
 		}
 
-		$theme = 'default';
-		if($this->tenant)
-		{
-			$theme = $this->settings->get('theme', $this->tenant->id);
-			if(empty($theme))
-			{
-				$theme = 'default';
-			}
+		$theme = $this->getTheme();
+
+		if (empty($payload['user'])) {
+			$payload['user'] = VBX_user::get(array('id' => $this->session->userdata('user_id')));
 		}
 
 		$css = array("themes/$theme/style");
 
-		$theme_config = @parse_ini_file('assets/themes/'.$theme.'/config.ini');
-		if(!$theme_config)
-		{
-			$theme_config = array();
-			$theme_config['site_title'] = 'VBX';
-		}
+		$theme_config = $this->getThemeConfig($theme);
 
 		$payload['session_id'] = $this->session->userdata('session_id');
 		$payload['theme'] = $theme;
@@ -420,6 +468,36 @@ class MY_Controller extends Controller
 	public function getTenant()
 	{
 		return $this->tenant;
+	}
+	
+	public function getTheme() {
+		$theme = 'default';
+		
+		if($this->tenant)
+		{
+			$theme_setting = $this->settings->get('theme', $this->tenant->id);
+			if(!empty($theme_setting))
+			{
+				$theme = $theme_setting;
+			}
+		}
+		
+		return $theme;
+	}
+	
+	public function getThemeConfig($theme) {
+		$theme_config = array(
+			'site_title' => 'VBX'
+		);
+		
+		$theme_config_file = 'assets/themes/'.$theme.'/config.ini';
+		if (is_file($theme_config_file)) 
+		{
+			$imported_theme_config = @parse_ini_file($theme_config_file);
+			$theme_config = array_merge($imported_theme_config, $theme_config);
+		}
+		
+		return $theme_config;
 	}
 }
 

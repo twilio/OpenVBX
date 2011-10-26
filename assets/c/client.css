@@ -10,10 +10,7 @@
 	-webkit-border-radius: 5px; /* Saf3+, Chrome */
 	-khtml-border-radius: 5px; /* Konqueror */
 	border-radius: 5px; /* Standard. IE9 */
-	/**
-	 * @bugfix border-radius background bleed
-	 * @see http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed
-	 */
+
 	-webkit-background-clip: padding-box;
 }
 
@@ -54,6 +51,14 @@
 
 #vbx-client-status.online .client-button:hover {
 	border-color: #9EED77;
+}
+
+#vbx-client-status.loading .client-button {
+	background: #404040 url(../i/ajax-loader.gif) 50% 50% no-repeat;
+}
+#vbx-client-status.loading .isonline,
+#vbx-client-status.loading .isoffline {
+	display: none;
 }
 
 #vbx-client-status .isonline,

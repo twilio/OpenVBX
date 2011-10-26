@@ -19,39 +19,134 @@
  * Contributor(s):
  **/
 
-require_once(APPPATH.'libraries/twilio.php');
+#require_once(APPPATH.'libraries/twilio.php');
 
 class Iframe extends User_Controller {
 
+	protected $client_token_timeout;
+	
+	protected $tjs_baseurl = '';
+	protected $tjs_file = '';
+
 	public function __construct() {
 		parent::__construct();
+		
+		$this->twilio_js_baseurl = 'http'.(is_ssl() ? 's' : '').'://static.twilio.com';
+		$this->twilio_js_file = 'twilio'.
+							($this->config->item('use_unminimized_js') ? '' : '.min').'.js';
 	}
 
 	function index() {
-		$data = array(
+		$data = $this->init_view_data();
+		$data = array_merge($data, array(
 			'site_title' => 'OpenVBX',
-			'iframe_url' => site_url('/messages')
-		);
+			'iframe_url' => site_url('/messages'),
+			'users' => $this->get_users(),
+			'twilio_js' => $this->twilio_js_baseurl.'/libs/twiliojs/1.0/'.$this->twilio_js_file,
+			'client_capability' => null
+		));
 		
 		// if the 'last_known_url' cookie is set then we've been redirected IN to frames mode
 		if (!empty($_COOKIE['last_known_url'])) {
 			$data['iframe_url'] = $_COOKIE['last_known_url'];
-			setcookie('last_known_url', '', time() - 3600);
+			setcookie('last_known_url', '', time() - 3600, '/');
 		}
 
 		if (!empty($this->application_sid))
 		{
-			// look at protocol and serve the appropriate file, https comes from amazon aws
-			$tjs_baseurl = 'http'.
-							(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '').
-							'://static.twilio.com';
-			$data['twilio_js'] = $tjs_baseurl.'/libs/twiliojs/1.0/twilio.js';
+			$user_id = intval($this->session->userdata('user_id'));
+			$user = VBX_user::get(array('id' => $user_id));
+			$data['client_capability'] = generate_capability_token();
 		}
 
-		$data['client_capability'] = $this->capability->generateToken();
-		$data['capability'] = $this->capability;
-
+		// internal dev haxies
+		if (function_exists('twilio_dev_mods')) {
+			$data = twilio_dev_mods($data);
+		}
+		
+		$data['browserphone'] = $this->init_browserphone_data($data['callerid_numbers']);
+		
 		$this->load->view('iframe', $data);
 	}
-
+	
+	protected function init_browserphone_data($callerid_numbers)
+	{
+		// defaults
+		$browserphone = array(
+			'call_using' => 'browser',
+			'caller_id' => '(000) 000-0000',
+			'number_options' => array(),
+			'call_using_options' => array(
+				'browser' => array(
+					'title' => 'Your Computer',
+					'data' => array()
+				)
+			),
+			'devices' => array()
+		);
+		
+		
+		if (is_array($callerid_numbers) && !empty($callerid_numbers))
+		{
+			$numbered = $named = array();
+			$default_caller_id = current($callerid_numbers)->phone;
+			foreach ($callerid_numbers as $number)
+			{
+				if (normalize_phone_to_E164($number->phone)
+						!= normalize_phone_to_E164($number->name))
+				{
+					$named[$number->phone] = $number->name;
+				}
+				else
+				{
+					$numbered[$number->phone] = $number->phone;
+				}
+			}
+			ksort($numbered);
+			asort($named);
+			$browserphone['number_options'] = $named + $numbered;
+		}
+		
+		$user = VBX_User::get(array('id' => $this->session->userdata('user_id')));
+		
+		// User preferences
+		$browserphone['caller_id'] = $user->setting('browserphone_caller_id', $default_caller_id);
+		$browserphone['call_using'] = $user->setting('browserphone_call_using', 'browser');
+		
+		// Wether the user has an active device to use		
+		if (count($user->devices))
+		{
+			foreach ($user->devices as $device)
+			{
+				if (strpos($device->value, 'client:') !== false)
+				{
+					continue;
+				}
+				$browserphone['call_using_options']['device:'.$device->id] = array(
+					'title' => 'Device: '.$device->name,
+					'data' => (object) array(
+						'number' => format_phone($device->value),
+						'name' => $device->name
+					)
+				);
+			}
+		}
+			
+		return $browserphone;
+	}
+	
+	protected function get_users() {
+		$users = VBX_User::search(array(
+			'is_active' => 1,
+		));
+		
+		$current_user = $this->session->userdata('user_id');
+		foreach ($users as $k => $user) {
+			if ($user->id == $current_user) {
+				unset($users[$k]);
+			}
+		}
+		
+		return $users;
+	}
 }

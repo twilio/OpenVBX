@@ -13,8 +13,12 @@
 
 .login-wrapper #vbx-main {
     min-height: 0px;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+
+	-webkit-background-clip: padding-box;
 }
 
 .login-wrapper .notify {

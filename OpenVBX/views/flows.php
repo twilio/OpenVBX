@@ -63,27 +63,28 @@
 
 </div><!-- .vbx-content-main -->
 
+<div id="dialog-templates" style="display: none">
+	<div id="dAddFlow" title="Add New Flow" class="dialog">
+		<form action="<?php echo site_url('flows'); ?>" method="post" class="vbx-form">
+			<fieldset class="vbx-input-container">
+			<label class="field-label">Flow Name
+			<input type="text" name="name" class="medium" />
+			</label>
+			</fieldset>
+		</form>
+	</div>
 
-<div id="dAddFlow" title="Add New Flow" class="dialog">
-	<form action="<?php echo site_url('flows'); ?>" method="post" class="vbx-form">
-		<fieldset class="vbx-input-container">
-		<label class="field-label">Flow Name
-		<input type="text" name="name" class="medium" />
-		</label>
-		</fieldset>
-	</form>
-</div>
+	<div id="dDeleteFlow" title="Delete Flow?" class="dialog">
+		<p>Are you sure you wish to delete this flow?</p>
+	</div>
 
-<div id="dDeleteFlow" title="Delete Flow?" class="dialog">
-	<p>Are you sure you wish to delete this flow?</p>
-</div>
-
-<div id="dCopyFlow" title="Copy Flow" class="dialog">
-	<form action="#" method="post" class="vbx-form">
-		<fieldset class="vbx-input-container">
-		<label class="field-label">Please enter a name for the new flow
-		<input type="text" name="name" class="medium" />
-		</label>
-		</fieldset>
-	</form>
+	<div id="dCopyFlow" title="Copy Flow" class="dialog">
+		<form action="#" method="post" class="vbx-form">
+			<fieldset class="vbx-input-container">
+			<label class="field-label">Please enter a name for the new flow
+			<input type="text" name="name" class="medium" />
+			</label>
+			</fieldset>
+		</form>
+	</div>
 </div>
