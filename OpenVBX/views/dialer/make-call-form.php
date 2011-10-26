@@ -34,9 +34,10 @@
 	<fieldset>
 		<?php
 			echo t_form_input(array(
+					'name' => 'dial_phone_number',
 					'id' => 'dial-phone-number',
 					'placeholder' => '(555) 867 5309'
-				));
+				), '');
 			$call_button_params = array(
 					'name' => 'dial_input_button',
 					'id' => 'dial-input-button',

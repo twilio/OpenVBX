@@ -188,7 +188,7 @@ if (!function_exists('t_form_dropdown')) {
 if (!function_exists('t_form_input'))
 {
 	function t_form_input($params, $value)
-	{
+	{		
 		if (!empty($params['name']))
 		{
 			$data = array(
@@ -231,7 +231,7 @@ if (!function_exists('t_form_button'))
 			}
 		}
 		
-		if ($params['type'] == 'submit')
+		if (isset($params['type']) && $params['type'] == 'submit')
 		{
 			return form_submit($data, $content, $extra);
 		}
