@@ -31,6 +31,7 @@ require_once BASEPATH . '../OpenVBX/libraries/PluginData.php';
 require_once BASEPATH . '../OpenVBX/libraries/PluginStore.php'; // Deprecating in 0.75
 require_once BASEPATH . '../OpenVBX/libraries/FlowStore.php';
 require_once BASEPATH . '../OpenVBX/libraries/AppletInstance.php';
+require_once BASEPATH . '../OpenVBX/libraries/OpenVBX_Cache.php';
 
 class MY_Controller extends Controller
 {
@@ -60,6 +61,8 @@ class MY_Controller extends Controller
 		{
 			redirect('install');
 		}
+
+		$this->cache = OpenVBX_Cache_Abstract::load();
 
 		$this->config->load('openvbx');
 

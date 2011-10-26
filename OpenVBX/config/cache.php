@@ -6,6 +6,8 @@
  */
 $config['cache']['cache_enabled'] = true;
 
+$config['cache']['default_expires'] = 3600;
+
 /**
  * Currently supported caches:
  * - autodetect: @todo autodetect the correct system to use

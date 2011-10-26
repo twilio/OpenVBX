@@ -29,6 +29,7 @@ class VBX_Settings extends Model
 	public $setting_options = array(
 								'twilio_sid',
 								'twilio_token',
+								'application_sid',
 								'twilio_endpoint',
 								'from_email',
 								'recording_host',
@@ -238,10 +239,8 @@ class VBX_Settings extends Model
 				->insert($this->settings_table);
 		}
 
-		if(function_exists('apc_delete')) {
-			apc_delete($this->cache_key.$tenant_id.$name);
-		}
-
+		$ci->cache->set($name, $value, 'settings-'.$tenant_id);
+		
 		return $ci->db
 			->insert_id();
 	}
@@ -250,7 +249,8 @@ class VBX_Settings extends Model
 	{
 		$ci =& get_instance();
 
-		if($this->get($name, $tenant_id) === false)
+		ep('checking '.$name.' for set action');
+		if($this->get($name, 'settings-'.$tenant_id) === false)
 		{
 			return false;
 		}
@@ -261,9 +261,7 @@ class VBX_Settings extends Model
 			->where('tenant_id', $tenant_id)
 			->update($this->settings_table);
 
-		if(function_exists('apc_delete')) {
-			return apc_delete($this->cache_key.$tenant_id.$name);
-		}
+		$ci->cache->delete($name, 'settings-'.$tenant_id);
 
 		return ($ci->db
 				->affected_rows() > 0? true : false);
@@ -271,20 +269,17 @@ class VBX_Settings extends Model
 
 	function get($name, $tenant_id)
 	{
-		if(function_exists('apc_fetch')) {
-			$success = false;
-			$cachekey = $this->cache_key.$tenant_id.$name;
-			if(($data = apc_fetch($cachekey, $success)) && $success) 
-			{
-				$result = @unserialize($data);
-				if(!empty($result[0]))
-					return $result[0]->value;
-			}
+		$cache_key = $name;
+		
+		$ci =& get_instance();
+		if ($cache = $ci->cache->get($name, 'settings-'.$tenant_id)) {
+			ep('returning '.$name.' = '.$cache->value);
+			return $cache->value;
 		}
 
 		$ci =& get_instance();
 		$query = $ci->db
-			->select('value')
+			->select()
 			->from($this->settings_table)
 			->where(array(
 				'name' => $name, 
@@ -295,12 +290,10 @@ class VBX_Settings extends Model
 		if ($query) 
 		{
 			$result = $query->result();
-			if(function_exists('apc_store')) {
-				$success = apc_store($cachekey, serialize($result), self::CACHE_TIME_SEC);
-			}
 
 			if(!empty($result[0]))
 			{
+				$ci->cache->set($name, $result[0], 'settings-'.$tenant_id);
 				return $result[0]->value;
 			}
 		}
@@ -323,10 +316,7 @@ class VBX_Settings extends Model
 					))
 					->delete($this->settings_table);
 		
-		if (function_exists('apc_delete')) 
-		{
-			apc_delete($this->cache_key.$tenant_id.$name);
-		}
+		$ci->cache->delete($name, 'settings-'.$tenant_id);
 
 		return ($ci->db->affected_rows() > 0 ? true : false);
 	}
@@ -335,12 +325,20 @@ class VBX_Settings extends Model
 	{
 		$ci =& get_instance();
 
+		$known_settings = array_keys($ci->cache->group('settings-'.$tenant_id));
+
 		$result = $ci->db
 			->from($this->settings_table)
+			->where_not_in('name', $known_settings)
 			->where('tenant_id', $tenant_id)
 			->get()->result();
 
-		return $result;
+		foreach ($result as $item)
+		{
+			$ci->cache->set($item->name, $item, 'settings-'.$tenant_id);
+		}
+
+		return $ci->cache->group('settings-'.$tenant_id);
 	}
 
 }

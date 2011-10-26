@@ -1,25 +1,42 @@
 <?php
 
-class OpenVBX_Cache_Local implements OpenVBX_Cache_Abstract
+class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 {	
-	public function __construct() {}
+	private $_cache;
+	
+	public function __construct($options) {
+		$this->default_expires = $options['default_expires'];
+	}
+	
 	public function __destruct() {}
 	
-	public function _set($key, $data, $group = 'default', $expires)
+	public function _set($key, $data, $group = null, $expires = null)
 	{
-		return $this->_cache[$group][$key] = array(
+		if (empty($group))
+		{
+			$group = $this->default_group;
+		}
+		
+		if (empty($expires))
+		{
+			$expires = $this->default_expires;
+		}
+		
+		$ret = $this->_cache[$group][$key] = array(
 			'data' => $data,
 			'expires' => time() + intval($expires)
 		);
+				
+		return $ret;
 	}
 	
-	public function _get($key, $group = 'default')
+	public function _get($key, $group = null)
 	{
 		$data = false;
 		
 		if (empty($group))
 		{
-			$group = 'default';
+			$group = $this->default_group;
 		}
 		
 		if (isset($this->_cache[$group][$key]))
@@ -29,16 +46,38 @@ class OpenVBX_Cache_Local implements OpenVBX_Cache_Abstract
 				$data = $this->_cache[$group][$key]['data'];
 			}
 		}
-		
+
 		return $data;
 	}
 	
-	public function _delete($key, $group)
+	public function _delete($key, $group = null)
 	{
+		if (empty($group)) 
+		{
+			$group = $this->default_group;
+		}
+		
 		if (isset($this->_cache[$group]) && isset($this->_cache[$group][$key]))
 		{
 			unset($this->_cache[$group][$key]);
 			return true;
+		}
+		return false;
+	}
+	
+	public function _group($group)
+	{
+		if (isset($this->_cache[$group]))
+		{
+			$data = array();
+			foreach ($this->_cache[$group] as $name => $item)
+			{
+				if ($item['expires'] > time())
+				{
+					$data[$name] = $item['data'];
+				}
+			}
+			return $data;
 		}
 		return false;
 	}
