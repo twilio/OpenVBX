@@ -43,6 +43,7 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 		{
 			if ($this->_cache[$group][$key]['expires'] > time())
 			{
+				ep('cache hit for '.$key.'::'.$group);
 				$data = $this->_cache[$group][$key]['data'];
 			}
 		}

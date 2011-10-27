@@ -72,7 +72,8 @@ class VBX_Message extends Model {
 	function assign($message_id, $user_id, $assignee)
 	{
 		$message = $this->get_message($message_id);
-		if(!isset($assignee->id))
+
+		if(!$assignee->id)
 		{
 			throw new VBX_MessageException('Unable to assign - user does not exist');
 		}

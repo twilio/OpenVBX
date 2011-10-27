@@ -56,24 +56,37 @@ class VBX_User extends MY_Model {
 		{
 			$search_options = array('id' => $search_options, 'is_active' => 1);
 		}
-
-		return self::search($search_options,
-							1,
-							0);
+		
+		$user = self::search($search_options, 1, 0);
+		
+		return $user;
 	}
 
 	static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
-		$sql_options = array('joins' => self::$joins,
-							 'select' => self::$select,
-							 );
+		// catches single-user search
+		if (!empty($search_options['id']))
+		{
+			$ci =& get_instance();
+			if ($cache = $ci->cache->get($search_options['id'], 'users'))
+			{
+				return $cache;
+			}
+		}
+		
+		$sql_options = array(
+			'joins' => self::$joins,
+			'select' => self::$select,
+		);
 		$user = new VBX_User();
-		$users = parent::search(self::$__CLASS__,
-								$user->table,
-								$search_options,
-								$sql_options,
-								$limit,
-								$offset);
+		$users = parent::search(
+							self::$__CLASS__,
+							$user->table,
+							$search_options,
+							$sql_options,
+							$limit,
+							$offset
+						);
 
 		if(empty($users))
 		{
@@ -104,8 +117,12 @@ class VBX_User extends MY_Model {
 			}
 		}
 
-		if($limit == 1
-		   && count($users) == 1)
+		foreach ($users as $user)
+		{
+			$ci->cache->set($user->id, $user, 'users');
+		}
+		
+		if($limit == 1 && count($users) == 1)
 		{
 			return $users[0];
 		}
@@ -241,16 +258,52 @@ class VBX_User extends MY_Model {
 		return $group_ids;
 	}
 
+	// @deprecated?
 	function get_users($user_ids)
 	{
 		if(empty($user_ids))
+		{
 			return array();
-
-		$this->where_in('id', $user_ids);
-
-		return $this->get();
+		}
+		
+		$ci =& get_instance();
+		$users = array();
+		$search_users = array();
+		
+		foreach ($user_ids as $user_id)
+		{
+			if ($user = $ci->cache->get($user_id, 'users'))
+			{
+				array_push($users, $user);
+			}
+			else
+			{
+				array_push($search_users, $user_id);
+			}
+		}
+		
+		if (!empty($search_users))
+		{	
+			$this->where_in('id', $search_users);
+			$this->where('is_active', 1);
+			$result = $this->get();
+			if (!empty($result)) {
+				foreach ($result as $user)
+				{
+					$ci->cache->set($user->id, $user, 'users');
+					array_push($users, new VBX_User($user));
+				}
+			}
+		}
+		
+		return $users;
 	}
 
+	/**
+	 * @deprecated use VBX_User::get() instead
+	 * @param string $user_id 
+	 * @return mixed object/null
+	 */
 	function get_user($user_id)
 	{
 		$ci = &get_instance();
@@ -283,6 +336,10 @@ class VBX_User extends MY_Model {
 		}
 	}
 
+	/**
+	 * @deprecated 1.1.x
+	 * @return void
+	 */
 	public function get_active_users()
 	{
 		$ci =& get_instance();
@@ -375,7 +432,7 @@ class VBX_User extends MY_Model {
 
 		$ci =& get_instance();
 
-		if(is_string($this->auth_type))
+		if(is_string($this->auth_type) && !is_numeric($this->auth_type))
 		{
 			$results = $ci->db
 				->from('auth_types')

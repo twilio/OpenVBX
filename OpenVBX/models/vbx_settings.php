@@ -80,12 +80,34 @@ class VBX_Settings extends Model
 			 ->where('name !=', 'default')
 			 ->get()->result();
 
+		// we won't use cache here, but we may as well contribute to it
+		if (!empty($tenants))
+		{
+			foreach ($tenants as $tenant)
+			{
+				$ci->cache->set($tenant->id, $tenant, 'tenants');
+			}
+		}
+
 		return $tenants;
 	}
 
 	function get_tenant($url_prefix)
 	{
 		$ci =& get_instance();
+
+		// tenant cache is by tenant_id
+		// search cache for a tenant to return
+		if ($cache = $ci->cache->group('tenants'))
+		{
+			foreach ($cache as $cached_tenant)
+			{
+				if ($cached_tenant->url_prefix == $url_prefix)
+				{
+					return $cached_tenant;
+				}
+			}
+		}
 
 		$query = $ci->db
 			 ->from($this->tenants_table)
@@ -97,6 +119,7 @@ class VBX_Settings extends Model
 			$tenant = $query->result();
 			if(!empty($tenant[0]))
 			{
+				$ci->cache->set($tenant[0]->id, $tenant[0], 'tenants');
 				return $tenant[0];
 			}
 		}
@@ -104,6 +127,7 @@ class VBX_Settings extends Model
 		return false;
 	}
 
+	// @deprecated? can't find it in use
 	function get_tenant_by_name($name)
 	{
 		$ci =& get_instance();
@@ -123,17 +147,34 @@ class VBX_Settings extends Model
 	{
 		$ci =& get_instance();
 
+		if ($cache = $ci->cache->get($id, 'tenants'))
+		{
+			return $cache;
+		}
+
 		$tenant = $ci->db
 			 ->from($this->tenants_table)
 			 ->where('id', $id)
 			 ->get()->result();
 
 		if(!empty($tenant[0]))
+		{
+			$ci->cache->set($tenant[0]->id, $tenant[0], 'tenants');
 			return $tenant[0];
+		}
 
 		return false;
 	}
 
+	/**
+	 * Add a new tenant
+	 *
+	 * @throws VBX_SettingsException
+	 * @param string $name 
+	 * @param string $url_prefix 
+	 * @param string $local_prefix 
+	 * @return int $tenant_id
+	 */
 	function tenant($name, $url_prefix, $local_prefix)
 	{
 		$ci =& get_instance();
@@ -169,7 +210,8 @@ class VBX_Settings extends Model
 			{
 				throw new VBX_SettingsException('Tenant failed to create');
 			}
-
+			
+			$ci->cache->flush('tenants');
 			return $tenant_id;
 		}
 
@@ -211,6 +253,7 @@ class VBX_Settings extends Model
 			}
 		}
 
+		$ci->cache->flush('tenants');
 		return $ci->db
 			->where('id', $tenant['id'])
 			->update($this->tenants_table);
@@ -248,13 +291,12 @@ class VBX_Settings extends Model
 	function set($name, $value, $tenant_id)
 	{
 		$ci =& get_instance();
-
-		ep('checking '.$name.' for set action');
-		if($this->get($name, 'settings-'.$tenant_id) === false)
+		
+		if($this->get($name, $tenant_id) === false)
 		{
 			return false;
 		}
-
+		
 		$ci->db
 			->set('value', $value)
 			->where('name', $name)
@@ -273,7 +315,6 @@ class VBX_Settings extends Model
 		
 		$ci =& get_instance();
 		if ($cache = $ci->cache->get($name, 'settings-'.$tenant_id)) {
-			ep('returning '.$name.' = '.$cache->value);
 			return $cache->value;
 		}
 

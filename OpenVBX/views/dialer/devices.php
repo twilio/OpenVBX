@@ -2,7 +2,6 @@
 <?php
 	foreach ($browserphone['call_using_options'] as $key => $value)
 	{
-		ep($value);
 		echo '<option value="'.$key.'"';
 		if ($key == $browserphone['call_using'])
 		{
