@@ -85,7 +85,7 @@ class VBX_Settings extends Model
 		{
 			foreach ($tenants as $tenant)
 			{
-				$ci->cache->set($tenant->id, $tenant, 'tenants');
+				$ci->cache->set($tenant->id, $tenant, 'tenants', VBX_PARENT_TENANT);
 			}
 		}
 
@@ -96,17 +96,9 @@ class VBX_Settings extends Model
 	{
 		$ci =& get_instance();
 
-		// tenant cache is by tenant_id
-		// search cache for a tenant to return
-		if ($cache = $ci->cache->group('tenants'))
+		if ($cache = $ci->cache->get($url_prefix, 'tenants', VBX_PARENT_TENANT))
 		{
-			foreach ($cache as $cached_tenant)
-			{
-				if ($cached_tenant->url_prefix == $url_prefix)
-				{
-					return $cached_tenant;
-				}
-			}
+			return $cache;
 		}
 
 		$query = $ci->db
@@ -119,7 +111,8 @@ class VBX_Settings extends Model
 			$tenant = $query->result();
 			if(!empty($tenant[0]))
 			{
-				$ci->cache->set($tenant[0]->id, $tenant[0], 'tenants');
+				$ci->cache->set($tenant[0]->url_prefix, $tenant[0], 'tenants', VBX_PARENT_TENANT);
+				$ci->cache->set($tenant[0]->id, $tenant[0], 'tenants', VBX_PARENT_TENANT);
 				return $tenant[0];
 			}
 		}
@@ -127,9 +120,12 @@ class VBX_Settings extends Model
 		return false;
 	}
 
-	// @deprecated? can't find it in use
+	// @deprecated - can't find it in use and 
+	// tenant name isn't set by anybody
 	function get_tenant_by_name($name)
 	{
+		_deprecated_notice(__METHOD__, '1.1.1');
+		
 		$ci =& get_instance();
 
 		$tenant = $ci->db
@@ -147,7 +143,7 @@ class VBX_Settings extends Model
 	{
 		$ci =& get_instance();
 
-		if ($cache = $ci->cache->get($id, 'tenants'))
+		if ($cache = $ci->cache->get($id, 'tenants', VBX_PARENT_TENANT))
 		{
 			return $cache;
 		}
@@ -159,7 +155,8 @@ class VBX_Settings extends Model
 
 		if(!empty($tenant[0]))
 		{
-			$ci->cache->set($tenant[0]->id, $tenant[0], 'tenants');
+			$ci->cache->set($tenant[0]->url_prefix, $tenant[0], 'tenants', VBX_PARENT_TENANT);
+			$ci->cache->set($tenant[0]->id, $tenant[0], 'tenants', VBX_PARENT_TENANT);
 			return $tenant[0];
 		}
 
@@ -211,7 +208,7 @@ class VBX_Settings extends Model
 				throw new VBX_SettingsException('Tenant failed to create');
 			}
 			
-			$ci->cache->flush('tenants');
+			$ci->cache->flush();
 			return $tenant_id;
 		}
 
@@ -253,7 +250,7 @@ class VBX_Settings extends Model
 			}
 		}
 
-		$ci->cache->flush('tenants');
+		$ci->cache->flush();
 		return $ci->db
 			->where('id', $tenant['id'])
 			->update($this->tenants_table);
@@ -282,7 +279,7 @@ class VBX_Settings extends Model
 				->insert($this->settings_table);
 		}
 
-		$ci->cache->set($name, $value, 'settings-'.$tenant_id);
+		$ci->cache->set($name, $value, 'settings', $tenant_id);
 		
 		return $ci->db
 			->insert_id();
@@ -303,7 +300,7 @@ class VBX_Settings extends Model
 			->where('tenant_id', $tenant_id)
 			->update($this->settings_table);
 
-		$ci->cache->delete($name, 'settings-'.$tenant_id);
+		$ci->cache->delete($name, 'settings', $tenant_id);
 
 		return ($ci->db
 				->affected_rows() > 0? true : false);
@@ -314,7 +311,7 @@ class VBX_Settings extends Model
 		$cache_key = $name;
 		
 		$ci =& get_instance();
-		if ($cache = $ci->cache->get($name, 'settings-'.$tenant_id)) {
+		if ($cache = $ci->cache->get($name, 'settings', $tenant_id)) {
 			return $cache->value;
 		}
 
@@ -334,7 +331,7 @@ class VBX_Settings extends Model
 
 			if(!empty($result[0]))
 			{
-				$ci->cache->set($name, $result[0], 'settings-'.$tenant_id);
+				$ci->cache->set($name, $result[0], 'settings', $tenant_id);
 				return $result[0]->value;
 			}
 		}
@@ -357,7 +354,7 @@ class VBX_Settings extends Model
 					))
 					->delete($this->settings_table);
 		
-		$ci->cache->delete($name, 'settings-'.$tenant_id);
+		$ci->cache->delete($name, 'settings', $tenant_id);
 
 		return ($ci->db->affected_rows() > 0 ? true : false);
 	}
@@ -366,20 +363,21 @@ class VBX_Settings extends Model
 	{
 		$ci =& get_instance();
 
-		$known_settings = array_keys($ci->cache->group('settings-'.$tenant_id));
-
 		$result = $ci->db
 			->from($this->settings_table)
-			->where_not_in('name', $known_settings)
 			->where('tenant_id', $tenant_id)
 			->get()->result();
 
 		foreach ($result as $item)
 		{
-			$ci->cache->set($item->name, $item, 'settings-'.$tenant_id);
+			// there's no clean way of pulling everything we know except to
+			// rely on the fact that all the settings are registered in this
+			// object, so instead we'll just set everything we find so that
+			// everyone else benefits from this query
+			$ci->cache->set($item->name, $item, 'settings', $tenant_id);
 		}
 
-		return $ci->cache->group('settings-'.$tenant_id);
+		return $result;
 	}
 
 }

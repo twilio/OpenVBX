@@ -131,7 +131,7 @@ class Site extends User_Controller
 			$mysql_version = $this->db->conn_id->server_info;
 		}
 		else {
-			$mysql_version = mysql_get_server_info();
+			$mysql_version = mysql_get_server_info($this->db->conn_id);
 		}
 
 		$data['server_info'] = array(

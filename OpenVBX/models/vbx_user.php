@@ -64,11 +64,12 @@ class VBX_User extends MY_Model {
 
 	static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
+		$ci =& get_instance();
+
 		// catches single-user search
 		if (!empty($search_options['id']))
 		{
-			$ci =& get_instance();
-			if ($cache = $ci->cache->get($search_options['id'], 'users'))
+			if ($cache = $ci->cache->get($search_options['id'], 'users', $ci->tenant->id))
 			{
 				return $cache;
 			}
@@ -98,7 +99,6 @@ class VBX_User extends MY_Model {
 			$users = array($users);
 		}
 
-		$ci = &get_instance();
 		$ci->load->model('vbx_device');
 		foreach($users as $i => $user)
 		{
@@ -119,7 +119,7 @@ class VBX_User extends MY_Model {
 
 		foreach ($users as $user)
 		{
-			$ci->cache->set($user->id, $user, 'users');
+			$ci->cache->set($user->id, $user, 'users', $ci->tenant->id);
 		}
 		
 		if($limit == 1 && count($users) == 1)
@@ -272,7 +272,7 @@ class VBX_User extends MY_Model {
 		
 		foreach ($user_ids as $user_id)
 		{
-			if ($user = $ci->cache->get($user_id, 'users'))
+			if ($user = $ci->cache->get($user_id, 'users', $ci->tenant->id))
 			{
 				array_push($users, $user);
 			}
@@ -290,7 +290,7 @@ class VBX_User extends MY_Model {
 			if (!empty($result)) {
 				foreach ($result as $user)
 				{
-					$ci->cache->set($user->id, $user, 'users');
+					$ci->cache->set($user->id, $user, 'users', $ci->tenant->id);
 					array_push($users, new VBX_User($user));
 				}
 			}

@@ -47,9 +47,11 @@ class Devices extends User_Controller {
 		$user = VBX_user::get(array('id' => $this->user_id));
 		$data['user'] = $user;
 
-		$numbers = $this->vbx_device->get_by_user($this->user_id);
-		$data['numbers'] = $numbers;
-		$data['devices'] = $this->vbx_device->get_by_user($this->user_id);
+		#$numbers = $this->vbx_device->get_by_user($this->user_id);
+		// $data['numbers'] = $numbers;
+		// $data['devices'] = $this->vbx_device->get_by_user($this->user_id);
+		
+		$data['numbers'] = $data['devices'] = $user->devices;
 		if(empty($data['devices']))
 		{
 			set_banner('devices',

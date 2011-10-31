@@ -5,22 +5,19 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 	private $_cache;
 	
 	public function __construct($options) {
-		$this->default_expires = $options['default_expires'];
+		parent::__construct($options);
 	}
 	
 	public function __destruct() {}
 	
-	public function _set($key, $data, $group = null, $expires = null)
-	{
-		if (empty($group))
-		{
-			$group = $this->default_group;
-		}
-		
+	public function _set($key, $data, $group = null, $tenant_id,  $expires = null)
+	{	
 		if (empty($expires))
 		{
 			$expires = $this->default_expires;
 		}
+		
+		$group = $this->_tenantize_group($group, $tenant_id);
 		
 		$ret = $this->_cache[$group][$key] = array(
 			'data' => $data,
@@ -30,33 +27,30 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 		return $ret;
 	}
 	
-	public function _get($key, $group = null)
+	public function _get($key, $group = null, $tenant_id)
 	{
 		$data = false;
 		
-		if (empty($group))
-		{
-			$group = $this->default_group;
-		}
+		$group = $this->_tenantize_group($group, $tenant_id);
 		
 		if (isset($this->_cache[$group][$key]))
 		{
 			if ($this->_cache[$group][$key]['expires'] > time())
 			{
-				ep('cache hit for '.$key.'::'.$group);
 				$data = $this->_cache[$group][$key]['data'];
+			}
+			else
+			{
+				$this->_delete($key, $group);
 			}
 		}
 
 		return $data;
 	}
 	
-	public function _delete($key, $group = null)
+	public function _delete($key, $group = null, $tenant_id)
 	{
-		if (empty($group)) 
-		{
-			$group = $this->default_group;
-		}
+		$group = $this->_tenantize_group($group, $tenant_id);
 		
 		if (isset($this->_cache[$group]) && isset($this->_cache[$group][$key]))
 		{
@@ -66,32 +60,8 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 		return false;
 	}
 	
-	public function _group($group)
+	public function _flush()
 	{
-		if (isset($this->_cache[$group]))
-		{
-			$data = array();
-			foreach ($this->_cache[$group] as $name => $item)
-			{
-				if ($item['expires'] > time())
-				{
-					$data[$name] = $item['data'];
-				}
-			}
-			return $data;
-		}
-		return false;
-	}
-	
-	public function _flush($group = null)
-	{
-		if (empty($group))
-		{
-			$this->_cache = array();
-		}
-		elseif (isset($this->_cache[$group]))
-		{
-			$this->_cache[$group] = array();
-		}
+		$this->_cache = array();
 	}
 }

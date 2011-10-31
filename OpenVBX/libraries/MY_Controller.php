@@ -28,10 +28,10 @@ require_once BASEPATH . '../OpenVBX/libraries/Plugin.php';
 require_once BASEPATH . '../OpenVBX/libraries/AppletUI.php';
 require_once BASEPATH . '../OpenVBX/libraries/OpenVBX.php';
 require_once BASEPATH . '../OpenVBX/libraries/PluginData.php';
-require_once BASEPATH . '../OpenVBX/libraries/PluginStore.php'; // Deprecating in 0.75
+#require_once BASEPATH . '../OpenVBX/libraries/PluginStore.php'; // Deprecating in 0.75
 require_once BASEPATH . '../OpenVBX/libraries/FlowStore.php';
 require_once BASEPATH . '../OpenVBX/libraries/AppletInstance.php';
-require_once BASEPATH . '../OpenVBX/libraries/OpenVBX_Cache.php';
+require_once BASEPATH . '../OpenVBX/libraries/Caches/Abstract.php';
 
 class MY_Controller extends Controller
 {
@@ -62,12 +62,12 @@ class MY_Controller extends Controller
 			redirect('install');
 		}
 
-		$this->cache = OpenVBX_Cache_Abstract::load();
-
 		$this->config->load('openvbx');
-
-		// check for required configuration values
 		$this->load->database();
+		
+		$this->cache = OpenVBX_Cache_Abstract::load();
+		$this->api_cache = OpenVBX_Cache_Abstract::load('db');
+		
 		$this->load->model('vbx_settings');
 		$this->load->model('vbx_user');
 		$this->load->model('vbx_group');

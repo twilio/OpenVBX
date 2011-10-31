@@ -61,6 +61,15 @@ class VBX_Device extends MY_Model
 
 	static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
+		$ci =& get_instance();
+		if (!empty($search_options['id']))
+		{
+			if ($cache = $ci->cache->get($search_options['id'], __CLASS__, $ci->tenant->id))
+			{
+				return $cache;
+			}
+		}
+		
 		$sql_options = array('joins' => self::$joins,
 							 'select' => self::$select,
 							 );
@@ -72,6 +81,14 @@ class VBX_Device extends MY_Model
 								  $sql_options,
 								  $limit,
 								  $offset);
+
+		if (!empty($devices))
+		{
+			foreach ($devices as $device)
+			{
+				$ci->cache->set($device->id, $device, __CLASS__, $ci->tenant->id);
+			}
+		}
 
 		return $devices;
 	}
@@ -130,6 +147,7 @@ class VBX_Device extends MY_Model
 		{
 			throw new VBX_DeviceException('Nothing was deleted');
 		}
+		$ci->cache->delete($id, __CLASS__, $ci->tenant->id);
 	}
 
 	function get_by_group($group_id)
@@ -140,19 +158,38 @@ class VBX_Device extends MY_Model
 		$ci->db->where('tenant_id', $ci->tenant->id);
 		$ci->db->from($this->table);
 		$ci->db->order_by('sequence');
-		return $ci->db->get()->result();
+		$devices = $ci->db->get()->result();
+		
+		if (!empty($devices))
+		{
+			foreach ($devices as &$device)
+			{
+				$device = new VBX_Device($device);
+				$ci->cache->set($device->id, $device, __CLASS__, $ci->tenant->id);
+			}
+		}
+		
+		return $devices;
 	}
 
 	function get_by_user($user_id)
 	{
 		$ci =& get_instance();
 
-		return $ci->db
+		$devices = $ci->db
 			->from($this->table)
 			->where('user_id', $user_id)
 			->where('tenant_id', $ci->tenant->id)
 			->order_by('sequence')
 			->get()->result();
+			
+		foreach ($devices as &$device)
+		{
+			$device = new VBX_Device($device);
+			$ci->cache->set($device->id, $device, __CLASS__, $ci->tenant->id);
+		}
+		
+		return $devices;
 	}
 
 	function get_by_number($number, $user_id)
@@ -160,12 +197,17 @@ class VBX_Device extends MY_Model
 		$number = normalize_phone_to_E164($number);
 		$ci =& get_instance();
 
-		return $ci->db
+		$device = $ci->db
 			->from($this->table)
 			->where('user_id', $user_id)
 			->where('value', $number)
 			->where('tenant_id', $ci->tenant->id)
 			->get()->row();
+		
+		$device = new VBX_Device($device);
+		$ci->cache->set($device->id, $device, __CLASS__, $ci->tenant->id);
+		
+		return $device;
 	}
 
 	function save()
@@ -183,6 +225,9 @@ class VBX_Device extends MY_Model
 		{
 			throw new VBX_DeviceException($e->getMessage());
 		}
+		
+		$ci &= get_instance();
+		$ci->cache->delete($this->id, __CLASS__, $ci->tenant->id);
 		
 		return parent::save();
 	}

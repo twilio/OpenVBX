@@ -19,6 +19,12 @@ class VBX_User_Setting extends MY_Model {
 	public static function get($key, $user_id)
 	{
 		$ci =& get_instance();
+		
+		if ($cache = $ci->cache->get($key, 'user-setting-'.$user_id, $ci->tenant->id))
+		{
+			return $cache;
+		}
+		
 		$model = new VBX_User_Setting;
 		
 		$result = $ci->db
@@ -34,6 +40,7 @@ class VBX_User_Setting extends MY_Model {
 		if (!empty($result[0]))
 		{
 			$setting = new VBX_User_Setting($result[0]);
+			$ci->cache->set($setting->key, $setting, 'user-setting-'.$user_id, $ci->tenant->id);
 		}
 		
 		return $setting;
@@ -57,6 +64,7 @@ class VBX_User_Setting extends MY_Model {
 			foreach ($result as &$setting)
 			{
 				$setting = new VBX_User_Setting($setting);
+				$ci->cache->set($setting->key, $setting, 'user-setting-'.$user_id, $ci->tenant->id);
 			}
 		}
 

@@ -25,29 +25,17 @@ class VBX_IncomingNumberException extends Exception {}
 
 class VBX_Incoming_numbers extends Model
 {
-	private $cache_key;
-
-	const CACHE_TIME_SEC = 3600;
-
 	public function __construct()
 	{
 		parent::__construct();
-		$this->cache_key = $this->twilio_sid . '_incoming_numbers';
-
 	}
 
 	public function get_sandbox()
 	{
-		if(function_exists('apc_fetch')) 
+		$ci =& get_instance();
+		if ($cache = $ci->api_cache->get('sandbox', __CLASS__, $ci->tenant->id))
 		{
-			$success = FALSE;
-			$cachekey = $this->cache_key.'sandbox';
-			$sandbox = apc_fetch($cachekey, $success);
-
-			if($sandbox AND $success) 
-			{
-				return @unserialize($sandbox);
-			}
+			return $cache;
 		}
 
 		try {
@@ -56,10 +44,7 @@ class VBX_Incoming_numbers extends Model
 			if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
 			{
 				$sandbox = $this->parseIncomingPhoneNumber($sandbox);
-				if (function_exists('apc_store')) 
-				{
-					$success = apc_store($cachekey, serialize($sandbox), self::CACHE_TIME_SEC);
-				}
+				$ci->api_cache->set('sandbox', $sandbox, __CLASS__, $ci->tenant->id);
 			}
 		}
 		catch (Exception $e) {
@@ -70,20 +55,18 @@ class VBX_Incoming_numbers extends Model
 	}
 
 	public function get_numbers($retrieve_sandbox = true)
-	{
-		if(function_exists('apc_fetch')) 
+	{		
+		$ci =& get_instance();
+		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
+
+		$cache_key = 'incoming-numbers';
+		if ($cache = $ci->api_cache->get($cache_key, __CLASS__, $ci->tenant->id))
 		{
-			$success = FALSE;
-			$cachekey = $this->cache_key.'numbers'.$retrieve_sandbox;
-			$data = apc_fetch($cachekey, $success);
-			if($data AND $success) 
+			if (!$retrieve_sandbox && $enabled_sandbox_number)
 			{
-				$numbers = @unserialize($data);
-				if(is_array($numbers))
-				{
-					return $numbers;
-				}
+				array_pop($cache);
 			}
+			return $cache;
 		}
 
 		$numbers = array();
@@ -99,39 +82,30 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 		
-		$ci = &get_instance();
-		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
-		if ($enabled_sandbox_number && $retrieve_sandbox) 
+		if ($enabled_sandbox_number) 
 		{
 			$numbers[] = $this->get_sandbox();
 		}
 
-		if(function_exists('apc_store')) 
-		{
-			$success = apc_store($cachekey, serialize($numbers), self::CACHE_TIME_SEC);
-		}
+		$ci->api_cache->set('incoming-numbers', $numbers, __CLASS__, $ci->tenant->id);
 
+		if (!$retrieve_sandbox && $enabled_sandbox_number)
+		{
+			array_pop($numbers);
+		}
+		
 		return $numbers;
 	}
 	
 	public function get_available_countries()
-	{
-		if (function_exists('apc_fetch'))
-		{
-			$success = FALSE;
-			$data = apc_fetch($this->cache_key.'countries', $success);
-			if ($data AND $success)
-			{
-				$countries = @unserialize($data);
-				if (is_array($countries))
-				{
-					return $countries;
-				}
-			}
-		}
-		
-		$countries = array();
+	{	
 		$ci =& get_instance();
+		if ($cache = $ci->api_cache->get('countries', __CLASS__, $ci->tenant->id))
+		{
+			return $cache;
+		}
+
+		$countries = array();		
 		$ci->config->load('countrycodes');
 		
 		try {
@@ -173,30 +147,10 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 
-		ksort($countries);
-
-		if (function_exists('apc_store'))
-		{
-			apc_store($this->cache_key.'countries', serialize($countries));
-		}
+		ksort($countries);	
+		$ci->api_cache->set('countries', $countries, __CLASS__, $ci->tenant->id);
 
 		return $countries;
-	}
-
-	private function clear_cache()
-	{
-		if(function_exists('apc_delete'))
-		{
-			apc_delete($this->cache_key.'numbers');
-			apc_delete($this->cache_key.'numbers1');
-			apc_delete($this->cache_key.'numbers0');
-			apc_delete($this->cache_key.'sandbox');
-			apc_delete($this->cache_key.'sandbox1');
-			apc_delete($this->cache_key.'sandbox0');
-			return TRUE;
-		}
-
-		return FALSE;
 	}
 
 	private function parseIncomingPhoneNumber($item)
@@ -271,7 +225,7 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 
-		$this->clear_cache();
+		$this->clear_cache('incoming-numbers');
 		return TRUE;
 	}
 
@@ -287,10 +241,7 @@ class VBX_Incoming_numbers extends Model
 		$voice_url = site_url("twiml/start/voice/0");
 		$sms_url = site_url("twiml/start/sms/0");
 
-		if($is_local
-		   && (
-			   !empty($area_code) &&
-				preg_match('/([^0-9])/', $area_code) > 0))
+		if($is_local && (!empty($area_code) && preg_match('/([^0-9])/', $area_code) > 0))
 		{
 			throw new VBX_IncomingNumberException('Area code invalid');
 		}
@@ -360,7 +311,7 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 
-		$this->clear_cache();
+		$this->clear_cache('incoming-numbers');
 		return $this->parseIncomingPhoneNumber($number);
 	}
 
@@ -381,8 +332,21 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 	
-		$this->clear_cache();
+		$this->clear_cache('incoming-numbers');
 		return TRUE;
 	}
 
+	protected function clear_cache()
+	{
+		$keys = func_get_args();
+		$ci =& get_instance();
+		
+		if (!empty($keys))
+		{
+			foreach ($keys as $key)
+			{
+				$ci->api_cache->delete($key, __CLASS__, $ci->tenant->id);
+			}
+		}
+	}
 }
