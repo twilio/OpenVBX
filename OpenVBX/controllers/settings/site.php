@@ -455,6 +455,7 @@ class Site extends User_Controller
 					// when using connect, we won't get a sid, token, or 
 					// app_sid until user first login
 					$tenant_id = $tenant_token = $app_sid = null;
+					$this->settings->add('tenant_first_run', 1, $data['id']);
 				}
 				else 
 				{
@@ -477,7 +478,6 @@ class Site extends User_Controller
 				foreach ($tenant_defaults as $key => $value) {
 					$this->settings->set($key, $value, $data['id']);
 				}
-				$this->settings->add('tenant_first_run', 1, $data['id']);
 				
 				$this->db->trans_complete();
 				$this->session->set_flashdata('error', 'Added new tenant');

@@ -352,14 +352,14 @@ class OpenVBX {
 		if (empty($url)) 
 		{
 			// we weren't handed a uri, use the default
-			$url = site_url(preg_replace('|^/index.php|', '', $_SERVER['REQUEST_URI']));
+			$url = site_url($ci->uri->uri_string());
 		}
 		elseif (strpos($url, '://') === false) 
 		{
 			// we were handed a relative uri, make it full
 			$url = site_url($url);
 		}
-		
+	
 		if (empty($post_vars)) 
 		{
 			// we weren't handed post-vars, use the default
