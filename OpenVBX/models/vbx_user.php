@@ -39,6 +39,8 @@ class VBX_User extends MY_Model {
 							'last_login', 'last_seen', 'online');
 
 	public $admin_fields = array('');
+	
+	public $devices;
 
 	public function __construct($object = null)
 	{
@@ -58,22 +60,13 @@ class VBX_User extends MY_Model {
 		}
 		
 		$user = self::search($search_options, 1, 0);
-		
+
 		return $user;
 	}
 
 	static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
 		$ci =& get_instance();
-
-		// catches single-user search
-		if (!empty($search_options['id']))
-		{
-			if ($cache = $ci->cache->get($search_options['id'], 'users', $ci->tenant->id))
-			{
-				return $cache;
-			}
-		}
 		
 		$sql_options = array(
 			'joins' => self::$joins,
@@ -81,13 +74,13 @@ class VBX_User extends MY_Model {
 		);
 		$user = new VBX_User();
 		$users = parent::search(
-							self::$__CLASS__,
-							$user->table,
-							$search_options,
-							$sql_options,
-							$limit,
-							$offset
-						);
+			self::$__CLASS__,
+			$user->table,
+			$search_options,
+			$sql_options,
+			$limit,
+			$offset
+		);
 
 		if(empty($users))
 		{
@@ -115,11 +108,6 @@ class VBX_User extends MY_Model {
 												'user_id' => $users[$i]->id
 											)));
 			}
-		}
-
-		foreach ($users as $user)
-		{
-			$ci->cache->set($user->id, $user, 'users', $ci->tenant->id);
 		}
 		
 		if($limit == 1 && count($users) == 1)
@@ -258,9 +246,13 @@ class VBX_User extends MY_Model {
 		return $group_ids;
 	}
 
-	// @deprecated?
+	/**
+	 * @deprecated use VBX_User::search() instead
+	 */
 	function get_users($user_ids)
 	{
+		_deprecated_notice(__METHOD__, '1.1.1', 'VBX_User::search()');
+		
 		if(empty($user_ids))
 		{
 			return array();
@@ -272,7 +264,7 @@ class VBX_User extends MY_Model {
 		
 		foreach ($user_ids as $user_id)
 		{
-			if ($user = $ci->cache->get($user_id, 'users', $ci->tenant->id))
+			if ($user = $ci->cache->get($user_id, __CLASS__, $ci->tenant->id))
 			{
 				array_push($users, $user);
 			}
@@ -290,7 +282,7 @@ class VBX_User extends MY_Model {
 			if (!empty($result)) {
 				foreach ($result as $user)
 				{
-					$ci->cache->set($user->id, $user, 'users', $ci->tenant->id);
+					$ci->cache->set($user->id, $user, __CLASS__, $ci->tenant->id);
 					array_push($users, new VBX_User($user));
 				}
 			}
@@ -306,6 +298,8 @@ class VBX_User extends MY_Model {
 	 */
 	function get_user($user_id)
 	{
+		_deprecated_notice(__METHOD__, '1.1.1', 'VBX_User::get');
+		
 		$ci = &get_instance();
 		$ci->db
 			->from($this->table . ' as u')

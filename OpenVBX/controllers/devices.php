@@ -46,10 +46,6 @@ class Devices extends User_Controller {
 		$data = $this->init_view_data();
 		$user = VBX_user::get(array('id' => $this->user_id));
 		$data['user'] = $user;
-
-		#$numbers = $this->vbx_device->get_by_user($this->user_id);
-		// $data['numbers'] = $numbers;
-		// $data['devices'] = $this->vbx_device->get_by_user($this->user_id);
 		
 		$data['numbers'] = $data['devices'] = $user->devices;
 		if(empty($data['devices']))
@@ -316,7 +312,7 @@ class Devices extends User_Controller {
 		{
 			try
 			{
-				$this->vbx_device->delete($id, $this->user_id);
+				$number->delete();
 			}
 			catch(VBX_DeviceException $e)
 			{

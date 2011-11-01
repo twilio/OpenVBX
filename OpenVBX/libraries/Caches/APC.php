@@ -8,15 +8,15 @@ class OpenVBX_Cache_APC extends OpenVBX_Cache_Abstract
 	}
 	
 	private function _keyname($key, $group, $tenant_id) {
-		return $this->_tenantize_group($group, $tenant_id).'.'.$key;
+		return $this->_tenantize_group($group, $tenant_id).'-'.$key;
 	}
 	
 	protected function _get($key, $group = null, $tenant_id)
 	{
-		$_key = $this->_keyname($key, $group);
-		$data = apc_fetch($_key);
-		
-		if ($data !== false)
+		$_key = $this->_keyname($key, $group, $tenant_id);
+		$data = apc_fetch($_key, $success);
+
+		if ($success)
 		{
 			$data = $this->_unserialize($data);
 		}
@@ -33,6 +33,7 @@ class OpenVBX_Cache_APC extends OpenVBX_Cache_Abstract
 		
 		$_key = $this->_keyname($key, $group, $tenant_id);
 		$_data = $this->_serialize($data);
+
 		return apc_store($_key, $_data, $expires);
 	}
 	

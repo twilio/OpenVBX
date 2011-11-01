@@ -4,7 +4,7 @@
  * Enable/disable the cache system
  * By default we are enabled and let the system choose the correct type
  */
-$config['cache']['cache_enabled'] = true;
+$config['cache']['cache_enabled'] = false;
 
 /**
  * Currently supported caches:
@@ -14,7 +14,7 @@ $config['cache']['cache_enabled'] = true;
  * 
  * @todo auto-detect cache availability
  */
-$config['cache']['cache_type'] = 'memory';
+$config['cache']['cache_type'] = 'apc';
 
 /**
  * Default expiration time for cached items

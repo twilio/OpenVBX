@@ -48,24 +48,26 @@ class VBX_Group extends MY_Model {
 			$search_options = array('id' => $search_options, 'is_active' => 1);
 		}
 
-		return self::search($search_options,
-							1,
-							0);
+		return self::search($search_options, 1, 0);
 	}
 
 	static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
-		$sql_options = array('joins' => array(),
-							 'select' => self::$select,
-							 );
+		$sql_options = array(
+			'joins' => array(),
+			'select' => self::$select,
+		);
 		
 		$obj = new self();
-		$groups = parent::search(self::$__CLASS__,
-								 $obj->table,
-								 $search_options,
-								 $sql_options,
-								 $limit,
-								 $offset);
+		$groups = parent::search(
+			self::$__CLASS__,
+			$obj->table,
+			$search_options,
+			$sql_options,
+			$limit,
+			$offset
+		);
+		
 		if(is_object($groups))
 		{
 			$groups = array($groups);
@@ -133,12 +135,7 @@ class VBX_Group extends MY_Model {
 
 	function get_by_id($group_id)
 	{
-		$ci =& get_instance();
-
-		return $ci->db
-			->from('groups')
-			->where('id', $group_id)
-			->get()->first_row();
+		return self::get($group_id);
 	}
 
 	function add_user($user_id)
@@ -170,7 +167,7 @@ class VBX_Group extends MY_Model {
 			->where('tenant_id', $ci->tenant->id)
 			->where('group_id', $this->id);
 		
-		$result = $ci->db->delete('groups_users');
+		$result = $ci->db->delete('groups_users');		
 		return $result;
 	}
 	
@@ -195,7 +192,8 @@ class VBX_Group extends MY_Model {
 		if ($ci->db->trans_status === false) 
 		{
 			$ci->db->trans_rollback();
-			throw new VBX_GroupException('Could not update group order: '.$ci->db->_error_message());
+			throw new VBX_GroupException('Could not update group order: '.
+											$ci->db->_error_message());
 		}
 		else 
 		{
@@ -223,40 +221,10 @@ class VBX_Group extends MY_Model {
 
 	function get_active_groups()
 	{
-		$ci =& get_instance();
-
-		$groups = array();
-		$groups = $ci->db
-			 ->from($this->table . ' as g')
-			 ->where('g.tenant_id', $ci->tenant->id)
-			 ->where('g.is_active', true)
-			 ->get()->result();
-		
-		$sorted_groups = array();
-		foreach($groups as $group)
-		{
-			$sorted_groups[$group->id] = $group;
-			$sorted_groups[$group->id]->users = array();
-		}
-		
-		$groups = $sorted_groups;
-		
-		$ci->db
-			 ->select('u.*, g.*, gu.*')
-			 ->from($this->table . ' as g')
-			 ->join('groups_users gu', 'gu.group_id = g.id')
-			 ->join('users u', 'u.id = gu.user_id')
-			 ->where('gu.tenant_id', $ci->tenant->id)
-			 ->where('u.is_active', true)
-			 ->where('g.is_active', true);
-		
-		$groups_users = $ci->db->get()->result();
-		foreach($groups_users as $gu)
-		{
-			$groups[$gu->group_id]->users[$gu->user_id] = $gu;
-		}
-
-		return $groups;
+		$search_opts = array(
+			'is_active' => 1
+		);
+		return self::search($search_opts);
 	}
 
 	function set_active($id, $active = true)
@@ -273,8 +241,9 @@ class VBX_Group extends MY_Model {
 	public function save()
 	{
 		if(strlen($this->name) < 3)
+		{
 			throw new VBX_GroupException('Group name must be at least 3 characters long');
-		
+		}
 		parent::save();
 	}
 }

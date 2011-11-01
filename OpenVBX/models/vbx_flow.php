@@ -39,9 +39,7 @@ class VBX_Flow extends MY_Model {
 		parent::__construct($object);
 	}
 
-	static function get($search_options = array(),
-						$limit = -1,
-						$offset = 0)
+	static function get($search_options = array(), $limit = -1, $offset = 0)
 	{
 		if(empty($search_options))
 		{
@@ -67,10 +65,10 @@ class VBX_Flow extends MY_Model {
 		return $sum + 1;
 	}
 
-	static function search($search_options = array(),
-						   $limit = -1,
-						   $offset = 0)
+	static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
+		$ci = &get_instance();
+
 		$sql_options = array();
 
 		$include_numbers = true;
@@ -94,7 +92,6 @@ class VBX_Flow extends MY_Model {
 
 		if($include_numbers) try {
 
-			$ci = &get_instance();
 			$ci->load->model('vbx_incoming_numbers');
 			$numbers = $ci->vbx_incoming_numbers->get_numbers();
 			$flow_ids_to_numbers = array();

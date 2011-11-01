@@ -48,14 +48,14 @@ class VBX_Call extends Model {
 		$output = array();
 
 		$page_cache = 'calls-'.$offset.'-'.$page_size;
-		$total_cache = 'calls-'.$total;
+		$total_cache = 'calls-total';
 		
 		$ci =& get_instance();
 		$tenant = $ci->tenant->id;
 		if ($cache = $ci->api_cache->get($page_cache, __CLASS__, $tenant)
-			&& $total_cache = $ci->api_cache->get($total_cache, __CLASS__, $tenant))
+			&& $cache_total = $ci->api_cache->get($total_cache, __CLASS__, $tenant))
 		{
-			$this->total = $total_cache;
+			$this->total = $cache_total;
 			return $cache;
 		}
 

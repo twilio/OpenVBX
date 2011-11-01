@@ -24,7 +24,6 @@ abstract class OpenVBX_Cache_Abstract
 		{
 			return false;
 		}
-		ep('looking for: '.$key.'::'.$group);
 		return $this->_get($key, $group, $tenant_id);
 	}
 
@@ -34,7 +33,6 @@ abstract class OpenVBX_Cache_Abstract
 		{
 			return false;
 		}
-		ep('setting: '.$key.'::'.$group);
 		return $this->_set($key, $data, $group, $tenant_id, $expires);
 	}
 		

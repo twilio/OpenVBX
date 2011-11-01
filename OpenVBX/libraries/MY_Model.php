@@ -84,6 +84,40 @@ class MY_Model extends Model
 	{
 		$ci = &get_instance();
 		
+		// Check cache first
+		$tenant_id = $ci->tenant->id;
+		$cached_objects_key = $class.'-'.md5(serialize($search_options).serialize($sql_options).$limit.$offset);
+		if ($cached_keys = $ci->cache->get($cached_objects_key, $class, $tenant_id))
+		{
+			$cached_objects = array();
+			foreach ($cached_keys as $object_cache_key)
+			{
+				if ($cached_object = $ci->cache->get($object_cache_key, $class, $tenant_id))
+				{
+					array_push($cached_objects, $cached_object);
+				}
+				else 
+				{
+					// we can't complete the list, so break out
+					// and let the function continue
+					unset($cached_objects);
+					break;
+				}
+			}
+	
+			if (!empty($cached_objects))
+			{
+				if($limit == 1 && count($cached_objects) == 1)
+				{
+					return $cached_objects[0];
+				}
+				else
+				{
+					return $cached_objects;
+				}
+			}
+		}
+		
 		$joins = !empty($sql_options['joins'])? $sql_options['joins'] : array();
 		$select = !empty($sql_options['select'])? $sql_options['select'] : array();
 		
@@ -109,12 +143,18 @@ class MY_Model extends Model
 		
 		foreach($search_options as $option => $value)
 		{
-			if(preg_match('/([^_]+)__like_?(before|after|both)$/', $option, $side_match))
+			if (preg_match('/([^_]+)__like_?(before|after|both)$/', $option, $side_match))
 			{
 				$side = empty($side_match[2])? 'both' : $side_match[2];
 				$option = $side_match[1];
 				$ci->db
 					 ->like($option, $value, $side);
+			}
+			elseif (preg_match('/([^_]+)__(not_in|in)$/', $option, $matches))
+			{
+				list($comp, $key, $type) = $matches;
+				$method = ($type == 'in' ? 'where_in' : 'where_not_in');
+				$ci->db->$method($key, $value);
 			}
 			else
 			{
@@ -142,21 +182,44 @@ class MY_Model extends Model
 		{
 			$ci->db->select(implode(', ', $select));
 		}
+		
+		if (!empty($sql_options['order_by']))
+		{
+			if (is_array($sql_options['order_by']))
+			{
+				$ci->db->order_by($sql_options['order_by'][0], $sql_options['order_by'][1]);
+			}
+			else
+			{
+				$ci->db->order_by($sql_options['order_by']);
+			}
+		}
 
 		$results = $ci->db->get()->result();
 		
-		if($limit == 1 && count($results) == 1)
-		{
-			$obj = new $class($results[0]);
-			return $obj;
-		}
-
 		foreach($results as $i => $result)
 		{
 			$results[$i] = new $class($result);
 		}
-
-		return $results;
+				
+		// cache results
+		$cached_object_ids = array();
+		foreach ($results as $result)
+		{
+			array_push($cached_object_ids, $result->id);
+			$ci->cache->set($result->id, $result, $class, $ci->tenant->id);
+		}
+		$ci->cache->set($cached_objects_key, $cached_object_ids, $class, $ci->tenant->id);
+		reset($results);
+	
+		if($limit == 1 && count($results) == 1)
+		{
+			return $results[0];
+		}
+		else
+		{
+			return $results;
+		}
 	}
 	
 	function set_fields($params)
@@ -192,6 +255,7 @@ class MY_Model extends Model
 	{
 		if(empty($params))
 			return true;
+			
 		$this->set_fields($params);
 		$ci = &get_instance();
 		if(is_array($id))
@@ -203,15 +267,18 @@ class MY_Model extends Model
 
 			/* Tenantize */
 			$ci->db->where("{$this->table}.tenant_id", $this->tenant_id);
-			
-			$ci->db->update($this->table);
+			$r = $ci->db->update($this->table);
 		}
 		else
 		{
-			return $ci->db
+			$r = $ci->db
 				->where('id', $id)
 				->update($this->table);
 		}
+		
+		$classname = get_class($this);
+		$ci->cache->delete($this->id, $classname, $ci->tenant->id);
+		return $r;
 	}
 	
 	function insert($params)
@@ -241,10 +308,15 @@ class MY_Model extends Model
 		$ci->db
 			 ->insert($this->table);
 		$this->id = $ci->db->insert_id();
+		
+		$classname = get_class($this);
+		$ci->cache->delete($this->id, $classname, $ci->tenant->id);
 	}
 
 	function delete()
 	{
+		$ci = &get_instance();
+		
 		if(intval($this->id) < 1)
 		{
 			if(!empty($this->natural_keys))
@@ -265,14 +337,15 @@ class MY_Model extends Model
 					$ci = &get_instance();
 					foreach($where as $key => $val)
 					{
-						$ci->db
-							->where("{$this->table}.`{$key}`", $val);
+						$ci->db->where("{$this->table}.`{$key}`", $val);
 					}
 					
 					/* Tenantize */
 					$ci->db->where("{$this->table}.tenant_id", $this->tenant_id);
-					
 					$ci->db->delete($this->table);
+					
+					$classname = get_class($this);
+					$ci->cache->delete($this->id, $classname, $this->tenant_id);
 					return true;
 				}
 			}
@@ -280,10 +353,12 @@ class MY_Model extends Model
 			throw new MY_ModelException('Unable to delete: No id specified');
 		}
 
-		$ci = &get_instance();
 		$ci->db
 			 ->where("{$this->table}.id", $this->id)
 			 ->delete($this->table);
+			
+		$classname = get_class($this);
+		$ci->cache->delete($this->id, $classname, $this->tenant_id);
 	}
 
 	function save($force_update = false)
@@ -315,6 +390,11 @@ class MY_Model extends Model
 		}
 		
 		$this->insert($this->values);
+		
+		$ci =& get_instance();
+		$classname = get_class($this);
+		$ci->cache->set($this->id, $this, $classname, $this->tenant_id);
+		
 		return true;
 	}
 

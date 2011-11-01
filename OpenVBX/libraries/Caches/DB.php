@@ -56,10 +56,10 @@ class OpenVBX_Cache_DB extends OpenVBX_Cache_Abstract
 		
 		$r = $this->_db
 			->insert($this->_table, array(
-				'key' => $key,
-				'group' => $group,
-				'value' => $data,
-				'tenant_id' => $tenant_id
+				$this->_table.'.key' => $key,
+				$this->_table.'.group' => $group,
+				$this->_table.'.value' => $data,
+				$this->_table.'.tenant_id' => $tenant_id
 			));
 				
 		return $this->_db->affected_rows() > 0;

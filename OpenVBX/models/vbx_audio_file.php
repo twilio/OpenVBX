@@ -54,9 +54,7 @@ class VBX_Audio_File extends MY_Model
 			$search_options = array('id' => $search_options);
 		}
 
-		return self::search($search_options,
-							1,
-							0);
+		return self::search($search_options, 1, 0);
 	}
 	
 	static function search($search_options = array(), $limit = -1, $offset = 0)
@@ -65,12 +63,14 @@ class VBX_Audio_File extends MY_Model
 							
 		$instance = new self();
 		
-		$values = parent::search(self::$__CLASS__,
-								  $instance->table,
-								  $search_options,
-								  $sql_options,
-								  $limit,
-								  $offset);
+		$values = parent::search(
+			self::$__CLASS__,
+			$instance->table,
+			$search_options,
+			$sql_options,
+			$limit,
+			$offset
+		);
 
 		return $values;
 	}
