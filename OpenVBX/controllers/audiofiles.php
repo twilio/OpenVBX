@@ -33,6 +33,38 @@ class AudioFiles extends User_Controller
 	
 	function __construct()
 	{	
+		// This is to support SWFUpload. SWFUpload will scrape all cookies via Javascript 
+		// and send them as POST request params. This enables the file uploader to work 
+		// with a proper session.
+		foreach ($_POST as $key => $value)
+		{
+			// Copy any key that looks like an Openvbx session over to $_COOKIE where it's expected
+			if (preg_match("/^(\d+\-)?openvbx_session$/", $key))
+			{
+				// url-decode the session key, try to preserve "+" in email addresses
+				$value = $_POST[$key];
+				
+				$preserve_plus = false;
+				preg_match("|s:5:\"email\";s:[0-9]+:\"(.*?)\";|", $value, $matches);
+				if (strpos($matches[1], '+') !== false)
+				{
+					$plus_temp = '___plus___';
+					$preserve_plus = true;
+					$email = str_replace('+', $plus_temp, $matches[0]);
+					$value = str_replace($matches[0], $email, $value);
+				}
+				
+				$value = urldecode($value);
+				
+				if ($preserve_plus)
+				{
+					$value = str_replace($plus_temp, '+', $value);
+				}
+				
+				$_COOKIE[$key] = $value;
+			}
+		}
+
 		parent::__construct();
 		$this->load->library('TwimlResponse');
 		$this->load->model('vbx_audio_file');

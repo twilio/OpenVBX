@@ -35,24 +35,8 @@ class User_Controller extends MY_Controller
 
 	public function __construct()
 	{
-		// This is to support SWFUpload.  SWFUpload will scrape all cookies via Javascript and send them
-		// as POST request params.	This enables the file uploader to work with a proper session.
-		foreach ($_POST as $key => $value)
-		{
-			// Copy any key that looks like an Openvbx session over to $_COOKIE where it's expected
-			if (preg_match("/^(\d+\-)?openvbx_session$/", $key))
-			{
-				$_COOKIE[$key] = urldecode($_POST[$key]);
-			}
-		}
-
 		parent::__construct();
-
-		if(!file_exists(APPPATH . 'config/openvbx.php')
-		   || !file_exists(APPPATH . 'config/database.php'))
-		{
-			redirect('install');
-		}
+		$this->config_check();
 
 		$this->config->load('openvbx');
 
@@ -158,12 +142,24 @@ class User_Controller extends MY_Controller
 		redirect($url);
 	}
 
+	private function config_check()
+	{
+		$vbx_config = APPPATH.'config/openvbx.php';
+		$db_config = APPPATH.'config/database.php';
+		if(!file_exists($vbx_config) || !file_exists($db_config))
+		{
+			redirect('install');
+		}
+	}
+
 	private function upgrade_check()
 	{
 		$currentSchemaVersion = OpenVBX::schemaVersion();
 		$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
 		if($currentSchemaVersion != $upgradingToSchemaVersion)
+		{
 			redirect('upgrade');
+		}
 	}
 	
 	private function welcome_check() 
