@@ -1,6 +1,16 @@
 # OpenVBX Change Log
 
 
+## OpenVBX 1.1.1
+
+- fixed an issue with validation of requests from Twilio
+- fixed an issue with gathering devices during a group dial
+- fixing issue with media uploading when a user's email contains a "+"
+- silenced various notices
+- added more system status output to Settings > About
+- fixed possible tenant first run sending to Connect signup when not necessary
+
+
 ## OpenVBX 1.1
 
 - integrate [Twilio Connect](http://www.twilio.com/docs/connect/) for Tenants
