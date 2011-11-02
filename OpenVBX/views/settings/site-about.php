@@ -5,7 +5,7 @@
 <?php if ($this->tenant->id == VBX_PARENT_TENANT): /* if parent tenant */ ?>
 	<li>Schema Version: <?php echo OpenVBX::schemaVersion() ?></li>
 	<li>Latest Schema Available: <?php echo OpenVBX::getLatestSchemaVersion(); ?></li>
-	<li>Database configuration: <?php echo "{$server_info['mysql_driver']}://{$this->db->username}@{$this->db->hostname}/{$this->db->database}" ?></li>
+	
 	<li>Rewrite enabled: <?php echo $rewrite_enabled['value']? 'Yes' : 'No' ?></li>
 <?php endif; /* if parent tenant */ ?>
 </ul>
@@ -14,8 +14,17 @@
 	<h3>Server Info</h3>
 	<ul>
 		<li>Apache Version: <?php echo $server_info['apache_version']; ?></li>
-		<li>PHP Version: <?php echo $server_info['php_version']; ?></li>
-		<li>MySQL Version: <?php echo $server_info['mysql_version']; ?> using <?php echo $server_info['mysql_driver']; ?> driver</li>
+		<li>PHP Version: <?php echo $server_info['php_version']; ?></li> 
+		<li>PHP Interface: <?php echo $server_info['php_sapi']; 
+			if (!empty($_SERVER['GATEWAY_INTERFACE']))
+			{
+				echo ' ('.$_SERVER['GATEWAY_INTERFACE'].')';
+			}
+		?></li>
+		<li>MySQL Version: <?php echo $server_info['mysql_version']; ?></li>
+		<li>Database configuration: <?php echo "{$server_info['mysql_driver']}://{$this->db->username}@{$this->db->hostname}/{$this->db->database}" ?></li>
+		<li>System OS: <?php echo $server_info['system_version']; ?></li>
+		<li>Current Url: <?php echo $server_info['current_url']; ?></li>
 	</ul>
 <?php endif; /* if parent tenant 2 */ ?>
 

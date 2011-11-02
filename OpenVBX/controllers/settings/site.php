@@ -126,19 +126,22 @@ class Site extends User_Controller
 			);
 		}
 
-		if ($this->db->driver == 'mysqli')
+		if ($this->db->dbdriver == 'mysqli')
 		{
 			$mysql_version = $this->db->conn_id->server_info;
 		}
 		else {
-			$mysql_version = mysql_get_server_info();
+			$mysql_version = mysql_get_server_info($this->db->conn_id);
 		}
 
 		$data['server_info'] = array(
+			'system_version' => php_uname(),
 			'php_version' => phpversion(),
+			'php_sapi' => php_sapi_name(),
 			'mysql_version' => $mysql_version,
 			'mysql_driver' => $this->db->dbdriver,
-			'apache_version' => $_SERVER['SERVER_SOFTWARE']
+			'apache_version' => $_SERVER['SERVER_SOFTWARE'],
+			'current_url' => site_url($this->uri->uri_string()).' ('.$_SERVER['SERVER_ADDR'].')'
 		);
 
 		$data['available_themes'] = $this->get_available_themes();
