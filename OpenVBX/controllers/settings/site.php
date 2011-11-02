@@ -126,7 +126,7 @@ class Site extends User_Controller
 			);
 		}
 
-		if ($this->db->driver == 'mysqli')
+		if ($this->db->dbdriver == 'mysqli')
 		{
 			$mysql_version = $this->db->conn_id->server_info;
 		}
@@ -135,10 +135,13 @@ class Site extends User_Controller
 		}
 
 		$data['server_info'] = array(
+			'system_version' => php_uname(),
 			'php_version' => phpversion(),
+			'php_sapi' => php_sapi_name(),
 			'mysql_version' => $mysql_version,
 			'mysql_driver' => $this->db->dbdriver,
-			'apache_version' => $_SERVER['SERVER_SOFTWARE']
+			'apache_version' => $_SERVER['SERVER_SOFTWARE'],
+			'current_url' => site_url($this->uri->uri_string()).' ('.$_SERVER['SERVER_ADDR'].')'
 		);
 
 		$data['available_themes'] = $this->get_available_themes();
@@ -455,6 +458,7 @@ class Site extends User_Controller
 					// when using connect, we won't get a sid, token, or 
 					// app_sid until user first login
 					$tenant_id = $tenant_token = $app_sid = null;
+					$this->settings->add('tenant_first_run', 1, $data['id']);
 				}
 				else 
 				{
@@ -477,7 +481,6 @@ class Site extends User_Controller
 				foreach ($tenant_defaults as $key => $value) {
 					$this->settings->set($key, $value, $data['id']);
 				}
-				$this->settings->add('tenant_first_run', 1, $data['id']);
 				
 				$this->db->trans_complete();
 				$this->session->set_flashdata('error', 'Added new tenant');

@@ -166,7 +166,8 @@ class Inbox extends User_Controller {
 
 		/* TODO: implement JS responding */
 		header('content-type: text/javascript');
-		echo "$(document).ready(function(){ Message.Player.messageIdsToRecordingURLs = ".$messageIdsJson."; });";
+		echo "$(document).ready(function(){ Message.Player.messageIdsToRecordingURLs = ".
+				$messageIdsJson."; });";
 	}
 
 	function index($group = false)
@@ -195,7 +196,8 @@ class Inbox extends User_Controller {
 			return;
 		}
 
-		$this->template->add_js('messages/scripts'.($group? '/'.$group : '').'?'.http_build_query(compact('max', 'offset')), 'dynamic');
+		$this->template->add_js('messages/scripts'.($group? '/'.$group : '').'?'.
+									http_build_query(compact('max', 'offset')), 'dynamic');
 		
 		$data['group'] = $group;
 		$total_items = 0;
@@ -367,7 +369,8 @@ class Inbox extends User_Controller {
 			}
 			redirect('messages');
 		} else {
-			$this->vbx_message->mark_read($message->id, $this->user_id);		// set message read flag
+			// set message read flag
+			$this->vbx_message->mark_read($message->id, $this->user_id);		
 			$message->caller = format_phone($message->caller);
 			$accepts = split(',', $_SERVER['HTTP_ACCEPT']);
 			if(in_array('application/json', $accepts))

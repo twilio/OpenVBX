@@ -246,16 +246,17 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException('Area code invalid');
 		}
 
-		$params =
-			 array('VoiceUrl' => $voice_url,
-				   'SmsUrl' => $sms_url,
-				   'VoiceFallbackUrl' => base_url().'fallback/voice.php',
-				   'SmsFallbackUrl' => base_url().'fallback/sms.php',
-				   'VoiceFallbackMethod' => 'GET',
-				   'SmsFallbackMethod' => 'GET',
-				   'SmsMethod' => 'POST',
-				   'ApiVersion' => '2010-04-01',
-				   );
+		$params = array(
+			'VoiceUrl' => $voice_url,
+			'SmsUrl' => $sms_url,
+			'VoiceFallbackUrl' => base_url().'fallback/voice.php',
+			'SmsFallbackUrl' => base_url().'fallback/sms.php',
+			'VoiceFallbackMethod' => 'GET',
+			'SmsFallbackMethod' => 'GET',
+			'SmsMethod' => 'POST',
+			'ApiVersion' => '2010-04-01',
+		);
+		
 		try {
 			$account = OpenVBX::getAccount();
 			// purchase tollfree, uses AvailablePhoneNumbers to search first.
