@@ -103,19 +103,19 @@ abstract class OpenVBX_Cache_Abstract
 		);
 		
 		$basepath = APPPATH.'/libraries/caches/';
-		
-		switch ($type)
+
+		switch (true)
 		{
-			case 'apc':
+			case $type == 'apc' && function_exists('apc_fetch'):
 				require_once($basepath.'APC.php');
 				$class = 'OpenVBX_Cache_APC';
 				break;
-			case 'memcache':
+			case $type == 'memcache' && class_exists('Memcache'):
 				require_once($basepath.'Memcache.php');
 				$class = 'OpenVBX_Cache_Memcache';
 				$options = $settings['memcached_settings'];
 				break;
-			case 'db':
+			case $type == 'db':
 				require_once($basepath.'DB.php');
 				$class = 'OpenVBX_Cache_DB';
 				break;
