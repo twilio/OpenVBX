@@ -112,7 +112,7 @@ class DialList implements Countable {
 			}
 		}
 		
-		return current($device);
+		return $device;
 	}
 }
 

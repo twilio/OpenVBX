@@ -18,7 +18,7 @@
 				<ul class="user-list">
 				<?php $admin = OpenVBX::getCurrentUser(); ?>
 				<?php if(isset($users)): 
-					$default_avatar = asset_url().'/assets/i/user-icon.png';
+					$default_avatar = asset_url('/assets/i/user-icon.png');
 					foreach($users as $user): ?>
 				<li class="user" rel="<?php echo $user->id ?>">
 					<div class="user-utilities">

@@ -287,24 +287,22 @@ class VBX_Incoming_numbers extends Model
 		$voice_url = site_url("twiml/start/voice/0");
 		$sms_url = site_url("twiml/start/sms/0");
 
-		if($is_local
-		   && (
-			   !empty($area_code) &&
-				preg_match('/([^0-9])/', $area_code) > 0))
+		if($is_local && (!empty($area_code) && preg_match('/([^0-9])/', $area_code) > 0))
 		{
 			throw new VBX_IncomingNumberException('Area code invalid');
 		}
 
-		$params =
-			 array('VoiceUrl' => $voice_url,
-				   'SmsUrl' => $sms_url,
-				   'VoiceFallbackUrl' => base_url().'fallback/voice.php',
-				   'SmsFallbackUrl' => base_url().'fallback/sms.php',
-				   'VoiceFallbackMethod' => 'GET',
-				   'SmsFallbackMethod' => 'GET',
-				   'SmsMethod' => 'POST',
-				   'ApiVersion' => '2010-04-01',
-				   );
+		$params = array(
+			'VoiceUrl' => $voice_url,
+			'SmsUrl' => $sms_url,
+			'VoiceFallbackUrl' => base_url().'fallback/voice.php',
+			'SmsFallbackUrl' => base_url().'fallback/sms.php',
+			'VoiceFallbackMethod' => 'GET',
+			'SmsFallbackMethod' => 'GET',
+			'SmsMethod' => 'POST',
+			'ApiVersion' => '2010-04-01',
+		);
+		
 		try {
 			$account = OpenVBX::getAccount();
 			// purchase tollfree, uses AvailablePhoneNumbers to search first.

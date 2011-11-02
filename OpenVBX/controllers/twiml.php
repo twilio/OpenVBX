@@ -570,11 +570,13 @@ class Twiml extends MY_Controller {
 			{
 				if( $this->flow_type == 'sms' )
 				{
-					Applet::$flow_data = $flow->sms_data;	// make flow data visible to all applets
+					// make flow data visible to all applets
+					Applet::$flow_data = $this->flow->sms_data;	
 				}
 				else
 				{
-					Applet::$flow_data = $flow->data;	// make flow data visible to all applets
+					// make flow data visible to all applets
+					Applet::$flow_data = $this->flow->data;
 				}
 			}
 		}
