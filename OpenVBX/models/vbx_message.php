@@ -178,15 +178,19 @@ class VBX_Message extends Model {
 	{
 		$ci =& get_instance();
 
+		$content_text = (!empty($message->content_text) ? $message->content_text : '');
+		$content_url = (!empty($message->content_url) ? $message->content_url : '');
+		$notes = (!empty($message->notes) ? $message->notes : '');
+
 		if(isset($message->id) && intval($message->id) > 0)
 		{
 			$ci->db->trans_start();
 			$result = $ci->db
 				 ->set('messages.tenant_id', $ci->tenant->id)
 				 ->set('updated', 'UTC_TIMESTAMP()', false)
-				 ->set('content_text', $message->content_text)
-				 ->set('content_url', $message->content_url)
-				 ->set('notes', $message->notes)
+				 ->set('content_text', $content_text)
+				 ->set('content_url', $content_url)
+				 ->set('notes', $notes)
 				 ->set('caller', $message->caller)
 				 ->set('called', $message->called)
 				 ->set('size', $message->size)
@@ -206,9 +210,9 @@ class VBX_Message extends Model {
 				 ->set('messages.tenant_id', $ci->tenant->id)
 				 ->set('created', 'UTC_TIMESTAMP()', false)
 				 ->set('updated', 'UTC_TIMESTAMP()', false)
-				 ->set('content_text', @$message->content_text)
-				 ->set('content_url', @$message->content_url)
-				 ->set('notes', @$message->notes)
+				 ->set('content_text', $content_text)
+				 ->set('content_url', $content_url)
+				 ->set('notes', $notes)
 				 ->set('caller', $message->caller)
 				 ->set('called', $message->called)
 				 ->set('size', $message->size)

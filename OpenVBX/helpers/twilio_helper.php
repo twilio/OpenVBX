@@ -306,4 +306,5 @@ if (!function_exists('flush_minify_caches'))
 		}
 	}
 }
+
 ?>
