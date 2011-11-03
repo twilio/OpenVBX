@@ -42,8 +42,7 @@ class OpenVBX_Cache_Memcache extends OpenVBX_Cache_Abstract
 			{
 				$port = $this->port;
 
-				// detect port, only supports IP addresses, but I think 
-				// memcache only supports ip addresses anyway
+				// detect port, only supports IP addresses
 				if (strpos($server, ':'))
 				{
 					list($server, $port) = explode(':', $server);
@@ -54,8 +53,25 @@ class OpenVBX_Cache_Memcache extends OpenVBX_Cache_Abstract
 		}
 	}
 	
+	private function _generationalize($group, $tenant_id)
+	{
+		$_group = $this->_tenantize_group($group, $tenant_id);
+		if (!($generation = $this->_cache->get($_group, $this->flags)))
+		{
+			$generation = 0;
+		}
+		return $_group.'_g'.$generation;
+	}
+	
 	private function _keyname($key, $group, $tenant_id) {
-		return $this->_tenantize_group($group, $tenant_id).'.'.$key;
+		$_group = $this->_generationalize($group, $tenant_id);
+		$_group = $this->_tenantize_group($_group, $tenant_id).'.'.$key;
+		return $_group;
+	}
+	
+	private function _generation_keyname($group, $tenant_id)
+	{
+		return $this->_tenantize_group($group, $tenant_id).'-generation';
 	}
 	
 	protected function _get($key, $group = null, $tenant_id)
@@ -87,7 +103,19 @@ class OpenVBX_Cache_Memcache extends OpenVBX_Cache_Abstract
 		$_key = $this->_keyname($key, $group, $tenant_id);
 		return $this->_cache->delete($key);
 	}               
-	         
+	
+	public function _invalidate($group, $tenant_id)
+	{
+		$_ggroup = $this->_generation_keyname($group, $tenant_id);
+		$generation = $this->_cache->increment($_ggroup);
+		if ($generation === false)
+		{
+			$generation = 0;
+			$this->_cache->set($_ggroup, 0);
+		}
+		return $generation;
+	}
+	  
 	protected function _flush()
 	{
 		$this->_cache->flush();

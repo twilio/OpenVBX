@@ -277,7 +277,7 @@ class MY_Model extends Model
 		}
 		
 		$classname = get_class($this);
-		$ci->cache->delete($this->id, $classname, $ci->tenant->id);
+		$ci->cache->invalidate($classname, $this->tenant_id);
 		return $r;
 	}
 	
@@ -310,7 +310,7 @@ class MY_Model extends Model
 		$this->id = $ci->db->insert_id();
 		
 		$classname = get_class($this);
-		$ci->cache->delete($this->id, $classname, $ci->tenant->id);
+		$ci->cache->invalidate($classname, $this->tenant_id);
 	}
 
 	function delete()
@@ -358,7 +358,7 @@ class MY_Model extends Model
 			 ->delete($this->table);
 			
 		$classname = get_class($this);
-		$ci->cache->delete($this->id, $classname, $this->tenant_id);
+		$ci->cache->invalidate($classname, $this->tenant_id);
 	}
 
 	function save($force_update = false)
@@ -393,7 +393,7 @@ class MY_Model extends Model
 		
 		$ci =& get_instance();
 		$classname = get_class($this);
-		$ci->cache->set($this->id, $this, $classname, $this->tenant_id);
+		$ci->cache->invalidate($classname, $this->tenant_id);
 		
 		return true;
 	}

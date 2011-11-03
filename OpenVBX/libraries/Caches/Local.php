@@ -10,6 +10,12 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 	
 	public function __destruct() {}
 	
+	public function _keyname($group)
+	{
+		// mash up the group with the group's generation
+		
+	}
+		
 	public function _set($key, $data, $group = null, $tenant_id,  $expires = null)
 	{	
 		if (empty($expires))
@@ -17,9 +23,9 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 			$expires = $this->default_expires;
 		}
 		
-		$group = $this->_tenantize_group($group, $tenant_id);
+		$_group = $this->_tenantize_group($group, $tenant_id);
 		
-		$ret = $this->_cache[$group][$key] = array(
+		$ret = $this->_cache[$_group][$key] = array(
 			'data' => $data,
 			'expires' => time() + intval($expires)
 		);
@@ -31,17 +37,17 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 	{
 		$data = false;
 		
-		$group = $this->_tenantize_group($group, $tenant_id);
+		$_group = $this->_tenantize_group($group, $tenant_id);
 		
-		if (isset($this->_cache[$group][$key]))
+		if (isset($this->_cache[$_group][$key]))
 		{
-			if ($this->_cache[$group][$key]['expires'] > time())
+			if ($this->_cache[$_group][$key]['expires'] > time())
 			{
-				$data = $this->_cache[$group][$key]['data'];
+				$data = $this->_cache[$_group][$key]['data'];
 			}
 			else
 			{
-				$this->_delete($key, $group);
+				$this->_delete($key, $_group);
 			}
 		}
 
@@ -50,14 +56,25 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 	
 	public function _delete($key, $group = null, $tenant_id)
 	{
-		$group = $this->_tenantize_group($group, $tenant_id);
+		$_group = $this->_tenantize_group($group, $tenant_id);
 		
-		if (isset($this->_cache[$group]) && isset($this->_cache[$group][$key]))
+		if (isset($this->_cache[$_group]) && isset($this->_cache[$_group][$key]))
 		{
-			unset($this->_cache[$group][$key]);
+			unset($this->_cache[$_group][$key]);
 			return true;
 		}
 		return false;
+	}
+	
+	public function _invalidate($group, $tenant_id)
+	{
+		$_group = $this->_tenantize_group($group, $tenant_id);
+		if (isset($this->_cache[$_group]))
+		{
+			unset($this->_cache[$_group]);
+		}
+		
+		return $true;
 	}
 	
 	public function _flush()

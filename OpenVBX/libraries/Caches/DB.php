@@ -76,6 +76,17 @@ class OpenVBX_Cache_DB extends OpenVBX_Cache_Abstract
 		return true;
 	}
 	
+	protected function _invalidate($group, $tenant_id)
+	{
+		// delete the group from the db
+		$this->_db
+			->where('group', $group)
+			->where('tenant_id', $tenant_id)
+			->delete($this->_table);
+			
+		return true;
+	}
+	
 	protected function _flush()
 	{
 		$this->_db

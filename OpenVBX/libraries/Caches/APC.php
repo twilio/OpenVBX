@@ -7,8 +7,27 @@ class OpenVBX_Cache_APC extends OpenVBX_Cache_Abstract
 		parent::__construct($options);
 	}
 	
+	private function _generationalize($group, $tenant_id)
+	{
+		$_group = $this->_tenantize_group($group, $tenant_id);
+		$_ggroup = $this->_generation_keyname($group, $tenant_id);
+		$generation = apc_fetch($_ggroup, $success);
+		if (!$success)
+		{
+			$generation = 0;
+		}
+		return $_group.'_'.'g'.$generation;
+	}
+	
 	private function _keyname($key, $group, $tenant_id) {
-		return $this->_tenantize_group($group, $tenant_id).'-'.$key;
+		$_group = $this->_generationalize($group, $tenant_id);
+		$_group = $this->_tenantize_group($_group, $tenant_id);
+		return $_group.'-'.$key;
+	}
+	
+	private function _generation_keyname($group, $tenant_id)
+	{
+		return $this->_tenantize_group($group, $tenant_id).'-generation';
 	}
 	
 	protected function _get($key, $group = null, $tenant_id)
@@ -41,6 +60,20 @@ class OpenVBX_Cache_APC extends OpenVBX_Cache_Abstract
 	{
 		$_key = $this->_keyname($key, $group, $tenant_id);
 		return apc_delete($_key);
+	}
+	
+	protected function _invalidate($group, $tenant_id)
+	{
+		$_ggroup = $this->_generation_keyname($group, $tenant_id);
+		$generation = apc_inc($_ggroup, 1, $success);
+		ep($_ggroup, $generation, $success, __METHOD__);
+		if (!$success)
+		{
+			apc_store($_ggroup, 0);
+			$generation = 0;
+		}
+		ep($group, $generation, __METHOD__);
+		return $generation;
 	}
 		
 	protected function _flush()

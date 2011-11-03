@@ -251,44 +251,18 @@ class VBX_User extends MY_Model {
 	 */
 	function get_users($user_ids)
 	{
-		_deprecated_notice(__METHOD__, '1.1.1', 'VBX_User::search()');
+		_deprecated_notice(__METHOD__, '1.1.2', 'VBX_User::search()');
 		
-		if(empty($user_ids))
+		if (!is_array($user_ids))
 		{
-			return array();
+			$user_ids = array($user_ids);
 		}
 		
-		$ci =& get_instance();
-		$users = array();
-		$search_users = array();
+		$search_opts = array(
+			'id__in' => $user_ids
+		);
 		
-		foreach ($user_ids as $user_id)
-		{
-			if ($user = $ci->cache->get($user_id, __CLASS__, $ci->tenant->id))
-			{
-				array_push($users, $user);
-			}
-			else
-			{
-				array_push($search_users, $user_id);
-			}
-		}
-		
-		if (!empty($search_users))
-		{	
-			$this->where_in('id', $search_users);
-			$this->where('is_active', 1);
-			$result = $this->get();
-			if (!empty($result)) {
-				foreach ($result as $user)
-				{
-					$ci->cache->set($user->id, $user, __CLASS__, $ci->tenant->id);
-					array_push($users, new VBX_User($user));
-				}
-			}
-		}
-		
-		return $users;
+		return self::search($search_opts);
 	}
 
 	/**
@@ -298,19 +272,8 @@ class VBX_User extends MY_Model {
 	 */
 	function get_user($user_id)
 	{
-		_deprecated_notice(__METHOD__, '1.1.1', 'VBX_User::get');
-		
-		$ci = &get_instance();
-		$ci->db
-			->from($this->table . ' as u')
-			->where('id', intval($user_id));
-
-		$users = $ci->db->get()->result();
-
-		if(!empty($users))
-			return $users[0];
-
-		return NULL;
+		_deprecated_notice(__METHOD__, '1.1.2', 'VBX_User::get');
+		return self::get($user_id);
 	}
 
 	/**
@@ -336,19 +299,9 @@ class VBX_User extends MY_Model {
 	 */
 	public function get_active_users()
 	{
-		$ci =& get_instance();
-
-		$ci->db->flush_cache();
-		$result = $ci->db
-			->select('users.*,'.
-					 'at.description as auth_type')
-			->join('auth_types at', 'at.id = users.auth_type')
-			->where('is_active', 1)
-			->where('users.tenant_id', $ci->tenant->id)
-			->from($this->table)
-			->get()->result();
-
-		return $result;
+		_deprecated_notice(__METHOD__, '1.1.2', 'VBX_User::search');
+		
+		return self::search(array('is_active' => 1));
 	}
 
 	public function send_reset_notification()
@@ -374,13 +327,12 @@ class VBX_User extends MY_Model {
 		$this->save();
 
 		/* Email the user the reset url */
-		$maildata = array('invite_code' => $this->invite_code,
-						  'name' => $this->first_name,
-						  'reset_url' => tenant_url("/auth/reset/{$this->invite_code}", $this->tenant_id));
-		openvbx_mail($this->email,
-					 'Welcome aboard',
-					 'welcome-user',
-					 $maildata);
+		$maildata = array(
+			'invite_code' => $this->invite_code,
+			'name' => $this->first_name,
+			'reset_url' => tenant_url("/auth/reset/{$this->invite_code}", $this->tenant_id)
+		);
+		openvbx_mail($this->email, 'Welcome aboard', 'welcome-user', $maildata);
 	}
 
 

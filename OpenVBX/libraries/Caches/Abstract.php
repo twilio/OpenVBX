@@ -42,8 +42,16 @@ abstract class OpenVBX_Cache_Abstract
 		{
 			return false;
 		}
-		
 		return $this->_delete($key, $group, $tenant_id);
+	}
+	
+	public function invalidate($group, $tenant_id)
+	{
+		if (!$this->enabled)
+		{
+			return false;
+		}
+		return $this->_invalidate($group, $tenant_id);
 	}
 
 	public function flush()
@@ -75,7 +83,6 @@ abstract class OpenVBX_Cache_Abstract
 		{
 			$data = serialize($data);
 		}
-		
 		return $data;
 	}
 	
@@ -87,7 +94,6 @@ abstract class OpenVBX_Cache_Abstract
 		{
 			$ret = $unserialized;
 		}
-		
 		return $ret;
 	}
 	
@@ -131,5 +137,6 @@ abstract class OpenVBX_Cache_Abstract
 	protected abstract function _get($key, $group = null, $tenant_id);
 	protected abstract function _set($key, $data, $group = null, $tenant_id, $expires = null);
 	protected abstract function _delete($key, $group = null, $tenant_id);
+	protected abstract function _invalidate($group, $tenant_id);
 	protected abstract function _flush();
 }
