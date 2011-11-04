@@ -46,7 +46,7 @@ abstract class OpenVBX_Cache_Abstract
 	}
 	
 	public function invalidate($group, $tenant_id)
-	{
+	{		
 		if (!$this->enabled)
 		{
 			return false;

@@ -272,10 +272,9 @@ class Account extends User_Controller {
 			$online = ($this->input->post('online') == 1);
 
 			$user = VBX_User::get($this->session->userdata('user_id'));
-			$user->online = intval($online);
 			try {
-				$user->save();
-
+				$user->setting_set('online', $online);
+				
 				$data['json'] = array(
 					'error' => false,
 					'message' => 'status updated',

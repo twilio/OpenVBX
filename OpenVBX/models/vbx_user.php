@@ -26,17 +26,30 @@ class VBX_User extends MY_Model {
 	public $table = 'users';
 
 	static public $joins = array(
-								 'auth_types at' => 'at.id = users.auth_type',
-								 );
+							'auth_types at' => 'at.id = users.auth_type',
+						);
 
-	static public $select = array('users.*',
-								  'at.description as auth_type');
+	static public $select = array(
+							'users.*',
+							'at.description as auth_type'
+						);
 
-	public $fields =  array('id','is_admin', 'is_active', 'first_name',
-							'last_name', 'password', 'invite_code',
-							'email', 'pin', 'notification',
-							'auth_type', 'voicemail', 'tenant_id',
-							'last_login', 'last_seen', 'online');
+	public $fields =  array(
+						'id',
+						'is_admin', 
+						'is_active', 
+						'first_name',
+						'last_name', 
+						'password', 
+						'invite_code',
+						'email', 
+						'pin', 
+						'notification',
+						'auth_type', 
+						'voicemail', 
+						'tenant_id',
+						'online'
+					);
 
 	public $admin_fields = array('');
 	
@@ -97,7 +110,8 @@ class VBX_User extends MY_Model {
 		{
 			$users[$i]->devices = VBX_Device::search(array('user_id' => $user->id), 100);
 
-			if ($users[$i]->online && $users[$i]->online != 9) {
+			if ($users[$i]->setting('online') && $users[$i]->setting('online') != 9) 
+			{
 				array_unshift($users[$i]->devices, new VBX_Device((object) array(
 												'id' => 0,
 												'name' => 'client',
@@ -129,8 +143,10 @@ class VBX_User extends MY_Model {
 		{
 			/* Check if active */
 			if(!$user->is_active)
+			{
 				return FALSE;
-
+			}
+			
 			switch($user->auth_type)
 			{
 				case 'google':
@@ -153,10 +169,9 @@ class VBX_User extends MY_Model {
 			if(OpenVBX::schemaVersion() >= 24)
 			{
 				// Login succeeded
-				$user->last_login = new MY_ModelLiteral('UTC_TIMESTAMP()');
 				try
 				{
-					$user->save();
+					$user->setting_set('last_login', new MY_ModelLiteral('UTC_TIMESTAMP()'));
 				}
 				catch(VBX_UserException $e)
 				{
@@ -176,16 +191,18 @@ class VBX_User extends MY_Model {
 
 	function login_openvbx($user, $password)
 	{
-		if ($user->password != self::salt_encrypt($password)) {
+		if ($user->password != self::salt_encrypt($password)) 
+		{
 			return FALSE;
-		} else {
+		} 
+		else 
+		{
 			// Login succeeded
 			if(OpenVBX::schemaVersion() >= 24)
 			{
-				$user->last_login = new MY_ModelLiteral('UTC_TIMESTAMP()');
 				try
 				{
-					$user->save();
+					$user->setting_set('last_login', new MY_ModelLiteral('UTC_TIMESTAMP()'));
 				}
 				catch(VBX_UserException $e)
 				{
@@ -205,13 +222,16 @@ class VBX_User extends MY_Model {
 
 	function set_password($password, $confirmed_password)
 	{
-		if($password != $confirmed_password) {
+		if($password != $confirmed_password) 
+		{
 			throw(new VBX_UserException("Password typed incorrectly"));
 		}
+		
 		$ci =& get_instance();
 		$ci->load->helper('email');
 		$this->password = self::salt_encrypt($password);
 		$this->invite_code = self::salt_encrypt($password);
+		
 		try
 		{
 			$result = $this->save();
@@ -300,24 +320,21 @@ class VBX_User extends MY_Model {
 	public function get_active_users()
 	{
 		_deprecated_notice(__METHOD__, '1.1.2', 'VBX_User::search');
-		
 		return self::search(array('is_active' => 1));
 	}
 
 	public function send_reset_notification()
 	{
-
 		/* Set a random invitation code for resetting password */
 		$this->invite_code = substr(self::salt_encrypt(mt_rand()), 0, 20);
 		$this->save();
 
 		/* Email the user the reset url */
-		$maildata = array('invite_code' => $this->invite_code,
-						  'reset_url' => tenant_url("/auth/reset/{$this->invite_code}", $this->tenant_id));
-		openvbx_mail($this->email,
-					 'Reset your password',
-					 'password-reset',
-					 $maildata);
+		$maildata = array(
+			'invite_code' => $this->invite_code,
+			'reset_url' => tenant_url("/auth/reset/{$this->invite_code}", $this->tenant_id)
+		);
+		openvbx_mail($this->email, 'Reset your password', 'password-reset', $maildata);
 	}
 
 	public function send_new_user_notification()
@@ -346,36 +363,62 @@ class VBX_User extends MY_Model {
 	function get_auth_type($auth_type = null)
 	{
 		$ci = &get_instance();
-		$ci->db
-			 ->from('auth_types');
+		$ci->db->from('auth_types');
 
-		if(is_string($auth_type)) {
-			$ci->db
-				->where('description', $auth_type);
-		} else if(is_integer($auth_type)) {
-			$ci->db
-				->where('id', $auth_type);
+		if(is_string($auth_type)) 
+		{
+			$ci->db->where('description', $auth_type);
+		} 
+		else if(is_integer($auth_type)) 
+		{
+			$ci->db->where('id', $auth_type);
 		}
 
 		$auth_types = $ci->db
-			 ->get()->result();
+						->get()
+						->result();
+			
 		if(isset($auth_types[0]))
+		{
 			return $auth_types[0];
-
+		}
+		
 		return null;
+	}
+
+	public function update()
+	{		
+		if (isset($this->last_seen))
+		{
+			$replacement = "VBX_User::setting('last_seen', new MY_ModelLiteral('UTC_TIMESTAMP()'))";
+			_deprecated_notice(__CLASS__.'::$last_seen', '1.1.2', $replacement);
+		}
+		return parent::update();
 	}
 
 	public function save()
 	{
+		if (isset($this->last_seen))
+		{
+			$replacement = "VBX_User::setting('last_seen', new MY_ModelLiteral('UTC_TIMESTAMP()'))";
+			_deprecated_notice(__CLASS__.'::$last_seen', '1.1.2', $replacement);
+		}
+		
 		if(strlen($this->email) < 0)
+		{
 			throw new VBX_UserException('Email is a required field.');
-
+		}
+		
 		if(!(strpos($this->email, '@') > 0))
+		{
 			throw new VBX_UserException('Valid email address is required');
-
+		}
+		
 		if(!strlen($this->voicemail))
+		{
 			$this->voicemail = '';
-
+		}
+		
 		$ci =& get_instance();
 
 		if(is_string($this->auth_type) && !is_numeric($this->auth_type))
@@ -400,14 +443,16 @@ class VBX_User extends MY_Model {
 	{
 		$user = VBX_User::get($user_id);
 		if(!$user)
+		{
 			return null;
-
+		}
+		
 		$list = implode(',', array(
-								   $user->id,
-								   $user->password,
-								   $user->tenant_id,
-								   $user->is_admin,
-								   ));
+			$user->id,
+			$user->password,
+			$user->tenant_id,
+			$user->is_admin,
+		));
 
 		return self::salt_encrypt( $list );
 	}
@@ -465,7 +510,7 @@ class VBX_User extends MY_Model {
 	 */
 	public function setting_set($key, $value)
 	{
-		if (!is_scalar($value))
+		if (!is_scalar($value) && !($value instanceof My_ModelLiteral))
 		{
 			$value = serialize($value);
 		}

@@ -1,7 +1,14 @@
 <?php
 
 class VBX_User_SettingException extends Exception {}
+
+/**
+ * User settings Object
+ * Does not cache due to update frequency
+ * @todo - enable caching based on key?
+ */
 class VBX_User_Setting extends MY_Model {	
+	protected static $caching = false;
 	protected static $__CLASS__ = __CLASS__;
 	public $table = 'user_settings';
 
@@ -54,12 +61,7 @@ class VBX_User_Setting extends MY_Model {
 			$limit,
 			$offset
 		);
-		
-		if (empty($settings))
-		{
-			return false;
-		}
-		
-		return $settings;
-	}
+				
+		return (!empty($settings) ? $settings : false);
+	}	
 }

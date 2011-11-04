@@ -38,6 +38,7 @@ class MY_ModelLiteral
 
 class MY_Model extends Model
 {
+	protected static $caching = true;
 	protected static $__CLASS__ = __CLASS__;
 
 	public $table = '';
@@ -82,38 +83,42 @@ class MY_Model extends Model
 						   $limit = -1,
 						   $offset = 0)
 	{
-		$ci = &get_instance();
-		
-		// Check cache first
+		$ci = &get_instance();		
 		$tenant_id = $ci->tenant->id;
-		$cached_objects_key = $class.'-'.md5(serialize($search_options).serialize($sql_options).$limit.$offset);
-		if ($cached_keys = $ci->cache->get($cached_objects_key, $class, $tenant_id))
+
+		if (self::$caching)
 		{
-			$cached_objects = array();
-			foreach ($cached_keys as $object_cache_key)
+			// Check cache first
+			$cached_objects_key = $class.'-'.md5(serialize($search_options).
+									serialize($sql_options).$limit.$offset);
+			if ($cached_keys = $ci->cache->get($cached_objects_key, $class, $tenant_id))
 			{
-				if ($cached_object = $ci->cache->get($object_cache_key, $class, $tenant_id))
+				$cached_objects = array();
+				foreach ($cached_keys as $object_cache_key)
 				{
-					array_push($cached_objects, $cached_object);
+					if ($cached_object = $ci->cache->get($object_cache_key, $class, $tenant_id))
+					{
+						array_push($cached_objects, $cached_object);
+					}
+					else 
+					{
+						// we can't complete the list, so break out
+						// and let the function continue
+						unset($cached_objects);
+						break;
+					}
 				}
-				else 
-				{
-					// we can't complete the list, so break out
-					// and let the function continue
-					unset($cached_objects);
-					break;
-				}
-			}
 	
-			if (!empty($cached_objects))
-			{
-				if($limit == 1 && count($cached_objects) == 1)
+				if (!empty($cached_objects))
 				{
-					return $cached_objects[0];
-				}
-				else
-				{
-					return $cached_objects;
+					if($limit == 1 && count($cached_objects) == 1)
+					{
+						return $cached_objects[0];
+					}
+					else
+					{
+						return $cached_objects;
+					}
 				}
 			}
 		}
@@ -203,15 +208,18 @@ class MY_Model extends Model
 		}
 				
 		// cache results
-		$cached_object_ids = array();
-		foreach ($results as $result)
+		if (self::$caching)
 		{
-			array_push($cached_object_ids, $result->id);
-			$ci->cache->set($result->id, $result, $class, $ci->tenant->id);
+			$cached_object_ids = array();
+			foreach ($results as $result)
+			{
+				array_push($cached_object_ids, $result->id);
+				$ci->cache->set($result->id, $result, $class, $ci->tenant->id);
+			}
+			$ci->cache->set($cached_objects_key, $cached_object_ids, $class, $ci->tenant->id);
+			reset($results);
 		}
-		$ci->cache->set($cached_objects_key, $cached_object_ids, $class, $ci->tenant->id);
-		reset($results);
-	
+		
 		if($limit == 1 && count($results) == 1)
 		{
 			return $results[0];
@@ -277,7 +285,10 @@ class MY_Model extends Model
 		}
 		
 		$classname = get_class($this);
-		$ci->cache->invalidate($classname, $this->tenant_id);
+		if (self::$caching)
+		{
+			$ci->cache->invalidate($classname, $this->tenant_id);
+		}
 		return $r;
 	}
 	
@@ -310,7 +321,10 @@ class MY_Model extends Model
 		$this->id = $ci->db->insert_id();
 		
 		$classname = get_class($this);
-		$ci->cache->invalidate($classname, $this->tenant_id);
+		if (self::$caching)
+		{
+			$ci->cache->invalidate($classname, $this->tenant_id);
+		}
 	}
 
 	function delete()
@@ -345,7 +359,10 @@ class MY_Model extends Model
 					$ci->db->delete($this->table);
 					
 					$classname = get_class($this);
-					$ci->cache->delete($this->id, $classname, $this->tenant_id);
+					if (self::$caching)
+					{
+						$ci->cache->delete($this->id, $classname, $this->tenant_id);
+					}
 					return true;
 				}
 			}
@@ -358,7 +375,10 @@ class MY_Model extends Model
 			 ->delete($this->table);
 			
 		$classname = get_class($this);
-		$ci->cache->invalidate($classname, $this->tenant_id);
+		if (self::$caching)
+		{
+			$ci->cache->invalidate($classname, $this->tenant_id);
+		}
 	}
 
 	function save($force_update = false)
@@ -393,7 +413,10 @@ class MY_Model extends Model
 		
 		$ci =& get_instance();
 		$classname = get_class($this);
-		$ci->cache->invalidate($classname, $this->tenant_id);
+		if (self::$caching)
+		{
+			$ci->cache->invalidate($classname, $this->tenant_id);
+		}
 		
 		return true;
 	}

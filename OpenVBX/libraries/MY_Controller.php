@@ -393,11 +393,11 @@ class MY_Controller extends Controller
 		}
 
 		if($user = VBX_User::get($this->session->userdata('user_id'))) {
-			if ($user->online == 9) {
+			if ($user->setting('online') == 9) {
 				$payload['user_online'] = 'client-first-run';
 			}
 			else {
-				$payload['user_online'] = (bool) $user->online;
+				$payload['user_online'] = (bool) $user->setting('online');
 			}
 		}
 
