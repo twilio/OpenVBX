@@ -472,9 +472,12 @@ class VBX_User extends MY_Model {
 			$settings = VBX_User_Setting::get_by_user($this->id);
 		
 			$this->settings = array();
-			foreach ($settings as $setting)
+			if (!empty($settings))
 			{
-				$this->settings[$setting->key] = $setting;
+				foreach ($settings as $setting)
+				{
+					$this->settings[$setting->key] = $setting;
+				}
 			}
 		}
 		
