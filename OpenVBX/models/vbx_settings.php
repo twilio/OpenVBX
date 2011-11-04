@@ -37,7 +37,8 @@ class VBX_Settings extends Model
 								'voice',
 								'voice_language',
 								'numbers_country',
-								'gravatars'
+								'gravatars',
+								'connect_application_sid'
 							);
 
 	protected $settings_params = array(

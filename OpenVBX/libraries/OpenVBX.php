@@ -385,33 +385,42 @@ class OpenVBX {
 		return $request_signature;
 	}
 	
+	/**
+	 * Verify that we can connect to Twilio using the connect
+	 * tenant's sid & the parent tenant token
+	 *
+	 * @param int $tenant_id 
+	 * @return bool
+	 */
 	public function connectAuthTenant($tenant_id) {
 		$auth = true;
 				
 		$ci =& get_instance();
 		$tenant = $ci->db->get_where('tenants', array('id' => $tenant_id))->result();
-										
+
 		if ($tenant && $tenant[0]->id == $tenant_id) 
 		{
-			try {
-				if ($tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) 
-				{
+			if ($tenant[0]->type == VBX_Settings::AUTH_TYPE_CONNECT) 
+			{
+				try {
 					$sid = $ci->db->get_where('settings', array(
 										'name' => 'twilio_sid',
-										'tenant_id' => $tenant->id
-									));
+										'tenant_id' => $tenant[0]->id
+									))->result();
+									
 					$token = $ci->db->get_where('settings', array(
 										'name' => 'twilio_token',
 										'tenant_id' => VBX_PARENT_TENANT
-									));
+									))->result();
+					
+					$account = self::getAccount($sid->value, $token->value);
+					$account_type = $account->type;
 				}
-				$account = self::getAccount($sid, $token);
-				$account_type = $account->type;
-			}
-			catch (Exception $e) {
-				// @todo - check for 20006 code, currently returns 20003
-				log_message('Connect auth failed: '.$e->getMessage().' :: '.$e->getCode());
-				$auth = false;
+				catch (Exception $e) {
+					// @todo - check for 20006 code, currently returns 20003
+					log_message('Connect auth failed: '.$e->getMessage().' :: '.$e->getCode());
+					$auth = false;
+				}
 			}
 		}
 		
