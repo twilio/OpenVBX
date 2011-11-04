@@ -324,7 +324,8 @@ INSERT INTO settings
 	   ('voice', 'man', 1),
 	   ('voice_language', 'en', 1),
 	   ('numbers_country', 'US', 1),
-	   ('gravatars', 0, 1);
+	   ('gravatars', 0, 1),
+	   ('connect_application_sid', 0, 1);
 
 
 INSERT INTO groups

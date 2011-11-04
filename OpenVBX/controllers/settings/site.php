@@ -187,7 +187,12 @@ class Site extends User_Controller
 					if ($name == 'connect_application_sid') {
 						$connect_app_sid = $value;
 					}
-					$this->settings->set($name, trim($value), $this->tenant->id);
+					
+					// add new settings if they don't already exist
+					if (!$this->settings->set($name, trim($value), $this->tenant->id))
+					{
+						$this->settings->add($name, trim($value), $this->tenant->id);
+					}
 				}
 
 				// Connect App (if applicable)
