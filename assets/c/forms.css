@@ -213,7 +213,7 @@
 	margin: 0 15px 0 0;
 }
 
-.vbx-form .info {
+.info {
 	background: #ccc;
 	margin: 10px 0;
 	padding: 10px;
@@ -226,10 +226,10 @@
 	-webkit-background-clip: padding-box;
 }
 
-.vbx-form .info p {
+.info p {
 	margin: 0 0 10px 0;
 }
-.vbx-form .info p:last-child {
+.info p:last-child {
 	margin: 0;
 }
 
