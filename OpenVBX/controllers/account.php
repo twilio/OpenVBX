@@ -57,11 +57,6 @@ class Account extends User_Controller {
 
 	public function user($user_id)
 	{
-		if (!$this->session->userdata('loggedin')) 
-		{
-			redirect('auth/login');
-		}
-		
 		$this->template->add_js('assets/j/account.js');
 		$this->template->add_js('assets/j/devices.js');
 		$this->template->add_js('assets/j/messages.js');
@@ -122,10 +117,11 @@ class Account extends User_Controller {
 	}
 
 	public function edit($user_id)
-	{
-		if (!$this->session->userdata('loggedin'))
+	{	
+		// if no user-id passed, assume current user
+		if (empty($user_id))
 		{
-			redirect('auth/login');
+			$user_id = $this->session->userdata('user_id');
 		}
 		
 		$user_id = intval($user_id);
@@ -208,11 +204,6 @@ class Account extends User_Controller {
 
 	public function password($user_id)
 	{
-		if (!$this->session->userdata('loggedin')) 
-		{
-			redirect('auth/login');
-		}
-ep($user_id);
 		$user_id = intval($user_id);
 		$is_admin = $this->session->userdata('is_admin');
 
@@ -225,15 +216,12 @@ ep($user_id);
 		
 		$user = VBX_user::get(array('id' => $user_id));
 		
-ep($user);
-
 		$old_pw = $this->input->post('old_pw');
 		$new_pw = $this->input->post('new_pw1');
 		$new_pw2 = $this->input->post('new_pw2');
 		$this->data['error'] = false;
 		$message = '';
-ep($user->password);
-ep(VBX_User::salt_encrypt($old_pw));
+
 		if($user->password != VBX_User::salt_encrypt($old_pw))
 		{
 			$this->data['error'] = true;
