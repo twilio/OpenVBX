@@ -1,7 +1,7 @@
 <h3>About</h3>
 
 <ul>
-	<li>Current Version: <?php echo OpenVBX::version() ?></li>
+	<li>Current Version: <?php echo $openvbx_version; ?></li>
 <?php if ($this->tenant->id == VBX_PARENT_TENANT): /* if parent tenant */ ?>
 	<li>Schema Version: <?php echo OpenVBX::schemaVersion() ?></li>
 	<li>Latest Schema Available: <?php echo OpenVBX::getLatestSchemaVersion(); ?></li>

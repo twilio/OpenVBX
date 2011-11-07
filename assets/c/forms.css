@@ -213,7 +213,7 @@
 	margin: 0 15px 0 0;
 }
 
-.vbx-form .info {
+.info {
 	background: #ccc;
 	margin: 10px 0;
 	padding: 10px;
@@ -242,8 +242,13 @@
 .vbx-form .info p {
 	margin: 0 0 10px 0;
 }
-.vbx-form .info p:last-child {
+.info p:last-child {
 	margin: 0;
+}
+
+.info.notice {
+	background-color: #FAFAD2;
+	border-color: #FFD700;
 }
 
 #vbx-settings-forms fieldset {

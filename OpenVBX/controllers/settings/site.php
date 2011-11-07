@@ -114,10 +114,18 @@ class Site extends User_Controller
 		$current_settings = $this->get_current_settings();
 		$data = array_merge($data, $current_settings);
 		$data['tenant_mode'] = self::MODE_SINGLE;
+		
+		$data['openvbx_version'] = OpenVBX::version();
 		if($this->tenant->name == 'default')
 		{
 			$data['tenant_mode'] = self::MODE_MULTI;
 			$data['tenants'] = $this->settings->get_all_tenants();
+			$data['latest_version'] = $this->get_latest_tag();
+			
+			if (version_compare($data['openvbx_version'], $data['latest_version'], '<'))
+			{
+				$data['upgrade_notice'] = true;
+			}
 		}
 		else {
 			// allow tenants to see the rewrite setting
@@ -569,5 +577,29 @@ class Site extends User_Controller
 			$available_themes[$theme] = ucwords($theme);
 		}
 		return $available_themes;
+	}
+	
+	public function get_latest_tag()
+	{
+		include_once(APPPATH.'libraries/Github/Autoloader.php');
+		Github_Autoloader::register();
+		
+		$gh = new Github_Client;
+		$tags = $gh->getRepoApi()->getRepoTags('twilio', 'openvbx');
+		
+		$latest = false;
+		
+		if (is_array($tags) && count($tags) > 0)
+		{
+			$list = array_keys($tags);
+			usort($list, array($this, 'version_sort'));
+			$latest = array_pop($list);
+		}
+		
+		return $latest;
+	}
+	
+	public function version_sort($a, $b) {
+		return version_compare($a, $b, '<') ? -1 : version_compare($a, $b, '==') ? 0 : 1;
 	}
 }

@@ -270,7 +270,8 @@ class MY_Controller extends Controller
 			{
 				error_log($e->getMessage());
 				$ci = &get_instance();
-				$ci->session->set_flashdata('error', 'Failed to fetch link information: '.$e->getMessage());
+				$ci->session->set_flashdata('error', 'Failed to fetch link information: '.
+											$e->getMessage());
 			}
 		}
 
@@ -282,36 +283,31 @@ class MY_Controller extends Controller
 		if($logged_in)
 		{
 			$nav['util_links'] = array(
-									   'account' => 'My Account',
-									   'auth/logout' => 'Log Out',
-									   );
+				'account' => 'My Account',
+				'auth/logout' => 'Log Out'
+			);
 
 			if(!empty($plugin_links['util_links']))
 			{
-				$nav['util_links'] = array_merge($nav['util_links'],
-												 $plugin_links['util_links']);
-
+				$nav['util_links'] = array_merge($nav['util_links'], 
+												$plugin_links['util_links']);
 			}
 
 			$nav['setup_links'] = array();
 
 		    $nav['setup_links'] = array(
-								   'devices' => 'Devices',
-								   'voicemail' => 'Voicemail',
-								   );
+				'devices' => 'Devices',
+				'voicemail' => 'Voicemail'
+			);
 
 			if(!empty($plugin_links['setup_links']))
 			{
-				$nav['setup_links'] = array_merge($nav['setup_links'],
-												  $plugin_links['setup_links']);
-
+				$nav['setup_links'] = array_merge($nav['setup_links'], 
+												$plugin_links['setup_links']);
 			}
 
-
 			$nav['log_links'] = array();
-
 			$nav['admin_links'] = array();
-
 			$nav['site_admin_links'] = array();
 
 			if($is_admin)
@@ -328,11 +324,11 @@ class MY_Controller extends Controller
 				}
 
 				$nav['admin_links'] = array(
-										   'flows' => 'Flows',
-										   'numbers' => 'Numbers',
-										   'accounts' => 'Users',
-										   'settings/site' => 'Settings',
-										   );
+					'flows' => 'Flows',
+					'numbers' => 'Numbers',
+					'accounts' => 'Users',
+					'settings/site' => 'Settings'
+				);
 
 				/* Support plugins that used site_admin */
 				if(!empty($plugin_links['site_admin_links']))

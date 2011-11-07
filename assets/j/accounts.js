@@ -290,7 +290,8 @@ $(document).ready(function() {
 		dlgGoogleAppSync.dialog('open');
 	});
 
-	$('.user-edit, .group-edit').livequery('click', function(event) {
+	// $('.user-edit, .group-edit').livequery('click', function(event) {
+	$('.group-edit').livequery('click', function(event) {
 		var container_el = $(this).closest('.group, .user');
 		if(container_el.hasClass('group')) {
 			$.postJSON('accounts/group/get', {	id: container_el.attr('rel') }, showGroupEdit);
