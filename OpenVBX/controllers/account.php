@@ -52,14 +52,22 @@ class Account extends User_Controller {
 
 	public function index()
 	{
-		if (!$this->session->userdata('loggedin')) redirect('auth/login');
+		$this->user($this->user_id);
+	}
 
+	public function user($user_id)
+	{
+		if (!$this->session->userdata('loggedin')) 
+		{
+			redirect('auth/login');
+		}
+		
 		$this->template->add_js('assets/j/account.js');
 		$this->template->add_js('assets/j/devices.js');
 		$this->template->add_js('assets/j/messages.js');
 
 		$data = $this->init_view_data();
-		$user = VBX_user::get(array('id' => $this->user_id));
+		$user = VBX_user::get(array('id' => $user_id));
 		$data['user'] = $user;
 		
 		foreach($this->notifications as $field)
@@ -68,9 +76,9 @@ class Account extends User_Controller {
 			if(!empty($val)) $this->data[$field] = $val;
 		}
 		
-		$numbers = $this->vbx_device->get_by_user($this->user_id);
+		$numbers = $this->vbx_device->get_by_user($user_id);
 		$data['numbers'] = $numbers;
-		$data['devices'] = $this->vbx_device->get_by_user($this->user_id);
+		$data['devices'] = $this->vbx_device->get_by_user($user_id);
 		
 		$voicemail_value = $data['user']->voicemail;
 		$data['voicemail_mode'] = '';
@@ -92,60 +100,120 @@ class Account extends User_Controller {
 			}
 		}
 
+		if ($user_id == $this->session->userdata('user_id'))
+		{
+			$data['account_title'] = 'My Account';
+			$data['content_menu_url'] = null;
+		}
+		else
+		{
+			$data['account_title'] = 'Edit Account: '.$user->full_name();
+			$data['content_menu_url'] = site_url('accounts');
+		}
+
+		if ($err_msg = $this->session->flashdata('error_edit'))
+		{
+			$data['error_edit'] = $err_msg;
+		}
+
+		$data['current_user'] = VBX_User::get($this->session->userdata('user_id'));
+
 		return $this->respond('', 'account', $data);
 	}
 
-	public function edit()
+	public function edit($user_id)
 	{
-		if (!$this->session->userdata('loggedin')) redirect('auth/login');
-
+		if (!$this->session->userdata('loggedin'))
+		{
+			redirect('auth/login');
+		}
+		
+		$user_id = intval($user_id);
 		$is_admin = $this->session->userdata('is_admin');
-		$user = new VBX_User();
-		$params = array();
-		foreach($user->fields as $field) {
+
+		if ($user_id != $this->session->userdata('user_id') && !$is_admin)
+		{
+			$this->session->set_flashdata('message_edit', 'You are not allowed to update'.
+											' other users');
+			redirect('/');
+		}
+		
+		$user = VBX_User::get($user_id);
+		foreach ($user->fields as $field)
+		{
 			$val = $this->input->post($field);
-			/* Disallow people from changing certain settings */
-			if(in_array($field, $user->admin_fields))
+			if (in_array($field, $user->admin_fields))
 			{
-				if(($val || $val === '0') && $is_admin) $params[$field] = $val;
+				if (($val || $val === '0') && $is_admin)
+				{
+					$user->$field = $val;
+				}
 			}
 			else
 			{
-				if($val || $val === '0') $params[$field] = $val;
-			}
-
-			// The value for some fields should also be saved to the session
-			if ($field === 'email')
-			{
-				$this->session->set_userdata('email', trim($val));
+				if ($val || $val === '0')
+				{
+					$user->$field = $val;
+				}
 			}
 		}
 		
-		$success = $user->update($this->user_id, $params);
-
-		if ($this->response_type == 'json') {
+		try {
+			$success = $user->save();
+		}
+		catch (Exception $e) {
+			$error_message = $e->get_message();
+		}
+		
+		if ($this->response_type == 'json')
+		{
+			$failmessage = 'an error occurred while updating the user';
+			$successmessage = 'user status updated';
+			
 			$data = (isset($this->data) ? $this->data : array());
-			$data['json']['error'] = !$success;
-			$data['json']['message'] = (!$success ? 'an error occurred while updating the user' : 'user status updated');
+			$data['json'] = array(
+				'error' => !$success,
+				'message' => (!$success ? $failmessage : $successmessage)
+			);
 			$this->respond('', null, $data);
 		}
-		else {
-			if ($success) {
-				$this->session->set_flashdata('message_edit', 'User data changed');
-				redirect('account');
+		else
+		{
+			if (isset($success) && $success)
+			{
+				$this->session->set_flashdata('message_edit', 'User data updated');
 			}
-			else {
-				$this->data['error_edit'] = '';
-				$this->index();
+			else 
+			{
+				$message = 'Error updating user data';
+				if (isset($error_message))
+				{
+					$message .= ': '.$error_message;
+				}
+				$this->session->set_flashdata('error_edit', $message);
 			}
+			
+			if ($user_id == $this->session->userdata('user_id'))
+			{
+				$redirect_url = 'account';
+			}
+			else
+			{
+				$redirect_url = 'account/user/'.$user->id;
+			}
+			
+			redirect($redirect_url);
 		}
 	}
 
-	public function password()
+	public function password($user_id)
 	{
-		if (!$this->session->userdata('loggedin')) redirect('auth/login');
-
-		$user = VBX_user::get(array('id' => $this->user_id));
+		if (!$this->session->userdata('loggedin')) 
+		{
+			redirect('auth/login');
+		}
+		
+		$user = VBX_user::get(array('id' => $user_id));
 
 		$old_pw = $this->input->post('old_pw');
 		$new_pw = $this->input->post('new_pw1');

@@ -33,7 +33,7 @@
 							}
 						?>" width="30" height="30" />
 						<?php if($user->id != $admin->id): ?>
-						<a class="user-edit" href="#edit"><span class="replace">Edit</span></a>
+						<a class="user-edit" href="<?php echo site_url('/account/user/'.$user->id); ?>"><span class="replace">Edit</span></a>
 						<a class="user-remove" href="#remove"><span class="replace">Remove</span></a>
 						<?php endif; ?>
 					</div>
