@@ -225,7 +225,7 @@
 	-webkit-background-clip: padding-box;
 }
 
-.vbx-form .notice {
+.info.notice {
 	background-color: #FAFAD2;
 	border-color: #FFD700;
 }
