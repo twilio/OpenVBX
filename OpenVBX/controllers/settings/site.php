@@ -116,7 +116,6 @@ class Site extends User_Controller
 		$data['tenant_mode'] = self::MODE_SINGLE;
 		
 		$data['openvbx_version'] = OpenVBX::version();
-		$data['openvbx_version'] = '1.0';
 		if($this->tenant->name == 'default')
 		{
 			$data['tenant_mode'] = self::MODE_MULTI;
