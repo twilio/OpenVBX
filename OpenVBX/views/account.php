@@ -47,6 +47,9 @@
 
 <?php if ($current_user->is_admin && $user->id != $current_user->id): ?>
 		<div id="user-meta" style="clear: both; margin-top: 75px">
+			<p>Only administrators see the information below</p>
+			<hr />
+			
 			<h3>Devices</h3>
 			
 			<table class="vbx-items-grid">

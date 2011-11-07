@@ -135,7 +135,7 @@ $(document).ready(function() {
 		var passwordChanged = function(data, status) {
 			$('#dialog-password .error-message').slideUp(function() {
 				$('#dialog-password .error-message').text(data.message);
-				$('#dialog-password .error-message').slideDown();
+				$('#dialog-password .error-message').slideDown('fast');
 			});
 			
 			if(data.error)
@@ -154,7 +154,7 @@ $(document).ready(function() {
 		var passwordChangeFailed = function(xhr, status, error) {};
 		$.ajax({
 			type: 'POST',
-			url:  OpenVBX.home + '/account/password',
+			url:  $('#dialog-password').attr('action'),
 			data: $('#dialog-password input'),
 			success: passwordChanged,
 			error: passwordChangeFailed,

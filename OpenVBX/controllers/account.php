@@ -212,15 +212,28 @@ class Account extends User_Controller {
 		{
 			redirect('auth/login');
 		}
+ep($user_id);
+		$user_id = intval($user_id);
+		$is_admin = $this->session->userdata('is_admin');
+
+		if ($user_id != $this->session->userdata('user_id') && !$is_admin)
+		{
+			$this->session->set_flashdata('message_edit', 'You are not allowed to update'.
+											' other users');
+			redirect('/');
+		}
 		
 		$user = VBX_user::get(array('id' => $user_id));
+		
+ep($user);
 
 		$old_pw = $this->input->post('old_pw');
 		$new_pw = $this->input->post('new_pw1');
 		$new_pw2 = $this->input->post('new_pw2');
 		$this->data['error'] = false;
 		$message = '';
-
+ep($user->password);
+ep(VBX_User::salt_encrypt($old_pw));
 		if($user->password != VBX_User::salt_encrypt($old_pw))
 		{
 			$this->data['error'] = true;
