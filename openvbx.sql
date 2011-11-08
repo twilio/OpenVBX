@@ -255,6 +255,15 @@ CREATE TABLE IF NOT EXISTS `plugin_store` (
   INDEX(`tenant_id`)
 ) ENGINE=InnoDB CHARSET=UTF8;
 
+DROP TABLE IF EXISTS `cache`;
+CREATE TABLE `cache` (
+  `key` varchar(255) NOT NULL default '',
+  `group` varchar(255) NOT NULL default '',
+  `value` text NOT NULL,
+  `tenant_id` int(11) NOT NULL,
+  PRIMARY KEY  (`key`,`group`,`tenant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 ALTER TABLE settings ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 
 ALTER TABLE user_messages ADD FOREIGN KEY(user_id) REFERENCES users(id);
