@@ -276,7 +276,6 @@ ALTER TABLE users ADD FOREIGN KEY(auth_type) REFERENCES auth_types(id);
 ALTER TABLE groups_users ADD FOREIGN KEY(user_id) REFERENCES users(id);
 ALTER TABLE groups_users ADD FOREIGN KEY(group_id) REFERENCES groups(id);
 
-
 ALTER TABLE flows ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 ALTER TABLE groups ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 ALTER TABLE groups_users ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
@@ -294,7 +293,6 @@ ALTER TABLE annotations ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 ALTER TABLE annotation_types ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 ALTER TABLE flow_store ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 ALTER TABLE plugin_store ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
-
 
 INSERT INTO tenants
 	   (name, url_prefix, local_prefix)
@@ -315,7 +313,6 @@ INSERT INTO auth_types (description, tenant_id)
 	   ('openvbx', 1),
 	   ('google', 1);
 
-
 INSERT INTO settings
 	   (name, value, tenant_id)
 	   VALUES
@@ -332,7 +329,6 @@ INSERT INTO settings
 	   ('numbers_country', 'US', 1),
 	   ('gravatars', 0, 1),
 	   ('connect_application_sid', 0, 1);
-
 
 INSERT INTO groups
        (name, is_active, tenant_id)
