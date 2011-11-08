@@ -110,9 +110,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `auth_type` TINYINT NOT NULL default 1,
   `voicemail` TEXT NOT NULL,
   `tenant_id` BIGINT(20) NOT NULL,
-  `last_seen` datetime DEFAULT NULL,
-  `last_login` datetime DEFAULT NULL,
-  `online` TINYINT(1) NOT NULL DEFAULT 9,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `email` (`email`, `tenant_id`),
   INDEX(`tenant_id`)

@@ -30,6 +30,9 @@ class Logout extends MY_Controller
 		$this->config->load('openvbx');
 		$this->load->database();
 
+		$ci =& get_instance();
+		$ci->cache->enabled(false);
+		
 		$this->user_id = $this->session->userdata('user_id');
 	}
 

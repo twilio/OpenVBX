@@ -25,6 +25,8 @@ class Connect extends MY_Controller
 	{
 		parent::__construct();
 		$this->section = 'connect';
+		$ci =& get_instance();
+		$ci->cache->enabled(false);
 	}
 	
 	/**
