@@ -324,7 +324,7 @@ INSERT INTO settings
 	   VALUES
 	   ('dash_rss', '', 1),
 	   ('theme', '', 1),
-	   ('version', '1.1.1', 1),
+	   ('version', '1.1.2b-object-cache', 1),
 	   ('iphone_theme', '', 1),
 	   ('enable_sandbox_number', 1, 1),
 	   ('twilio_endpoint', 'https://api.twilio.com/2010-04-01', 1),

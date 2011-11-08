@@ -1,4 +1,4 @@
-<script type="text/javascript"> // IFRAMES! GAH!
+<script type="text/javascript">
 if (window != window.top) { window.top.location = window.location; }
 </script>
 <div class="<?php echo $layout ?>">
