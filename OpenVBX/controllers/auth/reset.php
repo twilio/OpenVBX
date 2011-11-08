@@ -43,15 +43,20 @@ class Reset extends MY_Controller
 	public function set_password($invite_code = '')
 	{
 		if(empty($invite_code))
+		{
 			return redirect('auth/login');
+		}
 
-
-		$user = VBX_User::get(array('is_active' => 1,
-									'invite_code' => $invite_code));
+		$user = VBX_User::get(array(
+			'is_active' => 1,
+			'invite_code' => $invite_code
+		));
 
 		if(!$user)
+		{
 			return redirect('auth/login');
-
+		}
+		
 		$data = array('invite_code' => $invite_code);
 
 		if(isset($_POST['password']))
@@ -60,7 +65,8 @@ class Reset extends MY_Controller
 			{
 				$user->set_password($_POST['password'], $_POST['confirm']);
 				return redirect('auth/login');
-			} catch(VBX_UserException $e) {
+			}
+			catch(VBX_UserException $e) {
 				$data['error'] = $e->getMessage();
 				$this->session->set_flashdata($e->getMessage());
 			}
@@ -81,14 +87,14 @@ class Reset extends MY_Controller
 			return $this->respond('', 'reset', $data, 'login-wrapper', 'layout/login');
 		}
 
-		$user = VBX_User::get(array('email' => $this->input->post('email'),
-									'is_active' => 1,
-									));
+		$user = VBX_User::get(array(
+			'email' => $this->input->post('email'),
+			'is_active' => 1,
+		));
+		
 		if(empty($user))
 		{
-			$this->session->set_flashdata('error',
-										  'No active account found.');
-
+			$this->session->set_flashdata('error', 'No active account found.');
 			return redirect('auth/reset');
 		}
 

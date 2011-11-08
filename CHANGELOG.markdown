@@ -1,5 +1,11 @@
 # OpenVBX Change Log
 
+## Next
+
+- changed user edit screens to always use dedicated page instead of a popup
+- fixing password length bug and updating to use bcrypt per [Mozilla Password Storage recommendations](https://wiki.mozilla.org/WebAppSec/Secure_Coding_Guidelines#Password_Storage)
+
+
 ## OpenVBX 1.1.2
 
 - fixed issue with normal numbers in Dial applet
