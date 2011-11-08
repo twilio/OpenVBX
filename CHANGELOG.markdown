@@ -1,5 +1,10 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.1.2
+
+- fixed issue with normal numbers in Dial applet
+- attempt to fix issue with a rare logout redirect that lands a sub-tenant user on the parent-tenant's login page
+
 
 ## OpenVBX 1.1.1
 
