@@ -145,11 +145,15 @@ class VBX_Flow extends MY_Model {
 
 		try
 		{
+			// we also need to make sure that the flow store cache is nuked
+			$ci =& get_instance();
+			$ci->cache->invalidate('VBX_Flow_Store', $ci->tenant->id);
 			return parent::save($force_update);
 		}
 		catch(MY_ModelDuplicateException $e)
 		{
-			throw new VBX_FlowException("A flow already exists by the name \"{$this->values['name']}\"");
+			throw new VBX_FlowException('A flow already exists by the name "'.
+										$this->values['name'].'"');
 		}
 		catch(MY_ModelException $e)
 		{

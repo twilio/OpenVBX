@@ -103,9 +103,6 @@ class VBX_Device extends MY_Model
 
 		$device->save();
 		
-		$ci =& get_instance(); 
-		$ci->cache->flush();
-		
 		return $device->id;
 	}
 

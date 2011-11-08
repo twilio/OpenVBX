@@ -1,10 +1,17 @@
 <?php
 
+/*
+| -------------------------------------------------------------------
+| OpenVBX Cache
+| -------------------------------------------------------------------
+| Define the cache settings for the OpenVBX Caches
+|
+*/
+
 /**
  * Enable/disable the cache system
- * By default we are enabled and let the system choose the correct type
  */
-$config['cache']['cache_enabled'] = false;
+$config['cache']['cache_enabled'] = true;
 
 /**
  * Currently supported caches:

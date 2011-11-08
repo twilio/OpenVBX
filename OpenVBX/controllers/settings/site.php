@@ -451,15 +451,17 @@ class Site extends User_Controller
 
 						// default, sub-account
 						$sub_account = $accounts->create(array(
-															'FriendlyName' => $friendlyName
-														));
+														'FriendlyName' => $friendlyName
+													));
 
 						$tenant_sid = $sub_account->sid;
 						$tenant_token = $sub_account->auth_token;
 						$this->settings->add('twilio_sid', $tenant_sid, $data['id']);
 						$this->settings->add('twilio_token', $tenant_token, $data['id']);
 						
-						$app_sid = $this->create_application_for_subaccount($data['id'], $tenant['url_prefix'], $tenant_sid);
+						$app_sid = $this->create_application_for_subaccount($data['id'], 
+													$tenant['url_prefix'], 
+													$tenant_sid);
 						$this->settings->add('application_sid', $app_sid, $data['id']);
 					}
 					catch (Exception $e) {
@@ -508,7 +510,8 @@ class Site extends User_Controller
 				error_log($e->getMessage());
 				$this->db->trans_rollback();
 				// TODO: rollback in twilio.
-				$this->session->set_flashdata('error', 'Failed to add new tenant: '.$e->getMessage());
+				$this->session->set_flashdata('error', 'Failed to add new tenant: '.
+												$e->getMessage());
 				$data['error'] = true;
 				$data['message'] = $e->getMessage();
 			}
@@ -579,8 +582,21 @@ class Site extends User_Controller
 		return $available_themes;
 	}
 	
+	/**
+	 * Get the latest available tag from Github
+	 * Latest tag == latest released version
+	 * 
+	 * Does not account for beta or alpha versions (which we haven't ever tagged)
+	 *
+	 * @return string
+	 */
 	public function get_latest_tag()
 	{
+		if ($cache = $this->api_cache->get('latest_version', 'Site', $this->tenant->id))
+		{
+			return $cache;
+		}
+		
 		include_once(APPPATH.'libraries/Github/Autoloader.php');
 		Github_Autoloader::register();
 		
@@ -595,6 +611,8 @@ class Site extends User_Controller
 			usort($list, array($this, 'version_sort'));
 			$latest = array_pop($list);
 		}
+		
+		$this->api_cache->set('latest_version', $latest, 'Site', $this->tenant->id);
 		
 		return $latest;
 	}

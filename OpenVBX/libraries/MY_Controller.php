@@ -28,7 +28,7 @@ require_once BASEPATH . '../OpenVBX/libraries/Plugin.php';
 require_once BASEPATH . '../OpenVBX/libraries/AppletUI.php';
 require_once BASEPATH . '../OpenVBX/libraries/OpenVBX.php';
 require_once BASEPATH . '../OpenVBX/libraries/PluginData.php';
-#require_once BASEPATH . '../OpenVBX/libraries/PluginStore.php'; // Deprecating in 0.75
+#require_once BASEPATH . '../OpenVBX/libraries/PluginStore.php'; // Deprecated in 0.75
 require_once BASEPATH . '../OpenVBX/libraries/FlowStore.php';
 require_once BASEPATH . '../OpenVBX/libraries/AppletInstance.php';
 require_once BASEPATH . '../OpenVBX/libraries/Caches/Abstract.php';
@@ -57,7 +57,8 @@ class MY_Controller extends Controller
 	{
 		parent::__construct();
 
-		if(!file_exists(APPPATH . 'config/openvbx.php') || !file_exists(APPPATH . 'config/database.php'))
+		if(!file_exists(APPPATH.'config/openvbx.php') || 
+				!file_exists(APPPATH.'config/database.php'))
 		{
 			redirect('install');
 		}
@@ -73,7 +74,7 @@ class MY_Controller extends Controller
 		$this->load->model('vbx_group');
 		$this->load->model('vbx_flow');
 		$this->load->model('vbx_flow_store');
-		$this->load->model('vbx_plugin_store');
+		// $this->load->model('vbx_plugin_store');
 		$this->load->helper('file');
 		$this->load->helper('twilio');
 		$this->load->library('session');
@@ -104,7 +105,8 @@ class MY_Controller extends Controller
 		$this->testing_mode = !empty($_REQUEST['vbx_testing_key'])? $_REQUEST['vbx_testing_key'] == $this->config->item('testing-key') : false;
 		if($this->tenant)
 		{
-			$this->config->set_item('sess_cookie_name', $this->tenant->id . '-' . $this->config->item('sess_cookie_name'));
+			$this->config->set_item('sess_cookie_name', $this->tenant->id.'-'. 
+										$this->config->item('sess_cookie_name'));
 			
 			$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
 			$token_from = ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT ? VBX_PARENT_TENANT : $this->tenant->id);

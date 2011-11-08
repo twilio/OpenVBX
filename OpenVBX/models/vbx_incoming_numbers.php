@@ -225,7 +225,7 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 
-		$this->clear_cache('incoming-numbers');
+		$this->clear_cache();
 		return TRUE;
 	}
 
@@ -259,9 +259,9 @@ class VBX_Incoming_numbers extends Model
 		
 		try {
 			$account = OpenVBX::getAccount();
-			// purchase tollfree, uses AvailablePhoneNumbers to search first.
 			if(!$is_local) 
 			{
+				// toll-free
 				$numbers = $account->available_phone_numbers
 													->getTollFree($country)
 													->getList();
@@ -278,6 +278,7 @@ class VBX_Incoming_numbers extends Model
 			}
 			else 
 			{ 
+				// local
 				$search_params = array();
 				if (!empty($area_code))
 				{
@@ -312,7 +313,7 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 
-		$this->clear_cache('incoming-numbers');
+		$this->clear_cache();
 		return $this->parseIncomingPhoneNumber($number);
 	}
 
@@ -333,21 +334,13 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 	
-		$this->clear_cache('incoming-numbers');
+		$this->clear_cache();
 		return TRUE;
 	}
 
 	protected function clear_cache()
 	{
-		$keys = func_get_args();
 		$ci =& get_instance();
-		
-		if (!empty($keys))
-		{
-			foreach ($keys as $key)
-			{
-				$ci->api_cache->delete($key, __CLASS__, $ci->tenant->id);
-			}
-		}
+		$ci->api_cache->invalidate(__CLASS__, $ci->tenant->id);
 	}
 }

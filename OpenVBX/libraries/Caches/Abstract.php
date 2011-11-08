@@ -10,7 +10,7 @@ abstract class OpenVBX_Cache_Abstract
 	{	
 		if (isset($options['cache_enabled']))
 		{
-			$this->enabled = (bool) $options['enabled'];
+			$this->enabled = (bool) $options['cache_enabled'];
 		}
 		if (isset($options['default_expires']))
 		{
@@ -103,11 +103,21 @@ abstract class OpenVBX_Cache_Abstract
 		$settings = $ci->config->item('cache');
 		
 		$type = !empty($type) ? $type : $settings['cache_type'];
-		
+				
 		$options = array(
-			'default_expires' => $settings['default_expires']
+			'default_expires' => 3600,
+			'cache_enabled' => true
 		);
 		
+		// import settings to be passed to cache object
+		foreach ($options as $key => $value)
+		{
+			if (!empty($settings[$key]))
+			{
+				$options[$key] = $settings[$key];
+			}
+		}
+				
 		$basepath = APPPATH.'/libraries/caches/';
 
 		switch (true)
@@ -119,7 +129,7 @@ abstract class OpenVBX_Cache_Abstract
 			case $type == 'memcache' && class_exists('Memcache'):
 				require_once($basepath.'Memcache.php');
 				$class = 'OpenVBX_Cache_Memcache';
-				$options = $settings['memcached_settings'];
+				$options = $settings['memcache'];
 				break;
 			case $type == 'db':
 				require_once($basepath.'DB.php');

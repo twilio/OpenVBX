@@ -26,16 +26,16 @@ class VBX_Audio_File extends MY_Model
 	protected static $__CLASS__ = __CLASS__;
 	public $table = 'audio_files';
 	public $fields = array(
-		'id',
-		'label',
-		'user_id',
-		'url',
-		'recording_call_sid',
-		'tag',
-		'cancelled',
-		'created',
-		'updated'
-	);
+						'id',
+						'label',
+						'user_id',
+						'url',
+						'recording_call_sid',
+						'tag',
+						'cancelled',
+						'created',
+						'updated'
+					);
 
 	public function __construct($object = null)
 	{

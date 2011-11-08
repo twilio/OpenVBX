@@ -70,6 +70,8 @@ class VBX_Settings extends Model
 		$this->cache_key = 'settings';
 	}
 
+// Tenants
+
 	function get_all_tenants()
 	{
 		$ci =& get_instance();
@@ -104,7 +106,7 @@ class VBX_Settings extends Model
 			 ->from($this->tenants_table)
 			 ->where('url_prefix', strtolower($url_prefix))
 			 ->get();
-
+			
 		if ($query) 
 		{
 			$tenant = $query->result();
@@ -129,13 +131,15 @@ class VBX_Settings extends Model
 		$ci =& get_instance();
 
 		$tenant = $ci->db
-			 ->from('tenants as i')
-			 ->where('i.name', $name)
-			 ->get()->result();
+			->from('tenants as i')
+			->where('i.name', $name)
+			->get()->result();
 
 		if(!empty($tenant[0]))
+		{
 			return $tenant[0];
-
+		}
+		
 		return false;
 	}
 
@@ -149,9 +153,9 @@ class VBX_Settings extends Model
 		}
 
 		$tenant = $ci->db
-			 ->from($this->tenants_table)
-			 ->where('id', $id)
-			 ->get()->result();
+			->from($this->tenants_table)
+			->where('id', $id)
+			->get()->result();
 
 		if(!empty($tenant[0]))
 		{
@@ -202,11 +206,14 @@ class VBX_Settings extends Model
 				->set('url_prefix', $url_prefix)
 				->set('local_prefix', $local_prefix)
 				->insert($this->tenants_table);
+			
 			$tenant_id = $ci->db->insert_id();
 			if(!$tenant_id)
 			{
 				throw new VBX_SettingsException('Tenant failed to create');
 			}
+			
+			$this->cache->invalidate('tenants');
 			
 			return $tenant_id;
 		}
@@ -244,8 +251,7 @@ class VBX_Settings extends Model
 		{
 			if(isset($tenant[$param]))
 			{
-				$ci->db
-					->set($param, $tenant[$param]);
+				$ci->db->set($param, $tenant[$param]);
 			}
 		}
 
@@ -253,11 +259,12 @@ class VBX_Settings extends Model
 			->where('id', $tenant['id'])
 			->update($this->tenants_table);
 			
-		$ci->cache->set($tenant['url_prefix'], $tenant, 'tenants', VBX_PARENT_TENANT);
-		$ci->cache->set($tenant['id'], $tenant, 'tenants', VBX_PARENT_TENANT);
+		$this->cache->invalidate('tenants');
 			
 		return $ret;
 	}
+
+// Settings
 
 	function add($name, $value, $tenant_id)
 	{
@@ -268,13 +275,16 @@ class VBX_Settings extends Model
 			return false;
 		}
 
-		if($this->get($name, $tenant_id) !== false) {
+		if($this->get($name, $tenant_id) !== false) 
+		{
 			$ci->db
 				->set('value', $value)
 				->where('name', $name)
 				->where('tenant_id', $tenant_id)
 				->update($this->settings_table);
-		} else {
+		} 
+		else 
+		{
 			$ci->db
 				->set('name', $name)
 				->set('value', $value)
@@ -282,10 +292,9 @@ class VBX_Settings extends Model
 				->insert($this->settings_table);
 		}
 
-		$ci->cache->set($name, $value, __CLASS__, $tenant_id);
-		
-		return $ci->db
-			->insert_id();
+		$ci->cache->invalidate(__CLASS__, $tenant_id);	
+			
+		return $ci->db->insert_id();
 	}
 
 	function set($name, $value, $tenant_id)
@@ -303,10 +312,9 @@ class VBX_Settings extends Model
 			->where('tenant_id', $tenant_id)
 			->update($this->settings_table);
 
-		$ci->cache->delete($name, __CLASS__, $tenant_id);
-
-		return ($ci->db
-				->affected_rows() > 0? true : false);
+		$ci->cache->invalidate(__CLASS__, $tenant_id);
+		
+		return ($ci->db->affected_rows() > 0? true : false);
 	}
 
 	function get($name, $tenant_id)
@@ -314,7 +322,8 @@ class VBX_Settings extends Model
 		$cache_key = $name;
 		
 		$ci =& get_instance();
-		if ($cache = $ci->cache->get($name, __CLASS__, $tenant_id)) {
+		if ($cache = $ci->cache->get($name, __CLASS__, $tenant_id)) 
+		{
 			return $cache->value;
 		}
 
@@ -357,8 +366,8 @@ class VBX_Settings extends Model
 					))
 					->delete($this->settings_table);
 		
-		$ci->cache->delete($name, __CLASS__, $tenant_id);
-
+		$ci->cache->invalidate(__CLASS__, $tenant_id);
+		
 		return ($ci->db->affected_rows() > 0 ? true : false);
 	}
 

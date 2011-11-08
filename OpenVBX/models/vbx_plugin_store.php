@@ -32,8 +32,16 @@ class VBX_Plugin_Store extends MY_Model
 	var $error_prefix = '';
 	var $error_suffix = '';
 	
-	public $fields = array('key', 'value', 'plugin_id');
-	public $natural_keys = array('key', 'plugin_id');
+	public $fields = array(
+						'key', 
+						'value', 
+						'plugin_id'
+					);
+					
+	public $natural_keys = array(
+							'key', 
+							'plugin_id'
+						);
 	
 	function __construct($object = null)
 	{
