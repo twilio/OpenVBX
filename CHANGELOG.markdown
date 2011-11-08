@@ -3,7 +3,6 @@
 ## Next
 
 - changed user edit screens to always use dedicated page instead of a popup
-- fixing password length bug and updating to use bcrypt per [Mozilla Password Storage recommendations](https://wiki.mozilla.org/WebAppSec/Secure_Coding_Guidelines#Password_Storage)
 - Includes an object caching layer supporting the following mechanisms:
 	- local (per page load memory cache)
 	- Database
@@ -12,7 +11,6 @@
 - Includes an API cache that uses the database to cache API results from Twilio
 - Cleans most models for code consistency
 - Moves user `last_seen`, `online` & `last_login` to be user settings
-
 
 ## OpenVBX 1.1.2
 
