@@ -59,6 +59,10 @@ try {
 					$dialer->noanswer();
 				}
 			}
+			elseif ($dialer->dial_whom_selector === 'number')
+			{
+				$dialer->dial($dialer->dial_whom_number);
+			}
 			break;
 	}
 }
