@@ -12,11 +12,6 @@
 - Cleans most models for code consistency
 - Moves user `last_seen`, `online` & `last_login` to be user settings
 
-## OpenVBX 1.1.2
-
-- fixed issue with normal numbers in Dial applet
-- attempt to fix issue with a rare logout redirect that lands a sub-tenant user on the parent-tenant's login page
-
 
 ## OpenVBX 1.1.2
 
