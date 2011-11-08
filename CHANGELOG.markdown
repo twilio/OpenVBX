@@ -1,6 +1,17 @@
 # OpenVBX Change Log
 
 
+## Next
+- Includes an object caching layer supporting the following mechanisms:
+	- local (per page load memory cache)
+	- Database
+	- APC
+	- Memcache
+- Includes an API cache that uses the database to cache API results from Twilio
+- Cleans most models for code consistency
+- Moves user `last_seen`, `online` & `last_login` to be user settings
+
+
 ## OpenVBX 1.1.2
 
 - fixed issue with normal numbers in Dial applet
