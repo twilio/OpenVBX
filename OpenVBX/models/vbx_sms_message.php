@@ -57,8 +57,8 @@ class VBX_Sms_message extends Model {
 		$page_cache = 'messages-'.$offset.'-'.$page_size;
 		$total_cache = 'messages-total';
 
-		if ($cache = $ci->cache->get($page_cache, __CLASS__, $tenant_id) &&
-			$cache_total = $ci->cache->get($total_cache, __CLASS__, $tenant_id))
+		if ($cache = $ci->api_cache->get($page_cache, __CLASS__, $tenant_id) &&
+			$cache_total = $ci->api_cache->get($total_cache, __CLASS__, $tenant_id))
 		{
 			$this->total = $cache_total;
 			return $cache;
@@ -85,8 +85,8 @@ class VBX_Sms_message extends Model {
 			throw new VBX_Sms_messageException($e->getMessage());
 		}
 
-		$ci->cache->set($page_cache, $output, __CLASS__, $tenant_id, self::CACHE_TIME_SEC);
-		$ci->cache->set($total_cache, $this->total, __CLASS__, $tenant_id, self::CACHE_TIME_SEC);
+		$ci->api_cache->set($page_cache, $output, __CLASS__, $tenant_id, self::CACHE_TIME_SEC);
+		$ci->api_cache->set($total_cache, $this->total, __CLASS__, $tenant_id, self::CACHE_TIME_SEC);
 
 		return $output;
 	}

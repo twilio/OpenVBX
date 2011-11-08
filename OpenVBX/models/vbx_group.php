@@ -214,8 +214,12 @@ class VBX_Group extends MY_Model {
 	{
 		$this->remove_all_users($this->id);
 		$this->set_active($this->id, false);
-		$ci =& get_instance();
-		$ci->cache->invalidate(__CLASS__, $ci->tenant->id);
+		
+		if (self::$caching)
+		{
+			$ci =& get_instance();
+			$ci->cache->invalidate(__CLASS__, $ci->tenant->id);
+		}
 	}
 
 	function remove_all_users($group_id)

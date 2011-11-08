@@ -73,7 +73,11 @@ class MY_Model extends Model
 				$this->tenant_id = $this->values['tenant_id'] = $object->tenant_id;
 			}
 		}
-
+		
+		if (!$ci->cache)
+		{
+			self::$caching = false;
+		}
 	}	   
 
 	static function search($class,
@@ -262,7 +266,9 @@ class MY_Model extends Model
 	function update($id, $params)
 	{
 		if(empty($params))
+		{
 			return true;
+		}
 			
 		$this->set_fields($params);
 		$ci = &get_instance();

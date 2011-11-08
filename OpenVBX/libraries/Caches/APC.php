@@ -66,13 +66,11 @@ class OpenVBX_Cache_APC extends OpenVBX_Cache_Abstract
 	{
 		$_ggroup = $this->_generation_keyname($group, $tenant_id);
 		$generation = apc_inc($_ggroup, 1, $success);
-		ep($_ggroup, $generation, $success, __METHOD__);
 		if (!$success)
 		{
 			apc_store($_ggroup, 0);
 			$generation = 0;
 		}
-		ep($group, $generation, __METHOD__);
 		return $generation;
 	}
 		

@@ -146,8 +146,11 @@ class VBX_Flow extends MY_Model {
 		try
 		{
 			// we also need to make sure that the flow store cache is nuked
-			$ci =& get_instance();
-			$ci->cache->invalidate('VBX_Flow_Store', $ci->tenant->id);
+			if (self::$caching)
+			{
+				$ci =& get_instance();
+				$ci->cache->invalidate('VBX_Flow_Store', $ci->tenant->id);
+			}
 			return parent::save($force_update);
 		}
 		catch(MY_ModelDuplicateException $e)

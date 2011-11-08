@@ -31,14 +31,13 @@ class Install extends Controller {
 	private $account;
 	protected $min_php_version = MIN_PHP_VERSION;
 
-	function Install()
+	public function __construct()
 	{
 		parent::Controller();
 		if(file_exists(APPPATH . 'config/openvbx.php')) $this->config->load('openvbx');
 
 		if(file_exists(APPPATH . 'config/database.php') AND version_compare(PHP_VERSION, $this->min_php_version, '>=')) {
 			$this->load->database();
-
 			redirect('');
 		}
 
@@ -96,13 +95,12 @@ class Install extends Controller {
 
 	private function run_tests()
 	{
-
 		$this->tests = array();
 		$this->pass = TRUE;
 
 		$this->add_test(version_compare(PHP_VERSION, $this->min_php_version, '>='),
 						'PHP Version',
-						PHP_VERSION,
+						'Supported: '.PHP_VERSION,
 						'You must be running at least PHP '.$this->min_php_version.'; you are using ' . PHP_VERSION);
 
 		$this->add_test(function_exists('mysql_connect'),
@@ -125,6 +123,12 @@ class Install extends Controller {
 						'supported',
 						'missing, but optional',
 						false);
+						
+		$this->add_test(extension_loaded('memcache'),
+						'Memcache',
+						'supported',
+						'missing, but optional',
+						false);
 
 		$this->add_test(function_exists('json_encode'),
 						'JSON',
@@ -134,7 +138,7 @@ class Install extends Controller {
 		$apache_version = function_exists('apache_get_version')? apache_get_version() : '';
 		$this->add_test(function_exists('apache_request_headers'),
 						'Apache Version',
-						preg_replace('/[^0-9.]/', '', $apache_version),
+						$apache_version,
 						'missing, but optional',
 						false);
 
