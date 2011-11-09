@@ -295,11 +295,14 @@ class Site extends User_Controller
 					{
 						try {
 							$application = $account->applications->get($app['app_sid']);
-							$application->update(array_merge($app['params'], array('FriendlyName' => $application->friendly_name)));
+							$application->update(array_merge($app['params'], array(
+												'FriendlyName' => $application->friendly_name
+											)));
 						}
 						catch (Exception $e) {
-							$this->session->set_flashdata('error', 'Could not update Application: '.$e->getMessage());
-							throw new SiteException($e->getMessage());
+							$this->session->set_flashdata('error', 'Could not update Application: '.
+															$e->getMessage());
+							throw new SiteException($e->getMessage(), $e->getCode());
 						}
 					}					
 				}
