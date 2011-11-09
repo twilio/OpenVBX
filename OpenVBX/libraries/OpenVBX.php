@@ -201,19 +201,39 @@ class OpenVBX {
 	}
 
 	/* Returns the version from the php software on the server */
-	public static function version()
+	public static function version($cache = true)
 	{
 		$ci =& get_instance();
 		$ci->load->model('vbx_settings');
-		return $ci->vbx_settings->get('version', VBX_PARENT_TENANT);
+		if (!$cache && $ci->cache->enabled())
+		{
+			$ci->cache->enabled(false);
+			$reenable_cache = true;
+		}
+		$val = $ci->vbx_settings->get('version', VBX_PARENT_TENANT);
+		if ($reenable_cache)
+		{
+			$ci->cache->enabled(true);
+		}
+		return $val;
 	}
 
 	/* Returns the version of the database schema */
-	public static function schemaVersion()
+	public static function schemaVersion($cache = true)
 	{
 		$ci =& get_instance();
 		$ci->load->model('vbx_settings');
-		return $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
+		if (!$cache && $ci->cache->enabled())
+		{
+			$ci->cache->enabled(false);
+			$reenable_cache = true;
+		}
+		$val = $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
+		if ($reenable_cache)
+		{
+			$ci->cache->enabled(true);
+		}
+		return $val;
 	}
 
 	/* Returns the latest version of the schema on the server,
@@ -339,7 +359,8 @@ class OpenVBX {
 	public static function validateRequest($url = false, $post_vars = false) 
 	{
 		$ci =& get_instance();
-		if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) {
+		if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) 
+		{
 			return true;
 		}
 		

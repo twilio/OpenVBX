@@ -154,6 +154,14 @@ class Account extends User_Controller {
 			}
 		}
 		
+		if ($settings = $this->input->post('settings'))
+		{
+			foreach ($settings as $key => $value)
+			{
+				$user->setting_set($key, $value);
+			}
+		}
+		
 		try {
 			$success = $user->save();
 		}
@@ -215,7 +223,7 @@ class Account extends User_Controller {
 		}
 		
 		$user = VBX_user::get(array('id' => $user_id));
-		
+
 		$old_pw = $this->input->post('old_pw');
 		$new_pw = $this->input->post('new_pw1');
 		$new_pw2 = $this->input->post('new_pw2');

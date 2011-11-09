@@ -83,7 +83,6 @@ class User_Controller extends MY_Controller
 		{
 			$expected_signature = VBX_User::signature($user_id);
 			$actual_signature = $this->session->userdata('signature');
-
 			if ($expected_signature != $actual_signature)
 			{
 				$this->session->set_flashdata('error', 'Your session has expired');
@@ -152,7 +151,7 @@ class User_Controller extends MY_Controller
 
 	private function upgrade_check()
 	{
-		$currentSchemaVersion = OpenVBX::schemaVersion();
+		$currentSchemaVersion = OpenVBX::schemaVersion(false);
 		$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
 		if($currentSchemaVersion != $upgradingToSchemaVersion)
 		{

@@ -63,9 +63,13 @@ abstract class OpenVBX_Cache_Abstract
 		return $this->_flush();
 	}
 	
-	public function enabled($enabled)
+	public function enabled($enabled = null)
 	{
-		$this->enabled = (bool) $enabled;
+		if (is_bool($enabled))
+		{
+			$this->enabled = $enabled;
+		}
+		return $this->enabled;
 	}
 	
 	protected function _tenantize_group($group, $tenant_id)
@@ -102,22 +106,22 @@ abstract class OpenVBX_Cache_Abstract
 		$ci->config->load('cache');
 		$settings = $ci->config->item('cache');
 		
-		$type = !empty($type) ? $type : $settings['cache_type'];
+		$type = (!empty($type) ? $type : $settings['cache_type']);
 				
 		$options = array(
 			'default_expires' => 3600,
 			'cache_enabled' => true
 		);
-		
+
 		// import settings to be passed to cache object
 		foreach ($options as $key => $value)
 		{
-			if (!empty($settings[$key]))
+			if (isset($settings[$key]))
 			{
 				$options[$key] = $settings[$key];
 			}
 		}
-				
+
 		$basepath = APPPATH.'/libraries/caches/';
 
 		switch (true)

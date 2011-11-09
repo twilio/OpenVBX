@@ -10,6 +10,13 @@ class OpenVBX_Cache_DB extends OpenVBX_Cache_Abstract
 		parent::__construct($options);
 		$ci =& get_instance();
 		$this->_db = $ci->db;
+		
+		if (!$this->_db->table_exists('cache'))
+		{
+			// you'll see this error once when upgrading from non-cache enabled builds
+			log_message('error', 'Cache table does not exist. Disabling cache.');
+			parent::enabled(false);
+		}
 	}
 	
 	protected function _get($key, $group = null, $tenant_id)
@@ -89,7 +96,6 @@ class OpenVBX_Cache_DB extends OpenVBX_Cache_Abstract
 	
 	protected function _flush()
 	{
-		$this->_db
-			->truncate($this->_table);
+		$this->_db->truncate($this->_table);
 	}
 }

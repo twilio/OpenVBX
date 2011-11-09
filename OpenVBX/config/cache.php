@@ -21,7 +21,7 @@ $config['cache']['cache_enabled'] = true;
  * 
  * @todo auto-detect cache availability
  */
-$config['cache']['cache_type'] = 'apc';
+$config['cache']['cache_type'] = 'memory';
 
 /**
  * Default expiration time for cached items

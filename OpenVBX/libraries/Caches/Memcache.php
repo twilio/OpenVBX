@@ -13,7 +13,14 @@ class OpenVBX_Cache_Memcache extends OpenVBX_Cache_Abstract
 	public function __construct($options)
 	{
 		parent::__construct($options);
-				
+		
+		if (!extension_loaded('memcache'))
+		{
+			log_message('error', 'Memcache extension not loaded. Disabling cache.');
+			parent::enabled(false);
+			return false;
+		}
+		
 		$this->_cache = new Memcache;
 		
 		if (!empty($options['memcache']['servers']))
@@ -35,21 +42,28 @@ class OpenVBX_Cache_Memcache extends OpenVBX_Cache_Abstract
 	
 	private function _connect()
 	{
-		$this->_cache->connect($this->server, $this->port);
-		if (method_exists($this->_cache, 'addServer') && !empty($this->extra_servers))
+		if ($this->_cache->connect($this->server, $this->port))
 		{
-			foreach ($this->extra_servers as $server)
+			if (method_exists($this->_cache, 'addServer') && !empty($this->extra_servers))
 			{
-				$port = $this->port;
-
-				// detect port, only supports IP addresses
-				if (strpos($server, ':'))
+				foreach ($this->extra_servers as $server)
 				{
-					list($server, $port) = explode(':', $server);
-				}
+					$port = $this->port;
+
+					// detect port, only supports IP addresses
+					if (strpos($server, ':'))
+					{
+						list($server, $port) = explode(':', $server);
+					}
 				
-				$memcache->addServer($server, $port);
+					$memcache->addServer($server, $port);
+				}
 			}
+		}
+		else
+		{
+			parent::enabled(false);
+			log_message('error', 'Could not connect to Memcache server. Disabling cache.');
 		}
 	}
 	

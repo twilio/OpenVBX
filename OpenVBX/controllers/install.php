@@ -34,13 +34,25 @@ class Install extends Controller {
 	public function __construct()
 	{
 		parent::Controller();
-		if(file_exists(APPPATH . 'config/openvbx.php')) $this->config->load('openvbx');
+		if(file_exists(APPPATH . 'config/openvbx.php'))
+		{
+			$this->config->load('openvbx');
+		}
 
-		if(file_exists(APPPATH . 'config/database.php') AND version_compare(PHP_VERSION, $this->min_php_version, '>=')) {
+		if(file_exists(APPPATH . 'config/database.php') 
+			AND version_compare(PHP_VERSION, $this->min_php_version, '>=')) 
+		{
 			$this->load->database();
 			redirect('');
 		}
-
+		
+		// cache is evil when not handled properly, assume the 
+		// possibility that we're being reinstalled so lets clear 
+		// any possibly lingering cache artifacts
+		$this->cache = OpenVBX_Cache_Abstract::load();
+		$this->cache->enabled(true);
+		$this->cache->flush();
+		$this->cache->enabled(false);
 	}
 
 	private function input_args()
@@ -502,10 +514,15 @@ class Install extends Controller {
 					break;
 				}
 			}
-
+			
+			$site_url = site_url();
+			if ($settings['rewrite_enabled']) {
+				$site_url = str_replace('/index.php', '', $site_url);
+			}
+			
 			$params = array(
 				'FriendlyName' => $app_name,
-				'VoiceUrl' => site_url('twiml/dial'),
+				'VoiceUrl' => $site_url.'/twiml/dial',
 				'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
 				'VoiceMethod' => 'POST',
 				'SmsUrl' => '',

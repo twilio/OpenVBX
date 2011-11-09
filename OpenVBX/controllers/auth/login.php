@@ -31,6 +31,7 @@ class Login extends MY_Controller
 		$this->load->database();
 		$this->template->write('title', '');
 		
+		// no cache
 		$ci =& get_instance();
 		$ci->cache->enabled(false);
 
@@ -116,7 +117,7 @@ class Login extends MY_Controller
 					'loggedin' => TRUE,
 					'signature' => VBX_User::signature($user->id),
 				);
-			
+							
 				$this->session->set_userdata($userdata);
 
 				if(OpenVBX::schemaVersion() >= 24)

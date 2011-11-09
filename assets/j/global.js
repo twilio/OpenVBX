@@ -298,7 +298,9 @@ $(document).ready(function() {
     	$.ajax({
     		url: OpenVBX.home + '/account/edit',
     		data: {
-    			'online': (status ? 1 : 0).toString()
+				'settings': {
+    				'online': (status ? 1 : 0).toString()
+				}
     		},
     		success: function(response) {
  				display.slideUp('3000');

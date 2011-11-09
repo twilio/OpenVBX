@@ -34,7 +34,7 @@ class VBX_User extends MY_Model {
 							'at.description as auth_type'
 						);
 
-	public $fields =  array(
+	public $fields = array(
 						'id',
 						'is_admin', 
 						'is_active', 
@@ -48,7 +48,6 @@ class VBX_User extends MY_Model {
 						'auth_type', 
 						'voicemail', 
 						'tenant_id',
-						'online'
 					);
 
 	public $admin_fields = array('');
@@ -386,17 +385,17 @@ class VBX_User extends MY_Model {
 		return null;
 	}
 
-	public function update()
+	public function update($id, $params)
 	{		
-		if (isset($this->last_seen))
+		if (isset($params->last_seen))
 		{
 			$replacement = "VBX_User::setting('last_seen', new MY_ModelLiteral('UTC_TIMESTAMP()'))";
 			_deprecated_notice(__CLASS__.'::$last_seen', '1.1.2', $replacement);
 		}
-		return parent::update();
+		return parent::update($id, $params);
 	}
 
-	public function save()
+	public function save($force_update = false)
 	{
 		if (isset($this->last_seen))
 		{
@@ -436,7 +435,7 @@ class VBX_User extends MY_Model {
 			$this->auth_type = $results[0]->id;
 		}
 
-		return parent::save();
+		return parent::save($force_update);
 	}
 
 	public static function signature($user_id)

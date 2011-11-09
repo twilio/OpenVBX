@@ -203,25 +203,31 @@ class MY_Model extends Model
 				$ci->db->order_by($sql_options['order_by']);
 			}
 		}
-
-		$results = $ci->db->get()->result();
 		
-		foreach($results as $i => $result)
+		$query = $ci->db->get();
+		
+		$results = false;
+		if (!empty($query))
 		{
-			$results[$i] = new $class($result);
-		}
-				
-		// cache results
-		if (self::$caching)
-		{
-			$cached_object_ids = array();
-			foreach ($results as $result)
+			$results = $query->result();
+		
+			foreach($results as $i => $result)
 			{
-				array_push($cached_object_ids, $result->id);
-				$ci->cache->set($result->id, $result, $class, $ci->tenant->id);
+				$results[$i] = new $class($result);
 			}
-			$ci->cache->set($cached_objects_key, $cached_object_ids, $class, $ci->tenant->id);
-			reset($results);
+				
+			// cache results
+			if (self::$caching)
+			{
+				$cached_object_ids = array();
+				foreach ($results as $result)
+				{
+					array_push($cached_object_ids, $result->id);
+					$ci->cache->set($result->id, $result, $class, $ci->tenant->id);
+				}
+				$ci->cache->set($cached_objects_key, $cached_object_ids, $class, $ci->tenant->id);
+				reset($results);
+			}
 		}
 		
 		if($limit == 1 && count($results) == 1)
@@ -414,7 +420,7 @@ class MY_Model extends Model
 				return true;
 			}
 		}
-		
+
 		$this->insert($this->values);
 		
 		$ci =& get_instance();

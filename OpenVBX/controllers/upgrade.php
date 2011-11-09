@@ -31,6 +31,7 @@ class Upgrade extends User_Controller {
 		$this->section = 'upgrade';
 		$this->admin_only($this->section);
 		
+		// no cache
 		$ci =& get_instance();
 		$ci->cache->flush();
 		$ci->cache->enabled(false);

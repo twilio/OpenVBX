@@ -4,6 +4,9 @@
 <head>
 	<title>Install OpenVBX</title>
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url() ?>assets/c/install.css" />
+	<script type="text/javascript">
+		if (window != window.top) { window.top.location = window.location; }
+	</script>
 	<?php $this->load->view('js-init'); ?>
 <?php if ($this->config->item('use_unminimized_js')): ?>
 	<script type="text/javascript" src="<?php echo base_url() ?>assets/j/frameworks/jquery-1.6.2.min.js"></script>
