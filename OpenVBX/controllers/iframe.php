@@ -85,7 +85,7 @@ class Iframe extends User_Controller {
 			'devices' => array()
 		);
 		
-		
+		$default_caller_id = false;
 		if (is_array($callerid_numbers) && !empty($callerid_numbers))
 		{
 			$numbered = $named = array();

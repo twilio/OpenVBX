@@ -116,7 +116,7 @@ class Account extends User_Controller {
 		return $this->respond('', 'account', $data);
 	}
 
-	public function edit($user_id)
+	public function edit($user_id = null)
 	{	
 		// if no user-id passed, assume current user
 		if (empty($user_id))
