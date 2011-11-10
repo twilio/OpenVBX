@@ -218,15 +218,28 @@
 	margin: 10px 0;
 	padding: 10px;
 	border: 1px solid gray;
-	-moz-border-radius: 4px; /* FF1+ */
-	-webkit-border-radius: 4px; /* Saf3+, Chrome */
-	-khtml-border-radius: 4px; /* Konqueror */
-	border-radius: 4px; /* Standard. IE9 */
-
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
 	-webkit-background-clip: padding-box;
 }
 
-.info p {
+.info.notice {
+	background-color: #FAFAD2;
+	border-color: #FFD700;
+}
+
+.add-tenant-form .notice {
+	width: 45%;
+	float: right;
+}
+.add-tenant-form .vbx-input-container {
+	width: 50%;
+	clear: none;
+}
+
+.vbx-form .info p {
 	margin: 0 0 10px 0;
 }
 .info p:last-child {
