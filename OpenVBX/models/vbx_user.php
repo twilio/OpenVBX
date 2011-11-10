@@ -39,6 +39,14 @@ class VBX_User extends MY_Model {
 							'last_login', 'last_seen', 'online');
 
 	public $admin_fields = array('');
+	
+	/**
+	 * Set the default min-password length
+	 * Fortunately the word "password" is 8 characters ;)
+	 *
+	 * @var int
+	 */
+	public $min_password_length = 8;
 
 	public function __construct($object = null)
 	{
@@ -198,15 +206,42 @@ class VBX_User extends MY_Model {
 		return empty($full_name) ? $this->email : $full_name;
 	}
 
+	/**
+	 * Set the user's password
+	 * 
+	 * Validation rules:
+	 * - the password & confirmation must match
+	 * - password cannot be empty
+	 * - password must be $min_password_length to be valid
+	 *
+	 * @param string $password 
+	 * @param string $confirmed_password 
+	 * @return void
+	 */
 	function set_password($password, $confirmed_password)
 	{
-		if($password != $confirmed_password) {
-			throw(new VBX_UserException("Password typed incorrectly"));
+		$password = trim($password);
+		$confirmed_password = trim($confirmed_password);
+		
+		if ($password != $confirmed_password) {
+			throw new VBX_UserException("Password typed incorrectly");
 		}
+		
+		if (strlen($password) == 0)
+		{
+			throw new VBX_UserException('Password cannot be empty');
+		}
+		elseif (strlen($password) < $this->min_password_length)
+		{
+			throw new VBX_UserException('Password must be at least '.$this->min_password_length.
+										' characters in length');
+		}
+		
 		$ci =& get_instance();
 		$ci->load->helper('email');
 		$this->password = self::salt_encrypt($password);
 		$this->invite_code = self::salt_encrypt($password);
+		
 		try
 		{
 			$result = $this->save();
