@@ -42,7 +42,7 @@ class User_Controller extends MY_Controller
 
 		// check for required configuration values
 		$this->load->database();
-		$this->load->library('ErrorMessages');
+		$this->load->library('ErrorMessages'); // deprecated in 1.2
 		$this->load->model('vbx_rest_access');
 		$this->load->model('vbx_message');
 
@@ -323,6 +323,7 @@ class User_Controller extends MY_Controller
 		{
 			$data['counts'] = $counts = $this->message_counts();
 		}
+		
 		try
 		{
 			$data['callerid_numbers'] = $this->get_twilio_numbers();
@@ -336,14 +337,15 @@ class User_Controller extends MY_Controller
 		$data['user_numbers'] = $this->get_user_numbers();
 		$data['error'] = $this->session->flashdata('error');
 		if(!empty($data['error']))
+		{
 			log_message('error', $data['error']);
+		}
 		$data['section'] = $this->section;
 		return $data;
 	}
 
 	protected function get_user_numbers() 
 	{
-
 		$this->load->model('vbx_device');
 		$numbers = $this->vbx_device->get_by_user($this->user_id);
 

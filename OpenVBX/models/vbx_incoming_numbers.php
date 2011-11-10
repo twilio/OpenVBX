@@ -63,7 +63,16 @@ class VBX_Incoming_numbers extends Model
 			}
 		}
 		catch (Exception $e) {
-			throw new VBX_IncomingNumberException($e->getMessage);
+			$msg = 'Unable to fetch Sandbox information: ';
+			switch ($e->getCode())
+			{
+				case 20003:
+					$msg .= 'Authentication Failed.';
+					break;
+				default:
+					$msg .= $e->getMessage();
+			}
+			throw new VBX_IncomingNumberException($msg, $e->getCode());
 		}
 
 		return $sandbox;
@@ -96,7 +105,16 @@ class VBX_Incoming_numbers extends Model
 			}
 		}
 		catch (Exception $e) {
-			throw new VBX_IncomingNumberException($e->getMessage());
+			$msg = 'Unable to fetch Numbers: ';
+			switch ($e->getCode())
+			{
+				case 20003:
+					$msg .= 'Authentication Failed.';
+					break;
+				default:
+					$msg .= $e->getMessage();
+			}
+			throw new VBX_IncomingNumberException($msg, $e->getCode());
 		}
 		
 		$ci = &get_instance();

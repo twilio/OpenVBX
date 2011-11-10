@@ -165,12 +165,18 @@ class Site extends User_Controller
 
 		$this->load->model('vbx_incoming_numbers');
 		$data['countries'] = array();
-		if ($countrydata = $this->vbx_incoming_numbers->get_available_countries())
-		{
-			foreach ($countrydata as $country)
+		try {
+			if ($countrydata = $this->vbx_incoming_numbers->get_available_countries())
 			{
-				$data['countries'][$country->country_code] = $country->country;
+				foreach ($countrydata as $country)
+				{
+					$data['countries'][$country->country_code] = $country->country;
+				}
 			}
+		}
+		catch (VBX_IncomingNumberException $e)
+		{
+			$data['error'] = 'Unable to fetch available countries: '.$e->getMessage();
 		}
 
 		$this->respond('Site Settings', 'settings/site', $data);

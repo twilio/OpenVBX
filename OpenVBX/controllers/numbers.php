@@ -60,7 +60,7 @@ class Numbers extends User_Controller
 		}
 		catch (VBX_IncomingNumberException $e)
 		{
-			$this->error_message = ErrorMessages::message('twilio_api', $e->getCode());
+			$this->error_message = $e->getMessage();
 		}
 
 		$incoming_numbers = array();
@@ -152,13 +152,7 @@ class Numbers extends User_Controller
 		}
 		catch (VBX_IncomingNumberException $e)
 		{
-			$code = $e->getCode();
 			$json['message'] = $e->getMessage();
-			if($code)
-			{
-				$json['message'] = ErrorMessages::message('twilio_api', $code);
-			}
-
 			$json['error'] = true;
 		}
 
@@ -296,8 +290,7 @@ class Numbers extends User_Controller
 		}
 		catch (VBX_IncomingNumberException $e)
 		{
-			$this->error_message = ErrorMessages::message('twilio_api', $e->getCode());
-			throw new NumbersException($this->error_message, $e->getCode());
+			throw new NumbersException($e->getMessage(), $e->getCode());
 		}
 
 		return $numbers;

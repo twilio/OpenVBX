@@ -22,15 +22,16 @@
 class ErrorMessages
 {
 	public static $twilio_api = array(
-									  404 => 'Twilio authentication error.	Is your account <a href="http://www.twilio.com/user/account/">active?</a>.',
-									  401 => 'Twilio authentication error.	Does account information match your <a href="http://www.twilio.com/user/account/">twilio account?</a>.',
-									  400 => 'Twilio authentication error.	Please contact your OpenVBX provider',
-									  500 => 'Twilio authentication error.	Please contact <a href="http://www.twilio.com/user/account">twilio</a>',
-									  503 => 'Twilio service unavailable due to network connectivity issues.',
-									  );
+		404 => 'Twilio authentication error. Is your account <a href="http://www.twilio.com/user/account/">active?</a>.',
+		401 => 'Twilio authentication error. Does account information match your <a href="http://www.twilio.com/user/account/">twilio account?</a>.',
+		400 => 'Twilio authentication error. Please contact your OpenVBX provider',
+		500 => 'Twilio authentication error. Please contact <a href="http://www.twilio.com/user/account">twilio</a>',
+		503 => 'Twilio service unavailable due to network connectivity issues.',
+	);
 
 	public static function message($group, $code)
 	{
+		_deprecated_notice(__METHOD__, '1.2', 'Use Exception messages directly.');
 		$message = null;
 		$error_group = null;
 		

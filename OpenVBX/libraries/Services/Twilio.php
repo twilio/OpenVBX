@@ -131,7 +131,7 @@ class Services_Twilio extends Services_Twilio_Resource
         }
         switch ($headers['Content-Type']) {
         case 'application/json':
-            return $this->_processJsonResponse($status, $headers, $body);
+           	return $this->_processJsonResponse($status, $headers, $body);
             break;
         case 'text/xml':
             return $this->_processXmlResponse($status, $headers, $body);
