@@ -36,12 +36,13 @@ class Install extends Controller {
 		parent::Controller();
 		if(file_exists(APPPATH . 'config/openvbx.php')) $this->config->load('openvbx');
 
-		if(file_exists(APPPATH . 'config/database.php') AND version_compare(PHP_VERSION, $this->min_php_version, '>=')) {
+		if(file_exists(APPPATH . 'config/database.php') 
+			AND version_compare(PHP_VERSION, $this->min_php_version, '>=')) 
+		{
 			$this->load->database();
 
 			redirect('');
 		}
-
 	}
 
 	private function input_args()
@@ -488,7 +489,7 @@ class Install extends Controller {
 				$this->account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
 			}
 			$applications = $this->account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
-
+			
 			$application = false;
 			foreach ($applications as $_application)
 			{
@@ -498,10 +499,15 @@ class Install extends Controller {
 					break;
 				}
 			}
-
+			
+			$site_url = site_url();
+			if ($settings['rewrite_enabled']) {
+				$site_url = str_replace('/index.php', '', $site_url);
+			}
+			
 			$params = array(
 				'FriendlyName' => $app_name,
-				'VoiceUrl' => site_url('twiml/dial'),
+				'VoiceUrl' => $site_url.'/twiml/dial',
 				'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
 				'VoiceMethod' => 'POST',
 				'SmsUrl' => '',
