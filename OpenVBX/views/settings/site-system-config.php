@@ -26,7 +26,7 @@
 				<label for="override" class="field-label">Hostname to use in recording URLs
 					<input class="medium" id="override" name="site[recording_host]" value="<?php echo @$recording_host["value"]; ?>">
 				</label>
-				<p class="instruction">(must be a CNAME for api.twilio.com)</p>
+				<p class="instruction">Must be a CNAME for api.twilio.com<br />See the Twilio documentation on <a href="http://www.twilio.com/docs/api/rest/tips#vanity-urls">Vanity Urls</a> for more info.</p>
 			</div>
 		</fieldset>
 	<?php endif; /* END PARENT TENANT ONLY */ ?>
@@ -50,7 +50,7 @@
 		</fieldset>
 	<?php endif; /* count $countries */?>
 
-		<fieldset>
+		<fieldset class="vbx-input-container">
 	
 			<h3>Transcriptions</h3>
 	
@@ -73,13 +73,14 @@
 							), $radio);
 						echo form_radio($radio, '0', ($transcriptions['value'] == 0));
 					?>
-				</label>						
-	
-			</fieldset>
+				</label>
+				
+			</fieldset>						
+			<p class="instruction">See the Twilio Documentation on <a href="http://www.twilio.com/docs/api/rest/transcription">Transcriptions</a> for more info.</p>
 	
 		</fieldset>
 	
-		<fieldset>
+		<fieldset class="vbx-input-container">
 	
 			<h3>Text to Speech</h3>
 		
@@ -120,6 +121,7 @@
 				</label>
 			</div>
 		
+			<p class="instruction">See the Twilio Documentation for <a href="http://www.twilio.com/docs/api/twiml/say#attributes-voice">Voice &amp; Language Attributes</a><br />for more info.</p>
 		</fieldset>
 	</div>
 				

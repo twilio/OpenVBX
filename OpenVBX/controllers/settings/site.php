@@ -176,7 +176,15 @@ class Site extends User_Controller
 		}
 		catch (VBX_IncomingNumberException $e)
 		{
-			$data['error'] = 'Unable to fetch available countries: '.$e->getMessage();
+			$data['error'] = 'Unable to fetch available countries: ';
+			switch ($e->getCode())
+			{
+				case 0;
+					$data['error'] .= 'Authentication failed.';
+					break;
+				default:
+					$data['error'] .= $e->getMessage();
+			}
 		}
 
 		$this->respond('Site Settings', 'settings/site', $data);
