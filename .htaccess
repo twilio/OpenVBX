@@ -1,5 +1,3 @@
-RewriteEngine ON
-
 # by default disallow access to the base git folder
 RedirectMatch /\.git(/|$) /404
 
@@ -30,6 +28,9 @@ RedirectMatch /\.git(/|$) /404
 	</IfModule>
 </IfModule>
 
+<IfModule mod_rewrite.c>
+RewriteEngine ON
+
 # Set this if you have your installation in a subdirectory
 # RewriteBase /subdir
 
@@ -44,3 +45,4 @@ RewriteRule ^(.*) index.php?vbxsite=$1 [E=HTTP_AUTHORIZATION:%{HTTP:Authorizatio
 #RewriteRule ^(.*) index.php/$1 [L,QSA]
 
 ErrorDocument 404 /fallback/rewrite.php
+</IfModule>
