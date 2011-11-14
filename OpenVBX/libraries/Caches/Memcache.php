@@ -88,7 +88,7 @@ class OpenVBX_Cache_Memcache extends OpenVBX_Cache_Abstract
 		return $this->_tenantize_group($group, $tenant_id).'-generation';
 	}
 	
-	protected function _get($key, $group = null, $tenant_id)
+	protected function _get($key, $group, $tenant_id)
 	{
 		$_key = $this->_keyname($key, $group, $tenant_id);
 		if ($data = $this->_cache->get($_key, $this->flags))
@@ -99,7 +99,7 @@ class OpenVBX_Cache_Memcache extends OpenVBX_Cache_Abstract
 		return $data;
 	}        
 	         
-	protected function _set($key, $data, $group = null, $tenant_id, $expires = null)
+	protected function _set($key, $data, $group, $tenant_id, $expires = null)
 	{
 		if (empty($expires))
 		{
@@ -112,7 +112,7 @@ class OpenVBX_Cache_Memcache extends OpenVBX_Cache_Abstract
 		return $this->_cache->set($_key, $_data, $this->flags, $expires);
 	}        
 	         
-	protected function _delete($key, $group = null, $tenant_id)
+	protected function _delete($key, $group, $tenant_id)
 	{        
 		$_key = $this->_keyname($key, $group, $tenant_id);
 		return $this->_cache->delete($key);

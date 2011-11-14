@@ -19,7 +19,7 @@ class OpenVBX_Cache_DB extends OpenVBX_Cache_Abstract
 		}
 	}
 	
-	protected function _get($key, $group = null, $tenant_id)
+	protected function _get($key, $group, $tenant_id)
 	{
 		$ret = false;
 		
@@ -47,7 +47,7 @@ class OpenVBX_Cache_DB extends OpenVBX_Cache_Abstract
 		return $ret;
 	}
 	
-	protected function _set($key, $data, $group = null, $tenant_id, $expires = null)
+	protected function _set($key, $data, $group, $tenant_id, $expires = null)
 	{
 		if (empty($expires))
 		{
@@ -72,7 +72,7 @@ class OpenVBX_Cache_DB extends OpenVBX_Cache_Abstract
 		return $this->_db->affected_rows() > 0;
 	}
 	
-	protected function _delete($key, $group = null, $tenant_id)
+	protected function _delete($key, $group, $tenant_id)
 	{
 		$this->_db
 			->where('key', $key)

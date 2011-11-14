@@ -16,7 +16,7 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 		
 	}
 		
-	public function _set($key, $data, $group = null, $tenant_id,  $expires = null)
+	public function _set($key, $data, $group, $tenant_id,  $expires = null)
 	{	
 		if (empty($expires))
 		{
@@ -33,7 +33,7 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 		return $ret;
 	}
 	
-	public function _get($key, $group = null, $tenant_id)
+	public function _get($key, $group, $tenant_id)
 	{
 		$data = false;
 		
@@ -54,7 +54,7 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 		return $data;
 	}
 	
-	public function _delete($key, $group = null, $tenant_id)
+	public function _delete($key, $group, $tenant_id)
 	{
 		$_group = $this->_tenantize_group($group, $tenant_id);
 		

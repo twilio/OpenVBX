@@ -18,7 +18,7 @@ abstract class OpenVBX_Cache_Abstract
 		}
 	}
 		
-	public function get($key, $group = null, $tenant_id) 
+	public function get($key, $group, $tenant_id) 
 	{
 		if (!$this->enabled)
 		{
@@ -27,7 +27,7 @@ abstract class OpenVBX_Cache_Abstract
 		return $this->_get($key, $group, $tenant_id);
 	}
 
-	public function set($key, $data, $group = null, $tenant_id, $expires = null)
+	public function set($key, $data, $group, $tenant_id, $expires = null)
 	{
 		if (!$this->enabled)
 		{
@@ -36,7 +36,7 @@ abstract class OpenVBX_Cache_Abstract
 		return $this->_set($key, $data, $group, $tenant_id, $expires);
 	}
 		
-	public function delete($key, $group = null, $tenant_id) 
+	public function delete($key, $group, $tenant_id) 
 	{
 		if (!$this->enabled)
 		{
@@ -148,9 +148,9 @@ abstract class OpenVBX_Cache_Abstract
 		return new $class($options);
 	}
 	
-	protected abstract function _get($key, $group = null, $tenant_id);
-	protected abstract function _set($key, $data, $group = null, $tenant_id, $expires = null);
-	protected abstract function _delete($key, $group = null, $tenant_id);
+	protected abstract function _get($key, $group, $tenant_id);
+	protected abstract function _set($key, $data, $group, $tenant_id, $expires = null);
+	protected abstract function _delete($key, $group, $tenant_id);
 	protected abstract function _invalidate($group, $tenant_id);
 	protected abstract function _flush();
 }
