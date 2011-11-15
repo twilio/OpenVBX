@@ -222,7 +222,7 @@ class Account extends User_Controller {
 		$this->data['error'] = false;
 		$message = '';
 
-		if ($user->password == VBX_User::salt_encrypt($old_pw))
+		if (VBX_User::authenticate($user, $old_pw))
 		{
 			try {
 				$user->set_password($new_pw, $new_pw2);
@@ -237,6 +237,11 @@ class Account extends User_Controller {
 		{
 			$this->data['error'] = true;
 			$message = 'Incorrect Password';
+		}
+		
+		if ($user_id == $this->session->userdata('user_id'))
+		{
+			$this->session->set_userdata('signature', VBX_User::signature($user_id));
 		}
 		
 		$this->data['message'] = $message;

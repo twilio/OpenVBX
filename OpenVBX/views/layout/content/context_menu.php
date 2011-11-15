@@ -29,7 +29,7 @@
 								{
 									continue;
 								} 
-								?>
+							?>
 							<option value="<?php echo $number->phone ?>">
 								<?php echo $number->phone ?>
 							</option>
@@ -64,4 +64,4 @@
 
 </div><!-- #vbx-context-menu .context-menu -->
 
-<?php if($user_online === 'client-first-run') { $this->load->view('client-first-run'); } ?>
+<?php if($user_online === 'client-first-run') { $this->load->view('banners/client-first-run'); } ?>

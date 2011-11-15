@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `is_active` tinyint(1) default 1,
   `first_name` varchar(100) default NULL,
   `last_name` varchar(100) default NULL,
-  `password` varchar(40) default NULL,
+  `password` varchar(128) default NULL,
   `invite_code` varchar(32) NULL,
   `email` varchar(200) default NULL,
   `pin` varchar(40) default NULL,

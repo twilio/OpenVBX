@@ -121,17 +121,8 @@ class Connect extends MY_Controller
 		$userdata = $this->db->get_where('users', array('id' => $user_id))->result();
 
 		if (!empty($userdata[0])) {
-			$user = new VBX_User($userdata[0]);
-			$list = implode(',', array(
-								   $user->id,
-								   $user->password,
-								   $user->tenant_id,
-								   $user->is_admin,
-							   ));
-			$expected_signature = VBX_User::salt_encrypt($list);
 			$actual_signature = $this->session->userdata('signature');
-			
-			if ($expected_signature == $actual_signature) 
+			if (VBX_User::check_signature($userdata[0], $actual_signature)) 
 			{
 				return $user;
 			}
