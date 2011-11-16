@@ -323,12 +323,14 @@ class User_Controller extends MY_Controller
 		{
 			$data['counts'] = $counts = $this->message_counts();
 		}
+		
 		try
 		{
 			$data['callerid_numbers'] = $this->get_twilio_numbers();
 		}
 		catch(User_ControllerException $e)
 		{
+			// @todo - set a "same page view" error message
 			// $this->session->set_flashdata('error', $e->getMessage());
 			error_log($e->getMessage());
 		}

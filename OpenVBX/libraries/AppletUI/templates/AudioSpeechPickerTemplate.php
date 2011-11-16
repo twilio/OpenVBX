@@ -5,6 +5,8 @@
 
 	<input type="hidden" name="<?php echo $name ?>_tag" value="<?php echo $tag ?>" />
 
+	<input type="hidden" name="<?php echo $name ?>_caller_id" value="<?php echo $caller_id ?>" />
+
 	<?php if (!empty($play) && $hasValue): ?>
 		<input type="hidden" name="show_player_with_url" value="<?php echo $play; ?>" />
 	<?php endif; ?>
