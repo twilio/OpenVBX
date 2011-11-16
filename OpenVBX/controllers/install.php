@@ -499,9 +499,14 @@ class Install extends Controller {
 				}
 			}
 
+			$site_url = site_url();
+			if ($settings['rewrite_enabled']) {
+				$site_url = str_replace('/index.php', '', $site_url);
+			}
+
 			$params = array(
 				'FriendlyName' => $app_name,
-				'VoiceUrl' => site_url('twiml/dial'),
+				'VoiceUrl' => $site_url.'/twiml/dial',
 				'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
 				'VoiceMethod' => 'POST',
 				'SmsUrl' => '',
