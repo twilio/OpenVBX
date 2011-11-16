@@ -63,31 +63,34 @@ class Numbers extends User_Controller
 			$this->error_message = $e->getMessage();
 		}
 
-		$incoming_numbers = array();
+		$data['incoming_numbers'] = array();
+		$data['available_numbers'] = array();
+		$data['other_numbers'] = array();
+		$data['count_real_numbers'] = 0;
+		
 		// now generate table
 		if(count($numbers) > 0)
 		{
-			$flows = VBX_Flow::search();
+			$this->flows = $this->get_flows_list();
+			$data['flow_options'] = $this->get_flow_options($this->flows);
+			
 			foreach($numbers as $item)
 			{
 				$item_msg = '';
-				if(is_object($this->new_number) &&
-				   $this->new_number->id == $item->id)
+				if(is_object($this->new_number) && $this->new_number->id == $item->id)
 				{
 					$item_msg = 'New';
 				}
-
-				$flow_name = '(Not Set)';
-				foreach($flows as $flow)
+				
+				$item->phone_formatted = format_phone($item->phone);
+				if (!empty($item->pin))
 				{
-					if($flow->id == $item->flow_id)
-					{
-						$flow_name = '';
-					}
+					$item->pin = implode('-', str_split($item->pin, 4));
 				}
 
 				$capabilities = array();
-				if (!empty($item->capabilities)) {
+				if (!empty($item->capabilities)) 
+				{
 					foreach ($item->capabilities as $cap => $enabled)
 					{
 						if ($enabled) 
@@ -96,23 +99,34 @@ class Numbers extends User_Controller
 						}
 					}
 				}
+				$item->capabilities = $capabilities;
 
-				$incoming_numbers[] = array(
-					'id' => $item->id,
-					'name' => $item->name,
-					'trial' => (isset($item->trial) && $item->trial == 1)? 1 : 0,
-					'phone' => format_phone($item->phone),
-					'pin' => $item->pin,
-					'status' => $item_msg,
-					'flow_id' => $item->flow_id,
-					'flow_name' => $flow_name,
-					'flows' => $flows,
-					'capabilities' => $capabilities
-				);
+				if ($item->installed)
+				{
+					// Number is installed in this instance of OpenVBX
+					$item->trial = (isset($item->trial) && $item->trial == 1 ? 1 : 0);
+					$item->status = $item_msg;
+					
+					array_push($data['incoming_numbers'], $item);
+				}
+				elseif (!empty($item->url) || !empty($item->smsUrl))
+				{
+					// Number is in use elsewhere
+					array_push($data['other_numbers'], $item);
+				}
+				else
+				{
+					// Number is open for use
+					array_push($data['available_numbers'], $item);
+				}
+				
+				if ($item->id !== 'Sandbox') 
+				{
+					$data['count_real_numbers']++;
+				}
 			}
 		}
 		$data['highlighted_numbers'] = array($this->session->flashdata('new-number'));
-		$data['items'] = $incoming_numbers;
 		$data['twilio_sid'] = $this->twilio_sid;
 
 		if(empty($this->error_message))
@@ -131,7 +145,53 @@ class Numbers extends User_Controller
 
 		$data['counts'] = $this->message_counts();
 
-		$this->respond('', 'numbers', $data);
+		$this->respond('', 'numbers/numbers', $data);
+	}
+
+	/**
+	 * Key an ID keyed list of flows
+	 *
+	 * @return array
+	 */
+	protected function get_flows_list()
+	{
+		$flows = array();
+		$_flows = VBX_Flow::search();
+
+		if (count($_flows))
+		{
+			foreach ($_flows as $flow)
+			{
+				$flows[$flow->id] = $flow;
+			}
+		}
+		
+		unset($_flows);
+		return $flows;
+	}
+	
+	/**
+	 * Build a list of flow options for attaching numbers to flows
+	 *
+	 * @return array
+	 */
+	protected function get_flow_options($flows)
+	{
+		$flow_options = array();
+		$flow_options['-'] = 'Connect a Flow';
+		
+		if (!empty($flows))
+		{
+			foreach ($flows as $flow)
+			{
+				$flow_options[$flow->id] = $flow->name;
+			}
+		}
+		
+		$flow_options['---'] = '---';
+		$flow_options['new'] = 'Create a new Flow';
+		
+		return $flow_options;
 	}
 
 	function add()

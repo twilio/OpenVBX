@@ -155,7 +155,7 @@ class Login extends MY_Controller
 					{
 						$banner = array(
 							'id' => 'first-login',
-							'html' => $this->load->view('messages/first-login'),
+							'html' => $this->load->view('messages/first-login', array(), true),
 							'title' => 'Welcome to OpenVBX'
 						);
 						setrawcookie('banner',

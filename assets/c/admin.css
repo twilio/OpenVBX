@@ -71,49 +71,49 @@
     margin: 0 5px 0 0;
 }
 
-#phone-numbers-table .number-row .incoming-number-phone,
-#phone-numbers-table .number-row .incoming-number-name {
+.phone-numbers-table .number-row .incoming-number-phone,
+.phone-numbers-table .number-row .incoming-number-name {
 /*    width: 150px;*/
 }
 
-#phone-numbers-table .sandbox-row .sandbox-label,
-#phone-numbers-table .number-label {
+.phone-numbers-table .sandbox-row .sandbox-label,
+.phone-numbers-table .number-label {
     font-weight: bolder;
 	float: left;
 	width: 100%;
 	text-transform: uppercase;
 }
 
-#phone-numbers-table .sandbox-row td {
+.phone-numbers-table .sandbox-row td {
     padding-top: 10px;
     width: 150px;
     background-color: #FFF;
 }
 
-#phone-numbers-table .incoming-number-caps {
+.phone-numbers-table .incoming-number-caps {
 	width: 150px;
 }
-#phone-numbers-table .incoming-number-delete {
+.phone-numbers-table .incoming-number-delete {
 	width: 50px;
 }
 
-#phone-numbers-table .option-selected,
-#phone-numbers-table select {
+.phone-numbers-table .option-selected,
+.phone-numbers-table select {
 	display: block;
 	float: left;
 }
 
-#phone-numbers-table .option-selected {
+.phone-numbers-table .option-selected {
 	margin-top: 3px;
 	cursor: pointer;
 }
 
-#phone-numbers-table select {
+.phone-numbers-table select {
 	padding: 3px 2px;
 }
 
-#phone-numbers-table .cancel,
-#phone-numbers-table .flow {
+.phone-numbers-table .cancel,
+.phone-numbers-table .flow {
 	float: left;
 	margin-left: 10px;
 	cursor: pointer;
@@ -174,6 +174,14 @@
 
 #dlg_add .field-label-inline {
     margin-right: 15px;
+}
+
+#dlg_details ul {
+	margin-left: 15px;
+}
+#dlg_details ul li {
+	list-style: disc outside;
+	margin-bottom: 5px;
 }
 
 #completed-order p {

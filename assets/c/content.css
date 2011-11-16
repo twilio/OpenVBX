@@ -78,6 +78,25 @@
     overflow: auto;
 }
 
+.vbx-table-section .vbx-table-section-header,
+.vbx-table-section .vbx-numbers-section-info {
+	padding: 5px;
+	background: #CCC;
+	color: #444;
+}
+
+.vbx-table-section .vbx-table-section-header {
+	font-size: 1.2em;
+	font-weight: bold;
+	margin: 0;
+	padding-top: 15px;
+}
+
+.vbx-table-section .vbx-table-section-header .toggle-link {
+	font-size: 1em;
+	font-weight: normal;
+}
+
 .section-group {
     float: left;
     width: 30%;

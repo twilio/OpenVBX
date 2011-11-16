@@ -53,21 +53,19 @@ class Flows extends User_Controller {
 		$flows = VBX_Flow::search(array(), 100, 0);
 		if(empty($flows))
 		{
-			set_banner('flows',
-					   'Customize what happens when someone calls into your Twilio numbers.',
-					   'Add or modify a flow below.'
-					   );
+			set_banner('flows', $this->load->view('banners/flows-start', array(), true));
 		}
 
 		$flows_with_numbers = array();
 		foreach($flows as $flow)
 		{
-			$flows_with_numbers[] = array('id' => $flow->id,
-										  'name' => trim($flow->name),
-										  'numbers' => $flow->numbers,
-										  'voice_data' => $flow->data,
-										  'sms_data' => $flow->sms_data,
-										  );
+			$flows_with_numbers[] = array(
+				'id' => $flow->id,
+				'name' => trim($flow->name),
+				'numbers' => $flow->numbers,
+				'voice_data' => $flow->data,
+				'sms_data' => $flow->sms_data,
+			);
 		}
 		
 		$data['items'] = $flows_with_numbers;

@@ -242,8 +242,7 @@ class VBX_Incoming_numbers extends Model
 		$num->installed = ($base_pos !== FALSE);
 
 		$matches = array();
-
-		if (!preg_match('/\/(voice|sms)\/(\d+)$/', $num->url, $matches) == 0)
+		if ($num->installed && preg_match('/\/(voice|sms)\/(\d+)$/', $num->url, $matches) > 0)
 		{
 			$num->flow_id = intval($matches[2]);
 		}
