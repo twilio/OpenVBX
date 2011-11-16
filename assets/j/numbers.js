@@ -214,9 +214,9 @@
 					$.notify(data.message);
 				}
 				select_flow.val(select_flow.data('old_val'));
-				if (button) {
-					button.prop('disabled', false);
-				}
+			}
+			if (button) {
+				button.prop('disabled', false);
 			}
 		});
 	};
