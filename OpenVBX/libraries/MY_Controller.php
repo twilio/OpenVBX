@@ -62,10 +62,8 @@ class MY_Controller extends Controller
 		}
 
 		$this->config->load('openvbx');
-
-		// check for required configuration values
 		$this->load->database();
-		$this->load->model('vbx_settings');
+		$this->load->model('vbx_settings');		
 		$this->load->model('vbx_user');
 		$this->load->model('vbx_group');
 		$this->load->model('vbx_flow');
@@ -97,6 +95,8 @@ class MY_Controller extends Controller
 			$this->router->tenant = '';
 			redirect('');
 		}
+
+		$this->set_time_zone();
 
 		$this->testing_mode = !empty($_REQUEST['vbx_testing_key'])? $_REQUEST['vbx_testing_key'] == $this->config->item('testing-key') : false;
 		if($this->tenant)
@@ -183,6 +183,15 @@ class MY_Controller extends Controller
 			return $_assets;
 		}
 		return false;
+	}
+	
+	protected function set_time_zone()
+	{
+		$tz = $this->vbx_settings->get('server_time_zone', $this->tenant->id);
+		if (!empty($tz))
+		{
+			date_default_timezone_set($tz);
+		}
 	}
 	
 	protected function set_request_method($method = null)

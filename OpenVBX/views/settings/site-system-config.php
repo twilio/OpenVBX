@@ -1,10 +1,10 @@
 <form name="vbx-system" action="<?php echo site_url('settings/site') ?>" method="POST" class="vbx-system-form vbx-form">
 	<div class="two-col">
-	<?php if($tenant_mode == Site::MODE_MULTI): /* PARENT TENANT ONLY */ ?>
-		<fieldset>
-	
+
+		<fieldset>	
 			<h3>System Config</h3>
-	
+
+		<?php if($tenant_mode == Site::MODE_MULTI): /* PARENT TENANT ONLY */ ?>	
 			<div class="vbx-input-complex vbx-input-container">
 				<label for="rewrite" class="field-label">Do you want to enable mod_rewrite support?
 					<?php
@@ -27,9 +27,23 @@
 					<input class="medium" id="override" name="site[recording_host]" value="<?php echo @$recording_host["value"]; ?>">
 				</label>
 				<p class="instruction">Must be a CNAME for api.twilio.com<br />See the Twilio documentation on <a href="http://www.twilio.com/docs/api/rest/tips#vanity-urls">Vanity Urls</a> for more info.</p>
+				<br />
+			</div>
+		<?php endif; /* END PARENT TENANT ONLY */ ?>
+				
+			<div class="vbx-input-complex vbx-input-container">
+				<label for="time_zone" class="field-label">Time Zone
+				<?php
+					$params = array(
+						'name' => 'site[server_time_zone]',
+						'id' => 'time_zone',
+						'class' => 'medium'
+					);
+					echo t_form_dropdown($params, $time_zones, $server_time_zone['value']);
+				?>
+				</label>
 			</div>
 		</fieldset>
-	<?php endif; /* END PARENT TENANT ONLY */ ?>
 	
 	<?php if (count($countries)): ?>
 		<fieldset>

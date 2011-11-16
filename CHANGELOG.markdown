@@ -5,8 +5,10 @@
 - redesigned numbers screen to separate assigned, unassigned, and numbers in-use by other systems
 - changed user edit screens to always use dedicated page instead of a popup
 - fixing password length bug
+- upgrades password storage security using [phppass](http://www.openwall.com/phpass/)
 - adds helpful documentation snippets in the Settings screens
 - provides better error messages from failed API transactions
+- added time-zone server setting
 
 
 ## OpenVBX 1.1.2

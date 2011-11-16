@@ -112,9 +112,19 @@ class Site extends User_Controller
 
 		$data = $this->init_view_data();
 		$current_settings = $this->get_current_settings();
+		
+		// insert the server's default time zone in the event none is saved
+		if (empty($current_settings['server_time_zone']))
+		{
+			$current_settings['server_time_zone'] = array(
+				'id' => null,
+				'value' => date_default_timezone_get()
+			);
+		}
+
 		$data = array_merge($data, $current_settings);
 		$data['tenant_mode'] = self::MODE_SINGLE;
-		
+
 		$data['openvbx_version'] = OpenVBX::version();
 		if($this->tenant->name == 'default')
 		{
@@ -154,6 +164,7 @@ class Site extends User_Controller
 
 		$data['available_themes'] = $this->get_available_themes();
 		
+		// get plugin data
 		$plugins = Plugin::all();
 		foreach($plugins as $plugin)
 		{
@@ -163,6 +174,11 @@ class Site extends User_Controller
 
 		$data['json']['settings'] = $current_settings;
 
+		// build list of time zones
+		$tzs = timezone_identifiers_list();
+		$data['time_zones'] = array_combine($tzs, $tzs);
+
+		// get list of available countries
 		$this->load->model('vbx_incoming_numbers');
 		$data['countries'] = array();
 		try {
