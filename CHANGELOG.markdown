@@ -1,5 +1,17 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.1.3
+
+- Fix an issue with call to record where the caller id field is missing and causes the call to fail
+- Fix an issue with Client account creation where `rewrite_enabled` isn't considered when constructing the url
+- Fixes issues with following external URLs in to the application and keeping the iframe location cookie travesty in check
+- Fixes issue with accounts that don't have a sandbox erroring out when querying for incoming numbers
+
+## OpenVBX 1.1.2
+
+- fixed issue with normal numbers in Dial applet
+- attempt to fix issue with a rare logout redirect that lands a sub-tenant user on the parent-tenant's login page
+
 
 ## OpenVBX 1.1.1
 

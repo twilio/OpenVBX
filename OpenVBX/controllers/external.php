@@ -3,28 +3,23 @@
 class External extends MY_Controller {
 
 	public function message_details($id) {
-		return $this->request(site_url('messages/details/'.$id), array('iphone' => site_url('iphone/messages/details/'.$id)));
+		return $this->request(site_url('messages/details/'.$id), array(
+			'iphone' => site_url('iphone/messages/details/'.$id)
+		));
 	}
 
-	// Handle all external requests detecting if they're a mobile device otherwise pass-thru to target url
+	/**
+	 * Handle all external requests detecting if they're a mobile 
+	 * device otherwise pass-thru to target url
+	 */
 	protected function request($url, $alternativeURLs = array()) {
+		set_last_known_url($url);
 		$iphoneURL = $alternativeURLs['iphone'];
-		$detection = <<<DETECTION
-		<script type="text/javascript">
-		function detection() {
-			var agent = navigator.userAgent.toLowerCase();
-			if((agent.indexOf('iphone') != -1)) {
-				return document.location = '$iphoneURL';
-			}
+		$site_url = site_url();
 
-			document.location = '$url';
-		}
-
-		detection();
-		</script>
-DETECTION;
+		$data = compact('iphoneURL', 'url', 'site_url');
+		$detection = $this->load->view('external-js-redirect', $data, true);
 
 		echo $detection;
-		exit;
 	}
 }

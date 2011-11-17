@@ -224,6 +224,7 @@ var Pickers = {
 									$('.error-dialog').dialog('open');
 									
 									// Return so we don't schedule another timeout
+									return;
 								} else if (data.finished) {
 									return recordingComplete(data);
 								} else {
