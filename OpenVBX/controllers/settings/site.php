@@ -98,9 +98,9 @@ class Site extends User_Controller
 		foreach($current_settings as $setting)
 		{
 			$sorted_settings[$setting->name] = array(
-													 'id' => $setting->id,
-													 'value' => $setting->value
-													 );
+				'id' => $setting->id,
+				'value' => $setting->value
+			);
 		}
 
 		return $sorted_settings;
@@ -176,7 +176,7 @@ class Site extends User_Controller
 
 		// build list of time zones
 		$tzs = timezone_identifiers_list();
-		$data['time_zones'] = array_combine($tzs, $tzs);
+		$data['time_zones'] = array_combine($tzs, $tzs); // makes keys & values match
 
 		// get list of available countries
 		$this->load->model('vbx_incoming_numbers');
@@ -222,6 +222,7 @@ class Site extends User_Controller
 					{
 						$app_sid = $value;
 					}
+					
 					if ($name == 'connect_application_sid') {
 						$connect_app_sid = $value;
 					}
@@ -276,42 +277,42 @@ class Site extends User_Controller
 				{
 					// disassociate the current app from this install
 					$update_app[] = array(
-									  'app_sid' => $current_app_sid,
-									  'params' => array(
-													'VoiceUrl' => '',
-													'VoiceFallbackUrl' => '',
-													'SmsUrl' => '',
-													'SmsFallbackUrl' => ''
-												)
-									  );
+						'app_sid' => $current_app_sid,
+						'params' => array(
+							'VoiceUrl' => '',
+							'VoiceFallbackUrl' => '',
+							'SmsUrl' => '',
+							'SmsFallbackUrl' => ''
+						)
+					);
 				}
 				elseif (!empty($app_sid))
 				{
 					// update the application data
 					$update_app[] = array(
-									  'app_sid' => $app_sid,
-									  'params' => array(
-													'VoiceUrl' => site_url('/twiml/dial'),
-													'VoiceFallbackUrl' => site_url('/fallback/voice.php'),
-													'VoiceMethod' => 'POST',
-													'SmsUrl' => '',
-													'SmsFallbackUrl' => '',
-													'SmsMethod' => 'POST'
-												)
-									  );
+						'app_sid' => $app_sid,
+						'params' => array(
+							'VoiceUrl' => site_url('/twiml/dial'),
+							'VoiceFallbackUrl' => site_url('/fallback/voice.php'),
+							'VoiceMethod' => 'POST',
+							'SmsUrl' => '',
+							'SmsFallbackUrl' => '',
+							'SmsMethod' => 'POST'
+						)
+					);
 
 					if ($app_sid != $current_app_sid) 
 					{
 						// app sid changed, disassociate the old app from this install
 						$update_app[] = array(
-										  'app_sid' => $current_app_sid,
-										  'params' => array(
-														'VoiceUrl' => '',
-														'VoiceFallbackUrl' => '',
-														'SmsUrl' => '',
-														'SmsFallbackUrl' => ''
-													)
-										  );
+							'app_sid' => $current_app_sid,
+							'params' => array(
+								'VoiceUrl' => '',
+								'VoiceFallbackUrl' => '',
+								'SmsUrl' => '',
+								'SmsFallbackUrl' => ''
+							)
+						);
 					}
 				}
 
@@ -325,10 +326,13 @@ class Site extends User_Controller
 					{
 						try {
 							$application = $account->applications->get($app['app_sid']);
-							$application->update(array_merge($app['params'], array('FriendlyName' => $application->friendly_name)));
+							$application->update(array_merge($app['params'], array(
+								'FriendlyName' => $application->friendly_name
+							)));
 						}
 						catch (Exception $e) {
-							$this->session->set_flashdata('error', 'Could not update Application: '.$e->getMessage());
+							$this->session->set_flashdata('error', 'Could not update Application: '.
+														$e->getMessage());
 							throw new SiteException($e->getMessage());
 						}
 					}					
@@ -340,7 +344,8 @@ class Site extends User_Controller
 				$data['error'] = true;
 				switch($e->getCode()) {
 					case '0':
-						$data['message'] = $message = 'Could not Authenticate with Twilio. Please check your Sid & Token values.';
+						$data['message'] = $message = 'Could not Authenticate with Twilio. '.
+													'Please check your Sid & Token values.';
 						break;
 					default:
 						$data['message'] = $message = $e->getMessage();
@@ -381,14 +386,14 @@ class Site extends User_Controller
 		}
 
 		$params = array(
-				'FriendlyName' => $appName,
-				'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
-				'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
-				'VoiceMethod' => 'POST',
-				'SmsUrl' => '',
-				'SmsFallbackUrl' => '',
-				'SmsMethod' => 'POST'
-			);
+			'FriendlyName' => $appName,
+			'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
+			'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
+			'VoiceMethod' => 'POST',
+			'SmsUrl' => '',
+			'SmsFallbackUrl' => '',
+			'SmsMethod' => 'POST'
+		);
 
 		try {
 			if (!empty($application)) 
@@ -443,13 +448,13 @@ class Site extends User_Controller
 				$user->is_active = TRUE;
 				$user->is_admin = TRUE;
 				$user->auth_type = 1;
+
 				try {
 					$user->save();
 				}
 				catch(VBX_UserException $e) {
 					throw new VBX_SettingsException($e->getMessage());
 				}
-
 
 				foreach($this->settings->setting_options as $param)
 				{
@@ -538,7 +543,8 @@ class Site extends User_Controller
 				error_log($e->getMessage());
 				$this->db->trans_rollback();
 				// TODO: rollback in twilio.
-				$this->session->set_flashdata('error', 'Failed to add new tenant: '.$e->getMessage());
+				$this->session->set_flashdata('error', 'Failed to add new tenant: '.
+												$e->getMessage());
 				$data['error'] = true;
 				$data['message'] = $e->getMessage();
 			}

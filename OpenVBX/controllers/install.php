@@ -139,15 +139,15 @@ class Install extends Controller {
 						'missing, but optional',
 						false);
 
-		$this->add_test(is_writable(APPPATH . 'config'),
+		$this->add_test(is_writable(APPPATH.'config'),
 						'Config Dir',
 						'writable',
-						'permission denied: '. APPPATH . 'config');
+						'permission denied: '.APPPATH.'config');
 						
-		$this->add_test(is_writable(APPPATH . '../audio-uploads'),
+		$this->add_test(is_writable(APPPATH.'../audio-uploads'),
 						'Upload Dir',
 						'writable',
-						'permission denied: '. realpath(APPPATH . '../audio-uploads'));
+						'permission denied: '.realpath(APPPATH.'../audio-uploads'));
 
 		$this->add_test(is_file(APPPATH.'../.htaccess'),
 						'.htaccess File',
@@ -172,10 +172,12 @@ class Install extends Controller {
 	private function add_test($pass, $name, $pass_text, $fail_text, $required = true)
 	{
 		$pass = (boolean)$pass;
-		$this->tests[] = array('name' => $name,
-							   'pass' => $pass,
-							   'required' => $required,
-							   'message' => ($pass ? $pass_text : $fail_text));
+		$this->tests[] = array(
+			'name' => $name,
+			'pass' => $pass,
+			'required' => $required,
+			'message' => ($pass ? $pass_text : $fail_text)
+		);
 
 		if($required) $this->pass = $this->pass && $pass;
 	}
@@ -461,13 +463,13 @@ class Install extends Controller {
 			{
 				if($this->vbx_settings->add($key, $val, 1) === false)
 				{
-					throw new InstallException( "Failed to create setting for $key. Please re-create database", 0);
+					throw new InstallException("Failed to create setting for $key. Please re-create database", 0);
 				}
 			}
 		}
 		catch(SettingsException $e)
 		{
-			throw new InstallException( 'Unable to setup valid instance.  Please re-create your database');
+			throw new InstallException('Unable to setup valid instance. Please re-create your database');
 		}
 	}
 
@@ -488,7 +490,9 @@ class Install extends Controller {
 			{
 				$this->account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
 			}
-			$applications = $this->account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
+			$applications = $this->account->applications->getIterator(0, 10, array(
+				'FriendlyName' => $app_name
+			));
 			
 			$application = false;
 			foreach ($applications as $_application)
