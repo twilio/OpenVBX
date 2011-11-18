@@ -4,8 +4,12 @@
 
 - Fix an issue with call to record where the caller id field is missing and causes the call to fail
 - Fix an issue with Client account creation where `rewrite_enabled` isn't considered when constructing the url
-- Fixes issues with following external URLs in to the application and keeping the iframe location cookie travesty in check
-- Fixes issue with accounts that don't have a sandbox erroring out when querying for incoming numbers
+- Fixes issues with following external URLs in to the application
+- Fixes issue querying for incoming numbers on accounts with no sandbox
+- Fix an unhandled exception when accessing a message that doesn't exist
+- Update & add user notices around non-existent and disallowed message view attempts
+- Add notices on Twilio Account screen in the event of malformed Client Application data
+
 
 ## OpenVBX 1.1.2
 

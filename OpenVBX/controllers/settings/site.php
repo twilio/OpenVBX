@@ -98,9 +98,9 @@ class Site extends User_Controller
 		foreach($current_settings as $setting)
 		{
 			$sorted_settings[$setting->name] = array(
-													 'id' => $setting->id,
-													 'value' => $setting->value
-													 );
+				'id' => $setting->id,
+				'value' => $setting->value
+			);
 		}
 
 		return $sorted_settings;
@@ -163,6 +163,43 @@ class Site extends User_Controller
 			{
 				$data['countries'][$country->country_code] = $country->country;
 			}
+		}
+				
+		// verify Client Application data
+		$data['client_application_error'] = false;
+		if (!empty($data['application_sid']['value']))
+		{
+			$account = OpenVBX::getAccount();
+			try {
+				$application = $account->applications->get($data['application_sid']['value']);
+				if (strlen($application->sid) == 0)
+				{
+					// application missing
+					$data['client_application_error'] = 2;
+				}
+				elseif (strlen($application->voice_url) == 0 || 
+						strlen($application->voice_fallback_url) == 0)
+				{
+					// urls are missing
+					$data['client_application_error'] = 3;
+				}
+				elseif ($application->voice_url != site_url('/twiml/dial') ||
+					$application->voice_fallback_url != asset_url('/fallback/voice.php'))
+				{
+					// url mismatch
+					$data['client_application_error'] = 4;
+				}
+				$data['client_application'] = $application;
+			}
+			catch (Exception $e) {
+				// @todo show relevant exception data as error
+				$data['error'] = 'Could not validate Client Application data: '.$e->getMessage();
+				log_message($e->getMessage());
+			}
+		}
+		else
+		{
+			$data['client_application_error'] = 1;
 		}
 
 		$this->respond('Site Settings', 'settings/site', $data);
@@ -233,42 +270,42 @@ class Site extends User_Controller
 				{
 					// disassociate the current app from this install
 					$update_app[] = array(
-									  'app_sid' => $current_app_sid,
-									  'params' => array(
-													'VoiceUrl' => '',
-													'VoiceFallbackUrl' => '',
-													'SmsUrl' => '',
-													'SmsFallbackUrl' => ''
-												)
-									  );
+						'app_sid' => $current_app_sid,
+						'params' => array(
+							'VoiceUrl' => '',
+							'VoiceFallbackUrl' => '',
+							'SmsUrl' => '',
+							'SmsFallbackUrl' => ''
+						)
+					);
 				}
 				elseif (!empty($app_sid))
 				{
 					// update the application data
 					$update_app[] = array(
-									  'app_sid' => $app_sid,
-									  'params' => array(
-													'VoiceUrl' => site_url('/twiml/dial'),
-													'VoiceFallbackUrl' => site_url('/fallback/voice.php'),
-													'VoiceMethod' => 'POST',
-													'SmsUrl' => '',
-													'SmsFallbackUrl' => '',
-													'SmsMethod' => 'POST'
-												)
-									  );
+						'app_sid' => $app_sid,
+						'params' => array(
+							'VoiceUrl' => site_url('/twiml/dial'),
+							'VoiceFallbackUrl' => asset_url('/fallback/voice.php'),
+							'VoiceMethod' => 'POST',
+							'SmsUrl' => '',
+							'SmsFallbackUrl' => '',
+							'SmsMethod' => 'POST'
+						)
+					);
 
 					if ($app_sid != $current_app_sid) 
 					{
 						// app sid changed, disassociate the old app from this install
 						$update_app[] = array(
-										  'app_sid' => $current_app_sid,
-										  'params' => array(
-														'VoiceUrl' => '',
-														'VoiceFallbackUrl' => '',
-														'SmsUrl' => '',
-														'SmsFallbackUrl' => ''
-													)
-										  );
+							'app_sid' => $current_app_sid,
+							'params' => array(
+								'VoiceUrl' => '',
+								'VoiceFallbackUrl' => '',
+								'SmsUrl' => '',
+								'SmsFallbackUrl' => ''
+							)
+						);
 					}
 				}
 
@@ -285,7 +322,8 @@ class Site extends User_Controller
 							$application->update(array_merge($app['params'], array('FriendlyName' => $application->friendly_name)));
 						}
 						catch (Exception $e) {
-							$this->session->set_flashdata('error', 'Could not update Application: '.$e->getMessage());
+							$this->session->set_flashdata('error', 'Could not update Application: '.
+															$e->getMessage());
 							throw new SiteException($e->getMessage());
 						}
 					}					
@@ -297,7 +335,8 @@ class Site extends User_Controller
 				$data['error'] = true;
 				switch($e->getCode()) {
 					case '0':
-						$data['message'] = $message = 'Could not Authenticate with Twilio. Please check your Sid & Token values.';
+						$data['message'] = $message = 'Could not Authenticate with Twilio. '.
+														'Please check your Sid & Token values.';
 						break;
 					default:
 						$data['message'] = $message = $e->getMessage();
@@ -338,14 +377,14 @@ class Site extends User_Controller
 		}
 
 		$params = array(
-				'FriendlyName' => $appName,
-				'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
-				'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
-				'VoiceMethod' => 'POST',
-				'SmsUrl' => '',
-				'SmsFallbackUrl' => '',
-				'SmsMethod' => 'POST'
-			);
+			'FriendlyName' => $appName,
+			'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
+			'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
+			'VoiceMethod' => 'POST',
+			'SmsUrl' => '',
+			'SmsFallbackUrl' => '',
+			'SmsMethod' => 'POST'
+		);
 
 		try {
 			if (!empty($application)) 
@@ -406,7 +445,6 @@ class Site extends User_Controller
 				catch(VBX_UserException $e) {
 					throw new VBX_SettingsException($e->getMessage());
 				}
-
 
 				foreach($this->settings->setting_options as $param)
 				{
@@ -495,7 +533,8 @@ class Site extends User_Controller
 				error_log($e->getMessage());
 				$this->db->trans_rollback();
 				// TODO: rollback in twilio.
-				$this->session->set_flashdata('error', 'Failed to add new tenant: '.$e->getMessage());
+				$this->session->set_flashdata('error', 'Failed to add new tenant: '.
+												$e->getMessage());
 				$data['error'] = true;
 				$data['message'] = $e->getMessage();
 			}

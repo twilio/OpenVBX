@@ -18,8 +18,7 @@ class External extends MY_Controller {
 		$site_url = site_url();
 
 		$data = compact('iphoneURL', 'url', 'site_url');
-		$detection = $this->load->view('external-js-redirect', $data, true);
-
-		echo $detection;
+		echo $this->load->view('external-js-redirect', $data, true);
+		exit;
 	}
 }
