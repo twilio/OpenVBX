@@ -9,12 +9,12 @@ $voice = $CI->vbx_settings->get('voice', $CI->tenant->id);
 $language = $CI->vbx_settings->get('voice_language', $CI->tenant->id);
 
 $dialer = new TwimlDial(array(
-						'transcribe' => $transcribe,
-						'voice' => $voice,
-						'language' => $language,
-						'sequential' => true,
-						'default_timeout' => 5
-					));
+	'transcribe' => $transcribe,
+	'voice' => $voice,
+	'language' => $language,
+	'sequential' => true,
+	'default_timeout' => 15
+));
 $dialer->set_state();
 
 /**
