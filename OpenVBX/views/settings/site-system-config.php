@@ -95,6 +95,28 @@
 		</fieldset>
 	
 		<fieldset class="vbx-input-container">
+			
+			<h3>Dialing</h3>
+			
+			<div class="vbx-input-complex vbx-input-container">
+				<label class="field-label">Dial Timeout
+					<?php
+						$params = array(
+							'name' => 'site[dial_timeout]',
+							'id' => 'site-dial-timeout',
+							'class' => 'medium'
+						);
+						$options = array();
+						for ($i = 5; $i <= 60; $options[$i] = $i, $i += 5);
+						echo t_form_dropdown($params, $options, $dial_timeout['value']);
+					?>
+				</label>
+			</div>
+			
+			<p class="instruction">Sets the amount of time a Dial will wait until it gives up. Affects<br />the Dial applet and the browser phone when making outgoing calls.</p>
+		</fieldset>
+	
+		<fieldset class="vbx-input-container">
 	
 			<h3>Text to Speech</h3>
 		

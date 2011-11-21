@@ -3,12 +3,14 @@
 function runUpdate_64()
 {
 	runUpdate_64_password_update();
+
+	$ci =& get_instance();
+	$ci->vbx_settings->set('schema-version', '64', 1);
 }
 
 function runUpdate_64_password_update()
 {
 	$ci =& get_instance();
-	
 	$ci->load->dbforge();
 	
 	// preparing for longer passwords
@@ -18,7 +20,21 @@ function runUpdate_64_password_update()
 			'type' => 'VARCHAR',
 			'constraint' => 128
 		)
-	));
-	
-	$ci->vbx_settings->set('schema-version', '64', 1);
+	));	
+}
+
+function runUpdate_64_add_dial_timeout()
+{
+	$ci =& get_instance();
+	$tenants = $ci->db
+		->from('tenants')
+		->get()->result();
+		
+	if (count($tenants))
+	{
+		foreach ($tenants as $tenant)
+		{
+			$ci->vbx_settings->set('dial_timeout', 15, $tenant->id);
+		}
+	}
 }

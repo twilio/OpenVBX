@@ -348,7 +348,8 @@ class Twiml extends MY_Controller {
 		{
 			$options = array(
 				'action' => site_url("twiml/dial_status").'?'.http_build_query(compact('to')),
-				'callerId' => $callerid
+				'callerId' => $callerid,
+				'timeout' => $this->vbx_settings->get('dial_timeout', $this->tenant->id)
 			);
 			
 			if (filter_var($this->input->get_post('to'), FILTER_VALIDATE_EMAIL)) 

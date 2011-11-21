@@ -325,7 +325,8 @@ INSERT INTO settings
 	   ('voice_language', 'en', 1),
 	   ('numbers_country', 'US', 1),
 	   ('gravatars', 0, 1),
-	   ('connect_application_sid', 0, 1);
+	   ('connect_application_sid', 0, 1),
+	   ('dial_timeout', 15, 1);
 
 
 INSERT INTO groups
