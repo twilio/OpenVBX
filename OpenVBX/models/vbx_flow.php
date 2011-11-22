@@ -90,43 +90,44 @@ class VBX_Flow extends MY_Model {
 			$flows = array($flows);
 		}
 
-		if($include_numbers) try {
+		if($include_numbers) 
+		{
+			try {
+				$ci->load->model('vbx_incoming_numbers');
+				$numbers = $ci->vbx_incoming_numbers->get_numbers();
+				$flow_ids_to_numbers = array();
 
-			$ci->load->model('vbx_incoming_numbers');
-			$numbers = $ci->vbx_incoming_numbers->get_numbers();
-			$flow_ids_to_numbers = array();
-
-			foreach($numbers as $num)
-			{
-				if($num->installed)
+				foreach($numbers as $num)
 				{
-					$flow_ids_to_numbers[$num->flow_id][] = $num;
-				}
-			}
-
-			foreach($flows as $flow)
-			{
-				$flow->numbers = array();
-				$numbers_for_flow = array();
-
-				if(array_key_exists(intval($flow->id), $flow_ids_to_numbers))
-				{
-					foreach($flow_ids_to_numbers[$flow->id] as $num)
+					if($num->installed)
 					{
-						$numbers_for_flow[] = $num->phone;
+						$flow_ids_to_numbers[$num->flow_id][] = $num;
 					}
 				}
 
-				$flow->numbers = $numbers_for_flow;
+				foreach($flows as $flow)
+				{
+					$flow->numbers = array();
+					$numbers_for_flow = array();
+
+					if(array_key_exists(intval($flow->id), $flow_ids_to_numbers))
+					{
+						foreach($flow_ids_to_numbers[$flow->id] as $num)
+						{
+							$numbers_for_flow[] = $num->phone;
+						}
+					}
+
+					$flow->numbers = $numbers_for_flow;
+				}
+			}
+			catch(VBX_IncomingNumberException $e)
+			{
+				log_message($e->getMessage());
+				$ci->session->set_flashdata('error', 'Unable to fetch incoming numbers '.
+											'from Twilio');
 			}
 		}
-		catch(VBX_IncomingNumberException $e)
-		{
-			error_log($e->getMessage());
-			$ci = &get_instance();
-			$ci->session->set_flashdata('error', 'Unable to fetch incoming numbers from Twilio');
-		}
-
 		if($limit == 1 && count($flows) == 1)
 		{
 			$flows = $flows[0];
