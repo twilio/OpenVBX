@@ -122,7 +122,7 @@ abstract class OpenVBX_Cache_Abstract
 			}
 		}
 
-		$basepath = APPPATH.'/libraries/caches/';
+		$basepath = APPPATH.'/libraries/Caches/';
 
 		switch (true)
 		{
