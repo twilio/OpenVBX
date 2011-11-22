@@ -254,20 +254,7 @@ class OpenVBX {
 	 */
 	public static function getAccount($twilio_sid = false, $twilio_token = false, $api_version = '2010-04-01') 
 	{
-		$_http = null;
 		$ci =& get_instance();
-		
-		// internal api development override, you'll never need this
-		if ($_http_settings = $ci->config->item('_http_settings')) 
-		{
-			if (!empty($_http_settings['host'])) 
-			{
-				$_http = new Services_Twilio_TinyHttp(
-				                $_http_settings['host'],
-				                array("curlopts" => array(CURLOPT_USERAGENT => Services_Twilio::USER_AGENT))
-				            );
-			}
-		}
 		
 		// if sid & token are passed, make sure they're not the same as our master
 		// values. If they are, make a new object, otherwise use the same internal object
@@ -278,6 +265,11 @@ class OpenVBX {
 				if ($twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) 
 				{
 					try {
+						$_http_opts = self::get_http_opts();
+						$_http = new Services_Twilio_TinyHttp(
+												$_http_opts['host'], 
+												$_http_opts['opts']
+											);
 						$service = new Services_Twilio(
 												$twilio_sid, 
 												$twilio_token,
@@ -301,6 +293,11 @@ class OpenVBX {
 		if (!(self::$_twilioService instanceof Services_Twilio)) 
 		{	
 			try {
+				$_http_opts = self::get_http_opts();
+				$_http = new Services_Twilio_TinyHttp(
+										$_http_opts['host'], 
+										$_http_opts['opts']
+									);
 				self::$_twilioService = new Services_Twilio(
 													$ci->twilio_sid, 
 													$ci->twilio_token,
@@ -314,6 +311,47 @@ class OpenVBX {
 		}
 		
 		return self::$_twilioService->account;
+	}
+	
+	/**
+	 * Get a set of modified http options for TinyHttp so that we
+	 * can modify how the api client identifies itself as well as 
+	 * inject some debug options
+	 *
+	 * @return array
+	 */
+	protected static function get_http_opts()
+	{
+		$ci =& get_instance();
+		
+		$_http_opts = array(
+			'host' => 'https://api.twilio.com',
+			'opts' => array(
+				'curlopts' => array(
+					CURLOPT_USERAGENT => Services_Twilio::USER_AGENT.'-openvbx'
+				)
+			)
+		);
+		
+		// internal api development override, you'll never need this
+		if ($_http_settings = $ci->config->item('_http_settings')) 
+		{
+			if (!empty($_http_settings['host'])) 
+			{
+				$_http_opts['host'] = $_http_settings['host'];
+			}
+		}
+		
+		// set debug mode if applicable
+		if ($api_debug = $ci->config->item('api_debug'))
+		{
+			if ($api_debug === true)
+			{
+				$_http_opts['opts']['debug'] = true;
+			}
+		}
+		
+		return $_http_opts;
 	}
 	
 	public function getAccounts() {
