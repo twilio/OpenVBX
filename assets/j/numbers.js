@@ -19,6 +19,25 @@
  **/
 
 ;(function($, window, document) {
+	$('.vbx-table-section-header .toggle-link').live('click', function(e) {
+		e.preventDefault();
+		
+		var _this = $(this),
+			target = $('#vbx-other-numbers'),
+			find = '.hide',
+			method = 'slideDown',
+			speed = 'normal';
+			
+		if (target.is(':visible')) {
+			find = '.show';
+			method = 'slideUp';
+			speed = 'fast';
+		}
+
+		_this.find(find).show().siblings().hide();
+		$.fn[method].call(target, [speed]);
+	});
+	
 	$.fn.countrySelect = function(options) {
 		return this.each(function() {
 			$(this).bind('change', function() {
@@ -58,30 +77,52 @@
 			}).trigger('change');
 		});
 	};
-})(jQuery, window, document);
 
-jQuery(function($) {
-	var select_flow = $('select[name="flow_id"]').hide(); 
-	select_flow.after('<span class="hide cancel"><a class="action close">' + 
-							'<span class="replace">Cancel</span></a></span>');
-	select_flow.each(function() {
-		var flow = $(this);
-		flow.parent()
-			.children('.cancel')
-			.click(function() {
-				flow.parents('td').children('select, p, span').toggle();
-			});
+	$('.incoming-number-details-toggle').live('click', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		var _this = $(this),
+			target = $('#other-details-' + _this.attr('href').replace('#', ''));
 
-		flow.parent()
-			.append('<p class="dropdown"><span class="option-selected">' +
-				$('option:selected', flow).text() +
-				'</span><a class="action flow"><span class="replace">Select</span></a></p>')
-			.children('p.dropdown')
-			.click(function() {
-				flow.parents('td').children('select, p, span').toggle();
-				$(this).hide();
-			});
+		$('#dlg_details')
+			.find('.details').html(target.html())
+			.end().dialog('open');
 	});
+	
+	$('#dlg_details').dialog({ 
+		autoOpen: false,
+		width: 490,
+		buttons: {
+			'Close' : function() {
+				$('#dlg_add .error-message').hide();
+				$(this).dialog('close');
+			}
+		}
+	});
+	
+	var select_flow_cancel = '<span class="hide cancel"><a class="action close">' + 
+						'<span class="replace">Cancel</span></a></span>';
+	var select_flow = $('select[name="flow_id"]')
+		.hide() 
+		.after(select_flow_cancel)
+		.each(function() {
+			var flow = $(this);
+			flow.parent()
+				.children('.cancel')
+				.click(function() {
+					flow.parents('td').children('select, p, span').toggle();
+				})
+				.end()
+				.append('<p class="dropdown"><span class="option-selected">' +
+					$('option:selected', flow).text() +
+					'</span><a class="action flow"><span class="replace">Select</span></a></p>')
+				.children('p.dropdown')
+				.click(function() {
+					flow.parents('td').children('select, p, span').toggle();
+					$(this).hide();
+				});
+		});
 	
 	$('button.add').click(function() {
 		$('#dlg_add').dialog('open');
@@ -91,22 +132,23 @@ jQuery(function($) {
 		e.preventDefault();
 		select_flow = $(this);
 		
+		// Revert if empty value or a placeholder option
+		if(select_flow.val().length < 1 || select_flow.val().match(/^-/m)) {
+			reset_flow_selection(select_flow);
+			return;
+		}
+		
+		number_type = select_flow.closest('table').attr('data-type');
+		
 		if(select_flow.val() == 'new') {
 			attach_new_flow(select_flow.closest('tr').attr('rel'));
 			return;
 		}
-		
-		/* Revert if empty value */
-		if(select_flow.val().length < 1) {
-			var value = select_flow.data('old_val');
-			$('option:selected', select_flow).prop('selected', false);
-			$('option[value="'+value+'"]', select_flow).prop('selected', true);
-			return;
-		}
 
-		if(select_flow.data('old_val') != select_flow.val()
-		   && select_flow.val() > 0
-		   && select_flow.data('old_val').length > 0) {
+		var new_val = select_flow.val(),
+			old_val = select_flow.data('old_val');
+
+		if (number_type != 'available') {
 			select_flow.parents('td')
 				.children('p.dropdown')
 				.html('<span class="option-selected">' 
@@ -114,30 +156,10 @@ jQuery(function($) {
 					  + '</span>'
 					  +'<a class="action flow"><span class="replace">Select</span></a>');
 			$("#dlg_change").dialog('open');
-		} else {
-			select_flow.parents('td')
-				.children('p.dropdown')
-				.html('<span class="option-selected">' 
-					  + $('option:selected', select_flow).text()
-					  + '</span>'
-					  +'<a class="action flow"><span class="replace">Select</span></a>');
-			var row = select_flow.closest('tr');
-			var pn = row.attr('rel');
-
-			var ajaxUrl = 'numbers/change/' + pn + '/' + select_flow.val();
-			$.getJSON(ajaxUrl, function(data) {
-				if(data.success) {
-					$('option[value="0"]', select_flow).remove();
-					select_flow.data('old_val', data.id);
-					$.notify($('.incoming-number-phone', row).text() + 
-								' is now connected to '+$('option:selected', row).text());
-					$('.incoming-number-flow', row).children('select, p, span').toggle();
-				} else {
-					if(data.message) $.notify(data.message);
-					select_flow.val(select_flow.data('old_val'));
-				}
-			});
-		}
+		} 
+		else {
+			update_number_flow(select_flow);
+		}		
 	}).each(function(){
 		$(this).data('old_val', $('option:selected',this).attr('value'));
 	});
@@ -148,22 +170,7 @@ jQuery(function($) {
 		buttons: {
 			'OK': function() {
 				$('button').prop('disabled', true);
-				var row = select_flow.closest('tr');
-				var pn = row.attr('rel');
-				var ajaxUrl = 'numbers/change/' + pn + '/' + select_flow.val();
-				$.getJSON(ajaxUrl, function(data) {
-					if(data.success) {
-						$('option[value="0"]', select_flow).remove();
-						select_flow.data('old_val', data.id);
-						$.notify($('.incoming-number-phone', row).text() + 
-									' is now connected to '+$('option:selected', row).text());
-						$('.incoming-number-flow', row).children('select, p, span').toggle();
-					} else {
-						if(data.message) $.notify(data.message);
-						select_flow.val(select_flow.data('old_val'));
-					}
-					$('button').prop('disabled', false);
-				});
+				update_number_flow(select_flow, $('button'));
 				$(this).dialog('close');
 			},
 			'Cancel': function() {
@@ -172,6 +179,47 @@ jQuery(function($) {
 			}
 		}
 	}).closest('.ui-dialog').addClass('add');
+
+	var update_number_flow = function(select_flow, button) {
+		var row = select_flow.closest('tr'),
+			pn = row.attr('rel'),
+			new_val = select_flow.val(),
+			number_type = row.attr('data-type'),
+			ajaxUrl = 'numbers/change/' + pn + '/' + new_val;
+
+		row.children('p.dropdown')
+			.html('<span class="option-selected">' 
+				  + $('option:selected', select_flow).text()
+				  + '</span>'
+				  +'<a class="action flow"><span class="replace">Select</span></a>');
+
+		$.getJSON(ajaxUrl, function(data) {
+			if(data.success) {
+				$('option[value="-"]', select_flow).remove();
+				select_flow.data('old_val', data.id);
+				select_flow.closest('tr')
+					.find('.incoming-number-phone')
+					.find('.incoming-number-details-toggle, .incoming-number-other-detail, br')
+					.remove();
+				$.notify($('.incoming-number-phone', row).text() + 
+							' is now connected to '+$('option:selected', row).text());
+				$('.incoming-number-flow', row)
+					.children('select, p, span').toggle();
+				if (number_type != 'incoming')
+				{
+					select_flow.closest('tr').appendTo($('#vbx-incoming-numbers table'));
+				}
+			} else {
+				if(data.message) {
+					$.notify(data.message);
+				}
+				select_flow.val(select_flow.data('old_val'));
+			}
+			if (button) {
+				button.prop('disabled', false);
+			}
+		});
+	};
 
 	var attach_new_flow = function(number_id) {
 		$.ajax({
@@ -189,6 +237,13 @@ jQuery(function($) {
 			},
 			type: 'POST'
 		});
+	};
+
+	var reset_flow_selection = function(flow) {
+		var value = flow.data('old_val');
+		$('option[value="' + value + '"]', flow).prop('selected', true)
+			.siblings().prop('selected', false);
+		return;
 	};
 
 	var add_number = function() {			
@@ -319,4 +374,4 @@ jQuery(function($) {
 	});
 	
 	$('#iCountry').countrySelect();
-});
+})(jQuery, window, document);

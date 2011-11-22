@@ -98,9 +98,9 @@ class Site extends User_Controller
 		foreach($current_settings as $setting)
 		{
 			$sorted_settings[$setting->name] = array(
-													 'id' => $setting->id,
-													 'value' => $setting->value
-													 );
+				'id' => $setting->id,
+				'value' => $setting->value
+			);
 		}
 
 		return $sorted_settings;
@@ -112,9 +112,19 @@ class Site extends User_Controller
 
 		$data = $this->init_view_data();
 		$current_settings = $this->get_current_settings();
+				
+		// insert the server's default time zone in the event none is saved
+		if (empty($current_settings['server_time_zone']))
+		{
+			$current_settings['server_time_zone'] = array(
+				'id' => null,
+				'value' => date_default_timezone_get()
+			);
+		}
+
 		$data = array_merge($data, $current_settings);
 		$data['tenant_mode'] = self::MODE_SINGLE;
-		
+
 		$data['openvbx_version'] = OpenVBX::version();
 		if($this->tenant->name == 'default')
 		{
@@ -154,6 +164,7 @@ class Site extends User_Controller
 
 		$data['available_themes'] = $this->get_available_themes();
 		
+		// get plugin data
 		$plugins = Plugin::all();
 		foreach($plugins as $plugin)
 		{
@@ -163,13 +174,32 @@ class Site extends User_Controller
 
 		$data['json']['settings'] = $current_settings;
 
+		// build list of time zones
+		$tzs = timezone_identifiers_list();
+		$data['time_zones'] = array_combine($tzs, $tzs); // makes keys & values match
+
+		// get list of available countries
 		$this->load->model('vbx_incoming_numbers');
 		$data['countries'] = array();
-		if ($countrydata = $this->vbx_incoming_numbers->get_available_countries())
-		{
-			foreach ($countrydata as $country)
+		try {
+			if ($countrydata = $this->vbx_incoming_numbers->get_available_countries())
 			{
-				$data['countries'][$country->country_code] = $country->country;
+				foreach ($countrydata as $country)
+				{
+					$data['countries'][$country->country_code] = $country->country;
+				}
+			}
+		}
+		catch (VBX_IncomingNumberException $e)
+		{
+			$data['error'] = 'Unable to fetch available countries: ';
+			switch ($e->getCode())
+			{
+				case 0;
+					$data['error'] .= 'Authentication failed.';
+					break;
+				default:
+					$data['error'] .= $e->getMessage();
 			}
 		}
 
@@ -192,6 +222,7 @@ class Site extends User_Controller
 					{
 						$app_sid = $value;
 					}
+					
 					if ($name == 'connect_application_sid') {
 						$connect_app_sid = $value;
 					}
@@ -246,42 +277,42 @@ class Site extends User_Controller
 				{
 					// disassociate the current app from this install
 					$update_app[] = array(
-									  'app_sid' => $current_app_sid,
-									  'params' => array(
-													'VoiceUrl' => '',
-													'VoiceFallbackUrl' => '',
-													'SmsUrl' => '',
-													'SmsFallbackUrl' => ''
-												)
-									  );
+						'app_sid' => $current_app_sid,
+						'params' => array(
+							'VoiceUrl' => '',
+							'VoiceFallbackUrl' => '',
+							'SmsUrl' => '',
+							'SmsFallbackUrl' => ''
+						)
+					);
 				}
 				elseif (!empty($app_sid))
 				{
 					// update the application data
 					$update_app[] = array(
-									  'app_sid' => $app_sid,
-									  'params' => array(
-													'VoiceUrl' => site_url('/twiml/dial'),
-													'VoiceFallbackUrl' => site_url('/fallback/voice.php'),
-													'VoiceMethod' => 'POST',
-													'SmsUrl' => '',
-													'SmsFallbackUrl' => '',
-													'SmsMethod' => 'POST'
-												)
-									  );
+						'app_sid' => $app_sid,
+						'params' => array(
+							'VoiceUrl' => site_url('/twiml/dial'),
+							'VoiceFallbackUrl' => site_url('/fallback/voice.php'),
+							'VoiceMethod' => 'POST',
+							'SmsUrl' => '',
+							'SmsFallbackUrl' => '',
+							'SmsMethod' => 'POST'
+						)
+					);
 
 					if ($app_sid != $current_app_sid) 
 					{
 						// app sid changed, disassociate the old app from this install
 						$update_app[] = array(
-										  'app_sid' => $current_app_sid,
-										  'params' => array(
-														'VoiceUrl' => '',
-														'VoiceFallbackUrl' => '',
-														'SmsUrl' => '',
-														'SmsFallbackUrl' => ''
-													)
-										  );
+							'app_sid' => $current_app_sid,
+							'params' => array(
+								'VoiceUrl' => '',
+								'VoiceFallbackUrl' => '',
+								'SmsUrl' => '',
+								'SmsFallbackUrl' => ''
+							)
+						);
 					}
 				}
 
@@ -296,13 +327,13 @@ class Site extends User_Controller
 						try {
 							$application = $account->applications->get($app['app_sid']);
 							$application->update(array_merge($app['params'], array(
-												'FriendlyName' => $application->friendly_name
-											)));
+								'FriendlyName' => $application->friendly_name
+							)));
 						}
 						catch (Exception $e) {
 							$this->session->set_flashdata('error', 'Could not update Application: '.
-															$e->getMessage());
-							throw new SiteException($e->getMessage(), $e->getCode());
+														$e->getMessage());
+							throw new SiteException($e->getMessage());
 						}
 					}					
 				}
@@ -313,7 +344,8 @@ class Site extends User_Controller
 				$data['error'] = true;
 				switch($e->getCode()) {
 					case '0':
-						$data['message'] = $message = 'Could not Authenticate with Twilio. Please check your Sid & Token values.';
+						$data['message'] = $message = 'Could not Authenticate with Twilio. '.
+													'Please check your Sid & Token values.';
 						break;
 					default:
 						$data['message'] = $message = $e->getMessage();
@@ -354,14 +386,14 @@ class Site extends User_Controller
 		}
 
 		$params = array(
-				'FriendlyName' => $appName,
-				'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
-				'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
-				'VoiceMethod' => 'POST',
-				'SmsUrl' => '',
-				'SmsFallbackUrl' => '',
-				'SmsMethod' => 'POST'
-			);
+			'FriendlyName' => $appName,
+			'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
+			'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
+			'VoiceMethod' => 'POST',
+			'SmsUrl' => '',
+			'SmsFallbackUrl' => '',
+			'SmsMethod' => 'POST'
+		);
 
 		try {
 			if (!empty($application)) 
@@ -416,13 +448,13 @@ class Site extends User_Controller
 				$user->is_active = TRUE;
 				$user->is_admin = TRUE;
 				$user->auth_type = 1;
+
 				try {
 					$user->save();
 				}
 				catch(VBX_UserException $e) {
 					throw new VBX_SettingsException($e->getMessage());
 				}
-
 
 				foreach($this->settings->setting_options as $param)
 				{
@@ -494,7 +526,8 @@ class Site extends User_Controller
 					'voice' => 'man',
 					'voice_language' => 'en',
 					'numbers_country' => 'US',
-					'gravatars' => 0
+					'gravatars' => 0,
+					'dial_timeout' => 15
 				);
 				foreach ($tenant_defaults as $key => $value) {
 					$this->settings->set($key, $value, $data['id']);

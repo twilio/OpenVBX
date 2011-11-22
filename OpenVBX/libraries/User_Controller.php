@@ -42,7 +42,7 @@ class User_Controller extends MY_Controller
 
 		// check for required configuration values
 		$this->load->database();
-		$this->load->library('ErrorMessages');
+		$this->load->library('ErrorMessages'); // deprecated in 1.2
 		$this->load->model('vbx_rest_access');
 		$this->load->model('vbx_message');
 
@@ -78,12 +78,11 @@ class User_Controller extends MY_Controller
 
 		$user_id = $this->session->userdata('user_id');
 
-		/* Signature check */
+		// Signature check
 		if (!empty($user_id))
 		{
-			$expected_signature = VBX_User::signature($user_id);
-			$actual_signature = $this->session->userdata('signature');
-			if ($expected_signature != $actual_signature)
+			$signature = $this->session->userdata('signature');
+			if (!VBX_User::check_signature($user_id, $signature))
 			{
 				$this->session->set_flashdata('error', 'Your session has expired');
 				$this->session->set_userdata('loggedin', false);
@@ -268,25 +267,22 @@ class User_Controller extends MY_Controller
 			$captcha_token = $headers['CaptchaToken'];
 		}
 
-		if (isset($username)
-			&& isset($password))
+		if (isset($username) && isset($password))
 		{
-			log_message('info', 'Authenticating user: '.var_export($username, true));
+			log_message('info', 'Logging in user: '.var_export($username, true));
 
-			$u = VBX_User::authenticate($username,
-										$password,
-										$captcha,
-										$captcha_token);
+			$u = VBX_User::login($username, $password, $captcha, $captcha_token);
 			if($u)
 			{
 				$next = $this->session->userdata('next');
 				$this->session->unset_userdata('next');
-				$userdata = array('email' => $u->email,
-								  'user_id' => $u->id,
-								  'is_admin' => $u->is_admin,
-								  'loggedin' => TRUE,
-								  'signature' => VBX_User::signature($u->id),
-								  );
+				$userdata = array(
+					'email' => $u->email,
+					'user_id' => $u->id,
+					'is_admin' => $u->is_admin,
+					'loggedin' => TRUE,
+					'signature' => VBX_User::signature($u->id),
+				);
 
 				$this->session->set_userdata($userdata);
 			}
@@ -320,6 +316,7 @@ class User_Controller extends MY_Controller
 		{
 			$data['counts'] = $counts = $this->message_counts();
 		}
+		
 		try
 		{
 			$data['callerid_numbers'] = $this->get_twilio_numbers();
@@ -342,7 +339,6 @@ class User_Controller extends MY_Controller
 
 	protected function get_user_numbers() 
 	{
-
 		$this->load->model('vbx_device');
 		$numbers = $this->vbx_device->get_by_user($this->user_id);
 

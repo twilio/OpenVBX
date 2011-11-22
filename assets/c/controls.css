@@ -66,21 +66,24 @@
 	-webkit-border-radius: 8px; /* Saf3+, Chrome */
 	-khtml-border-radius: 8px; /* Konqueror */
 	border-radius: 8px; /* Standard. IE9 */
-
 	-webkit-background-clip: padding-box;
 }
 
 .ui-dialog .ui-dialog-titlebar {
     position: relative;
     margin: 2px;
-    padding: 10px 20px;
+    padding: 10px 18px;
     color: #FFF;
     background-color: #222;
-	-moz-border-radius: 4px; /* FF1+ */
-	-webkit-border-radius: 4px; /* Saf3+, Chrome */
-	-khtml-border-radius: 4px; /* Konqueror */
-	border-radius: 4px; /* Standard. IE9 */
-
+	-moz-border-radius-topright: 4px; /* FF1+ */
+	-webkit-border-top-right-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-top-right-radius: 4px; /* Konqueror */
+	border-top-right-radius: 4px; /* Standard. IE9 */
+	-moz-border-radius-topleft: 4px; /* FF1+ */
+	-webkit-border-top-left-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-top-left-radius: 4px; /* Konqueror */
+	border-top-left-radius: 4px; /* Standard. IE9 */
+	border-bottom: 1px solid #1170a0;
 	-webkit-background-clip: padding-box;
 }
 
@@ -98,7 +101,6 @@
 	-webkit-border-radius: 4px; /* Saf3+, Chrome */
 	-khtml-border-radius: 4px; /* Konqueror */
 	border-radius: 4px; /* Standard. IE9 */
-
 	-webkit-background-clip: padding-box;
 }
 
@@ -111,8 +113,13 @@
     padding: 10px 20px;
 }
 
-.ui-dialog p {
+.ui-dialog p,
+.ui-dialog ul {
 	margin-bottom: 15px;
+}
+
+.ui-dialog :last-child {
+	margin-bottom: 0;
 }
 
 .ui-dialog .ui-dialog-buttonpane {
@@ -156,6 +163,7 @@
     height: 14px;
     right: 3px;
     bottom: 3px;
+	position: absolute;
 }
 
 .ui-draggable .ui-dialog-titlebar {

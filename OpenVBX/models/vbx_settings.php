@@ -29,33 +29,33 @@ class VBX_Settings extends Model
 	protected $tenants_table = 'tenants';
 
 	public $setting_options = array(
-								'twilio_sid',
-								'twilio_token',
-								'application_sid',
-								'twilio_endpoint',
-								'from_email',
-								'recording_host',
-								'theme',
-								'transcriptions',
-								'voice',
-								'voice_language',
-								'numbers_country',
-								'gravatars',
-								'connect_application_sid'
-							);
+		'twilio_sid',
+		'twilio_token',
+		'twilio_endpoint',
+		'from_email',
+		'recording_host',
+		'theme',
+		'transcriptions',
+		'voice',
+		'voice_language',
+		'numbers_country',
+		'gravatars',
+		'connect_application_sid',
+		'dial_timeout'
+	);
 
 	protected $settings_params = array(
-								'name',
-								'value',
-								'tenant_id'
-							);
+		'name',
+		'value',
+		'tenant_id'
+	);
 
 	protected $tenants_params = array(
-								'active',
-								'name',
-								'url_prefix',
-								'type'
-							);
+		'active',
+		'name',
+		'url_prefix',
+		'type'
+	);
 	
 	const CLIENT_TOKEN_TIMEOUT = 28800; // 8 hours
 	
@@ -67,7 +67,6 @@ class VBX_Settings extends Model
 	function __construct()
 	{
 		parent::__construct();
-		$this->cache_key = 'settings';
 	}
 
 // Tenants

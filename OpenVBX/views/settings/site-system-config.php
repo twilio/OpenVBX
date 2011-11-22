@@ -1,10 +1,10 @@
 <form name="vbx-system" action="<?php echo site_url('settings/site') ?>" method="POST" class="vbx-system-form vbx-form">
 	<div class="two-col">
-	<?php if($tenant_mode == Site::MODE_MULTI): /* PARENT TENANT ONLY */ ?>
-		<fieldset>
-	
+
+		<fieldset>	
 			<h3>System Config</h3>
-	
+
+		<?php if($tenant_mode == Site::MODE_MULTI): /* PARENT TENANT ONLY */ ?>	
 			<div class="vbx-input-complex vbx-input-container">
 				<label for="rewrite" class="field-label">Do you want to enable mod_rewrite support?
 					<?php
@@ -26,10 +26,24 @@
 				<label for="override" class="field-label">Hostname to use in recording URLs
 					<input class="medium" id="override" name="site[recording_host]" value="<?php echo @$recording_host["value"]; ?>">
 				</label>
-				<p class="instruction">(must be a CNAME for api.twilio.com)</p>
+				<p class="instruction">Must be a CNAME for api.twilio.com<br />See the Twilio documentation on <a href="http://www.twilio.com/docs/api/rest/tips#vanity-urls">Vanity Urls</a> for more info.</p>
+				<br />
+			</div>
+		<?php endif; /* END PARENT TENANT ONLY */ ?>
+				
+			<div class="vbx-input-complex vbx-input-container">
+				<label for="time_zone" class="field-label">Time Zone
+				<?php
+					$params = array(
+						'name' => 'site[server_time_zone]',
+						'id' => 'time_zone',
+						'class' => 'medium'
+					);
+					echo t_form_dropdown($params, $time_zones, $server_time_zone['value']);
+				?>
+				</label>
 			</div>
 		</fieldset>
-	<?php endif; /* END PARENT TENANT ONLY */ ?>
 	
 	<?php if (count($countries)): ?>
 		<fieldset>
@@ -50,7 +64,7 @@
 		</fieldset>
 	<?php endif; /* count $countries */?>
 
-		<fieldset>
+		<fieldset class="vbx-input-container">
 	
 			<h3>Transcriptions</h3>
 	
@@ -73,13 +87,36 @@
 							), $radio);
 						echo form_radio($radio, '0', ($transcriptions['value'] == 0));
 					?>
-				</label>						
-	
-			</fieldset>
+				</label>
+				
+			</fieldset>						
+			<p class="instruction">See the Twilio Documentation on <a href="http://www.twilio.com/docs/api/rest/transcription">Transcriptions</a> for more info.</p>
 	
 		</fieldset>
 	
-		<fieldset>
+		<fieldset class="vbx-input-container">
+			
+			<h3>Dialing</h3>
+			
+			<div class="vbx-input-complex vbx-input-container">
+				<label class="field-label">Dial Timeout
+					<?php
+						$params = array(
+							'name' => 'site[dial_timeout]',
+							'id' => 'site-dial-timeout',
+							'class' => 'medium'
+						);
+						$options = array();
+						for ($i = 5; $i <= 60; $options[$i] = $i, $i += 5);
+						echo t_form_dropdown($params, $options, $dial_timeout['value']);
+					?>
+				</label>
+			</div>
+			
+			<p class="instruction">Sets the amount of time a Dial will wait until it gives up. Affects<br />the Dial applet and the browser phone when making outgoing calls.</p>
+		</fieldset>
+	
+		<fieldset class="vbx-input-container">
 	
 			<h3>Text to Speech</h3>
 		
@@ -120,6 +157,7 @@
 				</label>
 			</div>
 		
+			<p class="instruction">See the Twilio Documentation for <a href="http://www.twilio.com/docs/api/twiml/say#attributes-voice">Voice &amp; Language Attributes</a><br />for more info.</p>
 		</fieldset>
 	</div>
 				

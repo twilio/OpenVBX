@@ -2,6 +2,7 @@
 
 ## Next
 
+- redesigned numbers screen to separate assigned, unassigned, and numbers in-use by other systems
 - changed user edit screens to always use dedicated page instead of a popup
 - Includes an object caching layer supporting the following mechanisms:
 	- local (per page load memory cache)
@@ -11,6 +12,11 @@
 - Includes an API cache that uses the database to cache API results from Twilio
 - Cleans most models for code consistency
 - Moves user `last_seen`, `online` & `last_login` to be user settings
+- fixing password length bug
+- upgrades password storage security using [phppass](http://www.openwall.com/phpass/)
+- adds helpful documentation snippets in the Settings screens
+- provides better error messages from failed API transactions
+- added time-zone server setting
 
 
 ## OpenVBX 1.1.2

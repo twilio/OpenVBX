@@ -107,7 +107,7 @@ else
  * results is to run from this file every time or make sure to set up mocks
  * each time for your individual tests.
  */
-//require_once('mocks/setupMocks.php');
+require_once('mocks/setupMocks.php');
 
 /*
 |---------------------------------------------------------------

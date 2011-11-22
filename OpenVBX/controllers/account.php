@@ -116,7 +116,7 @@ class Account extends User_Controller {
 		return $this->respond('', 'account', $data);
 	}
 
-	public function edit($user_id)
+	public function edit($user_id = null)
 	{	
 		// if no user-id passed, assume current user
 		if (empty($user_id))
@@ -230,32 +230,28 @@ class Account extends User_Controller {
 		$this->data['error'] = false;
 		$message = '';
 
-		if($user->password != VBX_User::salt_encrypt($old_pw))
+		if (VBX_User::authenticate($user, $old_pw))
 		{
-			$this->data['error'] = true;
-			$message = 'Password incorrect';
-		}
-		else if($new_pw != $new_pw2)
-		{
-			$this->data['error'] = true;
-			$message = 'Password mismatch';
+			try {
+				$user->set_password($new_pw, $new_pw2);
+				$message = 'Password Updated';
+			}
+			catch (Exception $e) {
+				$this->data['error'] = true;
+				$message = $e->getMessage();
+			}
 		}
 		else
 		{
-			$user->password = VBX_User::salt_encrypt($new_pw);
-			try
-			{
-				$user->save();
-				$message = 'Password changed';
-				$this->session->set_userdata('signature', VBX_User::signature($user->id));
-			}
-			catch(VBX_UserException $e)
-			{
-				$this->data['error'] = true;
-				$message = 'Unable to set password, please try again later.';
-				log_message('error', $message.': '.$e->getMessage());
-			}
+			$this->data['error'] = true;
+			$message = 'Incorrect Password';
 		}
+		
+		if ($user_id == $this->session->userdata('user_id'))
+		{
+			$this->session->set_userdata('signature', VBX_User::signature($user_id));
+		}
+		
 		$this->data['message'] = $message;
 
 		echo json_encode($this->data);

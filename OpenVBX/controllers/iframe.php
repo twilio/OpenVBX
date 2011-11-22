@@ -63,7 +63,7 @@ class Iframe extends User_Controller {
 		if (function_exists('twilio_dev_mods')) {
 			$data = twilio_dev_mods($data);
 		}
-		
+				
 		$data['browserphone'] = $this->init_browserphone_data($data['callerid_numbers']);
 		
 		$this->load->view('iframe', $data);
@@ -85,7 +85,7 @@ class Iframe extends User_Controller {
 			'devices' => array()
 		);
 		
-		
+		$default_caller_id = false;
 		if (is_array($callerid_numbers) && !empty($callerid_numbers))
 		{
 			$numbered = $named = array();

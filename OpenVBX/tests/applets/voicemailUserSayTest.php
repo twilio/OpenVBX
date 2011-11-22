@@ -57,7 +57,9 @@ class voicemailUserSayTest extends OpenVBX_Applet_TestCase
 		$xml = simplexml_load_string($out);
 		$this->assertEquals('SimpleXMLElement', get_class($xml));
 		
-		$this->assertRegExp('|(<Say>'.$this->users['user1']->voicemail.'</Say>)|', $out);
+		// this regex match is cheap, need better reg-fu to match possible
+		// language and voice attributes that could appear in any order
+		$this->assertRegExp('|(<Say(.*?)>'.$this->users['user1']->voicemail.'</Say>)|', $out);
 		$this->assertRegExp('|(<Record transcribeCallback="(.*?)"/>)|', $out);
 	}
 	

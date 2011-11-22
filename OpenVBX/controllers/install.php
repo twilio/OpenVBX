@@ -154,15 +154,15 @@ class Install extends Controller {
 						'missing, but optional',
 						false);
 
-		$this->add_test(is_writable(APPPATH . 'config'),
+		$this->add_test(is_writable(APPPATH.'config'),
 						'Config Dir',
 						'writable',
-						'permission denied: '. APPPATH . 'config');
+						'permission denied: '.APPPATH.'config');
 						
-		$this->add_test(is_writable(APPPATH . '../audio-uploads'),
+		$this->add_test(is_writable(APPPATH.'../audio-uploads'),
 						'Upload Dir',
 						'writable',
-						'permission denied: '. realpath(APPPATH . '../audio-uploads'));
+						'permission denied: '.realpath(APPPATH.'../audio-uploads'));
 
 		$this->add_test(is_file(APPPATH.'../.htaccess'),
 						'.htaccess File',
@@ -187,10 +187,12 @@ class Install extends Controller {
 	private function add_test($pass, $name, $pass_text, $fail_text, $required = true)
 	{
 		$pass = (boolean)$pass;
-		$this->tests[] = array('name' => $name,
-							   'pass' => $pass,
-							   'required' => $required,
-							   'message' => ($pass ? $pass_text : $fail_text));
+		$this->tests[] = array(
+			'name' => $name,
+			'pass' => $pass,
+			'required' => $required,
+			'message' => ($pass ? $pass_text : $fail_text)
+		);
 
 		if($required) $this->pass = $this->pass && $pass;
 	}
@@ -245,15 +247,19 @@ class Install extends Controller {
 			}
 
 			// test for mysqli compat
-			if (function_exists('mysqli_connect')) {
+			if (function_exists('mysqli_connect')) 
+			{
 				// server info won't work without first selecting a table
 				mysql_select_db($database['default']['database']);
 				$server_version = mysql_get_server_info($dbh);
 				if (!empty($server_version)) {
-					if (version_compare($server_version, '4.1.13', '>=') && version_compare($server_version, '5', '<')) {
+					if (version_compare($server_version, '4.1.13', '>=') 
+						&& version_compare($server_version, '5', '<')) 
+					{
 						$database['default']['dbdriver'] = 'mysqli';
 					}
-					elseif (version_compare($server_version, '5.0.7', '>=')) {
+					elseif (version_compare($server_version, '5.0.7', '>=')) 
+					{
 						$database['default']['dbdriver'] = 'mysqli';
 					}
 				}
@@ -271,7 +277,6 @@ class Install extends Controller {
 			{
 				$this->setup_connect_app($openvbx_settings);
 			}
-
 		}
 		catch(InstallException $e)
 		{
@@ -295,7 +300,8 @@ class Install extends Controller {
 			if ($connect_application->sid == $settings['connect_application_sid'])
 			{
 				$site_url = site_url();
-				if ($settings['rewrite_enabled']) {
+				if ($settings['rewrite_enabled']) 
+				{
 					$site_url = str_replace('/index.php', '', $site_url);
 				}
 			
@@ -310,15 +316,18 @@ class Install extends Controller {
 				);
 		
 				$updated = false;
-				foreach ($required_settings as $key => $setting) {
+				foreach ($required_settings as $key => $setting) 
+				{
 					$app_key = Services_Twilio::decamelize($key);
-					if ($connect_application->$app_key != $setting) {
+					if ($connect_application->$app_key != $setting) 
+					{
 						$connect_application->$app_key = $setting;
 						$updated = true;
 					}
 				}
 
-				if ($updated) {
+				if ($updated) 
+				{
 					$connect_application->update(array(
 						'FriendlyName' => $connect_application->friendly_name,
 						'Description' => $connect_application->description,
@@ -355,7 +364,8 @@ class Install extends Controller {
 
 			if(!mysql_query($sql, $dbh))
 			{
-				throw new InstallException( "Failed to run sql: ".$sql. " :: ". mysql_error($dbh), 2);
+				throw new InstallException( "Failed to run sql: ".$sql. " :: ". 
+											mysql_error($dbh), 2);
 			}
 		}
 
@@ -476,13 +486,15 @@ class Install extends Controller {
 			{
 				if($this->vbx_settings->add($key, $val, 1) === false)
 				{
-					throw new InstallException( "Failed to create setting for $key. Please re-create database", 0);
+					throw new InstallException('Failed to create setting for '.
+												$key.'. Please re-create database', 0);
 				}
 			}
 		}
 		catch(SettingsException $e)
 		{
-			throw new InstallException( 'Unable to setup valid instance.  Please re-create your database');
+			throw new InstallException('Unable to setup valid instance. '.
+										'Please re-create your database');
 		}
 	}
 
@@ -503,8 +515,10 @@ class Install extends Controller {
 			{
 				$this->account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
 			}
-			$applications = $this->account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
-
+			$applications = $this->account->applications->getIterator(0, 10, array(
+				'FriendlyName' => $app_name
+			));
+			
 			$application = false;
 			foreach ($applications as $_application)
 			{
@@ -516,7 +530,8 @@ class Install extends Controller {
 			}
 			
 			$site_url = site_url();
-			if ($settings['rewrite_enabled']) {
+			if ($settings['rewrite_enabled']) 
+			{
 				$site_url = str_replace('/index.php', '', $site_url);
 			}
 			
@@ -551,7 +566,8 @@ class Install extends Controller {
 	{
 		$step = $this->input->post('step');
 		$json = array('success' => true);
-		if($step == 1) {
+		if($step == 1) 
+		{
 			echo json_encode($json);
 			return;
 		}
@@ -574,7 +590,6 @@ class Install extends Controller {
 
 		}
 
-
 		$json['tplvars'] = $tplvars;
 		echo json_encode($json);
 	}
@@ -592,9 +607,11 @@ class Install extends Controller {
 									   $database['default']['password'])))
 			{
 				$error = mysql_error();
-				$json['errors'] = array('hostname' => $error,
-										'username' => '',
-										'password' => '');
+				$json['errors'] = array(
+					'hostname' => $error,
+					'username' => '',
+					'password' => ''
+				);
 				throw new InstallException("Failed to connect to database: $error", 2);
 			}
 
@@ -626,7 +643,11 @@ class Install extends Controller {
 	{
 		$this->load->model('vbx_settings');
 		
-		$json = array('success' => true, 'step' => 2, 'message' => 'success');
+		$json = array(
+			'success' => true, 
+			'step' => 2, 
+			'message' => 'success'
+		);
 		$twilio_sid = $this->openvbx_settings['twilio_sid'];
 		$twilio_token = $this->openvbx_settings['twilio_token'];
 		$connect_app = $this->openvbx_settings['connect_application_sid'];
@@ -648,13 +669,15 @@ class Install extends Controller {
 			}
 
 			// check the connect app if a sid is provided
-			if (!empty($connect_app)) {
+			if (!empty($connect_app)) 
+			{
 				try {
 					$connect_application = $account->connect_apps->get($connect_app);
 					$friendly_name = $application->friendly_name;
 				}
 				catch (Exception $e) {
-					switch ($e->getCode()) {
+					switch ($e->getCode()) 
+					{
 						case 0:
 							// return a better message than "resource not found"
 							throw new InstallException('The Connect Application SID &ldquo;'.$connect_app.'&rdquo; was not found.', 0);
@@ -670,7 +693,8 @@ class Install extends Controller {
 			$json['success'] = false;
 			$json['step'] = $e->getCode();
 
-			switch ($e->getCode()) {
+			switch ($e->getCode()) 
+			{
 				case '20003':
 					$json['message'] = 'Authentication Failed. Invalid Twilio SID or Token';
 					break;
@@ -691,7 +715,10 @@ class Install extends Controller {
 
 		try
 		{
-			foreach(array('from_email' => 'Notification Sender Email Address') as $required_field => $label)
+			$required_fields = array(
+				'from_email' => 'Notification Sender Email Address'
+			);
+			foreach($required_fields as $required_field => $label)
 			{
 				if(empty($this->openvbx_settings[$required_field]))
 				{
@@ -723,9 +750,12 @@ class Install extends Controller {
 			if($this->user['password2'] != $this->user['password'])
 				throw new InstallException('Your administrative password was not typed correctly.');
 
-			foreach(array('email' => 'Email Address',
-						  'password' => 'Password',
-						  'firstname' => 'First Name') as $required_field => $label)
+			$required_fields = array(
+				'email' => 'Email Address',
+				'password' => 'Password',
+				'firstname' => 'First Name'
+			);
+			foreach($required_fields as $required_field => $label)
 			{
 				if(empty($this->user[$required_field]))
 				{

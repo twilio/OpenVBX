@@ -37,7 +37,9 @@ class Services_Twilio_AutoPagingIterator
             return next($this->items);
         }
         catch (Services_Twilio_RestException $e) {
-            // Swallow the out-of-range error
+            if ($e->getCode() != 20006) {
+                throw $e;
+            }
         }
     }
 
@@ -59,7 +61,9 @@ class Services_Twilio_AutoPagingIterator
             return key($this->items) !== null;
         }
         catch (Services_Twilio_RestException $e) {
-            // Swallow the out-of-range error
+            if ($e->getCode() != 20006) {
+                throw $e;
+            }
         }
         return false;
     }

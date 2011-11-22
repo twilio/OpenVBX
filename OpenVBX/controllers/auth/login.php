@@ -95,10 +95,10 @@ class Login extends MY_Controller
 	{
 		try
 		{
-			$user = VBX_User::authenticate($this->input->post('email'),
-										   $this->input->post('pw'),
-										   $this->input->post('captcha'),
-										   $this->input->post('captcha_token'));
+			$user = VBX_User::login($this->input->post('email'),
+									$this->input->post('pw'),
+									$this->input->post('captcha'),
+									$this->input->post('captcha_token'));
 
 			if ($user) {
 				$connect_auth = OpenVBX::connectAuthTenant($user->tenant_id);
@@ -117,7 +117,7 @@ class Login extends MY_Controller
 					'loggedin' => TRUE,
 					'signature' => VBX_User::signature($user->id),
 				);
-							
+
 				$this->session->set_userdata($userdata);
 
 				if(OpenVBX::schemaVersion() >= 24)
@@ -144,7 +144,9 @@ class Login extends MY_Controller
 
 	protected function after_login_completed($user, $redirect)
 	{
-		// Redirect to flows if this is an admin and his inbox is zero
+		$last_seen = $user->last_seen;
+	
+		// Redirect to flows if this is an admin and his inbox is zero 
 		// (but not if the caller is hitting the REST api)
 		if($this->response_type != 'json')
 		{
@@ -160,23 +162,22 @@ class Login extends MY_Controller
 					{
 						$banner = array(
 							'id' => 'first-login',
-							'html' => 'To start setting up OpenVBX, we suggest you start out with'.
-									  ' building your first <a href="'.site_url('flows').
-									  '">call flow</a>. ',
+
+							'html' => $this->load->view('messages/first-login', array(), true),
 							'title' => 'Welcome to OpenVBX'
 						);
 						setrawcookie('banner',
 									 rawurlencode(json_encode($banner)),
 									 0,
 									 '/'.(($this->tenant->id > 1)? $this->tenant->name : '')
-									);
+								);
 						setcookie('last_known_url', site_url('/numbers'), null, '/');
 						return redirect('');
 					}
 				}
 				catch(VBX_IncomingNumberException $e)
 				{
-					/* Handle gracefully but log it */
+					// Handle gracefully but log it
 					log_message('error', $e->getMessage());
 				}
 			}

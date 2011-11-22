@@ -48,7 +48,16 @@ class VBX_Incoming_numbers extends Model
 			}
 		}
 		catch (Exception $e) {
-			throw new VBX_IncomingNumberException($e->getMessage);
+			$msg = 'Unable to fetch Sandbox information: ';
+			switch ($e->getCode())
+			{
+				case 20003:
+					$msg .= 'Authentication Failed.';
+					break;
+				default:
+					$msg .= $e->getMessage();
+			}
+			throw new VBX_IncomingNumberException($msg, $e->getCode());
 		}
 
 		return $sandbox;
@@ -79,7 +88,16 @@ class VBX_Incoming_numbers extends Model
 			}
 		}
 		catch (Exception $e) {
-			throw new VBX_IncomingNumberException($e->getMessage());
+			$msg = 'Unable to fetch Numbers: ';
+			switch ($e->getCode())
+			{
+				case 20003:
+					$msg .= 'Authentication Failed.';
+					break;
+				default:
+					$msg .= $e->getMessage();
+			}
+			throw new VBX_IncomingNumberException($msg, $e->getCode());
 		}
 		
 		if ($enabled_sandbox_number) 
@@ -178,8 +196,7 @@ class VBX_Incoming_numbers extends Model
 		$num->installed = ($base_pos !== FALSE);
 
 		$matches = array();
-
-		if (!preg_match('/\/(voice|sms)\/(\d+)$/', $num->url, $matches) == 0)
+		if ($num->installed && preg_match('/\/(voice|sms)\/(\d+)$/', $num->url, $matches) > 0)
 		{
 			$num->flow_id = intval($matches[2]);
 		}

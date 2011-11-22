@@ -63,8 +63,10 @@ class TwimlDial {
 		$this->dial_whom_instance = get_class($this->dial_whom_user_or_group);
 		
 		if (count($settings)) {
-			foreach ($settings as $setting => $value) {
-				if (isset($this->$setting)) {
+			foreach ($settings as $setting => $value) 
+			{
+				if (isset($this->$setting)) 
+				{
 					$this->$setting = $value;
 				}
 			}

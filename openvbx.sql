@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `is_active` tinyint(1) default 1,
   `first_name` varchar(100) default NULL,
   `last_name` varchar(100) default NULL,
-  `password` varchar(40) default NULL,
+  `password` varchar(128) default NULL,
   `invite_code` varchar(32) NULL,
   `email` varchar(200) default NULL,
   `pin` varchar(40) default NULL,
@@ -328,7 +328,8 @@ INSERT INTO settings
 	   ('voice_language', 'en', 1),
 	   ('numbers_country', 'US', 1),
 	   ('gravatars', 0, 1),
-	   ('connect_application_sid', 0, 1);
+	   ('connect_application_sid', 0, 1),
+	   ('dial_timeout', 15, 1);
 
 INSERT INTO groups
        (name, is_active, tenant_id)

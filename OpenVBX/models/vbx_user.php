@@ -54,12 +54,23 @@ class VBX_User extends MY_Model {
 	
 	public $devices;
 
+	/**
+	 * Set the default min-password length
+	 * Fortunately the word "password" is 8 characters ;)
+	 *
+	 * @var int
+	 */
+	public $min_password_length = 8;
+
+	const HASH_ITERATION_COUNT = 8;
+	const PORTABLE_HASHES = FALSE;
+
 	public function __construct($object = null)
 	{
 		parent::__construct($object);
 	}
 
-	static function get($search_options = array(), $limit = -1, $offset = 0)
+	public static function get($search_options = array(), $limit = -1, $offset = 0)
 	{
 		if(empty($search_options))
 		{
@@ -71,12 +82,10 @@ class VBX_User extends MY_Model {
 			$search_options = array('id' => $search_options, 'is_active' => 1);
 		}
 		
-		$user = self::search($search_options, 1, 0);
-
-		return $user;
+		return self::search($search_options, 1, 0);
 	}
 
-	static function search($search_options = array(), $limit = -1, $offset = 0)
+	public static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
 		$ci =& get_instance();
 		
@@ -122,7 +131,7 @@ class VBX_User extends MY_Model {
 											)));
 			}
 		}
-		
+
 		if($limit == 1 && count($users) == 1)
 		{
 			return $users[0];
@@ -131,7 +140,7 @@ class VBX_User extends MY_Model {
 		return $users;
 	}
 
-	static function authenticate($email, $password, $captcha, $captcha_token)
+	public static function login($email, $password, $captcha, $captcha_token)
 	{
 		$user = VBX_User::get(array('email' => $email));
 		if (empty($user))
@@ -157,7 +166,7 @@ class VBX_User extends MY_Model {
 		}
 	}
 
-	function login_google($user, $email, $password, $captcha, $captcha_token)
+	protected function login_google($user, $email, $password, $captcha, $captcha_token)
 	{
 		$this->load->library('GoogleDomain');
 		try
@@ -188,9 +197,16 @@ class VBX_User extends MY_Model {
 		return $user;
 	}
 
-	function login_openvbx($user, $password)
-	{
-		if ($user->password != self::salt_encrypt($password)) 
+	/**
+	 * Attempt to log in the user
+	 *
+	 * @param VBX_User $user 
+	 * @param string $password 
+	 * @return mixed VBX_User on success, bool FALSE on failure
+	 */
+	protected function login_openvbx($user, $password)
+	{				
+		if (!self::authenticate($user, $password)) 
 		{
 			return FALSE;
 		} 
@@ -199,6 +215,13 @@ class VBX_User extends MY_Model {
 			// Login succeeded
 			if(OpenVBX::schemaVersion() >= 24)
 			{
+				$user->last_login = new MY_ModelLiteral('UTC_TIMESTAMP()');
+				// auto-upgrade old passwords
+				if (OpenVBX::schemaVersion() > 63 && strlen($user->password) == 40)
+				{
+					$user->password = self::salt_encrypt($password);
+				}
+
 				try
 				{
 					$user->setting_set('last_login', new MY_ModelLiteral('UTC_TIMESTAMP()'));
@@ -213,23 +236,92 @@ class VBX_User extends MY_Model {
 		}
 	}
 
-	function full_name()
+	/**
+	 * Authenticate a user
+	 * simple true/false return on password check
+	 * 
+	 * Will attempt legacy login if 1st attempt fails
+	 *
+	 * @param VBX_User $user 
+	 * @param string $password 
+	 * @return bool
+	 */
+	public static function authenticate($user, $password)
+	{		
+		// if we're not passed a user object 
+		// assume that it is a user_id
+		if (!($user instanceof VBX_User))
+		{
+			$user = VBX_User::get(intval($user));
+		}
+		
+		$ci =& get_instance();		
+		$ci->load->library('PasswordHash');
+		
+		$hashr = new PasswordHash(self::HASH_ITERATION_COUNT, self::PORTABLE_HASHES);
+		$login = $hashr->CheckPassword(self::salt_password($password), $user->password);
+				
+		// attempt legacy login on failure
+		if (!$login && strlen($user->password) == 40)
+		{
+			$login = ($user->password == self::salt_encrypt($password, true));
+		}
+				
+		return $login;
+	}
+	
+	public static function check_signature($user_id, $signature)
+	{	
+		return ($signature == self::signature($user_id));
+	}
+
+	/**
+	 * Return the user's full name
+	 *
+	 * @return string
+	 */
+	public function full_name()
 	{
 		$full_name = trim($this->first_name . ' ' . $this->last_name);
 		return empty($full_name) ? $this->email : $full_name;
 	}
 
-	function set_password($password, $confirmed_password)
+	/**
+	 * Set the user's password
+	 * 
+	 * Validation rules:
+	 * - the password & confirmation must match
+	 * - password cannot be empty
+	 * - password must be $min_password_length to be valid
+	 *
+	 * @param string $password 
+	 * @param string $confirmed_password 
+	 * @return void
+	 */
+	public function set_password($password, $confirmed_password)
 	{
-		if($password != $confirmed_password) 
+		$password = trim($password);
+		$confirmed_password = trim($confirmed_password);
+		
+		if ($password != $confirmed_password) {
+			throw new VBX_UserException("Password typed incorrectly");
+		}
+		
+		if (strlen($password) == 0)
 		{
-			throw(new VBX_UserException("Password typed incorrectly"));
+			throw new VBX_UserException('Password cannot be empty');
+		}
+		elseif (strlen($password) < $this->min_password_length)
+		{
+			throw new VBX_UserException('Password must be at least '.$this->min_password_length.
+										' characters in length');
 		}
 		
 		$ci =& get_instance();
 		$ci->load->helper('email');
+		
 		$this->password = self::salt_encrypt($password);
-		$this->invite_code = self::salt_encrypt($password);
+		$this->invite_code = $this->generate_invite_code();
 		
 		try
 		{
@@ -244,8 +336,14 @@ class VBX_User extends MY_Model {
 		return $result;
 	}
 
-	// return an array of all the ids of the groups this user belongs to
-	static function get_group_ids($user_id)
+	/**
+	 * return an array of all the ids of the 
+	 * groups this user belongs to
+	 *
+	 * @param int $user_id
+	 * @return array
+	 */
+	public static function get_group_ids($user_id)
 	{
 		$ci = &get_instance();
 		$result = $ci->db
@@ -300,12 +398,13 @@ class VBX_User extends MY_Model {
 	 *
 	 * Encrypts this objects password with a random salt.
 	 *
-	 * @access	private
+	 * @deprecated 1.2 - doesn't appear to be used anywhere
 	 * @param	string
 	 * @return	void
 	 */
-	public function _encrypt($field)
+	protected function _encrypt($field)
 	{
+		_deprecated_notice(__METHOD__, '1.2');
 		if (!empty($this->$field))
 		{
 			$this->$field = self::salt_encrypt($this->$field);
@@ -324,11 +423,11 @@ class VBX_User extends MY_Model {
 
 	public function send_reset_notification()
 	{
-		/* Set a random invitation code for resetting password */
-		$this->invite_code = substr(self::salt_encrypt(mt_rand()), 0, 20);
+		// Set a random invitation code for resetting password
+		$this->invite_code = $this->generate_invite_code();
 		$this->save();
 
-		/* Email the user the reset url */
+		// Email the user the reset url
 		$maildata = array(
 			'invite_code' => $this->invite_code,
 			'reset_url' => tenant_url("/auth/reset/{$this->invite_code}", $this->tenant_id)
@@ -338,11 +437,11 @@ class VBX_User extends MY_Model {
 
 	public function send_new_user_notification()
 	{
-		/* Set a random invitation code for resetting password */
-		$this->invite_code = substr(self::salt_encrypt(mt_rand()), 0, 20);
+		// Set a random invitation code for resetting password
+		$this->invite_code = $this->generate_invite_code();
 		$this->save();
 
-		/* Email the user the reset url */
+		// Email the user the reset url
 		$maildata = array(
 			'invite_code' => $this->invite_code,
 			'name' => $this->first_name,
@@ -351,12 +450,42 @@ class VBX_User extends MY_Model {
 		openvbx_mail($this->email, 'Welcome aboard', 'welcome-user', $maildata);
 	}
 
-
-	public static function salt_encrypt($value)
+	/**
+	 * Encrypt a string
+	 * For legacy it uses the 'salt' value from `OpenVBX/config/openvbx.php`
+	 * 
+	 * @param string $value 
+	 * @param bool $legacy - wether to user the older sha1 method
+	 * @return string
+	 */
+	public static function salt_encrypt($value, $legacy = false)
 	{
 		$salt = config_item('salt');
-		$result = sha1($salt . $value);
+		
+		if ($legacy === false)
+		{
+			$ci =& get_instance();
+			$ci->load->library('PasswordHash');
+			$hashr = new PasswordHash(self::HASH_ITERATION_COUNT, self::PORTABLE_HASHES);
+			$result = $hashr->HashPassword(self::salt_password($value));
+		}
+		else
+		{
+			$result = sha1($salt.$value);
+		}
+		
 		return $result;
+	}
+	
+	protected static function salt_password($password)
+	{
+		$salt = config_item('salt');
+		return md5($salt.$password);
+	}
+
+	protected function generate_invite_code()
+	{
+		return substr(self::salt_encrypt(mt_rand()), 0, 20);
 	}
 
 	function get_auth_type($auth_type = null)
@@ -373,10 +502,8 @@ class VBX_User extends MY_Model {
 			$ci->db->where('id', $auth_type);
 		}
 
-		$auth_types = $ci->db
-						->get()
-						->result();
-			
+		$auth_types = $ci->db->get()->result();
+
 		if(isset($auth_types[0]))
 		{
 			return $auth_types[0];
@@ -447,13 +574,13 @@ class VBX_User extends MY_Model {
 		}
 		
 		$list = implode(',', array(
-			$user->id,
-			$user->password,
-			$user->tenant_id,
-			$user->is_admin,
+		   $user->id,
+		   $user->password,
+		   $user->tenant_id,
+		   $user->is_admin
 		));
 
-		return self::salt_encrypt( $list );
+		return self::salt_encrypt($list, true);
 	}
 	
 	/**

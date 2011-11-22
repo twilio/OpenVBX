@@ -133,7 +133,7 @@
 						</fieldset>
 					</div>
 <!-- step 5 -->
-					<div id="step-5" class="step submit">
+					<div id="step-5" class="step prev submit">
 						<a target="_blank" class="help" href="http://openvbx.org/install#step5" title="Get help at OpenVBX.org">Help</a>
 						<h1><span class="number">5.</span>Your Account</h1>
 
