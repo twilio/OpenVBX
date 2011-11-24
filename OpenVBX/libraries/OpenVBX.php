@@ -383,7 +383,6 @@ class OpenVBX {
 		
 		if (!(self::$_twilioValidator instanceof Services_Twilio_RequestValidator)) 
 		{
-			$ci =& get_instance();
 			self::$_twilioValidator = new Services_Twilio_RequestValidator($ci->twilio_token);
 		}
 		
@@ -397,13 +396,21 @@ class OpenVBX {
 			// we were handed a relative uri, make it full
 			$url = site_url($url);
 		}
+		
+		// without rewrite enabled we need to ensure that the query string
+		// is properly appended to the url when being reconstructed
+		if ($ci->vbx_settings->get('rewrite_enabled', VBX_PARENT_TENANT) < 1 
+			&& strpos($url, $_SERVER['QUERY_STRING']) === false)
+		{
+			$url .= '?'.$_SERVER['QUERY_STRING'];
+		}
 	
 		if (empty($post_vars)) 
 		{
 			// we weren't handed post-vars, use the default
 			$post_vars = $_POST;
 		}
-		
+
 		return self::$_twilioValidator->validate(self::getRequestSignature(), $url, $post_vars);
 	}
 	

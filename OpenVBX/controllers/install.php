@@ -100,6 +100,8 @@ class Install extends Controller {
 		$this->tests = array();
 		$this->pass = TRUE;
 
+		$this->pre_test_htaccess();
+
 		$this->add_test(version_compare(PHP_VERSION, $this->min_php_version, '>='),
 						'PHP Version',
 						PHP_VERSION,
@@ -159,7 +161,6 @@ class Install extends Controller {
 	{
 		// perform install tests
 		$tplvars = $this->input_args();
-
 		$this->run_tests();
 
 		$tplvars['tests'] = $this->tests;
@@ -773,5 +774,26 @@ class Install extends Controller {
 			$json['message'] = $e->getMessage();
 		}
 		return $json;
+	}
+	
+	/**
+	 * If .htaccess file doesn't exist try to preemptively 
+	 * create one from the htaccess_dist file. Nothing special,
+	 * just try to make a copy of the file. If it doesn't
+	 * work it doesn't work.
+	 *
+	 * @return void
+	 */
+	protected function pre_test_htaccess()
+	{
+		if (!is_file(APPPATH.'../.htaccess') 
+			&& is_writable(APPPATH.'../') 
+			&& is_file(APPPATH.'../htaccess_dist'))
+		{
+			$message = 'Trying to copy `htaccess_dist` to `.htaccess`... ';
+			$result = copy(APPPATH.'../htaccess_dist', APPPATH.'../.htaccess');
+			$message .= ($result ? 'success' : 'failed');
+			log_message($message);
+		}
 	}
 }
