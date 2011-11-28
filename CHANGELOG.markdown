@@ -15,6 +15,7 @@
 - add attempt during install to recreate the `.htaccess` file if it is not present
 - fixes a request validation error when dialing using a device and when `mod_rewrite` is not enabled
 - add link to Troubleshooting/Common Issues page on GitHub
+- fixes an errant check on tenant when checking it tenant is using Twilio Connect
 
 
 ## OpenVBX 1.1.2

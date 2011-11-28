@@ -437,27 +437,26 @@ class OpenVBX {
 		$ci =& get_instance();
 		$tenant = $ci->db->get_where('tenants', array('id' => $tenant_id))->result();
 										
-		if ($tenant && $tenant[0]->id == $tenant_id) 
+		if ($tenant 
+			&& $tenant[0]->id == $tenant_id
+			&& $tenant[0]->type == VBX_Settings::AUTH_TYPE_CONNECT) 
 		{
 			try {
-				if ($tenant[0]->type == VBX_Settings::AUTH_TYPE_CONNECT) 
-				{
-					$sid = $ci->db->get_where('settings', array(
-										'name' => 'twilio_sid',
-										'tenant_id' => $tenant[0]->id
-									));
-					$token = $ci->db->get_where('settings', array(
-										'name' => 'twilio_token',
-										'tenant_id' => VBX_PARENT_TENANT
-									));
-				}
+				$sid = $ci->db->get_where('settings', array(
+									'name' => 'twilio_sid',
+									'tenant_id' => $tenant[0]->id
+								));
+				$token = $ci->db->get_where('settings', array(
+									'name' => 'twilio_token',
+									'tenant_id' => VBX_PARENT_TENANT
+								));
 				$account = self::getAccount($sid, $token);
 				$account_type = $account->type;
 			}
 			catch (Exception $e) {
+				$auth = false;
 				// @todo - check for 20006 code, currently returns 20003
 				log_message('Connect auth failed: '.$e->getMessage().' :: '.$e->getCode());
-				$auth = false;
 			}
 		}
 		
