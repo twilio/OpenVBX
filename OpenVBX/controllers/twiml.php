@@ -73,7 +73,7 @@ class Twiml extends MY_Controller {
 	function start_sms($flow_id)
 	{
 		validate_rest_request();
-		
+
 		log_message("info", "Calling SMS Flow $flow_id");
 		$body = $this->input->get_post('Body');
 		$this->flow_type = 'sms';

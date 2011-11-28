@@ -400,6 +400,7 @@ class OpenVBX {
 		// without rewrite enabled we need to ensure that the query string
 		// is properly appended to the url when being reconstructed
 		if ($ci->vbx_settings->get('rewrite_enabled', VBX_PARENT_TENANT) < 1 
+			&& !empty($_SERVER['QUERY_STRING'])
 			&& strpos($url, $_SERVER['QUERY_STRING']) === false)
 		{
 			$url .= '?'.$_SERVER['QUERY_STRING'];
