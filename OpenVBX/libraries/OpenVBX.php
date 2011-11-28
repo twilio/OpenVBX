@@ -440,11 +440,11 @@ class OpenVBX {
 		if ($tenant && $tenant[0]->id == $tenant_id) 
 		{
 			try {
-				if ($tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) 
+				if ($tenant[0]->type == VBX_Settings::AUTH_TYPE_CONNECT) 
 				{
 					$sid = $ci->db->get_where('settings', array(
 										'name' => 'twilio_sid',
-										'tenant_id' => $tenant->id
+										'tenant_id' => $tenant[0]->id
 									));
 					$token = $ci->db->get_where('settings', array(
 										'name' => 'twilio_token',
