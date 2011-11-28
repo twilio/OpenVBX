@@ -1,3 +1,4 @@
+<?php global $dial_disabled; ?>
 <ul id="client-ui-user-list" style="margin-top: 0;">
 	<?php foreach ($users as $user): ?>
 		<li id="user-<?php echo $user->id; ?>" class="user-item no-icons">
