@@ -517,7 +517,7 @@ class Install extends Controller {
 			$params = array(
 				'FriendlyName' => $app_name,
 				'VoiceUrl' => $site_url.'/twiml/dial',
-				'VoiceFallbackUrl' => asset_url('/fallback/voice.php'),
+				'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
 				'VoiceMethod' => 'POST',
 				'SmsUrl' => '',
 				'SmsFallbackUrl' => '',

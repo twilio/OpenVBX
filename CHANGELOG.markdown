@@ -16,6 +16,8 @@
 - fixes a request validation error when dialing using a device and when `mod_rewrite` is not enabled
 - add link to Troubleshooting/Common Issues page on GitHub
 - fixes an errant check on tenant when checking it tenant is using Twilio Connect
+- apply consistent use of `asset_url()`
+- fixed error that would cause System Config update to cause an Application update with empty urls
 
 
 ## OpenVBX 1.1.2

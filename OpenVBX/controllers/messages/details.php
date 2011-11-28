@@ -376,7 +376,7 @@ class Details extends User_Controller
 		}
 		
 		$data['gravatars'] = $this->vbx_settings->get('gravatars', $this->tenant->id);
-		$data['default_gravatar'] = asset_url().'/assets/i/user-icon.png';
+		$data['default_gravatar'] = asset_url('assets/i/user-icon.png');
 		
 		$date = date('M j, Y h:i:s', strtotime($message->created));
 		$this->respond(' - '.$data['group']. " voicemail from  {$message->pretty_caller} at {$date} ", 'messages/details', $data);
