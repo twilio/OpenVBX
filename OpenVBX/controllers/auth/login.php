@@ -162,7 +162,7 @@ class Login extends MY_Controller
 					{
 						$banner = array(
 							'id' => 'first-login',
-							'html' => $this->load->view('messages/first-login', array(), true),
+							'html' => $this->load->view('banners/first-login', array(), true),
 							'title' => 'Welcome to OpenVBX'
 						);
 						$path = '/'.(($this->tenant->id > 1)? $this->tenant->name : '');

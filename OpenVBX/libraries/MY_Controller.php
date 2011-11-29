@@ -56,7 +56,8 @@ class MY_Controller extends Controller
 	{
 		parent::__construct();
 
-		if(!file_exists(APPPATH . 'config/openvbx.php') || !file_exists(APPPATH . 'config/database.php'))
+		if(!file_exists(APPPATH . 'config/openvbx.php') 
+			|| !file_exists(APPPATH . 'config/database.php'))
 		{
 			redirect('install');
 		}
