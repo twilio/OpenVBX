@@ -21,6 +21,18 @@
     font-style: italic;
 }
 
+.vbx-form .field-label.notice {
+	background: #FAFAD2;
+	margin: 10px 0;
+	padding: 10px;
+	border: 1px solid #FFD700;
+	-moz-border-radius: 4px; /* FF1+ */
+	-webkit-border-radius: 4px; /* Saf3+, Chrome */
+	-khtml-border-radius: 4px; /* Konqueror */
+	border-radius: 4px; /* Standard. IE9 */
+	-webkit-background-clip: padding-box;
+}
+
 .vbx-input-container input.tiny {
         display: block;
         width: 40px;
@@ -222,15 +234,21 @@
 	-webkit-border-radius: 4px; /* Saf3+, Chrome */
 	-khtml-border-radius: 4px; /* Konqueror */
 	border-radius: 4px; /* Standard. IE9 */
-
 	-webkit-background-clip: padding-box;
 }
 
-.vbx-form .info p {
+.vbx-form .info p,
+.vbx-form .info ul {
 	margin: 0 0 10px 0;
 }
 .vbx-form .info p:last-child {
 	margin: 0;
+}
+.vbx-form .info ul {
+	margin-left: 15px;
+}
+.vbx-form .info ul li {
+	list-style: disc outside;
 }
 
 #vbx-settings-forms fieldset {

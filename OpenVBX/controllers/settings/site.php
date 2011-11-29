@@ -98,9 +98,9 @@ class Site extends User_Controller
 		foreach($current_settings as $setting)
 		{
 			$sorted_settings[$setting->name] = array(
-													 'id' => $setting->id,
-													 'value' => $setting->value
-													 );
+				'id' => $setting->id,
+				'value' => $setting->value
+			);
 		}
 
 		return $sorted_settings;
@@ -164,6 +164,43 @@ class Site extends User_Controller
 				$data['countries'][$country->country_code] = $country->country;
 			}
 		}
+				
+		// verify Client Application data
+		$data['client_application_error'] = false;
+		$account = OpenVBX::getAccount();
+		$application = $account->applications->get($data['application_sid']['value']);
+		if (!empty($data['application_sid']['value']))
+		{
+			try {
+				if (strlen($application->sid) == 0)
+				{
+					// application missing
+					$data['client_application_error'] = 2;
+				}
+				elseif (strlen($application->voice_url) == 0 || 
+						strlen($application->voice_fallback_url) == 0)
+				{
+					// urls are missing
+					$data['client_application_error'] = 3;
+				}
+				elseif ($application->voice_url != site_url('/twiml/dial') ||
+					$application->voice_fallback_url != asset_url('fallback/voice.php'))
+				{
+					// url mismatch
+					$data['client_application_error'] = 4;
+				}
+			}
+			catch (Exception $e) {
+				// @todo show relevant exception data as error
+				$data['error'] = 'Could not validate Client Application data: '.$e->getMessage();
+				log_message($e->getMessage());
+			}
+		}
+		else
+		{
+			$data['client_application_error'] = 1;
+		}
+		$data['client_application'] = $application;
 
 		$this->respond('Site Settings', 'settings/site', $data);
 	}
@@ -173,7 +210,8 @@ class Site extends User_Controller
 		$data = array('message' => '', 'error' => false);
 		$site = $this->input->post('site');
 
-		$current_app_sid = $this->settings->get('application_sid', $this->tenant->id);
+		$process_app = false;
+		$process_connect_app = false;
 
 		if(!empty($site))
 		{
@@ -183,121 +221,36 @@ class Site extends User_Controller
 					if ($name == 'application_sid')
 					{
 						$app_sid = $value;
+						$process_app = true;
 					}
 					if ($name == 'connect_application_sid') {
 						$connect_app_sid = $value;
+						$process_connect_app = true;
 					}
 					$this->settings->set($name, trim($value), $this->tenant->id);
 				}
 
 				// Connect App (if applicable)
-				if (!empty($connect_app_sid) && $this->tenant->id == VBX_PARENT_TENANT) {
-					$account = OpenVBX::getAccount();
-					$connect_app = $account->connect_apps->get($connect_app_sid);
-					
-					$required_settings = array(
-						'HomepageUrl' => site_url(),
-						'AuthorizeRedirectUrl' => site_url('/auth/connect'),
-						'DeauthorizeCallbackUrl' => site_url('/auth/connect/deauthorize'),
-						'Permissions' => array(
-							'get-all',
-							'post-all'
-						)
-					);
-					
-					$updated = false;
-					foreach ($required_settings as $key => $setting) {
-						$app_key = Services_Twilio::decamelize($key);
-						if ($connect_app->$app_key != $setting) {
-							$connect_app->$app_key = $setting;
-							$updated = true;
-						}
-					}
-					
-					if ($updated) {
-						$connect_app->update(array(
-							'FriendlyName' => $connect_app->friendly_name,
-							'Description' => $connect_app->description,
-							'CompanyName' => $connect_app->company_name,
-							'HomepageUrl' => $required_settings['HomepageUrl'],
-							'AuthorizeRedirectUrl' => $required_settings['AuthorizeRedirectUrl'],
-							'DeauthorizeCallbackUrl' => $required_settings['DeauthorizeCallbackUrl'],
-							'Permissions' => implode(',', $required_settings['Permissions'])
-						));
-					}
+				if ($process_connect_app)
+				{
+					$this->update_connect_app($connect_app_sid);
 				}
 				
 				// Client App
-				$update_app = false;
-				if (empty($app_sid) && !empty($current_app_sid))
+				if ($process_app)
 				{
-					// disassociate the current app from this install
-					$update_app[] = array(
-									  'app_sid' => $current_app_sid,
-									  'params' => array(
-													'VoiceUrl' => '',
-													'VoiceFallbackUrl' => '',
-													'SmsUrl' => '',
-													'SmsFallbackUrl' => ''
-												)
-									  );
+					$this->update_application($app_sid);
 				}
-				elseif (!empty($app_sid))
-				{
-					// update the application data
-					$update_app[] = array(
-									  'app_sid' => $app_sid,
-									  'params' => array(
-													'VoiceUrl' => site_url('/twiml/dial'),
-													'VoiceFallbackUrl' => site_url('/fallback/voice.php'),
-													'VoiceMethod' => 'POST',
-													'SmsUrl' => '',
-													'SmsFallbackUrl' => '',
-													'SmsMethod' => 'POST'
-												)
-									  );
-
-					if ($app_sid != $current_app_sid) 
-					{
-						// app sid changed, disassociate the old app from this install
-						$update_app[] = array(
-										  'app_sid' => $current_app_sid,
-										  'params' => array(
-														'VoiceUrl' => '',
-														'VoiceFallbackUrl' => '',
-														'SmsUrl' => '',
-														'SmsFallbackUrl' => ''
-													)
-										  );
-					}
-				}
-
-				if (!empty($update_app))
-				{
-					if (empty($account)) {
-						$account = OpenVBX::getAccount();
-					}
-
-					foreach ($update_app as $app) 
-					{
-						try {
-							$application = $account->applications->get($app['app_sid']);
-							$application->update(array_merge($app['params'], array('FriendlyName' => $application->friendly_name)));
-						}
-						catch (Exception $e) {
-							$this->session->set_flashdata('error', 'Could not update Application: '.$e->getMessage());
-							throw new SiteException($e->getMessage());
-						}
-					}					
-				}
-
+				
 				$this->session->set_flashdata('error', 'Settings have been saved');
 			}
 			catch(SiteException $e) {
 				$data['error'] = true;
-				switch($e->getCode()) {
+				switch($e->getCode()) 
+				{
 					case '0':
-						$data['message'] = $message = 'Could not Authenticate with Twilio. Please check your Sid & Token values.';
+						$data['message'] = $message = 'Could not Authenticate with Twilio. '.
+														'Please check your Sid & Token values.';
 						break;
 					default:
 						$data['message'] = $message = $e->getMessage();
@@ -315,6 +268,116 @@ class Site extends User_Controller
 		}
 
 		$this->respond('', 'settings/site', $data);
+	}
+
+	private function update_application($app_sid)
+	{
+		$update_app = false;
+		$current_app_sid = $this->settings->get('application_sid', $this->tenant->id);
+		
+		if (empty($app_sid) && !empty($current_app_sid))
+		{
+			// disassociate the current app from this install
+			$update_app[] = array(
+				'app_sid' => $current_app_sid,
+				'params' => array(
+					'VoiceUrl' => '',
+					'VoiceFallbackUrl' => '',
+					'SmsUrl' => '',
+					'SmsFallbackUrl' => ''
+				)
+			);
+		}
+		elseif (!empty($app_sid))
+		{
+			// update the application data
+			$update_app[] = array(
+				'app_sid' => $app_sid,
+				'params' => array(
+					'VoiceUrl' => site_url('/twiml/dial'),
+					'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
+					'VoiceMethod' => 'POST',
+					'SmsUrl' => '',
+					'SmsFallbackUrl' => '',
+					'SmsMethod' => 'POST'
+				)
+			);
+
+			if ($app_sid != $current_app_sid) 
+			{
+				// app sid changed, disassociate the old app from this install
+				$update_app[] = array(
+					'app_sid' => $current_app_sid,
+					'params' => array(
+						'VoiceUrl' => '',
+						'VoiceFallbackUrl' => '',
+						'SmsUrl' => '',
+						'SmsFallbackUrl' => ''
+					)
+				);
+			}
+		}
+
+		if (!empty($update_app))
+		{
+			if (empty($account)) {
+				$account = OpenVBX::getAccount();
+			}
+
+			foreach ($update_app as $app) 
+			{
+				try {
+					$application = $account->applications->get($app['app_sid']);
+					$application->update(array_merge($app['params'], array(
+									'FriendlyName' => $application->friendly_name
+								)));
+				}
+				catch (Exception $e) {
+					$this->session->set_flashdata('error', 'Could not update '.
+												'Application: '.$e->getMessage());
+					throw new SiteException($e->getMessage());
+				}
+			}					
+		}
+	}
+
+	private function update_connect_app($connect_app_sid)
+	{
+		if (!empty($connect_app_sid) && $this->tenant->id == VBX_PARENT_TENANT) {
+			$account = OpenVBX::getAccount();
+			$connect_app = $account->connect_apps->get($connect_app_sid);
+		
+			$required_settings = array(
+				'HomepageUrl' => site_url(),
+				'AuthorizeRedirectUrl' => site_url('/auth/connect'),
+				'DeauthorizeCallbackUrl' => site_url('/auth/connect/deauthorize'),
+				'Permissions' => array(
+					'get-all',
+					'post-all'
+				)
+			);
+		
+			$updated = false;
+			foreach ($required_settings as $key => $setting) {
+				$app_key = Services_Twilio::decamelize($key);
+				if ($connect_app->$app_key != $setting) {
+					$connect_app->$app_key = $setting;
+					$updated = true;
+				}
+			}
+		
+			if ($updated) {
+				$connect_app->update(array(
+					'FriendlyName' => $connect_app->friendly_name,
+					'Description' => $connect_app->description,
+					'CompanyName' => $connect_app->company_name,
+					'HomepageUrl' => $required_settings['HomepageUrl'],
+					'AuthorizeRedirectUrl' => $required_settings['AuthorizeRedirectUrl'],
+					'DeauthorizeCallbackUrl' => $required_settings['DeauthorizeCallbackUrl'],
+					'Permissions' => implode(',', $required_settings['Permissions'])
+				));
+			}
+		}
 	}
 
 	private function create_application_for_subaccount($tenant_id, $name, $accountSid) 
@@ -338,14 +401,14 @@ class Site extends User_Controller
 		}
 
 		$params = array(
-				'FriendlyName' => $appName,
-				'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
-				'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
-				'VoiceMethod' => 'POST',
-				'SmsUrl' => '',
-				'SmsFallbackUrl' => '',
-				'SmsMethod' => 'POST'
-			);
+			'FriendlyName' => $appName,
+			'VoiceUrl' => tenant_url('twiml/dial', $tenant_id),
+			'VoiceFallbackUrl' => asset_url('fallback/voice.php'),
+			'VoiceMethod' => 'POST',
+			'SmsUrl' => '',
+			'SmsFallbackUrl' => '',
+			'SmsMethod' => 'POST'
+		);
 
 		try {
 			if (!empty($application)) 
@@ -406,7 +469,6 @@ class Site extends User_Controller
 				catch(VBX_UserException $e) {
 					throw new VBX_SettingsException($e->getMessage());
 				}
-
 
 				foreach($this->settings->setting_options as $param)
 				{
@@ -495,7 +557,8 @@ class Site extends User_Controller
 				error_log($e->getMessage());
 				$this->db->trans_rollback();
 				// TODO: rollback in twilio.
-				$this->session->set_flashdata('error', 'Failed to add new tenant: '.$e->getMessage());
+				$this->session->set_flashdata('error', 'Failed to add new tenant: '.
+												$e->getMessage());
 				$data['error'] = true;
 				$data['message'] = $e->getMessage();
 			}

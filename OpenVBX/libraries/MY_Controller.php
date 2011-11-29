@@ -132,7 +132,7 @@ class MY_Controller extends Controller
 				}
 			}
 			else {
-				$this->template->add_js(asset_url('/assets/min/?g='.$js_assets), 'absolute');
+				$this->template->add_js(asset_url('assets/min/?g='.$js_assets), 'absolute');
 			}
 
 			$css_assets = (!empty($this->css_assets) ? $this->css_assets : 'css');
@@ -146,7 +146,7 @@ class MY_Controller extends Controller
 					}
 				}
 			} else {
-				$this->template->add_css(asset_url('/assets/min/?g='.$css_assets), 'link');
+				$this->template->add_css(asset_url('assets/min/?g='.$css_assets), 'link');
 			}
 		}
 		

@@ -49,9 +49,9 @@ class Iframe extends User_Controller {
 		// if the 'last_known_url' cookie is set then we've been redirected IN to frames mode
 		if (!empty($_COOKIE['last_known_url'])) {
 			$data['iframe_url'] = $_COOKIE['last_known_url'];
-			setcookie('last_known_url', '', time() - 3600, '/');
+			set_last_known_url('', time() - 3600);
 		}
-
+		
 		if (!empty($this->application_sid))
 		{
 			$user_id = intval($this->session->userdata('user_id'));

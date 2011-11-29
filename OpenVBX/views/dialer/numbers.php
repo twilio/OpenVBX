@@ -1,4 +1,6 @@
-<?php if (!empty($callerid_numbers) && count($callerid_numbers == 1)): /* callerid_number */ ?>
+<?php 
+	global $dial_disabled;
+	if (!empty($callerid_numbers) && count($callerid_numbers == 1)): /* callerid_number */ ?>
 
 	<label class="field-label"><span class="label-text">Caller ID</span>
 		<?php

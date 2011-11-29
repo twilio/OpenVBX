@@ -68,8 +68,10 @@ class Details extends User_Controller
 	{
 		$message = $this->vbx_message->get_message($message_id);
 		if(!$message)
+		{
 			return redirect('messages/inbox');
-
+		}
+		
 		$annotation_type = $this->input->post('annotation_type');
 		$description = $this->input->post('description');
 
@@ -80,9 +82,10 @@ class Details extends User_Controller
 			$error_message .= empty($annotation_type)? '[annotation type] ' : '';
 			
 			$this->session->set_flashdata('error', $error_message);
-			$data['json'] = array('error' => true,
-								  'message' => $error_message);
-			
+			$data['json'] = array(
+				'error' => true,
+				'message' => $error_message
+			);
 		}
 		else
 		{
@@ -97,8 +100,10 @@ class Details extends User_Controller
 				$annotation = $this->vbx_message->get_annotation($annotation_id);
 			}
 			
-			$data['json'] = array('message' => '',
-								  'annotation' => $annotation);
+			$data['json'] = array(
+				'message' => '',
+				'annotation' => $annotation
+			);
 		}
 		
 		if($this->response_type != 'json')
@@ -125,22 +130,25 @@ class Details extends User_Controller
 		
 		$message = $this->vbx_message->get_message($message_id);
 		if(!$message)
+		{
 			return redirect('messages/inbox');
+		}
 		
 		$data = $this->init_view_data();
 		$annotations = $this->vbx_message->get_annotations($message_id);
 		$items = array_slice($annotations, $offset, $max);
+		
 		foreach($items as $item_id => $item)
 		{
 			$annotations[$item_id]->created = date('c', strtotime($item->created));
 		}
 
 		$data['json'] = array(
-							  'items' => $items,
-							  'offset' => $offset,
-							  'max' => $max,
-							  'total' => count($annotations),
-							  );
+			'items' => $items,
+			'offset' => $offset,
+			'max' => $max,
+			'total' => count($annotations)
+		);
 		
 		$this->respond('', 'message_annotations', $data);
 	}
@@ -166,8 +174,11 @@ class Details extends User_Controller
 		$this->load->model('vbx_user');
 
 		$messages = array();
-		$data['json'] = array('message' => '',
-							  'error' => false);
+		$data['json'] = array(
+			'message' => '',
+			'error' => false
+		);
+		
 		try
 		{
 			foreach($message_ids as $message_id)
@@ -229,9 +240,9 @@ class Details extends User_Controller
 		catch(DetailsException $e)
 		{
 			$data['json'] = array(
-								  'error' => true,
-								  'message' => $e->getMessage()
-								  );
+				'error' => true,
+				'message' => $e->getMessage()
+			);
 		}
 
 		if($this->response_type == 'html')
@@ -260,8 +271,14 @@ class Details extends User_Controller
 				throw new MessageException("Unable to retrieve message: $message_id");
 			}
 		}
-		catch(MessageException $e)
+		catch (VBX_MessageException $e)
 		{
+			$this->session->set_flashdata('error', $e->getMessage());
+			redirect('messages/inbox');
+		}
+		catch (MessageException $e)
+		{
+			$this->session->set_flashdata('error', $e->getMessage());
 			redirect('messages/inbox');
 		}
 		
@@ -270,15 +287,19 @@ class Details extends User_Controller
 		if($message->owner_type == 'user' && $message->owner_id != $this->session->userdata('user_id')
 		   && !in_array($message->owner_id, array_keys($data['counts'])))
 		{
+			$this->session->set_flashdata('You are not allowed to view that message');
 			redirect('messages');
 		}
 
 		$data['group'] = '';
 		if($message->owner_type == 'group')
 		{
-			if(isset($data['counts'][$message->owner_id])) {
+			if(isset($data['counts'][$message->owner_id])) 
+			{
 				$data['group'] = $data['counts'][$message->owner_id]->name;
-			} else {
+			} 
+			else 
+			{
 				$data['group'] = 'Inbox';
 			}
 		}
@@ -296,41 +317,40 @@ class Details extends User_Controller
 		foreach($users as $active_user)
 		{
 			$active_users[] = array(
-									'id' => $active_user->id,
-									'first_name' => $active_user->first_name,
-									'last_name' => $active_user->last_name,
-									'email' => $active_user->email,
-									);
+				'id' => $active_user->id,
+				'first_name' => $active_user->first_name,
+				'last_name' => $active_user->last_name,
+				'email' => $active_user->email,
+			);
 		}
 
-		$folder_id = $message->owner_type == 'group'?
-			 $message->owner_id : 0;
+		$folder_id = $message->owner_type == 'group' ? $message->owner_id : 0;
 		
 		$details = array(
-						 'id' => $message_id,
-						 'selected_folder' => $this->session->flashdata('selected-folder'),
-						 'selected_folder_id' => $this->session->flashdata('selected-folder-id'),
-						 'status' => $message->status,
-						 'type' => $message->type,
-						 'ticket_status' => $message->ticket_status,
-						 'summary' => $summary,
-						 'assigned' => $message->assigned_to,
-						 'archived' => ($message->status == 'archived')? true : false,
-						 'unread' => ($message->status == 'new')? true : false,
-						 'recording_url' => preg_replace('/http:\/\//', 'https://', $message->content_url),
-						 'recording_length' => format_player_time($message->size),
-						 'received_time' => date('c', strtotime($message->created)),
-						 'last_updated' => date('c', strtotime($message->updated)),
-						 'called' => format_phone($message->called),
-						 'caller' => format_phone($message->caller),
-						 'original_called' => $message->called,
-						 'original_caller' => $message->caller,
-						 'folder' => $data['group'],
-						 'folder_id' => $folder_id,
-						 'message_type' => $message->type,
-						 'active_users' => $active_users,
-						 'owner_type' => $message->owner_type,
-						 );
+			 'id' => $message_id,
+			 'selected_folder' => $this->session->flashdata('selected-folder'),
+			 'selected_folder_id' => $this->session->flashdata('selected-folder-id'),
+			 'status' => $message->status,
+			 'type' => $message->type,
+			 'ticket_status' => $message->ticket_status,
+			 'summary' => $summary,
+			 'assigned' => $message->assigned_to,
+			 'archived' => ($message->status == 'archived')? true : false,
+			 'unread' => ($message->status == 'new')? true : false,
+			 'recording_url' => preg_replace('/http:\/\//', 'https://', $message->content_url),
+			 'recording_length' => format_player_time($message->size),
+			 'received_time' => date('c', strtotime($message->created)),
+			 'last_updated' => date('c', strtotime($message->updated)),
+			 'called' => format_phone($message->called),
+			 'caller' => format_phone($message->caller),
+			 'original_called' => $message->called,
+			 'original_caller' => $message->caller,
+			 'folder' => $data['group'],
+			 'folder_id' => $folder_id,
+			 'message_type' => $message->type,
+			 'active_users' => $active_users,
+			 'owner_type' => $message->owner_type,
+		);
 		
 		$data = array_merge($data, $details);
 		
@@ -339,9 +359,7 @@ class Details extends User_Controller
 		if($max_annotations)
 		{
 			$annotations = $this->vbx_message->get_annotations($message_id);
-			$items = array_slice($annotations,
-								 0,
-								 $max_annotations);
+			$items = array_slice($annotations, 0, $max_annotations);
 			foreach($items as $item_id => $item)
 			{
 				$items[$item_id]->created = date('c', strtotime($item->created));
@@ -350,14 +368,15 @@ class Details extends User_Controller
 			$max_annotations = (count($annotations) > $max_annotations)?
 				 $max_annotations : count($annotations);
 			$annotation_details = array(
-										'items' => $items,
-										'max' => $max_annotations,
-										'total' => count($annotations));
+				'items' => $items,
+				'max' => $max_annotations,
+				'total' => count($annotations)
+			);
 			$data['annotations'] = $data['json']['annotations'] = $annotation_details;
 		}
 		
 		$data['gravatars'] = $this->vbx_settings->get('gravatars', $this->tenant->id);
-		$data['default_gravatar'] = asset_url().'/assets/i/user-icon.png';
+		$data['default_gravatar'] = asset_url('assets/i/user-icon.png');
 		
 		$date = date('M j, Y h:i:s', strtotime($message->created));
 		$this->respond(' - '.$data['group']. " voicemail from  {$message->pretty_caller} at {$date} ", 'messages/details', $data);
@@ -378,8 +397,8 @@ class Details extends User_Controller
 		}
 		
 		$data['json'] = array(
-							  'callbacks' => $annotations
-							  );
+			'callbacks' => $annotations
+		);
 		
 		$this->respond('', 'message_callback', $data);
 	}
