@@ -139,9 +139,16 @@ class Login extends MY_Controller
 	{
 		$last_seen = $user->last_seen;
 	
+		// if the redirect would take us back to
+		// the iframe the nuke it
+		if ($redirect == site_url())
+		{
+			$redirect = '';
+		}
+	
 		// Redirect to flows if this is an admin and his inbox is zero 
 		// (but not if the caller is hitting the REST api)
-		if($this->response_type != 'json')
+		if($this->response_type != 'json' && empty($redirect))
 		{
 			$is_admin = $this->session->userdata('is_admin');
 			if($is_admin)
@@ -158,12 +165,9 @@ class Login extends MY_Controller
 							'html' => $this->load->view('messages/first-login', array(), true),
 							'title' => 'Welcome to OpenVBX'
 						);
-						setrawcookie('banner',
-									 rawurlencode(json_encode($banner)),
-									 0,
-									 '/'.(($this->tenant->id > 1)? $this->tenant->name : '')
-								);
-						setcookie('last_known_url', site_url('/numbers'), null, '/');
+						$path = '/'.(($this->tenant->id > 1)? $this->tenant->name : '');
+						setrawcookie('banner', rawurlencode(json_encode($banner)), 0, $path);
+						set_last_known_url(site_url('/numbers'));
 						return redirect('');
 					}
 				}
@@ -177,12 +181,12 @@ class Login extends MY_Controller
 			$devices = VBX_Device::search(array('user_id' => $user->id));
 			if(empty($devices))
 			{
-				setcookie('last_known_url', site_url('/devices'), null, '/');
+				set_last_known_url(site_url('/devices'));
 				return redirect('');
 			}
 		}
 		
-		setcookie('last_known_url', $redirect, null, '/');
+		set_last_known_url($redirect);
 		return $this->redirect('');
 	}
 }

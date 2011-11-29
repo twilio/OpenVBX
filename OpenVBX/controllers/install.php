@@ -101,6 +101,8 @@ class Install extends Controller {
 		$this->tests = array();
 		$this->pass = TRUE;
 
+		$this->pre_test_htaccess();
+
 		$this->add_test(version_compare(PHP_VERSION, $this->min_php_version, '>='),
 						'PHP Version',
 						PHP_VERSION,
@@ -160,7 +162,6 @@ class Install extends Controller {
 	{
 		// perform install tests
 		$tplvars = $this->input_args();
-
 		$this->run_tests();
 
 		$tplvars['tests'] = $this->tests;
@@ -179,7 +180,10 @@ class Install extends Controller {
 			'message' => ($pass ? $pass_text : $fail_text)
 		);
 
-		if($required) $this->pass = $this->pass && $pass;
+		if($required) 
+		{
+			$this->pass = $this->pass && $pass;
+		}
 	}
 
 	private function get_database_params($database)
@@ -277,7 +281,8 @@ class Install extends Controller {
 		echo json_encode($json);
 	}
 	
-	private function setup_connect_app($settings) {
+	private function setup_connect_app($settings) 
+	{
 		try {
 			$account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
 			$connect_application = $account->connect_apps->get($settings['connect_application_sid']);
@@ -361,8 +366,7 @@ class Install extends Controller {
 		$this->write_config(APPPATH. 'config/database.php', $database, 'db');
 		$this->write_config(APPPATH. 'config/openvbx.php', $openvbx, 'config');
 
-		if(!is_file(APPPATH. 'config/database.php')
-		   || !is_file(APPPATH. 'config/openvbx.php'))
+		if(!is_file(APPPATH. 'config/database.php') || !is_file(APPPATH. 'config/openvbx.php'))
 		{
 			throw new InstallException('Failed to write configuration files', 1);
 		}
@@ -513,13 +517,13 @@ class Install extends Controller {
 					break;
 				}
 			}
-			
+
 			$site_url = site_url();
 			if ($settings['rewrite_enabled']) 
 			{
 				$site_url = str_replace('/index.php', '', $site_url);
 			}
-			
+
 			$params = array(
 				'FriendlyName' => $app_name,
 				'VoiceUrl' => $site_url.'/twiml/dial',
@@ -550,7 +554,10 @@ class Install extends Controller {
 	function validate()
 	{
 		$step = $this->input->post('step');
-		$json = array('success' => true);
+		$json = array(
+			'success' => true
+		);
+		
 		if($step == 1) 
 		{
 			echo json_encode($json);
@@ -581,7 +588,12 @@ class Install extends Controller {
 
 	function validate_step2()
 	{
-		$json = array('success' => true, 'step' => 2, 'message' => 'success');
+		$json = array(
+			'success' => true, 
+			'step' => 2, 
+			'message' => 
+			'success'
+		);
 
 		$database = $this->get_database_params($this->database);
 
@@ -611,7 +623,6 @@ class Install extends Controller {
 		{
 			$json['success'] = false;
 			$json['message'] = $e->getMessage();
-			$json['step'] = $e->getCode();
 		}
 
 		return $json;
@@ -630,7 +641,7 @@ class Install extends Controller {
 		
 		$json = array(
 			'success' => true, 
-			'step' => 2, 
+			'step' => 3, 
 			'message' => 'success'
 		);
 		$twilio_sid = $this->openvbx_settings['twilio_sid'];
@@ -676,7 +687,6 @@ class Install extends Controller {
 		catch(Exception $e)
 		{
 			$json['success'] = false;
-			$json['step'] = $e->getCode();
 
 			switch ($e->getCode()) 
 			{
@@ -695,11 +705,21 @@ class Install extends Controller {
 
 	function validate_step4()
 	{
-		$json = array('success' => true, 'step' => 4, 'message' => 'success');
+		$json = array(
+			'success' => true, 
+			'step' => 4, 
+			'message' => 'success'
+		);
 		$this->openvbx_settings['from_email'] = trim($this->input->post('from_email'));
 
 		try
 		{
+			if (!filter_var($this->openvbx_settings['from_email'], FILTER_VALIDATE_EMAIL))
+			{
+				throw new InstallException('Email address is invalid. Please check the '.
+											'address and try again.');
+			}
+			
 			$required_fields = array(
 				'from_email' => 'Notification Sender Email Address'
 			);
@@ -715,14 +735,17 @@ class Install extends Controller {
 		{
 			$json['success'] = false;
 			$json['message'] = $e->getMessage();
-			$json['step'] = $e->getCode();
 		}
 		return $json;
 	}
 
 	function validate_step5()
 	{
-		$json = array('success' => true, 'step' => 2, 'message' => 'success');
+		$json = array(
+			'success' => true, 
+			'step' => 2, 
+			'message' => 'success'
+		);
 
 		$this->user['email'] = $this->input->post('admin_email');
 		$this->user['password'] = $this->input->post('admin_pw');
@@ -733,8 +756,16 @@ class Install extends Controller {
 		try
 		{
 			if($this->user['password2'] != $this->user['password'])
+			{
 				throw new InstallException('Your administrative password was not typed correctly.');
-
+			}
+			
+			if (!filter_var($this->user['email'], FILTER_VALIDATE_EMAIL))
+			{
+				throw new InstallException('Email address is invalid. Please check the '.
+											'address and try again.');
+			}
+			
 			$required_fields = array(
 				'email' => 'Email Address',
 				'password' => 'Password',
@@ -752,8 +783,28 @@ class Install extends Controller {
 		{
 			$json['success'] = false;
 			$json['message'] = $e->getMessage();
-			$json['step'] = $e->getCode();
 		}
 		return $json;
+	}
+	
+	/**
+	 * If .htaccess file doesn't exist try to preemptively 
+	 * create one from the htaccess_dist file. Nothing special,
+	 * just try to make a copy of the file. If it doesn't
+	 * work it doesn't work.
+	 *
+	 * @return void
+	 */
+	protected function pre_test_htaccess()
+	{
+		if (!is_file(APPPATH.'../.htaccess') 
+			&& is_writable(APPPATH.'../') 
+			&& is_file(APPPATH.'../htaccess_dist'))
+		{
+			$message = 'Trying to copy `htaccess_dist` to `.htaccess`... ';
+			$result = copy(APPPATH.'../htaccess_dist', APPPATH.'../.htaccess');
+			$message .= ($result ? 'success' : 'failed');
+			log_message($message);
+		}
 	}
 }

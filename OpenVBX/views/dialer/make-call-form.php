@@ -1,6 +1,7 @@
 <?php
 	// if the user has no incoming phone numbers or
 	// is a trial account this will be flipped to true
+	global $dial_disabled;
 	$dial_disabled = false;
 ?>
 <form id="make-call-form" action="" method="POST">

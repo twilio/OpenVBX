@@ -19,10 +19,9 @@
  **/
 
 $(document).ready(function() {
-
 	$('#install-steps').Steps({
 		validateCallbacks : {
-			next : function (stepId, step) {		
+			next : function (stepId, step) {
 				var _this = this,
 					_success = false,
 					params = $('textarea, input, select', step);
@@ -62,7 +61,7 @@ $(document).ready(function() {
 			submit : function (stepId, step) {
 				var _this = $(this),
 					_success = false;
-				
+
 				_this.Steps.setButtonLoading('submit', true);
 				_this.Steps.setButtonLoading('next', true);
 				

@@ -254,20 +254,7 @@ class OpenVBX {
 	 */
 	public static function getAccount($twilio_sid = false, $twilio_token = false, $api_version = '2010-04-01') 
 	{
-		$_http = null;
 		$ci =& get_instance();
-		
-		// internal api development override, you'll never need this
-		if ($_http_settings = $ci->config->item('_http_settings')) 
-		{
-			if (!empty($_http_settings['host'])) 
-			{
-				$_http = new Services_Twilio_TinyHttp(
-				                $_http_settings['host'],
-				                array("curlopts" => array(CURLOPT_USERAGENT => Services_Twilio::USER_AGENT))
-				            );
-			}
-		}
 		
 		// if sid & token are passed, make sure they're not the same as our master
 		// values. If they are, make a new object, otherwise use the same internal object
@@ -279,6 +266,11 @@ class OpenVBX {
 					|| $twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) 
 				{
 					try {
+						$_http_opts = self::get_http_opts();
+						$_http = new Services_Twilio_TinyHttp(
+												$_http_opts['host'], 
+												$_http_opts['opts']
+											);
 						$service = new Services_Twilio(
 												$twilio_sid, 
 												$twilio_token,
@@ -302,6 +294,11 @@ class OpenVBX {
 		if (!(self::$_twilioService instanceof Services_Twilio)) 
 		{	
 			try {
+				$_http_opts = self::get_http_opts();
+				$_http = new Services_Twilio_TinyHttp(
+										$_http_opts['host'], 
+										$_http_opts['opts']
+									);
 				self::$_twilioService = new Services_Twilio(
 													$ci->twilio_sid, 
 													$ci->twilio_token,
@@ -315,6 +312,47 @@ class OpenVBX {
 		}
 		
 		return self::$_twilioService->account;
+	}
+	
+	/**
+	 * Get a set of modified http options for TinyHttp so that we
+	 * can modify how the api client identifies itself as well as 
+	 * inject some debug options
+	 *
+	 * @return array
+	 */
+	protected static function get_http_opts()
+	{
+		$ci =& get_instance();
+		
+		$_http_opts = array(
+			'host' => 'https://api.twilio.com',
+			'opts' => array(
+				'curlopts' => array(
+					CURLOPT_USERAGENT => Services_Twilio::USER_AGENT.'-openvbx'
+				)
+			)
+		);
+		
+		// internal api development override, you'll never need this
+		if ($_http_settings = $ci->config->item('_http_settings')) 
+		{
+			if (!empty($_http_settings['host'])) 
+			{
+				$_http_opts['host'] = $_http_settings['host'];
+			}
+		}
+		
+		// set debug mode if applicable
+		if ($api_debug = $ci->config->item('api_debug'))
+		{
+			if ($api_debug === true)
+			{
+				$_http_opts['opts']['debug'] = true;
+			}
+		}
+		
+		return $_http_opts;
 	}
 	
 	public function getAccounts() {
@@ -346,7 +384,6 @@ class OpenVBX {
 		
 		if (!(self::$_twilioValidator instanceof Services_Twilio_RequestValidator)) 
 		{
-			$ci =& get_instance();
 			self::$_twilioValidator = new Services_Twilio_RequestValidator($ci->twilio_token);
 		}
 		
@@ -360,13 +397,22 @@ class OpenVBX {
 			// we were handed a relative uri, make it full
 			$url = site_url($url);
 		}
+		
+		// without rewrite enabled we need to ensure that the query string
+		// is properly appended to the url when being reconstructed
+		if ($ci->vbx_settings->get('rewrite_enabled', VBX_PARENT_TENANT) < 1 
+			&& !empty($_SERVER['QUERY_STRING'])
+			&& strpos($url, $_SERVER['QUERY_STRING']) === false)
+		{
+			$url .= '?'.$_SERVER['QUERY_STRING'];
+		}
 	
 		if (empty($post_vars)) 
 		{
 			// we weren't handed post-vars, use the default
 			$post_vars = $_POST;
 		}
-		
+
 		return self::$_twilioValidator->validate(self::getRequestSignature(), $url, $post_vars);
 	}
 	
@@ -398,30 +444,27 @@ class OpenVBX {
 				
 		$ci =& get_instance();
 		$tenant = $ci->db->get_where('tenants', array('id' => $tenant_id))->result();
-
-		if ($tenant && $tenant[0]->id == $tenant_id) 
+										
+		if ($tenant 
+			&& $tenant[0]->id == $tenant_id
+			&& $tenant[0]->type == VBX_Settings::AUTH_TYPE_CONNECT) 
 		{
-			if ($tenant[0]->type == VBX_Settings::AUTH_TYPE_CONNECT) 
-			{
-				try {
-					$sid = $ci->db->get_where('settings', array(
-										'name' => 'twilio_sid',
-										'tenant_id' => $tenant[0]->id
-									))->result();
-									
-					$token = $ci->db->get_where('settings', array(
-										'name' => 'twilio_token',
-										'tenant_id' => VBX_PARENT_TENANT
-									))->result();
-					
-					$account = self::getAccount($sid->value, $token->value);
-					$account_type = $account->type;
-				}
-				catch (Exception $e) {
-					// @todo - check for 20006 code, currently returns 20003
-					log_message('Connect auth failed: '.$e->getMessage().' :: '.$e->getCode());
-					$auth = false;
-				}
+			try {
+				$sid = $ci->db->get_where('settings', array(
+									'name' => 'twilio_sid',
+									'tenant_id' => $tenant[0]->id
+								));
+				$token = $ci->db->get_where('settings', array(
+									'name' => 'twilio_token',
+									'tenant_id' => VBX_PARENT_TENANT
+								));
+				$account = self::getAccount($sid->value, $token->value);
+				$account_type = $account->type;
+			}
+			catch (Exception $e) {
+				$auth = false;
+				// @todo - check for 20006 code, currently returns 20003
+				log_message('Connect auth failed: '.$e->getMessage().' :: '.$e->getCode());
 			}
 		}
 		

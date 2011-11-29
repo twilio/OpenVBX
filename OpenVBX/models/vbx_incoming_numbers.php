@@ -52,13 +52,16 @@ class VBX_Incoming_numbers extends Model
 
 		try {
 			$account = OpenVBX::getAccount();
-			$sandbox = $account->sandbox;
-			if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
+			if ($account->type != 'Full')
 			{
-				$sandbox = $this->parseIncomingPhoneNumber($sandbox);
-				if (function_exists('apc_store')) 
+				$sandbox = $account->sandbox;
+				if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
 				{
-					$success = apc_store($cachekey, serialize($sandbox), self::CACHE_TIME_SEC);
+					$sandbox = $this->parseIncomingPhoneNumber($sandbox);
+					if (function_exists('apc_store')) 
+					{
+						$success = apc_store($cachekey, serialize($sandbox), self::CACHE_TIME_SEC);
+					}
 				}
 			}
 		}
@@ -119,9 +122,9 @@ class VBX_Incoming_numbers extends Model
 		
 		$ci = &get_instance();
 		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
-		if ($enabled_sandbox_number && $retrieve_sandbox) 
+		if ($enabled_sandbox_number && $retrieve_sandbox && $sandbox_number = $this->get_sandbox()) 
 		{
-			$numbers[] = $this->get_sandbox();
+			$numbers[] = $sandbox_number;
 		}
 
 		if(function_exists('apc_store')) 

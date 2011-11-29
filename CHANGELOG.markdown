@@ -11,6 +11,26 @@
 - added time-zone server setting
 
 
+## OpenVBX 1.1.3
+
+- fix an issue with call to record where the caller id field is missing and causes the call to fail
+- fix an issue with Client account creation where `rewrite_enabled` isn't considered when constructing the url
+- fixes issues with following external URLs in to the application
+- fixes issue querying for incoming numbers on accounts with no sandbox
+- fix an unhandled exception when accessing a message that doesn't exist
+- update & add user notices around non-existent and disallowed message view attempts
+- add notices on Twilio Account screen in the event of malformed Client Application data
+- update steps.js to change order of "next" and "submit" buttons instead of overriding the form submit. Using the order of buttons to designate the primary action makes the event firing more predictable across browsers
+- add email address validation to install process
+- add ability to go to previous install step on last step of install
+- add attempt during install to recreate the `.htaccess` file if it is not present
+- fixes a request validation error when dialing using a device and when `mod_rewrite` is not enabled
+- add link to Troubleshooting/Common Issues page on GitHub
+- fixes an errant check on tenant when checking if tenant is using Twilio Connect
+- apply consistent use of `asset_url()`
+- fixed error that would cause System Config update to cause an Application update with empty urls
+
+
 ## OpenVBX 1.1.2
 
 - fixed issue with normal numbers in Dial applet

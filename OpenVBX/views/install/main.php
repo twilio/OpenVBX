@@ -178,8 +178,8 @@
 				</div>
 
 				<div class="navigation">
-					<button class="next">Next &raquo;</button>
-					<button class="submit" id="bInstall">Install</button>
+					<button type="submit" class="next">Next &raquo;</button>
+					<button type="submit" class="submit" id="bInstall">Install</button>
 					<button class="prev">&laquo; Prev</button>
 				</div>
 			</div><!-- steps -->

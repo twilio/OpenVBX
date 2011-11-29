@@ -68,24 +68,54 @@ class AudioSpeechPickerWidget extends AppletUIWidget
 		// find for the current user that is active.
 		$ci = &get_instance();
 
-		$first_phone_number = $ci->db
-			->where('user_id', $ci->session->userdata('user_id'))
-			->where('is_active', 1)
-			->from('numbers')
-			->order_by('sequence')
-			->limit(1)
-			->get()->result();
+		$user = VBX_User::get($ci->session->userdata('user_id'));
+		$user_phone = '';
+		if (count($user->devices)) 
+		{
+			foreach ($user->devices as $device)
+			{
+				if ($device->is_active)
+				{
+					$user_phone = format_phone($device->value);
+					break;
+				}
+			}
+		}
+
+		// set the caller id for recording via the phone
+		$caller_id = '';
+		$ci->load->model('vbx_incoming_numbers');
+		try
+		{
+			$numbers = $ci->vbx_incoming_numbers->get_numbers(false);
+			foreach ($numbers as $number)
+			{
+				// find the first number that has voice enabled
+				// yes, this is a rather paranoid check
+				if (isset($number->capabilities->voice) && $number->capabilities->voice > 0)
+				{
+					$caller_id = normalize_phone_to_E164($number->phone);
+					break;
+				}
+			}
+		}
+		catch(VBX_IncomingNumberException $e)
+		{
+			// fail silently, for better or worse
+			error_log($e->getMessage());
+		}
 
 		$data = array_merge(array(
-					'name' => $this->name,
-					'hasValue' => $hasValue,
-					'mode' => $this->mode,
-					'say' => $this->say_value,
-					'play' => $this->play_value,
-					'tag' => $this->tag,
-					'library' => $results,
-					'first_device_phone_number' => (count($first_phone_number) == 0 ? "" : format_phone($first_phone_number[0]->value))
-				), $data);
+			'name' => $this->name,
+			'hasValue' => $hasValue,
+			'mode' => $this->mode,
+			'say' => $this->say_value,
+			'play' => $this->play_value,
+			'tag' => $this->tag,
+			'library' => $results,
+			'first_device_phone_number' => $user_phone,
+			'caller_id' => $caller_id
+		), $data);
 		return parent::render($data);
 	}
 	

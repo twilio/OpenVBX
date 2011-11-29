@@ -307,4 +307,13 @@ if (!function_exists('flush_minify_caches'))
 	}
 }
 
+if (!function_exists('set_last_known_url'))
+{
+	function set_last_known_url($url, $expires = 0)
+	{
+		// setcookie('last_known_url', $url, intval($expires), $path);
+		setcookie('last_known_url', $url, intval($expires), '/');
+	}
+}
+
 ?>

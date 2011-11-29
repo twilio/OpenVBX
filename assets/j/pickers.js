@@ -76,36 +76,46 @@ var Pickers = {
 			// We'll tag the recording with this value.
 			var tag = audioChoice.find('input[name$="_tag"]').val();
 
-			// We steal our caller ID information from the Call Popup
-			var callerIdAsSelect = $('select[name="callerid"] option:first');
-			var callerIdAsInput = $('input[name="callerid"]');
-			var callerId;
+			var callerId = audioChoice.find('input[name$="_caller_id"]').val();
 
-			if (callerIdAsSelect.length > 0) {
-			    callerId = callerIdAsSelect.val();
-			} else {
-		        callerId = callerIdAsInput.val();
-			}
-
-			var numberToCall = audioChoice.find('.audio-choice-record').find('input[name="number"]').val();
+			var numberToCall = audioChoice.find('.audio-choice-record')
+									.find('input[name="number"]').val();
 
 			var showInputView = function() {
-				audioChoice.find('.audio-choice-editor .audio-choice-record .input').show();
-				audioChoice.find('.audio-choice-editor .audio-choice-record .status.scheduling').hide();
-				audioChoice.find('.audio-choice-editor .audio-choice-record .status.in-call').hide();
-			}
+				audioChoice
+					.find('.audio-choice-editor .audio-choice-record .input')
+					.show();
+				audioChoice
+					.find('.audio-choice-editor .audio-choice-record .status.scheduling')
+					.hide();
+				audioChoice
+					.find('.audio-choice-editor .audio-choice-record .status.in-call')
+					.hide();
+			};
 			
 			var showStatusForSchedulingCall = function() {
-				audioChoice.find('.audio-choice-editor .audio-choice-record .input').hide();
-				audioChoice.find('.audio-choice-editor .audio-choice-record .status.scheduling').show();
-				audioChoice.find('.audio-choice-editor .audio-choice-record .status.in-call').hide();
-			}
+				audioChoice
+					.find('.audio-choice-editor .audio-choice-record .input')
+					.hide();
+				audioChoice
+					.find('.audio-choice-editor .audio-choice-record .status.scheduling')
+					.show();
+				audioChoice
+					.find('.audio-choice-editor .audio-choice-record .status.in-call')
+					.hide();
+			};
 
 			var showStatusForInCall = function() {
-				audioChoice.find('.audio-choice-editor .audio-choice-record .input').hide();
-				audioChoice.find('.audio-choice-editor .audio-choice-record .status.scheduling').hide();
-				audioChoice.find('.audio-choice-editor .audio-choice-record .status.in-call').show();
-			}
+				audioChoice
+					.find('.audio-choice-editor .audio-choice-record .input')
+					.hide();
+				audioChoice
+					.find('.audio-choice-editor .audio-choice-record .status.scheduling')
+					.hide();
+				audioChoice
+					.find('.audio-choice-editor .audio-choice-record .status.in-call')
+					.show();
+			};
 			
 			var recordingIsCancelled = false;
 			var audioFileId = null;
@@ -156,10 +166,10 @@ var Pickers = {
 						audioFileId = data.id;
 						
 						if (recordingIsCancelled && data.id) {
-							// Someone immediately clicked cancel right after starting the call.  They're going to get dialed
-							// and there's nothing we can do about that.  But, if we issue a cancel request right now, hopefully
-							// it'll get marked as cancelled before they answer.
-
+							// Someone immediately clicked cancel right after starting the call. 
+							// They're going to get dialed and there's nothing we can do about that.
+							// But, if we issue a cancel request right now, hopefully it'll get
+							// marked as cancelled before they answer.
 							$.ajax({
 								url : OpenVBX.home + '/audiofiles/cancel_recording',
 								type : 'POST',
@@ -181,13 +191,16 @@ var Pickers = {
 							
 							showInputView();
 							
-							// Save the new URL in our fake form.  When the user saves the flow, this will
-							// get committed to the database.
-							Pickers.audio.saveValue(audioChoice, 'play', null, data.url);
+							// Save the new URL in our fake form.  When the user saves the flow,
+							// this will get committed to the database.
+							Pickers.audio
+								.saveValue(audioChoice, 'play', null, data.url);
 
-							Pickers.audio.insertRecordingIntoLibrary(audioChoice, data.url, data.label);
+							Pickers.audio
+								.insertRecordingIntoLibrary(audioChoice, data.url, data.label);
 
-							Pickers.audio.closeEditorAndShowPlayValue(audioChoice, data.url, true);
+							Pickers.audio
+								.closeEditorAndShowPlayValue(audioChoice, data.url, true);
 						};
 			
 						var poormansLimit = 25;
