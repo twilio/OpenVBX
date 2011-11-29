@@ -177,7 +177,7 @@ class MY_Router extends CI_Router
 		}
 
 		// Is the controller in a sub-folder?
-		if (!empty($segments[0]) && is_dir(APPPATH.'controllers/'.$segments[0]))
+		if (is_dir(APPPATH.'controllers/'.$segments[0]))
 		{		
 			// Set the directory and remove it from the segment array
 			$this->set_directory($segments[0]);
