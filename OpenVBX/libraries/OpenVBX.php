@@ -174,7 +174,6 @@ class OpenVBX {
 			$owner_type = str_replace('vbx_', '', strtolower($owner_type));
 			$owner_id = $owner->id;
 
-
 			$message = new VBX_Message();
 			$message->owner_type = $owner_type;
 			$message->owner_id = $owner_id;
@@ -329,11 +328,11 @@ class OpenVBX {
 			'host' => 'https://api.twilio.com',
 			'opts' => array(
 				'curlopts' => array(
-					CURLOPT_USERAGENT => Services_Twilio::USER_AGENT.'-openvbx'
+					CURLOPT_USERAGENT => 'openvbx/'.OpenVBX::version()
 				)
 			)
 		);
-		
+
 		// internal api development override, you'll never need this
 		if ($_http_settings = $ci->config->item('_http_settings')) 
 		{
@@ -356,7 +355,8 @@ class OpenVBX {
 	}
 	
 	public function getAccounts() {
-		if (!(self::$_twilioService instanceof Services_Twilio)) {
+		if (!(self::$_twilioService instanceof Services_Twilio)) 
+		{
 			$ci =& get_instance();
 			self::getAccount();
 		}
@@ -378,7 +378,8 @@ class OpenVBX {
 	public static function validateRequest($url = false, $post_vars = false) 
 	{
 		$ci =& get_instance();
-		if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) {
+		if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) 
+		{
 			return true;
 		}
 		
