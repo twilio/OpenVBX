@@ -10,12 +10,12 @@
 - update & add user notices around non-existent and disallowed message view attempts
 - add notices on Twilio Account screen in the event of malformed Client Application data
 - update steps.js to change order of "next" and "submit" buttons instead of overriding the form submit. Using the order of buttons to designate the primary action makes the event firing more predictable across browsers
-- add email address verification to install process
+- add email address validation to install process
 - add ability to go to previous install step on last step of install
 - add attempt during install to recreate the `.htaccess` file if it is not present
 - fixes a request validation error when dialing using a device and when `mod_rewrite` is not enabled
 - add link to Troubleshooting/Common Issues page on GitHub
-- fixes an errant check on tenant when checking it tenant is using Twilio Connect
+- fixes an errant check on tenant when checking if tenant is using Twilio Connect
 - apply consistent use of `asset_url()`
 - fixed error that would cause System Config update to cause an Application update with empty urls
 
