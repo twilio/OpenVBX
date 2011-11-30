@@ -33,7 +33,6 @@ class VBX_Incoming_numbers extends Model
 	{
 		parent::__construct();
 		$this->cache_key = $this->twilio_sid . '_incoming_numbers';
-
 	}
 
 	public function get_sandbox()
@@ -49,19 +48,16 @@ class VBX_Incoming_numbers extends Model
 				return @unserialize($sandbox);
 			}
 		}
-
+		
 		try {
 			$account = OpenVBX::getAccount();
-			if ($account->type != 'Full')
+			$sandbox = $account->sandbox;
+			if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
 			{
-				$sandbox = $account->sandbox;
-				if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
+				$sandbox = $this->parseIncomingPhoneNumber($sandbox);
+				if (function_exists('apc_store')) 
 				{
-					$sandbox = $this->parseIncomingPhoneNumber($sandbox);
-					if (function_exists('apc_store')) 
-					{
-						$success = apc_store($cachekey, serialize($sandbox), self::CACHE_TIME_SEC);
-					}
+					$success = apc_store($cachekey, serialize($sandbox), self::CACHE_TIME_SEC);
 				}
 			}
 		}
@@ -122,7 +118,7 @@ class VBX_Incoming_numbers extends Model
 		
 		$ci = &get_instance();
 		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
-		if ($enabled_sandbox_number && $retrieve_sandbox && $sandbox_number = $this->get_sandbox()) 
+		if ($enabled_sandbox_number && $retrieve_sandbox && $sandbox_number = $this->get_sandbox())
 		{
 			$numbers[] = $sandbox_number;
 		}

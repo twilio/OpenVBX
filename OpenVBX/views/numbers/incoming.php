@@ -63,7 +63,7 @@
 		else:
 			?>
 			<tr class="items-row null-row">
-				<td colspan="0">You have no numbers assigned to this OpenVBX install.</td>
+				<td colspan="4">You have no numbers assigned to this OpenVBX install.</td>
 			</tr>
 			<?php
 		endif;

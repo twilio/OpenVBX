@@ -137,8 +137,7 @@ class OpenVBX {
 										   $recording_url,
 										   $duration)
 	{
-		return self::addMessage($owner, $sid, $caller, $called, $recording_url,
-								$duration, VBX_Message::TYPE_VOICE, null);
+		return self::addMessage($owner, $sid, $caller, $called, $recording_url, $duration, VBX_Message::TYPE_VOICE, null);
 	}
 
 	public static function addSmsMessage($owner,
@@ -147,8 +146,7 @@ class OpenVBX {
 										 $from,
 										 $body)
 	{
-		return self::addMessage($owner, $sid, $to, $from, '',
-								0, VBX_Message::TYPE_SMS, $body, true);
+		return self::addMessage($owner, $sid, $to, $from, '', 0, VBX_Message::TYPE_SMS, $body, true);
 	}
 
 	public static function addMessage($owner,
@@ -214,7 +212,12 @@ class OpenVBX {
 		return $ci->config->item('version');
 	}
 
-	/* Returns the version of the database schema */
+	/**
+	 * Returns the version of the database schema
+	 *
+	 * @static
+	 * @return int
+	 */
 	public static function schemaVersion()
 	{
 		$ci =& get_instance();
@@ -222,8 +225,13 @@ class OpenVBX {
 		return $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
 	}
 
-	/* Returns the latest version of the schema on the server,
-	 * regardless if its been imported */
+	/**
+	 * Returns the latest version of the schema on the server,
+	 * regardless if its been imported
+	 *
+	 * @static
+	 * @return array
+	 */
 	public static function getLatestSchemaVersion()
 	{
 		$updates = scandir(VBX_ROOT.'/updates/');
@@ -236,6 +244,14 @@ class OpenVBX {
 		return $updates[count($updates)-1];
 	}
 
+	/**
+	 * Set the title of the current page
+	 *
+	 * @static
+	 * @param string $title
+	 * @param bool $overwrite whether to replace or append to the current title
+	 * @return mixed
+	 */
 	public static function setPageTitle($title, $overwrite = false) 
 	{
 		$ci =& get_instance();
@@ -254,8 +270,11 @@ class OpenVBX {
 	 * Twilio Connect Aware. Will return the connect account if applicable.
 	 *
 	 * @throws OpenVBXException if invalid parameters are passed in for new object generation
-	 * @param string $twilio_sid Optional - Twilio Account Sid
-	 * @param string $twilio_token Optional - Twilio Account Token
+	 *
+	 * @static
+	 * @param bool/string $twilio_sid Optional - Twilio Account Sid
+	 * @param bool/string $twilio_token Optional - Twilio Account Token
+	 * @param string $api_version - default api version to use
 	 * @return object Services_Twilio_Rest_Account
 	 */
 	public static function getAccount($twilio_sid = false, $twilio_token = false, $api_version = '2010-04-01') 
@@ -364,7 +383,6 @@ class OpenVBX {
 	public function getAccounts() {
 		if (!(self::$_twilioService instanceof Services_Twilio)) 
 		{
-			$ci =& get_instance();
 			self::getAccount();
 		}
 		return self::$_twilioService->accounts;
@@ -378,8 +396,8 @@ class OpenVBX {
 	 * 
 	 * If no post_vars are passed then $_POST will be used directly.
 	 *
-	 * @param string $uri 
-	 * @param array $post_vars 
+	 * @param bool/string $uri
+	 * @param bool/array $post_vars
 	 * @return bool
 	 */
 	public static function validateRequest($url = false, $post_vars = false) 
