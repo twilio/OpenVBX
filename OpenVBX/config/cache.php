@@ -37,3 +37,15 @@ $config['cache']['memcache'] = array(
 	),
 	'port' => '11211'
 );
+
+/*
+|--------------------------------------------------------------------------
+| Local config overrides
+|--------------------------------------------------------------------------
+|
+| Sometimes your local environment just needs some things to be overridden
+|
+*/
+if (is_file(APPPATH.'config/cache-local.php')) {
+	include_once(APPPATH.'config/cache-local.php');
+}
