@@ -71,7 +71,7 @@ class Client extends MY_Controller
 		
 		if(!$resp)
 		{
-			/* Its okay we can't connect to the update system but log it */
+			// Its okay we can't connect to the update system but log it
 			error_log('Unable to connect to OpenVBX Update notification server');
 		}
 		
@@ -85,8 +85,10 @@ class Client extends MY_Controller
 			if($latest['major'] > $current['major']
 			   || $latest['major'] == $current['major'] && $latest['minor'] > $current['minor'])
 			{
-				$data['json'] = array('error' => false);
-				$data['json']['upgradeAvailable'] = true;
+				$data['json'] = array(
+					'error' => false,
+					'upgradeAvailable' => true
+				);
 			}
 		}
 
@@ -101,11 +103,11 @@ class Client extends MY_Controller
 		try
 		{			
 			$client = array(
-							'error' => false,
-							'message' => '',
-							'version' => $this->get_version(),
-							'theme' => $this->get_theme($theme_type),
-							);
+				'error' => false,
+				'message' => '',
+				'version' => $this->get_version(),
+				'theme' => $this->get_theme($theme_type),
+			);
 
 			if($with_i18n)
 			{
@@ -129,7 +131,7 @@ class Client extends MY_Controller
 	
 	private function get_version()
 	{
-		return $this->settings->get('version', $this->tenant->id);
+		return OpenVBX::version();
 	}
 
 	private function get_theme($type)

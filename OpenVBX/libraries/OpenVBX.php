@@ -199,12 +199,19 @@ class OpenVBX {
 		}
 	}
 
-	/* Returns the version from the php software on the server */
+	/**
+	 * Returns the OpenVBX software version
+	 * 
+	 * @internal Post 1.1.3 this pulls from the file in `OpenVBX/config/version.php` instead
+	 *			 of pulling from the database. This way the version number can be known without
+	 *			 a functional database (ie: install)
+	 * @return string
+	 */
 	public static function version()
 	{
 		$ci =& get_instance();
-		$ci->load->model('vbx_settings');
-		return $ci->vbx_settings->get('version', VBX_PARENT_TENANT);
+		$ci->config->load('version');
+		return $ci->config->item('version');
 	}
 
 	/* Returns the version of the database schema */
@@ -254,7 +261,7 @@ class OpenVBX {
 	public static function getAccount($twilio_sid = false, $twilio_token = false, $api_version = '2010-04-01') 
 	{
 		$ci =& get_instance();
-		
+
 		// if sid & token are passed, make sure they're not the same as our master
 		// values. If they are, make a new object, otherwise use the same internal object
 		if (!empty($twilio_sid) || !empty($twilio_token)) 
@@ -323,7 +330,7 @@ class OpenVBX {
 	protected static function get_http_opts()
 	{
 		$ci =& get_instance();
-		
+
 		$_http_opts = array(
 			'host' => 'https://api.twilio.com',
 			'opts' => array(

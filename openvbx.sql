@@ -309,13 +309,11 @@ INSERT INTO auth_types (description, tenant_id)
 	   ('openvbx', 1),
 	   ('google', 1);
 
-
 INSERT INTO settings
 	   (name, value, tenant_id)
 	   VALUES
 	   ('dash_rss', '', 1),
 	   ('theme', '', 1),
-	   ('version', '1.1.3', 1),
 	   ('iphone_theme', '', 1),
 	   ('enable_sandbox_number', 1, 1),
 	   ('twilio_endpoint', 'https://api.twilio.com/2010-04-01', 1),
@@ -327,7 +325,6 @@ INSERT INTO settings
 	   ('gravatars', 0, 1),
 	   ('connect_application_sid', 0, 1),
 	   ('dial_timeout', 15, 1);
-
 
 INSERT INTO groups
        (name, is_active, tenant_id)

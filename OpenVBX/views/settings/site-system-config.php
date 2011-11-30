@@ -1,4 +1,4 @@
-<form name="vbx-system" action="<?php echo site_url('settings/site') ?>" method="POST" class="vbx-system-form vbx-form">
+<form name="vbx-system" action="<?php echo site_url('settings/site') ?>#system-config" method="POST" class="vbx-system-form vbx-form">
 	<div class="two-col">
 
 		<fieldset>	
