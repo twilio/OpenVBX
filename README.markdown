@@ -21,6 +21,8 @@ Body:
 2. Steps to reproduce  
 3. Possible solution (optional)
 
+For a list of common/known issues see the  [Troubleshooting Guide/Common Issues Page](https://github.com/twilio/OpenVBX/wiki/OpenVBX-Troubleshooting---Common-Issues)
+
 # Trademarks
 -----------------------------
 "OpenVBX" and "Twilio" are trademarks of Twilio, Inc., all rights 

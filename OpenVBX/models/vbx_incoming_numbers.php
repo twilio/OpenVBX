@@ -40,11 +40,14 @@ class VBX_Incoming_numbers extends Model
 
 		try {
 			$account = OpenVBX::getAccount();
-			$sandbox = $account->sandbox;
-			if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
+			if ($account->type != 'Full')
 			{
-				$sandbox = $this->parseIncomingPhoneNumber($sandbox);
-				$ci->api_cache->set('sandbox', $sandbox, __CLASS__, $ci->tenant->id);
+				$sandbox = $account->sandbox;
+				if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox))
+				{
+					$sandbox = $this->parseIncomingPhoneNumber($sandbox);
+					$ci->api_cache->set('sandbox', $sandbox, __CLASS__, $ci->tenant->id);
+				}
 			}
 		}
 		catch (Exception $e) {
@@ -100,9 +103,11 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException($msg, $e->getCode());
 		}
 		
-		if ($enabled_sandbox_number) 
+		$ci = &get_instance();
+		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
+		if ($enabled_sandbox_number && $retrieve_sandbox && $sandbox_number = $this->get_sandbox()) 
 		{
-			$numbers[] = $this->get_sandbox();
+			$numbers[] = $sandbox_number;
 		}
 
 		$ci->api_cache->set('incoming-numbers', $numbers, __CLASS__, $ci->tenant->id);

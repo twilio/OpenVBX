@@ -303,7 +303,8 @@ class VBX_User extends MY_Model {
 		$password = trim($password);
 		$confirmed_password = trim($confirmed_password);
 		
-		if ($password != $confirmed_password) {
+		if ($password != $confirmed_password) 
+		{
 			throw new VBX_UserException("Password typed incorrectly");
 		}
 		
@@ -485,7 +486,7 @@ class VBX_User extends MY_Model {
 
 	protected function generate_invite_code()
 	{
-		return substr(self::salt_encrypt(mt_rand()), 0, 20);
+		return substr(base64_encode(self::salt_encrypt(mt_rand())), 0, 20);
 	}
 
 	function get_auth_type($auth_type = null)

@@ -9,7 +9,9 @@
 			</tr>
 		</thead>
 		<tbody>
-		<?php foreach($incoming_numbers as $item): 
+		<?php
+		if (count($incoming_numbers)):
+			foreach($incoming_numbers as $item): 
 				$classname = 'items-row';
 				if (in_array($item->id, $highlighted_numbers))
 				{
@@ -56,7 +58,16 @@
 				<?php endif; ?>
 				</td>
 			</tr>
-		<?php endforeach; ?>
+		<?php 
+			endforeach; 
+		else:
+			?>
+			<tr class="items-row null-row">
+				<td colspan="0">You have no numbers assigned to this OpenVBX install.</td>
+			</tr>
+			<?php
+		endif;
+		?>
 		</tbody>
 	</table><!-- .vbx-items-grid -->
 </div><!-- /.vbx-numbers-section -->

@@ -207,7 +207,14 @@
 					.children('select, p, span').toggle();
 				if (number_type != 'incoming')
 				{
+					var parent_table = select_flow.closest('table');
 					select_flow.closest('tr').appendTo($('#vbx-incoming-numbers table'));
+					// cleanup
+					$('#vbx-incoming-numbers table tr.null-row').remove();
+					if (parent_table.find('tr').size() < 1)
+					{
+						parent_table.closest('vbx-numbers-section').remove();
+					}
 				}
 			} else {
 				if(data.message) {

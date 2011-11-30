@@ -21,11 +21,11 @@
 			_this = $(this);
 			
 			_nextButton = $('button.next', _this)
-							.live('click', nextStep);
+							.bind('click', nextStep);
 			_prevButton = $('button.prev', _this)
-							.live('click', prevStep);
+							.bind('click', prevStep);
 			_submitButton = $('button.submit', _this)
-							.live('click', submitSteps);
+							.bind('click', submitSteps);
 
 			_error = $('.error', _this);
 
@@ -53,44 +53,45 @@
 
 	var nextStep = function(e) {
 		e.preventDefault();
-		
-		if(_options.prevStepLock) {
+		e.stopPropagation();
+
+		if(_options.nextStepLock) {
 			return;
 		}
 		
-		_options.prevStepLock = true;
-
+		_options.nextStepLock = true;
 		if (_options.validateCallbacks.next.apply(_this, [_currentStep, $('.step:eq(' + (_currentStep - 1) + ')', _this)])) {
 			var nextStep = _currentStep + 1;
 			goToStep(nextStep);
 		}
 		
-		_options.prevStepLock = false;	
+		_options.nextStepLock = false;	
 	};
 	
 	var prevStep = function(e) {
 		e.preventDefault();
-					
-		if(_options.nextStepLock) {
+		e.stopPropagation();
+		
+		if(_options.prevStepLock) {
 			return;
 		}
 
-		_options.nextStepLock = true;
+		_options.prevStepLock = true;
 
 		if (_options.validateCallbacks.prev.apply(_this, [_currentStep, $('.step:eq(' + (_currentStep - 1) + ')', _this)])) {
 			var nextStep = _currentStep - 1;
 			goToStep(nextStep);
 		}
 		
-		_options.nextStepLock = false;
+		_options.prevStepLock = false;
 	};
 	
 	var goToStep = function(step) {
 		if (step != _currentStep) {
+			toggleError(false);
 			step = parseInt(step, 10);
 			var left = (step * (_options.stepOffset * -1)) + _options.stepOffset;
 			_currentStep = step;
-			_options.nextStepLock = _options.prevStepLock = false;
 			_steps.animate({'left': left}, 'normal', 'swing', setButtons);
 			_options.stepLoadCallback.apply(_this, [_currentStep, $('.step:eq(' + (_currentStep - 1) + ')', _this)]);
 		}
@@ -98,6 +99,7 @@
 
 	var submitSteps = function(e) {
 		e.preventDefault();
+		e.stopPropagation();
 		var success = _options.validateCallbacks.submit.apply(_this, [_currentStep, $('.step:eq(' + (_currentStep - 1) + ')', _this)]);
 		if (success && _currentStep < _numSteps) {
 			var nextStep = _currentStep + 1;
@@ -126,10 +128,14 @@
 		}
 		
 		if (thisStep.hasClass('submit')) {
-			_submitButton.prop('disabled', false).show();
+			_submitButton.prop('disabled', false)
+				.insertBefore(_nextButton)
+				.show();
 		}
 		else {
-			_submitButton.prop('disabled', true).hide();
+			_submitButton.prop('disabled', true)
+				.insertAfter(_nextButton)
+				.hide();
 		}
 
 		_nextStepLock = false;
@@ -147,47 +153,39 @@
 	};
 	
 	var setTabBehavior = function() {
-		// 1. prevent a user from tabbing to next field if next
-		//    field is located in the next step
-		// 2. dynamically assign return key to "next" or "submit"
-		//    based on button visibility
+		// Prevent a user from tabbing to next field if next
+		// field is located in the next step
 		$(window).bind('keydown', function(e) {
 			var target = $(e.target),
 				key = e.keyPress || e.which;
-			
+
 			if (target.parents(_this).size() > 0) {
 				switch (key) {
 				 	case 9: // tab key
 						var stop = false,
-							parent = target.closest('.step');
-					
-						var selector = (e.shiftKey ? ':input:visible:first' : ':input:visible:last');
+							parent = target.closest('.step'),
+							selector = (e.shiftKey ? ':input:visible:first' : ':input:visible:last');
+							
 						if (target.attr('name') == target.closest('.step').find(selector).attr('name')) {
 							e.preventDefault();
 						}						
 						break;
-					case 13:
-						if (_submitButton.is(':visible')) {
-							_submitButton.trigger('click');
-							e.preventDefault();
-						}
-						else if (_nextButton.is(':visible')) {
-							_nextButton.trigger('click');
-							e.preventDefault();
-						}
-						break;
-				}			
+				}
 			}
 		});
 	};
 	
-	$.fn.Steps.toggleError = function(state) {
+	var toggleError = function(state) {
 		if (state === true && !_error.is(':visible')) {
 			_error.slideDown();
 		}
 		else if (state === false && _error.is(':visible')) {
 			_error.slideUp();
 		}
+	};
+	
+	$.fn.Steps.toggleError = function(state) {
+		toggleError(state);
 	};
 	
 	$.fn.Steps.isLastStep = function() {
@@ -237,12 +235,12 @@
 				_button = _submitButton;
 				break;
 		}
-		
+
 		if (status) {
 			_button.addClass('loading');
 		}
 		else {
 			_button.removeClass('loading');
-		}
+		}	
 	};
 })(jQuery);

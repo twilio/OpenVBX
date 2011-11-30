@@ -26,12 +26,12 @@ class VBX_MessageException extends Exception {}
  */
 class VBX_Message extends Model {
 
-	var $auto_populate_has_one = TRUE;
-	var $has_one = array('group', 'user');
+	public $auto_populate_has_one = TRUE;
+	public $has_one = array('group', 'user');
 
-	var $table = 'messages';
+	public $table = 'messages';
 
-	var $ticket_status_options = array('open', 'closed', 'pending');
+	public $ticket_status_options = array('open', 'closed', 'pending');
 
 	const TYPE_VOICE = 'voice';
 	const TYPE_FAX = 'fax';
@@ -81,7 +81,6 @@ class VBX_Message extends Model {
 		if($message->assigned_to == $assignee->id)
 		{
 			return false;
-
 		}
 
 		$message->assigned_to = $assignee->id;
@@ -115,7 +114,6 @@ class VBX_Message extends Model {
 		{
 			return false;
 		}
-
 
 		$message->archived = $archived;
 
@@ -227,17 +225,21 @@ class VBX_Message extends Model {
 			if($message->owner_type == 'user')
 			{
 				$message_owner_table = 'user_messages';
-				$message_owner = array('user_id' => $message->owner_id,
-									   'message_id' => $message->id,
-									   'tenant_id' => $ci->tenant->id);
+				$message_owner = array(
+					'user_id' => $message->owner_id,
+					'message_id' => $message->id,
+					'tenant_id' => $ci->tenant->id
+				);
 			}
 
 			if($message->owner_type == 'group')
 			{
 				$message_owner_table = 'group_messages';
-				$message_owner = array('group_id' => $message->owner_id,
-									   'message_id' => $message->id,
-									   'tenant_id' => $ci->tenant->id);
+				$message_owner = array(
+					'group_id' => $message->owner_id,
+					'message_id' => $message->id,
+					'tenant_id' => $ci->tenant->id
+				);
 			}
 
 			$ci->db->insert($message_owner_table, $message_owner);
@@ -268,8 +270,7 @@ class VBX_Message extends Model {
 
 		$user_group_select = "IF(u.email IS NOT NULL , 'user', 'group') as owner_type, IF( u.email IS NOT NULL , u.email , g.name) as owner, IF (u.email IS NOT NULL, u.id, g.id) as owner_id";
 
-		$ci->db->from($this->table)
-			 ->select("messages.*, $user_group_select", false);
+		$ci->db->from($this->table)->select("messages.*, $user_group_select", false);
 			
 		if(is_array($id))
 		{
@@ -292,10 +293,11 @@ class VBX_Message extends Model {
 		if(empty($result))
 		{
 			$_id = $id;
-			if (is_array($id)) {
+			if (is_array($id)) 
+			{
 				$_id = $id['call_sid'];
 			}
-			throw new VBX_MessageException('VBX_Message not found: message_id = '.$_id);
+			throw new VBX_MessageException('Message "'.$_id.'" not found.');
 		}
 
 		return $result[0];
@@ -396,8 +398,10 @@ class VBX_Message extends Model {
 	function notify_message($message, $notify = false)
 	{
 		if($notify === false)
+		{
 			return;
-
+		}
+		
 		$ci =& get_instance();
 		$ci->load->model('vbx_user');
 		$ci->load->model('vbx_group');
@@ -446,7 +450,6 @@ class VBX_Message extends Model {
 				$owner = '';
 			}
 
-
 			if($message->type == 'voice')
 			{
 				openvbx_mail($user->email,
@@ -493,7 +496,6 @@ class VBX_Message extends Model {
 				break;
 		}
 
-
 		return $content;
 	}
 
@@ -502,8 +504,10 @@ class VBX_Message extends Model {
 		$group = new Group();
 		$group->get_by_id($this->group_id);
 		if($group->name)
+		{
 			return $group->name;
-
+		}
+		
 		$user = new User();
 		$user->get_by_id($this->user_id);
 		return $user->full_name();
@@ -551,8 +555,10 @@ class VBX_Message extends Model {
 		}
 
 		if(isset($user_message_total[0]))
+		{
 			$folders[$inbox_id]->total = $user_message_total[0]->count;
-
+		}
+		
 		if(!empty($group_ids))
 		{
 			$groups = $ci->db
@@ -612,7 +618,6 @@ class VBX_Message extends Model {
 	function get_annotations($message_id)
 	{
 		return $this->get_message_annotations($message_id);
-
 	}
 
 	function get_annotation($annotation_id)
@@ -652,12 +657,10 @@ class VBX_Message extends Model {
 
 		if($annotation_type)
 		{
-			$ci->db
-				->where('at.description', $annotation_type);
+			$ci->db->where('at.description', $annotation_type);
 		}
 
-		$ci->db
-			 ->get()->result();
+		$ci->db->get()->result();
 
 		return $user_annotations;
 	}

@@ -57,8 +57,8 @@ class MY_Controller extends Controller
 	{
 		parent::__construct();
 
-		if(!file_exists(APPPATH.'config/openvbx.php') || 
-				!file_exists(APPPATH.'config/database.php'))
+		if(!file_exists(APPPATH . 'config/openvbx.php') 
+			|| !file_exists(APPPATH . 'config/database.php'))
 		{
 			redirect('install');
 		}
@@ -139,7 +139,7 @@ class MY_Controller extends Controller
 				}
 			}
 			else {
-				$this->template->add_js(asset_url('/assets/min/?g='.$js_assets), 'absolute');
+				$this->template->add_js(asset_url('assets/min/?g='.$js_assets), 'absolute');
 			}
 
 			$css_assets = (!empty($this->css_assets) ? $this->css_assets : 'css');
@@ -153,7 +153,7 @@ class MY_Controller extends Controller
 					}
 				}
 			} else {
-				$this->template->add_css(asset_url('/assets/min/?g='.$css_assets), 'link');
+				$this->template->add_css(asset_url('assets/min/?g='.$css_assets), 'link');
 			}
 		}
 		

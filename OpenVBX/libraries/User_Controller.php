@@ -96,7 +96,13 @@ class User_Controller extends MY_Controller
 
 		if (!$this->session->userdata('loggedin') && $this->response_type != 'json')
 		{
-			return redirect('auth/login?redirect='.urlencode(uri_string()));
+			$redirect = site_url($this->uri->uri_string());
+			if (!empty($_COOKIE['last_known_url']))
+			{
+				$redirect = $_COOKIE['last_known_url'];
+				set_last_known_url('', time() - 3600);
+			}
+			return redirect('auth/login?redirect='.urlencode($redirect));
 		}
 
 		$this->user_id = $this->session->userdata('user_id');
@@ -323,6 +329,7 @@ class User_Controller extends MY_Controller
 		}
 		catch(User_ControllerException $e)
 		{
+			// @todo - set a "same page view" error message
 			// $this->session->set_flashdata('error', $e->getMessage());
 			error_log($e->getMessage());
 		}

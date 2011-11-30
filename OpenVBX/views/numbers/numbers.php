@@ -11,14 +11,7 @@
 			}
 			
 			// Incoming Numbers
-			if(count($incoming_numbers) > 0)
-			{
-				$this->load->view('numbers/incoming');
-			}
-			else
-			{ 
-				$this->load->view('numbers/no-numbers');
-			}
+			$this->load->view('numbers/incoming');
 		
 			// Available Numbers
 			if (count($available_numbers))

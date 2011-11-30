@@ -118,14 +118,11 @@ class VBX_Call extends Model {
 		}
 		$callerid = PhoneNumber::normalizePhoneNumberToE164($callerid);
 		$from = PhoneNumber::normalizePhoneNumberToE164($from);
-		$recording_url = site_url("twiml/dial").'?'.http_build_query(compact('callerid', 'to', 'rest_access'));
+		$twiml_url = site_url("twiml/dial").'?'.http_build_query(compact('callerid', 'to', 'rest_access'));
 
 		try {
 			$account = OpenVBX::getAccount();
-			$account->calls->create($callerid,
-										$from,
-										$recording_url
-									);
+			$account->calls->create($callerid, $from, $twiml_url);
 		}
 		catch (Exception $e) {
 			throw new VBX_CallException($e->getMessage());
