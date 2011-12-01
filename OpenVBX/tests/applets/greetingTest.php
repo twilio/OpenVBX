@@ -25,7 +25,7 @@ class greetingTest extends OpenVBX_Applet_TestCase
 		$out = ob_get_clean();
 
 		$xml = simplexml_load_string($out);
-		$this->assertEquals('SimpleXMLElement', get_class($xml));
+		$this->assertInstanceOf('SimpleXMLElement', $xml);
 		
 		// this regex match is cheap, need better reg-fu to match possible
 		// language and voice attributes that could appear in any order

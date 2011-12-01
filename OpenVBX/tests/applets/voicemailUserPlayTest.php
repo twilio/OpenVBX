@@ -48,7 +48,7 @@ class voicemailUserPlayTest extends OpenVBX_Applet_TestCase {
 		$out = ob_get_clean();
 
 		$xml = simplexml_load_string($out);
-		$this->assertEquals('SimpleXMLElement', get_class($xml));
+		$this->assertInstanceOf('SimpleXMLElement', $xml);
 
 		$userVmFile = str_replace('vbx-audio-upload://', $this->users['user1']->voicemail);
 		$this->assertRegExp('|(<Play>(.*?)'.$this->filename.'</Play>)|', $out);

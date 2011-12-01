@@ -24,6 +24,23 @@ Set up the database to be tested in `OpenVBX/config/database.php`. Add another c
 	$db['default_test'] = $db['default'];
 	$db['default_test']['database'] = 'test';
 
+The `$active_group` is automatically selected in the `fooLoader` class override.
+
+## Configure Twilio Sid & Twilio Token
+
+The Tests are configured to pull a default Sid & Token from a system environment variable. This has been tested on *NIX but not on Windows. Any help is getting this to be cross platform would be appreciated.
+
+### Unix Sid & Token Setup
+
+To automatically load a system ENV variable set up your `.bash_profile` with your Sid & Token values.
+
+	export TWILIO_SID="AC123..."
+	export TWILIO_TOKEN="123..."
+
+### Windows Sid & Token Setup
+
+TBD
+
 ## Run
 
 	$ cd OpenVBX/tests

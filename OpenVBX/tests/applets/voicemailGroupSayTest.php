@@ -7,6 +7,8 @@ class voicemailGroupSayTest extends OpenVBX_Applet_TestCase
 	private $users = array();
 	private $group = null;
 	
+	private $prompt_message = 'I am group email. Please leave a message.';
+	
 	public function setUp()
 	{
 		parent::setUp();
@@ -43,7 +45,7 @@ class voicemailGroupSayTest extends OpenVBX_Applet_TestCase
 			'user_id' => 1,
 			'created' => NULL,
 			'updated' => NULL,
-			'data' => '{"start":{"name":"Call Start","data":{"next":"start/f274cd"},"id":"start","type":"standard---start"},"f274cd":{"name":"Voicemail","data":{"prompt_say":"I am group email. Please leave a message.","prompt_play":"","prompt_mode":"say","prompt_tag":"global","number":"","library":"","permissions_id":"'.$this->group->id.'","permissions_type":"group"},"id":"f274cd","type":"standard---voicemail"}}',
+			'data' => '{"start":{"name":"Call Start","data":{"next":"start/f274cd"},"id":"start","type":"standard---start"},"f274cd":{"name":"Voicemail","data":{"prompt_say":"'.$this->prompt_message.'","prompt_play":"","prompt_mode":"say","prompt_tag":"global","number":"","library":"","permissions_id":"'.$this->group->id.'","permissions_type":"group"},"id":"f274cd","type":"standard---voicemail"}}',
 			'sms_data' => NULL,
 			'tenant_id' => 1
 		));
@@ -81,11 +83,11 @@ class voicemailGroupSayTest extends OpenVBX_Applet_TestCase
 		$out = ob_get_clean();
 
 		$xml = simplexml_load_string($out);
-		$this->assertEquals('SimpleXMLElement', get_class($xml));
+		$this->assertInstanceOf('SimpleXMLElement', $xml);
 
 		// this regex match is cheap, need better reg-fu to match possible
 		// language and voice attributes that could appear in any order
-		$this->assertRegExp('|(<Say(.*?)>I am group email. Please leave a message.</Say>)|', $out);
+		$this->assertRegExp('|(<Say(.*?)>'.$this->prompt_message.'</Say>)|', $out);
 	}
 	
 	public function testVoicemailGroupMessage()

@@ -37,7 +37,17 @@ $database_content = array(
 	'messages' => array(	
 	),
 
-	'numbers' => array(	
+	'numbers' => array(
+		array(
+			'id' => '',
+			'user_id' => 1,
+			'name' => 'My Device',
+			'value' => '+14151112222',
+			'is_active' => 1,
+			'sms' => 1,
+			'sequence' => null,
+			'tenant_id' => 1
+		)
 	),
 
 	'plugin_store' => array(	
