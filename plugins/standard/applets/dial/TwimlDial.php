@@ -91,6 +91,8 @@ class TwimlDial {
 	
 	public function callOpts($params) 
 	{
+		$opts = array();
+		
 		if ($params['whisper_to']) 
 		{
 			$opts['url'] = site_url('twiml/whisper?name='.urlencode($params['whisper_to']));
