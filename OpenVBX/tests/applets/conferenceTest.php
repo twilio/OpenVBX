@@ -35,7 +35,7 @@ class conferenceTest extends OpenVBX_Applet_TestCase {
 		$xml = simplexml_load_string($out);
 		$this->assertInstanceOf('SimpleXMLElement', $xml);
 		
-		// test moderator
+		// test presence of conference verb
 		$this->assertRegExp('|<Conference(.*?)>(.*?)</Conference>|', $out);
 		
 		// test moderator
@@ -45,8 +45,7 @@ class conferenceTest extends OpenVBX_Applet_TestCase {
 		$this->assertTrue(strpos($out, 'com.twilio.music.ambient') !== false);
 	}
 	
-	public function testConferenceUserParticipant()
-	{
+	public function testConferenceUserParticipant() {
 		$this->setRequest(array(
 			'From' => '+14150000000'
 		));
@@ -55,6 +54,11 @@ class conferenceTest extends OpenVBX_Applet_TestCase {
 		$this->CI->voice('1', '7b0c75');
 		$out = ob_get_clean();
 		
+		// test valid xml
+		$xml = simplexml_load_string($out);
+		$this->assertInstanceOf('SimpleXMLElement', $xml);
+		
+		// test non-moderator
 		$this->assertTrue(strpos($out, 'endConferenceOnExit="false"') !== false);
 	}
 }

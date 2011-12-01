@@ -333,7 +333,7 @@ class VBX_Message extends Model {
 
 		if(!empty($user_sql) || !empty($group_sql))
 		{
-			$user_sql = '('. $user_sql . (!empty($user_sql)? ' OR ' : '') . $group_sql .')';
+			$user_sql = '('. $user_sql . (!empty($user_sql) && !empty($group_sql)? ' OR ' : '') . $group_sql .')';
 		}
 
 		$user_group_select = '1=1';
