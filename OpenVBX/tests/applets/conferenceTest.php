@@ -24,7 +24,7 @@ class conferenceTest extends OpenVBX_Applet_TestCase {
 		
 	public function testConferenceUserModerator() {
 		$this->setRequest(array(
-			'From' => '+14151112222'
+			'From' => '+14150001111'
 		));
 		
 		ob_start();

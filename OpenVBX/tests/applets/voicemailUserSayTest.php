@@ -4,28 +4,18 @@ include_once dirname(__FILE__).'/../CIUnit.php';
 
 class voicemailUserSayTest extends OpenVBX_Applet_TestCase
 {
-	private $users = array();
+	private $user_id = 1;
 	
 	public function setUp()
 	{
 		parent::setUp();
-		
-		// all this is slow, but it properly sets up relationships
-		$this->users['user1'] = new VBX_User((object) array(
-			'first_name' => 'voicemail',
-			'last_name' => 'test1',
-			'email' => 'voicemailtest1@openvbx.local',
-			'voicemail' => 'User1 Voicemail'
-		));
-		$this->users['user1']->save();
-		$this->users['user1']->set_password('password', 'password');
 		
 		$this->setFlow(array(
 			'id' => 1,
 			'user_id' => 1,
 			'created' => NULL,
 			'updated' => NULL,
-			'data' => '{"start":{"name":"Call Start","data":{"next":"start/f274cd"},"id":"start","type":"standard---start"},"f274cd":{"name":"Voicemail","data":{"prompt_say":"","prompt_play":"","prompt_mode":"say","prompt_tag":"global","number":"","library":"","permissions_id":"'.$this->users['user1']->id.'","permissions_type":"user"},"id":"f274cd","type":"standard---voicemail"}}',
+			'data' => '{"start":{"name":"Call Start","data":{"next":"start/f274cd"},"id":"start","type":"standard---start"},"f274cd":{"name":"Voicemail","data":{"prompt_say":"","prompt_play":"","prompt_mode":"say","prompt_tag":"global","number":"","library":"","permissions_id":"'.$this->user_id.'","permissions_type":"user"},"id":"f274cd","type":"standard---voicemail"}}',
 			'sms_data' => NULL,
 			'tenant_id' => 1
 		));
@@ -42,9 +32,6 @@ class voicemailUserSayTest extends OpenVBX_Applet_TestCase
 	{	
 		$this->CI->db->truncate('user_messages');
 		$this->CI->db->truncate('messages');
-		$this->CI->db->delete('users', array('id >' => 1));
-		$this->users = array();
-		
 		parent::tearDown();
 	}
 
@@ -57,9 +44,11 @@ class voicemailUserSayTest extends OpenVBX_Applet_TestCase
 		$xml = simplexml_load_string($out);
 		$this->assertInstanceOf('SimpleXMLElement', $xml);
 		
+		$user = VBX_User::get($this->user_id);
+		
 		// this regex match is cheap, need better reg-fu to match possible
 		// language and voice attributes that could appear in any order
-		$this->assertRegExp('|(<Say(.*?)>'.$this->users['user1']->voicemail.'</Say>)|', $out);
+		$this->assertRegExp('|(<Say(.*?)>'.$user->voicemail.'</Say>)|', $out);
 		$this->assertRegExp('|(<Record transcribeCallback="(.*?)"/>)|', $out);
 	}
 	

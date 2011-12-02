@@ -1,28 +1,24 @@
 <?php
 
 class voicemailUserPlayTest extends OpenVBX_Applet_TestCase {
-	
-	private $filename = 'this-is-not-a-love-song.mp3';
+	private $user_id = 1;
+	private $upload_prefix = 'vbx-audio-upload://';
+	private $filename = '261d1e265a8c9f8f3683a5452949ea25.mp3';
 	
 	public function setUp() {
 		parent::setUp();
 		
-		// all this is slow, but it properly sets up relationships
-		$this->users['user1'] = new VBX_User((object) array(
-			'first_name' => 'voicemail',
-			'last_name' => 'test1',
-			'email' => 'voicemailPlaytest1@openvbx.local',
-			'voicemail' => 'vbx-audio-upload://'.$this->filename
-		));
-		$this->users['user1']->save();
-		$this->users['user1']->set_password('password', 'password');
+		// set the user's voicemail to be a recording
+		$this->user = VBX_User::get($this->user_id);
+		$this->user->voicemail = $this->upload_prefix.$this->filename;
+		$this->user->save();
 		
 		$this->setFlow(array(
 			'id' => 1,
 			'user_id' => 1,
 			'created' => NULL,
 			'updated' => NULL,
-			'data' => '{"start":{"name":"Call Start","data":{"next":"start/59c7d7"},"id":"start","type":"standard---start"},"59c7d7":{"name":"Voicemail","data":{"prompt_say":"","prompt_play":"","prompt_mode":"","prompt_tag":"global","number":"","library":"","permissions_id":"'.$this->users['user1']->id.'","permissions_type":"user"},"id":"59c7d7","type":"standard---voicemail"}}',
+			'data' => '{"start":{"name":"Call Start","data":{"next":"start/59c7d7"},"id":"start","type":"standard---start"},"59c7d7":{"name":"Voicemail","data":{"prompt_say":"","prompt_play":"","prompt_mode":"","prompt_tag":"global","number":"","library":"","permissions_id":"'.$this->user_id.'","permissions_type":"user"},"id":"59c7d7","type":"standard---voicemail"}}',
 			'sms_data' => NULL,
 			'tenant_id' => 1
 		));
@@ -35,13 +31,6 @@ class voicemailUserPlayTest extends OpenVBX_Applet_TestCase {
 		$this->setRequestToken();
 	}
 	
-	public function tearDown() {
-		$this->CI->db->delete('users', array('id >' => 1));
-		$this->users = array();
-		
-		parent::tearDown();
-	}
-	
 	public function testVoicemailUserPlay() {
 		ob_start();
 		$this->CI->voice(1, '59c7d7');
@@ -50,7 +39,7 @@ class voicemailUserPlayTest extends OpenVBX_Applet_TestCase {
 		$xml = simplexml_load_string($out);
 		$this->assertInstanceOf('SimpleXMLElement', $xml);
 
-		$userVmFile = str_replace('vbx-audio-upload://', $this->users['user1']->voicemail);
-		$this->assertRegExp('|(<Play>(.*?)'.$this->filename.'</Play>)|', $out);
+		$userVmFile = str_replace($this->upload_prefix, '', $this->user->voicemail);
+		$this->assertRegExp('|(<Play>(.*?)/audio-uploads/'.$userVmFile.'</Play>)|', $out);
 	}
 }

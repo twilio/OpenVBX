@@ -9,7 +9,7 @@ class smsInboxTest extends OpenVBX_Applet_TestCase {
 	private $message_group = 1;
 	
 	public function setUp() {
-		parent::setUp();
+		parent::setUp();	
 		
 		// set up our request
 		$this->setPath('/twiml/applet/sms/1/3c8aaf');
@@ -33,7 +33,7 @@ class smsInboxTest extends OpenVBX_Applet_TestCase {
 			'From' => $this->message_from, 
 			'To' => $this->message_to, 
 			'Body' => $this->message_body
-		));
+		));				
 	}
 	
 	public function tearDown() {

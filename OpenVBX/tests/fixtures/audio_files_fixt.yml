@@ -1,0 +1,36 @@
+first:
+    id: 
+    label: 
+    user_id: 
+    url: 
+    recording_call_sid: 
+    tag: 
+    cancelled: 
+    created: 
+    updated: 
+    tenant_id: 
+
+second:
+    id: 
+    label: 
+    user_id: 
+    url: 
+    recording_call_sid: 
+    tag: 
+    cancelled: 
+    created: 
+    updated: 
+    tenant_id: 
+
+third:
+    id: 
+    label: 
+    user_id: 
+    url: 
+    recording_call_sid: 
+    tag: 
+    cancelled: 
+    created: 
+    updated: 
+    tenant_id: 
+

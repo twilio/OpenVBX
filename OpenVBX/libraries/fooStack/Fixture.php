@@ -12,6 +12,7 @@
 * can be used with CIUnit
 */
 class Fixture {
+	public $CI;
 
     function __construct()
     {
@@ -58,7 +59,8 @@ class Fixture {
              !isset($this->CI->db->database) )
         {
             $this->CI = &get_instance();
-            $this->CI->db = $this->CI->config->item('db');
+            // $this->CI->db = $this->CI->config->item('db');
+			$this->CI->load->database('default_test');
         }
 
         //security measure 2: only load if used database ends on '_test'
