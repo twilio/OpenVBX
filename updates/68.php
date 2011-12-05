@@ -7,7 +7,7 @@ function runUpdate_68()
 	runUpdate_68_alter_users_table();
 	
 	$ci =& get_instance();
-	$ci->settings->set('schema-version', '66', 1);
+	$ci->settings->set('schema-version', '68', 1);
 }
 
 function runUpdate_68_create_cache_table()
