@@ -251,11 +251,21 @@ class Site extends User_Controller
 		$process_app = false;
 		$process_connect_app = false;
 
+		$notification_settings = array(
+			'email_notifications_voice',
+			'email_notifications_sms'
+		);
+
 		if(!empty($site))
 		{
 			try {
 				foreach($site as $name => $value)
 				{
+					if (in_array($name, $notification_settings))
+					{
+						continue;
+					}
+					
 					if ($name == 'application_sid')
 					{
 						$app_sid = $value;
@@ -271,6 +281,15 @@ class Site extends User_Controller
 					if (!$this->settings->set($name, trim($value), $this->tenant->id))
 					{
 						$this->settings->add($name, trim($value), $this->tenant->id);
+					}
+				}
+				
+				if (isset($site['rewrite_enabled']))
+				{
+					foreach ($notification_settings as $name)
+					{
+						$value = (!empty($site[$name]) ? 1 : 0);
+						$this->settings->add($name, $value, $this->tenant->id);
 					}
 				}
 

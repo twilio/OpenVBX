@@ -324,7 +324,9 @@ INSERT INTO settings
 	   ('numbers_country', 'US', 1),
 	   ('gravatars', 0, 1),
 	   ('connect_application_sid', 0, 1),
-	   ('dial_timeout', 15, 1);
+	   ('dial_timeout', 15, 1),
+	   ('email_notifications_voice', 1, 1),
+	   ('email_notifications_sms', 1, 1);
 
 INSERT INTO groups
        (name, is_active, tenant_id)

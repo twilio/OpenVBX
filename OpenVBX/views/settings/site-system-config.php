@@ -66,6 +66,31 @@
 					echo t_form_dropdown($params, $time_zones, $server_time_zone['value']);
 				?>
 				</label>
+				<br />
+			</div>
+			
+			<div id="settings-email-notifications" class="vbx-input-complex vbx-input-container">
+				<label class="field-label">Email Notifications</label>
+				<label for="settings-email-notifications-voice" class="field-label-inline">New Voicemail
+				<?php
+					$params = array(
+						'name' => 'site[email_notifications_voice]',
+						'id' => 'settings-email-notifications-voice'
+					);
+					echo form_checkbox($params, '1', ($email_notifications_voice['value'] == 1));
+				?>
+				</label>
+				<label for="settings-email-notifications-sms" class="field-label-inline">New SMS
+				<?php
+					$params = array(
+						'name' => 'site[email_notifications_sms]',
+						'id' => 'settings-email-notifications-sms'
+					);
+					echo form_checkbox($params, '1', ($email_notifications_sms['value'] == 1));
+				?>
+				</label>
+				<p class="instruction">Control whether new Voice or SMS messages trigger an email<br />notification to the recipient(s).</p>
+				<br />
 			</div>
 		</fieldset>
 	
@@ -186,5 +211,4 @@
 	</div>
 				
 	<button class="submit-button" type="submit"><span>Update</span></button>
-
 </form>

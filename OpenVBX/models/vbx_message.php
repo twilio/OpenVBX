@@ -250,9 +250,9 @@ class VBX_Message extends Model {
 		// refetch the message after persistence completed to update created, updated value
 		$message = $this->get_message(array('call_sid' => $message->call_sid));
 
-		if($result)
+		if($result && $notify)
 		{
-			$this->notify_message($message, $notify);
+			$this->notify_message($message);
 		}
 
 		if(!$result)
@@ -384,7 +384,6 @@ class VBX_Message extends Model {
 		$result['total'] = $query->count_all_results();
 		$result['max'] = $size;
 		$result['offset'] = $offset;
-		// $query = $this->get_messages_query($options);
 		$query = $this->get_messages_query($options);
 		$result['messages'] = $query
 			 ->limit($size, $offset)
@@ -394,13 +393,8 @@ class VBX_Message extends Model {
 		return $result;
 	}
 
-	function notify_message($message, $notify = false)
-	{
-		if($notify === false)
-		{
-			return;
-		}
-		
+	function notify_message($message)
+	{	
 		$ci =& get_instance();
 		$ci->load->model('vbx_user');
 		$ci->load->model('vbx_group');
@@ -414,6 +408,7 @@ class VBX_Message extends Model {
 		$message->content_url = $vm_url;
 
 		$users = array();
+		$notify = array();
 		if($message->owner_type == 'user')
 		{
 			$user = VBX_User::get($message->owner_id);
@@ -449,20 +444,20 @@ class VBX_Message extends Model {
 				$owner = '';
 			}
 
-			if($message->type == 'voice')
+			$notification_setting = 'email_notifications_'.$message->type;
+			$email_notify = $ci->vbx_settings->get($notification_setting, $ci->tenant->id);
+
+			if($email_notify)
 			{
 				openvbx_mail($user->email,
 								"New $owner $message_type Notification - {$message->caller}",
 								'message',
 								compact('message')
 							);
-				log_message('debug', 'message queued for'.$user->email);
 			}
 
 			foreach($numbers as $number)
 			{
-				log_message('debug', 'Number value: '.$number->value);
-				log_message('debug', 'Number values: '.var_export($number->values, true));
 				if($number->value && $number->sms)
 				{
 					try
@@ -471,7 +466,6 @@ class VBX_Message extends Model {
 														$number->value,
 														$this->tiny_notification_message($message)
 													);
-						log_message('debug', 'sms queued for '.$number->value);
 					}
 					catch(Sms_messageException $e)
 					{

@@ -236,7 +236,8 @@ class VBX_User extends MY_Model {
 			$user = VBX_User::get(intval($user));
 		}
 		
-		$ci =& get_instance();		
+		$ci =& get_instance();
+		// this throws a notice 'cause the loader is biased		
 		$ci->load->library('PasswordHash');
 		
 		$hashr = new PasswordHash(self::HASH_ITERATION_COUNT, self::PORTABLE_HASHES);
@@ -398,8 +399,7 @@ class VBX_User extends MY_Model {
 
 		$ci->db->flush_cache();
 		$result = $ci->db
-			->select('users.*,'.
-					 'at.description as auth_type')
+			->select('users.*,at.description as auth_type')
 			->join('auth_types at', 'at.id = users.auth_type')
 			->where('is_active', 1)
 			->where('users.tenant_id', $ci->tenant->id)
@@ -453,9 +453,11 @@ class VBX_User extends MY_Model {
 		if ($legacy === false)
 		{
 			$ci =& get_instance();
+			// this throws a notice 'cause the loader is biased
 			$ci->load->library('PasswordHash');
+
 			$hashr = new PasswordHash(self::HASH_ITERATION_COUNT, self::PORTABLE_HASHES);
-			$result = $hashr->HashPassword(self::salt_password($value));
+			$result = $ci->hashr->HashPassword(self::salt_password($value));
 		}
 		else
 		{
