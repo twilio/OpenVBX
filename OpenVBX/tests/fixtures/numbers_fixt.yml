@@ -1,0 +1,30 @@
+first:
+    id: 
+    user_id: 1
+    name: 'Main'
+    value: '+14150001111'
+    is_active: 1
+    sms: 1
+    sequence: 
+    tenant_id: 1
+
+second:
+    id: 
+    user_id: 2
+    name: 'Main'
+    value: '+14150002222'
+    is_active: 1
+    sms: 1
+    sequence: 
+    tenant_id: 1
+
+third:
+    id: 
+    user_id: 3
+    name: 'Main'
+    value: '+14150003333'
+    is_active: 1
+    sms: 1
+    sequence: 
+    tenant_id: 1
+

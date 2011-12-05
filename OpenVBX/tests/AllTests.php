@@ -16,6 +16,11 @@ if (version_compare(phpversion(), '5.3', '<')) {
 }
 
 // **OpenVBX Note:**
+// To output a test coverage report you'll need to bump the ram
+// You'll probably also need a beer, too.
+// ini_set('memory_limit', '1024M');
+
+// **OpenVBX Note:**
 // It is recommended that you export your Twilio Sid & Token as environment
 // variables. If you haven't, or can't, hard code your Sid & Token here for
 // the setup of a complete testing environment

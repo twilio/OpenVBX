@@ -2,21 +2,28 @@
 
 ## Next
 
-- redesigned numbers screen to separate assigned, unassigned, and numbers in-use by other systems
-- changed user edit screens to always use dedicated page instead of a popup
-- Includes an object caching layer supporting the following mechanisms:
+- redesign numbers screen to separate assigned, unassigned, and numbers in-use by other systems
+- change user edit screens to always use dedicated page instead of a popup
+- add object caching layer supporting the following mechanisms:
 	- local (per page load memory cache)
 	- Database
 	- APC
 	- Memcache
-- Includes an API cache that uses the database to cache API results from Twilio
-- Cleans most models for code consistency
-- Moves user `last_seen`, `online` & `last_login` to be user settings
-- fixing password length bug
-- upgrades password storage security using [phppass](http://www.openwall.com/phpass/)
-- adds helpful documentation snippets in the Settings screens
-- provides better error messages from failed API transactions
-- added time-zone server setting
+- add API cache that uses the database to cache API results from Twilio
+- clean most models for code consistency & cache efficiency
+- move user `last_seen`, `online` & `last_login` to be user settings
+- add helpful data in user view screen to help admins to inspect users
+- fix password length bug, set min-length to 8
+- upgrade password storage security using [phppass](http://www.openwall.com/phpass/)
+- add helpful documentation snippets in the Settings screens
+- add better error messages from failed API transactions
+- add time-zone server setting
+- setting version number in a file instead of from database
+	- allows static operations to properly set an appropriate api user agent
+- changing `Services_Twilio` user agent to identify itself as OpenVBX
+- increase test coverage, implement data fixtures, and include better test documentation
+- change behavior of TwiML preview links in flow editor to open in a new window
+- add system setting for controlling email notifications for new messages
 
 
 ## OpenVBX 1.1.3

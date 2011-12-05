@@ -1,0 +1,21 @@
+first:
+    id: 
+    user_id: 1
+    key: 'last_seen'
+    value: 
+    tenant_id: 1
+
+second:
+    id: 
+    user_id: 2
+    key: 'last_seen'
+    value: 
+    tenant_id: 1
+
+third:
+    id: 
+    user_id: 3
+    key: 'last_seen'
+    value: 
+    tenant_id: 1
+

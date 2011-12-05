@@ -318,7 +318,6 @@ INSERT INTO settings
 	   VALUES
 	   ('dash_rss', '', 1),
 	   ('theme', '', 1),
-	   ('version', '1.2b-object-cache', 1),
 	   ('iphone_theme', '', 1),
 	   ('enable_sandbox_number', 1, 1),
 	   ('twilio_endpoint', 'https://api.twilio.com/2010-04-01', 1),
@@ -329,7 +328,9 @@ INSERT INTO settings
 	   ('numbers_country', 'US', 1),
 	   ('gravatars', 0, 1),
 	   ('connect_application_sid', 0, 1),
-	   ('dial_timeout', 15, 1);
+	   ('dial_timeout', 15, 1),
+	   ('email_notifications_voice', 1, 1),
+	   ('email_notifications_sms', 1, 1);
 
 INSERT INTO groups
        (name, is_active, tenant_id)

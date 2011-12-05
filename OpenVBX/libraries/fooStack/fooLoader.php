@@ -238,7 +238,7 @@ class fooLoader extends CI_Loader {
 	 * @param	bool	whether to enable active record (this allows us to override the config setting)
 	 * @return	object
 	 */
-	function database($params = '', $return = FALSE, $active_record = FALSE)
+	function database($params = 'default_test', $return = FALSE, $active_record = FALSE)
 	{
         //redesignme, unittest check if there is a DB class already instantiated
         //reuse it if yes

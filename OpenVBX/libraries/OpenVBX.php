@@ -23,6 +23,9 @@ include(APPPATH.'libraries/Services/Twilio.php');
 
 class OpenVBXException extends Exception {}
 class OpenVBX {
+	protected static $version;
+	protected static $schemaVersion;
+	
 	public static $currentPlugin = null;
 	
 	private static $_twilioService;
@@ -137,8 +140,7 @@ class OpenVBX {
 										   $recording_url,
 										   $duration)
 	{
-		return self::addMessage($owner, $sid, $caller, $called, $recording_url,
-								$duration, VBX_Message::TYPE_VOICE, null);
+		return self::addMessage($owner, $sid, $caller, $called, $recording_url, $duration, VBX_Message::TYPE_VOICE, null);
 	}
 
 	public static function addSmsMessage($owner,
@@ -147,8 +149,7 @@ class OpenVBX {
 										 $from,
 										 $body)
 	{
-		return self::addMessage($owner, $sid, $to, $from, '',
-								0, VBX_Message::TYPE_SMS, $body, true);
+		return self::addMessage($owner, $sid, $to, $from, '', 0, VBX_Message::TYPE_SMS, $body, true);
 	}
 
 	public static function addMessage($owner,
@@ -199,44 +200,58 @@ class OpenVBX {
 		}
 	}
 
-	/* Returns the version from the php software on the server */
-	public static function version($cache = true)
+	/**
+	 * Returns the OpenVBX software version
+	 * 
+	 * @internal Post 1.1.3 this pulls from the file in `OpenVBX/config/version.php` instead
+	 *			 of pulling from the database. This way the version number can be known without
+	 *			 a functional database (ie: install)
+	 * @return string
+	 */
+	public static function version()
 	{
-		$ci =& get_instance();
-		$ci->load->model('vbx_settings');
-		if (!$cache && $ci->cache->enabled())
+		if (empty(self::$version))
 		{
-			$ci->cache->enabled(false);
-			$reenable_cache = true;
+			$ci =& get_instance();
+			$ci->config->load('version');
+			self::$version = $ci->config->item('version');
 		}
-		$val = $ci->vbx_settings->get('version', VBX_PARENT_TENANT);
-		if ($reenable_cache)
-		{
-			$ci->cache->enabled(true);
-		}
-		return $val;
+		return self::$version;
 	}
 
-	/* Returns the version of the database schema */
-	public static function schemaVersion($cache = true)
+	/**
+	 * Returns the version of the database schema
+	 *
+	 * @static
+	 * @return int
+	 */
+	public static function schemaVersion()
 	{
-		$ci =& get_instance();
-		$ci->load->model('vbx_settings');
-		if (!$cache && $ci->cache->enabled())
+		if (empty(self::$schemaVersion))
 		{
-			$ci->cache->enabled(false);
-			$reenable_cache = true;
+			$ci =& get_instance();
+			$ci->load->model('vbx_settings');
+			if (!$cache && $ci->cache->enabled())
+			{
+				$ci->cache->enabled(false);
+				$reenable_cache = true;
+			}
+			self::$schemaVersion = $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
+			if ($reenable_cache)
+			{
+				$ci->cache->enabled(true);
+			}
 		}
-		$val = $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
-		if ($reenable_cache)
-		{
-			$ci->cache->enabled(true);
-		}
-		return $val;
+		return self::$schemaVersion;
 	}
 
-	/* Returns the latest version of the schema on the server,
-	 * regardless if its been imported */
+	/**
+	 * Returns the latest version of the schema on the server,
+	 * regardless if its been imported
+	 *
+	 * @static
+	 * @return array
+	 */
 	public static function getLatestSchemaVersion()
 	{
 		$updates = scandir(VBX_ROOT.'/updates/');
@@ -249,6 +264,14 @@ class OpenVBX {
 		return $updates[count($updates)-1];
 	}
 
+	/**
+	 * Set the title of the current page
+	 *
+	 * @static
+	 * @param string $title
+	 * @param bool $overwrite whether to replace or append to the current title
+	 * @return mixed
+	 */
 	public static function setPageTitle($title, $overwrite = false) 
 	{
 		$ci =& get_instance();
@@ -267,14 +290,17 @@ class OpenVBX {
 	 * Twilio Connect Aware. Will return the connect account if applicable.
 	 *
 	 * @throws OpenVBXException if invalid parameters are passed in for new object generation
-	 * @param string $twilio_sid Optional - Twilio Account Sid
-	 * @param string $twilio_token Optional - Twilio Account Token
+	 *
+	 * @static
+	 * @param bool/string $twilio_sid Optional - Twilio Account Sid
+	 * @param bool/string $twilio_token Optional - Twilio Account Token
+	 * @param string $api_version - default api version to use
 	 * @return object Services_Twilio_Rest_Account
 	 */
 	public static function getAccount($twilio_sid = false, $twilio_token = false, $api_version = '2010-04-01') 
 	{
 		$ci =& get_instance();
-		
+
 		// if sid & token are passed, make sure they're not the same as our master
 		// values. If they are, make a new object, otherwise use the same internal object
 		if (!empty($twilio_sid) || !empty($twilio_token)) 
@@ -343,7 +369,7 @@ class OpenVBX {
 	protected static function get_http_opts()
 	{
 		$ci =& get_instance();
-		
+
 		$_http_opts = array(
 			'host' => 'https://api.twilio.com',
 			'opts' => array(
@@ -377,7 +403,6 @@ class OpenVBX {
 	public function getAccounts() {
 		if (!(self::$_twilioService instanceof Services_Twilio)) 
 		{
-			$ci =& get_instance();
 			self::getAccount();
 		}
 		return self::$_twilioService->accounts;
@@ -391,8 +416,8 @@ class OpenVBX {
 	 * 
 	 * If no post_vars are passed then $_POST will be used directly.
 	 *
-	 * @param string $uri 
-	 * @param array $post_vars 
+	 * @param bool/string $uri
+	 * @param bool/array $post_vars
 	 * @return bool
 	 */
 	public static function validateRequest($url = false, $post_vars = false) 

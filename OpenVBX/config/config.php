@@ -32,7 +32,7 @@ $config['base_url']= "http"
 | Site Revision Number
 |--------------------------------------------------------------------------
 |
-| Used for js versioning.
+| Used for asset url versioning.
 |
 */
 $config['site_rev'] = 1015;

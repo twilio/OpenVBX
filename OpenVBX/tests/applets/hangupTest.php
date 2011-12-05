@@ -34,7 +34,7 @@ class hangupTest extends OpenVBX_Applet_TestCase
 		$out = ob_get_clean();
 
 		$xml = simplexml_load_string($out);
-		$this->assertEquals('SimpleXMLElement', get_class($xml));
+		$this->assertInstanceOf('SimpleXMLElement', $xml);
 		
 		$this->assertRegExp('|(<Hangup/>)|', $out);
 	}

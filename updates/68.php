@@ -1,18 +1,16 @@
 <?php
 
-
-function runUpdate_66()
+function runUpdate_68()
 {
-	runUpdate_66_create_cache_table();
-	runUpdate_66_update_users();
-	runUpdate_66_alter_users_table();
+	runUpdate_68_create_cache_table();
+	runUpdate_68_update_users();
+	runUpdate_68_alter_users_table();
 	
 	$ci =& get_instance();
-	$ci->settings->set('version', '1.2b-object-cache', 1);
 	$ci->settings->set('schema-version', '66', 1);
 }
 
-function runUpdate_66_create_cache_table()
+function runUpdate_68_create_cache_table()
 {
 	$sql = trim("
 CREATE TABLE IF NOT EXISTS `cache` (
@@ -28,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `cache` (
 	$ci->db->query($sql);
 }
 
-function runUpdate_66_update_users()
+function runUpdate_68_update_users()
 {
 	$ci =& get_instance();
 	$users = $ci->db
@@ -51,7 +49,7 @@ function runUpdate_66_update_users()
 	}
 }
 
-function runUpdate_66_alter_users_table()
+function runUpdate_68_alter_users_table()
 {	
 	$ci =& get_instance();
 	$ci->load->dbforge();

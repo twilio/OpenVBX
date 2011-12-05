@@ -192,7 +192,11 @@
 				</table>
 			</form>
 			
+		<?php if ($annotations['max'] > 0): ?>
 			<p class="note-count">Showing <?php echo $annotations['max']; ?> of <?php echo $annotations['total']; ?></p>
+		<?php else: ?>
+			<p class="note-count">No Annotations</p>
+		<?php endif; ?>
 			<ul id="message-details-notes-list">
 				<?php foreach($annotations['items'] as $annotation): ?>
 				<li class="note">
@@ -215,8 +219,10 @@
 				</li>
 				<?php endforeach; ?>
 			</ul>
+		<?php if ($annotations['max'] > 0): ?>
 			<p class="note-count">Showing <?php echo $annotations['max']; ?> of <?php echo $annotations['total']; ?></p>
-			
+		<?php endif; ?>
+		
 		</div><!-- .message-details-notes -->
 	</div><!-- .vbx-content-container -->
 	<?php endif; ?>

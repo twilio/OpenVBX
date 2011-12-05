@@ -1,0 +1,54 @@
+first:
+    id: 1
+    is_admin: 1
+    is_active: 1
+    first_name: 'admin'
+    last_name: 'user'
+    password: 'password'
+    invite_code: 
+    email: 'admin@openvbx.local'
+    pin: 
+    notification: 
+    auth_type: 1
+    voicemail: 'Please leave me a message'
+    tenant_id: 1
+    last_seen: 
+    last_login: 
+    online: 9
+
+second:
+    id: 2
+    is_admin: 1
+    is_active: 1
+    first_name: 'one'
+    last_name: 'user'
+    password: 'password'
+    invite_code: 
+    email: 'user1@openvbx.local'
+    pin: 
+    notification: 
+    auth_type: 1
+    voicemail: 'Please leave me a message'
+    tenant_id: 1
+    last_seen: 
+    last_login: 
+    online: 9
+
+third:
+    id: 3
+    is_admin: 1
+    is_active: 1
+    first_name: 'two'
+    last_name: 'user'
+    password: 'password'
+    invite_code: 
+    email: 'user2@openvbx.local'
+    pin: 
+    notification: 
+    auth_type: 1
+    voicemail: 'Please leave me a message'
+    tenant_id: 1
+    last_seen: 
+    last_login: 
+    online: 9
+

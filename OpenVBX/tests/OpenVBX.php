@@ -3,7 +3,6 @@
 class OpenVBX_TestCase extends CIUnit_TestCase {
 
 	protected $request_method = 'GET';
-	protected $schema_file = 'assets/twilioRealtimeCallSchema.xsd';
 
 	/**
 	 * Mostly here to hush up errors and set common environment
@@ -13,26 +12,32 @@ class OpenVBX_TestCase extends CIUnit_TestCase {
 	 */
 	public function __construct() 
 	{
+		parent::__construct();
 		$this->setServer(array(
 			'SERVER_NAME' => 'openvbx.local',
 			'HTTP_HOST' => 'openvbx.local'
 		));
 	}
 
-	/**
-	 * - Setting output buffering capture here seems to be the only
-	 *   way to control output of the request.
-	 *
-	 * @return void
-	 */
 	public function setUp() 
 	{
 		parent::setUp();
+		
+		if (!empty($this->CI->session))
+		{
+			$this->CI->session->sess_destroy();
+		}
+		$this->CI->load->database('default_test');
+
+		$this->CI->db->query('SET FOREIGN_KEY_CHECKS=0');
+		$this->dbfixt('user_settings', 'users', 'numbers', 'groups_users');
+		$this->CI->db->query('SET FOREIGN_KEY_CHECKS=1');
 	}
 	
 	public function tearDown() 
 	{
-		parent::setUp();
+		parent::tearDown();
+		$this->CI->session->sess_destroy();
 	}
 
 	public function setRequestMethod($method) 

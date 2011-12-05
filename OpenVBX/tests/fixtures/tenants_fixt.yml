@@ -1,0 +1,24 @@
+first:
+    id: 1
+    name: 'default'
+    url_prefix: 
+    local_prefix: 
+    active: 1
+    type: 0
+
+second:
+    id: 2
+    name: 'subtenant' 
+    url_prefix: 'subtenant' 
+    local_prefix: 
+    active: 1
+    type: 2
+
+third:
+    id: 3
+    name: 'connecttenant'
+    url_prefix: 'connecttenant'
+    local_prefix: 
+    active: 1
+    type: 3
+

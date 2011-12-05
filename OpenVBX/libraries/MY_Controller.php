@@ -212,9 +212,7 @@ class MY_Controller extends Controller
 
 	protected function set_response_type($type = null)
 	{
-		$version = $this->settings->get('version', 1);
-
-		header("X-OpenVBX-Version: $version");
+		header('X-OpenVBX-Version: '.OpenVBX::version());
 		if(isset($_SERVER['HTTP_ACCEPT']))
 		{
 			$accepts = explode(',', $_SERVER['HTTP_ACCEPT']);

@@ -106,6 +106,7 @@ class OpenVBX_Database_Init {
 		if (isset($db[$key])) {
 			$settings = $db[$key];
 		}
+
 		return $this->settings = $settings;
 	}
 	
@@ -125,6 +126,12 @@ class OpenVBX_Database_Init {
 		return $database_content;
 	}
 	
+	/**
+	 * @todo update this for new password hashing scheme
+	 *
+	 * @param string $users 
+	 * @return void
+	 */
 	public function salt_users($users) {
 		if (is_array($users)) 
 		{
