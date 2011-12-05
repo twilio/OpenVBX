@@ -5,6 +5,29 @@ abstract class OpenVBX_Cache_Abstract
 	private $enabled = true;	
 	protected $default_expires = 0;
 	protected $default_group = '_default_';
+	
+	/**
+	 * Short Name identifying the Cache Type
+	 *
+	 * @var string
+	 */
+	protected $friendly_name = 'Abstract Object Cache';
+	
+	/**
+	 * Full URL to more info about the cache type
+	 * Can be null
+	 * 
+	 * @var string
+	 */
+	protected $more_info = null;
+	
+	/**
+	 * Reason why cache is disabled
+	 * Mostly for debug
+	 *
+	 * @var string
+	 */
+	protected $reason_disabled = null;
 			
 	public function __construct($options)
 	{	
@@ -63,12 +86,33 @@ abstract class OpenVBX_Cache_Abstract
 		return $this->_flush();
 	}
 	
-	public function enabled($enabled = null)
+	/**
+	 * Get the existing cache status, pass a boolean value to
+	 * enable or disable the cache
+	 * 
+	 * Optional for disabling the cache is to provide a reason why 
+	 * some other process might find the cache to be disabled
+	 *
+	 * @param bool $enabled
+	 * @param string $reason_disabled 
+	 * @return bool
+	 */
+	public function enabled($enabled = null, $reason_disabled = null)
 	{
 		if (is_bool($enabled))
 		{
 			$this->enabled = $enabled;
 		}
+		
+		if (!$this->enabled && !empty($reason_disabled))
+		{
+			$this->reason_disabled = $reason_disabled;
+		}
+		else
+		{
+			$this->reason_disabled = null;
+		}
+		
 		return $this->enabled;
 	}
 	
@@ -101,6 +145,18 @@ abstract class OpenVBX_Cache_Abstract
 		return $ret;
 	}
 	
+	/**
+	 * Cache factory
+	 * 
+	 * If no type is provided the cache type from `OpenVBX/config/cache.php`
+	 * will be auto-loaded.
+	 * 
+	 * Always pulls config from `OpenVBX/config/cache.php`
+	 * @todo: allow custom configs to be passed in
+	 *
+	 * @param string $type 
+	 * @return object sub-class of OpenVBX_Cache_Abstract
+	 */
 	public static function load($type = null) {
 		$ci =& get_instance();
 		$ci->config->load('cache');
@@ -139,6 +195,10 @@ abstract class OpenVBX_Cache_Abstract
 				require_once($basepath.'DB.php');
 				$class = 'OpenVBX_Cache_DB';
 				break;
+			case $type == 'apc' && !function_exists('apc_fetch'):
+				error_log('Cannnot load APC cache, extension does not appear to be loaded.');
+			case $type == 'memcache' && !class_exists('Memcache'):
+				error_log('Cannnot load Memcache cache, extension does not appear to be loaded.');
 			case 'default':
 			default:
 				require_once($basepath.'Local.php');
@@ -146,6 +206,28 @@ abstract class OpenVBX_Cache_Abstract
 		}
 
 		return new $class($options);
+	}
+	
+	/**
+	 * Get the friendly name of this Cache type for display
+	 * Friendly name is the responsibility of the sub-class object to define
+	 *
+	 * @return string
+	 */
+	public function friendly_name()
+	{
+		return (!empty($this->friendly_name) ? $this->friendly_name : get_class($this));
+	}
+	
+	/**
+	 * Get the more info link on a Cache type for display
+	 * More Info is the responsibility of the sub-class object to define
+	 *
+	 * @return mixed string/null
+	 */
+	public function more_info()
+	{
+		return (!empty($this->more_info) ? $this->more_info : null);
 	}
 	
 	protected abstract function _get($key, $group, $tenant_id);

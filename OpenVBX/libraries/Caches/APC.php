@@ -2,13 +2,17 @@
 
 class OpenVBX_Cache_APC extends OpenVBX_Cache_Abstract
 {
+	protected $friendly_name = 'APC';
+	protected $more_info = 'http://php.net/apc';
+	
 	public function __construct($options)
 	{
 		parent::__construct($options);
 		if (!extension_loaded('apc'))
 		{
-			log_message('error', 'APC extension not loaded. Disabling cache.');
-			parent::enabled(false);
+			$message = 'APC extension not loaded.';
+			log_message('error', $message);
+			parent::enabled(false, $message);
 		}
 	}
 	

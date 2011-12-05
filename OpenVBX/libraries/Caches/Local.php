@@ -2,6 +2,9 @@
 
 class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 {	
+	protected $friendly_name = 'Local (memory)';
+	protected $more_info = null;
+	
 	private $_cache;
 	
 	public function __construct($options) {

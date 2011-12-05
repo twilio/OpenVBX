@@ -35,7 +35,7 @@ $config['base_url']= "http"
 | Used for asset url versioning.
 |
 */
-$config['site_rev'] = 1015;
+$config['site_rev'] = 1016;
 
 /*
 |--------------------------------------------------------------------------

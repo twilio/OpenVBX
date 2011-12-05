@@ -341,6 +341,7 @@ class User_Controller extends MY_Controller
 			log_message('error', $data['error']);
 		}
 		$data['section'] = $this->section;
+		
 		return $data;
 	}
 

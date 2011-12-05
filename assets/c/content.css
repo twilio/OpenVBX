@@ -288,9 +288,13 @@
 }
 
 .vbx-tab-view h3 {
-    margin-bottom: 20px;
+    margin-top: 25px;
     font-size: 17px;
     color: #555;
+}
+
+.vbx-tab-view h3:first-child {
+	margin-top: 0;
 }
 
 

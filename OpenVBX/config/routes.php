@@ -73,6 +73,7 @@ $route['audio'] = "audio";
 $route['audiofiles'] = "audiofiles";
 $route['log'] = "log";
 $route['settings'] = 'settings/settings_index';
+$route['settings/site/caches/(:any)'] = 'settings/caches/$1';
 $route['settings/site/(:any)/(:num)'] = 'settings/site/index/$1/$2';
 $route['settings/site/(:any)'] = 'settings/site/index/$1';
 $route['settings/site'] = 'settings/site/index';

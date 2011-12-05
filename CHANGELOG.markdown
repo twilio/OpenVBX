@@ -10,6 +10,8 @@
 	- APC
 	- Memcache
 - add API cache that uses the database to cache API results from Twilio
+- add method to flush caches via About screen
+- show cache object info in About screen
 - clean most models for code consistency & cache efficiency
 - move user `last_seen`, `online` & `last_login` to be user settings
 - add helpful data in user view screen to help admins to inspect users

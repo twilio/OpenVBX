@@ -122,6 +122,9 @@ class Site extends User_Controller
 			);
 		}
 
+		$current_settings['cache_enabled'] = $this->cache->enabled();
+		$current_settings['api_cache_enabled'] = $this->api_cache->enabled();
+
 		$data = array_merge($data, $current_settings);
 		$data['tenant_mode'] = self::MODE_SINGLE;
 
@@ -239,6 +242,7 @@ class Site extends User_Controller
 			$data['client_application_error'] = 1;
 		}
 		$data['client_application'] = $application;
+		$data['site_revision'] = $this->config->item('site_rev');
 
 		$this->respond('Site Settings', 'settings/site', $data);
 	}

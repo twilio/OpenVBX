@@ -2,6 +2,9 @@
 
 class OpenVBX_Cache_Memcache extends OpenVBX_Cache_Abstract
 {
+	protected $friendly_name = 'Memcache';
+	protected $more_info = 'http://php.net/memcache';
+	
 	private $_cache;
 	
 	private $flags = null;
