@@ -15,6 +15,7 @@
 - changing `Services_Twilio` user agent to identify itself as OpenVBX
 - increase test coverage, implement data fixtures, and include better test documentation
 - change behavior of TwiML preview links in flow editor to open in a new window
+- add system setting for controlling email notifications for new messages
 
 
 ## OpenVBX 1.1.3
