@@ -21,14 +21,25 @@
 	
 class DialListException extends Exception {}
 
-class DialList implements Countable {
+class DialList implements Countable 
+{
 	protected $users;
 	
-	public function __construct($users = array()) {
-		$this->users = $users;
+	public function __construct($users = array()) 
+	{
+		// clone users in to the object since we're gonna
+		// mess with their device lists
+		if (!empty($users))
+		{
+			foreach ($users as $user)
+			{
+				$this->users[] = clone $user;
+			}
+		}
 	}
 	
-	public function count() {
+	public function count() 
+	{
 		return count($this->users);
 	}
 	
@@ -39,24 +50,30 @@ class DialList implements Countable {
 	 * @param object users_or_group
 	 * @return object DialList
 	 */
-	public static function get($users_or_group) {
+	public static function get($users_or_group) 
+	{
 		$users = array();
 		$class = 'DialList';
 		
-		switch(true) {
+		switch(true) 
+		{
 			case is_array($users_or_group):
-				if (current($users_or_group) instanceof VBX_User) {
+				if (current($users_or_group) instanceof VBX_User) 
+				{
 					// list of users, set as users list and continue
 					$users = $users_or_group;
 				}
-				else {
+				else 
+				{
 					// list of user ids, populate list
 					$users = VBX_User::get_users($user_ids);
 				}
 				break;
 			case $users_or_group instanceof VBX_Group:
-				if (!empty($users_or_group->users)) {
-					foreach ($users_or_group->users as $user) {
+				if (!empty($users_or_group->users)) 
+				{
+					foreach ($users_or_group->users as $user) 
+					{
 						array_push($users, VBX_User::get($user->user_id));
 					}
 				}
@@ -67,6 +84,7 @@ class DialList implements Countable {
 				array_push($users, $users_or_group);
 				break;
 		}
+
 		return new $class($users);
 	}
 	
@@ -76,10 +94,13 @@ class DialList implements Countable {
 	 * 
 	 * @return array
 	 */
-	public function get_state() {
+	public function get_state() 
+	{
 		$user_ids = array();
-		if (count($this->users)) {
-			foreach ($this->users as $user) {
+		if (count($this->users)) 
+		{
+			foreach ($this->users as $user) 
+			{
 				array_push($user_ids, $user->id);
 			}
 		}
@@ -96,15 +117,19 @@ class DialList implements Countable {
 	 *
 	 * @return mixed VBX_Device or NULL
 	 */
-	public function next() {
+	public function next() 
+	{
 		$device = null;
 		
 		while($device == null && count($this->users))
 		{
 			$user = array_shift($this->users);
-			if (count($user->devices)) {
-				foreach ($user->devices as $user_device) {
-					if ($user_device->is_active) {
+			if (count($user->devices)) 
+			{
+				foreach ($user->devices as $user_device) 
+				{
+					if ($user_device->is_active) 
+					{
 						$device = $user_device;
 						break;
 					}
@@ -121,18 +146,23 @@ class DialList implements Countable {
  *
  * @package default
  */
-class DialListUser extends DialList {
+class DialListUser extends DialList 
+{
 	
-	public function count() {
-		return count(current($this->users)->devices);
+	public function count() 
+	{
+		return count($this->users[0]->devices);
 	}
 	
-	public function get_state() {
+	public function get_state() 
+	{
 		// return list of device IDs left in the user
 		$device_ids = array();
 		
-		if (count($this->users)->devices) {
-			foreach (current($this->users)->devices as $device) {
+		if (count($this->users[0]->devices)) 
+		{
+			foreach ($this->users[0]->devices as $device) 
+			{
 				array_push($device_ids, $device->id);
 			}
 		}
@@ -140,20 +170,23 @@ class DialListUser extends DialList {
 		return array(
 			'type' => get_class($this),
 			'device_ids' => $device_ids,
-			'user_id' => current($this->users)->id
+			'user_id' => $this->users[0]->id
 		);
 	}
 	
-	public function next() {
+	public function next() 
+	{
 		$device = null;
 		
-		while($device == null && count(current($this->users)->devices)) {
-			$user_device = array_shift(current($this->users)->devices);
-			if ($user_device->is_active) {
+		while($device == null && count($this->users[0]->devices)) 
+		{
+			$user_device = array_shift($this->users[0]->devices);
+			if ($user_device->is_active) 
+			{
 				$device = $user_device;
 			}
 		}
-		
+
 		return $device;
 	}
 }

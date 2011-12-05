@@ -47,30 +47,31 @@ class VBX_Flow_Store extends MY_Model
 			return null;
 		}
 
-		if(!(isset($search_options['key'])
-			 && isset($search_options['flow_id'])))
+		if(!(isset($search_options['key']) && isset($search_options['flow_id'])))
 		{
-			throw new VBX_FlowException('VBX_Flow_Store requires key and flow_id arguments for VBX_Flow_Store::get()');
+			throw new VBX_FlowException('VBX_Flow_Store requires key and flow_id arguments'.
+											' for VBX_Flow_Store::get()');
 		}
 		
-		return self::search($search_options,
-							1,
-							0);
+		return self::search($search_options, 1, 0);
 	}
 	
 	static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
-		$sql_options = array('joins' => self::$joins,
-							 'select' => self::$select,
-							 );
+		$sql_options = array(
+			'joins' => self::$joins,
+			'select' => self::$select,
+		);
 		$store = new self();
 		
-		$values = parent::search(self::$__CLASS__,
-								  $store->table,
-								  $search_options,
-								  $sql_options,
-								  $limit,
-								  $offset);
+		$values = parent::search(
+			self::$__CLASS__,
+			$store->table,
+			$search_options,
+			$sql_options,
+			$limit,
+			$offset
+		);
 
 		return $values;
 	}

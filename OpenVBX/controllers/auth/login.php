@@ -30,6 +30,10 @@ class Login extends MY_Controller
 		$this->config->load('openvbx');
 		$this->load->database();
 		$this->template->write('title', '');
+		
+		// no cache
+		$ci =& get_instance();
+		$ci->cache->enabled(false);
 
 		$this->user_id = $this->session->userdata('user_id');
 	}
@@ -41,7 +45,9 @@ class Login extends MY_Controller
 		if($this->session->userdata('loggedin'))
 		{
 			if(VBX_User::signature($this->user_id) == $this->session->userdata('signature'))
+			{
 				return $this->redirect($redirect);
+			}
 		}
 		
 		$this->template->write('title', 'Log In');
@@ -98,7 +104,8 @@ class Login extends MY_Controller
 				$connect_auth = OpenVBX::connectAuthTenant($user->tenant_id);
 
 				// we kick out non-admins, admins will have an opportunity to re-auth the account
-				if (!$connect_auth && !$user->is_admin) {
+				if (!$connect_auth && !$user->is_admin) 
+				{
 					$this->session->set_flashdata('error', 'Connect auth denied');
 					return redirect('auth/connect/account_deauthorized');
 				}
@@ -110,7 +117,7 @@ class Login extends MY_Controller
 					'loggedin' => TRUE,
 					'signature' => VBX_User::signature($user->id),
 				);
-			
+
 				$this->session->set_userdata($userdata);
 
 				if(OpenVBX::schemaVersion() >= 24)

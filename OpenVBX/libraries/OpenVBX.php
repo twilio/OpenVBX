@@ -23,6 +23,9 @@ include(APPPATH.'libraries/Services/Twilio.php');
 
 class OpenVBXException extends Exception {}
 class OpenVBX {
+	protected static $version;
+	protected static $schemaVersion;
+	
 	public static $currentPlugin = null;
 	
 	private static $_twilioService;
@@ -207,9 +210,13 @@ class OpenVBX {
 	 */
 	public static function version()
 	{
-		$ci =& get_instance();
-		$ci->config->load('version');
-		return $ci->config->item('version');
+		if (empty(self::$version))
+		{
+			$ci =& get_instance();
+			$ci->config->load('version');
+			self::$version = $ci->config->item('version');
+		}
+		return self::$version;
 	}
 
 	/**
@@ -220,9 +227,22 @@ class OpenVBX {
 	 */
 	public static function schemaVersion()
 	{
-		$ci =& get_instance();
-		$ci->load->model('vbx_settings');
-		return $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
+		if (empty(self::$schemaVersion))
+		{
+			$ci =& get_instance();
+			$ci->load->model('vbx_settings');
+			if (!$cache && $ci->cache->enabled())
+			{
+				$ci->cache->enabled(false);
+				$reenable_cache = true;
+			}
+			self::$schemaVersion = $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
+			if ($reenable_cache)
+			{
+				$ci->cache->enabled(true);
+			}
+		}
+		return self::$schemaVersion;
 	}
 
 	/**

@@ -202,7 +202,7 @@ class Details extends User_Controller
 				
 				if($assigned)
 				{
-					$assignee = $this->vbx_user->get_user($assigned);
+					$assignee = VBX_User::get($assigned);
 				}
 			}
 
@@ -312,7 +312,8 @@ class Details extends User_Controller
 		$summary = $message->content_text;
 		$this->load->model('vbx_user');
 		$annotations = array();
-		$users = $this->vbx_user->get_active_users();
+		// $users = $this->vbx_user->get_active_users();
+		$users = VBX_User::search(array('is_active' => 1));
 		$active_users = array();
 		foreach($users as $active_user)
 		{

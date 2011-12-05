@@ -110,9 +110,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `auth_type` TINYINT NOT NULL default 1,
   `voicemail` TEXT NOT NULL,
   `tenant_id` BIGINT(20) NOT NULL,
-  `last_seen` datetime DEFAULT NULL,
-  `last_login` datetime DEFAULT NULL,
-  `online` TINYINT(1) NOT NULL DEFAULT 9,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `email` (`email`, `tenant_id`),
   INDEX(`tenant_id`)
@@ -255,6 +252,15 @@ CREATE TABLE IF NOT EXISTS `plugin_store` (
   INDEX(`tenant_id`)
 ) ENGINE=InnoDB CHARSET=UTF8;
 
+DROP TABLE IF EXISTS `cache`;
+CREATE TABLE `cache` (
+  `key` varchar(255) NOT NULL default '',
+  `group` varchar(255) NOT NULL default '',
+  `value` text NOT NULL,
+  `tenant_id` int(11) NOT NULL,
+  PRIMARY KEY  (`key`,`group`,`tenant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 ALTER TABLE settings ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 
 ALTER TABLE user_messages ADD FOREIGN KEY(user_id) REFERENCES users(id);
@@ -269,7 +275,6 @@ ALTER TABLE users ADD FOREIGN KEY(auth_type) REFERENCES auth_types(id);
 
 ALTER TABLE groups_users ADD FOREIGN KEY(user_id) REFERENCES users(id);
 ALTER TABLE groups_users ADD FOREIGN KEY(group_id) REFERENCES groups(id);
-
 
 ALTER TABLE flows ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 ALTER TABLE groups ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
@@ -288,7 +293,6 @@ ALTER TABLE annotations ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 ALTER TABLE annotation_types ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 ALTER TABLE flow_store ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
 ALTER TABLE plugin_store ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
-
 
 INSERT INTO tenants
 	   (name, url_prefix, local_prefix)

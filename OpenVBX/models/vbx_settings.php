@@ -23,6 +23,8 @@ class VBX_SettingsException extends Exception {}
 
 class VBX_Settings extends Model
 {
+	private $caching = true;
+	
 	protected $settings_table = 'settings';
 	protected $tenants_table = 'tenants';
 
@@ -54,10 +56,6 @@ class VBX_Settings extends Model
 		'url_prefix',
 		'type'
 	);
-
-	private $cache_key;
-
-	const CACHE_TIME_SEC = 1;
 	
 	const CLIENT_TOKEN_TIMEOUT = 28800; // 8 hours
 	
@@ -69,8 +67,9 @@ class VBX_Settings extends Model
 	function __construct()
 	{
 		parent::__construct();
-		$this->cache_key = 'settings';
 	}
+
+// Tenants
 
 	function get_all_tenants()
 	{
@@ -81,6 +80,15 @@ class VBX_Settings extends Model
 			 ->where('name !=', 'default')
 			 ->get()->result();
 
+		// we won't use cache here, but we may as well contribute to it
+		if (!empty($tenants) && !empty($ci->cache))
+		{
+			foreach ($tenants as $tenant)
+			{
+				$ci->cache->set($tenant->id, $tenant, 'tenants', VBX_PARENT_TENANT);
+			}
+		}
+
 		return $tenants;
 	}
 
@@ -88,16 +96,30 @@ class VBX_Settings extends Model
 	{
 		$ci =& get_instance();
 
+		if (!empty($ci->cache))
+		{
+			if ($cache = $ci->cache->get('prefix-'.$url_prefix, 'tenants', VBX_PARENT_TENANT))
+			{
+				return $cache;
+			}
+		}
+		
 		$query = $ci->db
 			 ->from($this->tenants_table)
 			 ->where('url_prefix', strtolower($url_prefix))
 			 ->get();
-
+			
 		if ($query) 
 		{
 			$tenant = $query->result();
 			if(!empty($tenant[0]))
 			{
+				if (!empty($ci->cache))
+				{
+					$cache_prefix_key = 'prefix-'.$tenant[0]->url_prefix;
+					$ci->cache->set($cache_prefix_key, $tenant[0], 'tenants', VBX_PARENT_TENANT);
+					$ci->cache->set($tenant[0]->id, $tenant[0], 'tenants', VBX_PARENT_TENANT);
+				}
 				return $tenant[0];
 			}
 		}
@@ -105,18 +127,24 @@ class VBX_Settings extends Model
 		return false;
 	}
 
+	// @deprecated - can't find it in use and 
+	// tenant name isn't set by anybody
 	function get_tenant_by_name($name)
 	{
+		_deprecated_notice(__METHOD__, '1.1.1');
+		
 		$ci =& get_instance();
 
 		$tenant = $ci->db
-			 ->from('tenants as i')
-			 ->where('i.name', $name)
-			 ->get()->result();
+			->from('tenants as i')
+			->where('i.name', $name)
+			->get()->result();
 
 		if(!empty($tenant[0]))
+		{
 			return $tenant[0];
-
+		}
+		
 		return false;
 	}
 
@@ -124,17 +152,38 @@ class VBX_Settings extends Model
 	{
 		$ci =& get_instance();
 
+		if (!empty($ci->cache) && $cache = $ci->cache->get($id, 'tenants', VBX_PARENT_TENANT))
+		{
+			return $cache;
+		}
+
 		$tenant = $ci->db
-			 ->from($this->tenants_table)
-			 ->where('id', $id)
-			 ->get()->result();
+			->from($this->tenants_table)
+			->where('id', $id)
+			->get()->result();
 
 		if(!empty($tenant[0]))
+		{
+			if (!empty($ci->cache))
+			{
+				$ci->cache->set($tenant[0]->url_prefix, $tenant[0], 'tenants', VBX_PARENT_TENANT);
+				$ci->cache->set($tenant[0]->id, $tenant[0], 'tenants', VBX_PARENT_TENANT);
+			}
 			return $tenant[0];
+		}
 
 		return false;
 	}
 
+	/**
+	 * Add a new tenant
+	 *
+	 * @throws VBX_SettingsException
+	 * @param string $name 
+	 * @param string $url_prefix 
+	 * @param string $local_prefix 
+	 * @return int $tenant_id
+	 */
 	function tenant($name, $url_prefix, $local_prefix)
 	{
 		$ci =& get_instance();
@@ -165,12 +214,18 @@ class VBX_Settings extends Model
 				->set('url_prefix', $url_prefix)
 				->set('local_prefix', $local_prefix)
 				->insert($this->tenants_table);
+			
 			$tenant_id = $ci->db->insert_id();
 			if(!$tenant_id)
 			{
 				throw new VBX_SettingsException('Tenant failed to create');
 			}
-
+			
+			if (!empty($ci->cache))
+			{
+				$ci->cache->invalidate('tenants');
+			}
+			
 			return $tenant_id;
 		}
 
@@ -207,15 +262,23 @@ class VBX_Settings extends Model
 		{
 			if(isset($tenant[$param]))
 			{
-				$ci->db
-					->set($param, $tenant[$param]);
+				$ci->db->set($param, $tenant[$param]);
 			}
 		}
 
-		return $ci->db
+		$ret = $ci->db
 			->where('id', $tenant['id'])
 			->update($this->tenants_table);
+		
+		if (!empty($ci->cache))
+		{
+			$this->cache->invalidate('tenants');
+		}
+		
+		return $ret;
 	}
+
+// Settings
 
 	function add($name, $value, $tenant_id)
 	{
@@ -226,13 +289,16 @@ class VBX_Settings extends Model
 			return false;
 		}
 
-		if($this->get($name, $tenant_id) !== false) {
+		if($this->get($name, $tenant_id) !== false) 
+		{
 			$ci->db
 				->set('value', $value)
 				->where('name', $name)
 				->where('tenant_id', $tenant_id)
 				->update($this->settings_table);
-		} else {
+		} 
+		else 
+		{
 			$ci->db
 				->set('name', $name)
 				->set('value', $value)
@@ -240,53 +306,47 @@ class VBX_Settings extends Model
 				->insert($this->settings_table);
 		}
 
-		if(function_exists('apc_delete')) {
-			apc_delete($this->cache_key.$tenant_id.$name);
+		if (!empty($ci->cache))
+		{
+			$ci->cache->invalidate(__CLASS__, $tenant_id);	
 		}
-
-		return $ci->db
-			->insert_id();
+		
+		return $ci->db->insert_id();
 	}
 
 	function set($name, $value, $tenant_id)
 	{
 		$ci =& get_instance();
-
+		
 		if($this->get($name, $tenant_id) === false)
 		{
 			return false;
 		}
-
+		
 		$ci->db
 			->set('value', $value)
 			->where('name', $name)
 			->where('tenant_id', $tenant_id)
 			->update($this->settings_table);
 
-		if(function_exists('apc_delete')) {
-			return apc_delete($this->cache_key.$tenant_id.$name);
+		if (!empty($ci->cache))
+		{
+			$ci->cache->invalidate(__CLASS__, $tenant_id);
 		}
-
-		return ($ci->db
-				->affected_rows() > 0? true : false);
+		return ($ci->db->affected_rows() > 0? true : false);
 	}
 
 	function get($name, $tenant_id)
-	{
-		if(function_exists('apc_fetch')) {
-			$success = false;
-			$cachekey = $this->cache_key.$tenant_id.$name;
-			if(($data = apc_fetch($cachekey, $success)) && $success) 
-			{
-				$result = @unserialize($data);
-				if(!empty($result[0]))
-					return $result[0]->value;
-			}
+	{		
+		$ci =& get_instance();
+		if (!empty($ci->cache) && $cache = $ci->cache->get($name, __CLASS__, $tenant_id)) 
+		{
+			return $cache->value;
 		}
 
 		$ci =& get_instance();
 		$query = $ci->db
-			->select('value')
+			->select()
 			->from($this->settings_table)
 			->where(array(
 				'name' => $name, 
@@ -297,12 +357,13 @@ class VBX_Settings extends Model
 		if ($query) 
 		{
 			$result = $query->result();
-			if(function_exists('apc_store')) {
-				$success = apc_store($cachekey, serialize($result), self::CACHE_TIME_SEC);
-			}
 
 			if(!empty($result[0]))
 			{
+				if (!empty($ci->cache))
+				{
+					$ci->cache->set($name, $result[0], __CLASS__, $tenant_id);
+				}
 				return $result[0]->value;
 			}
 		}
@@ -325,11 +386,10 @@ class VBX_Settings extends Model
 					))
 					->delete($this->settings_table);
 		
-		if (function_exists('apc_delete')) 
+		if (!empty($ci->cache))
 		{
-			apc_delete($this->cache_key.$tenant_id.$name);
+			$ci->cache->invalidate(__CLASS__, $tenant_id);
 		}
-
 		return ($ci->db->affected_rows() > 0 ? true : false);
 	}
 
@@ -341,6 +401,18 @@ class VBX_Settings extends Model
 			->from($this->settings_table)
 			->where('tenant_id', $tenant_id)
 			->get()->result();
+
+		foreach ($result as $item)
+		{
+			// there's no clean way of pulling everything we know except to
+			// rely on the fact that all the settings are registered in this
+			// object, so instead we'll just set everything we find so that
+			// everyone else benefits from this query
+			if (!empty($ci->cache))
+			{
+				$ci->cache->set($item->name, $item, __CLASS__, $tenant_id);
+			}
+		}
 
 		return $result;
 	}

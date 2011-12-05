@@ -404,7 +404,7 @@ class Twiml extends MY_Controller {
 	/**
 	 * Dial a user identified by their email address
 	 *
-	 * Uses $user->online to determine if user "wants" to be contacted via
+	 * Uses $user->setting('online') to determine if user "wants" to be contacted via
 	 * Twilio Client. Passed in "online" status via $_POST can override the
 	 * attempt to dial Twilio Client even if the person has set their status
 	 * to online. The $_POST var should be representative of the Presence 
@@ -421,7 +421,7 @@ class Twiml extends MY_Controller {
 		
 		if ($user instanceof VBX_User)
 		{
-			$dial_client = ($user->online == 1);
+			$dial_client = ($user->setting('online') == 1);
 			
 			/**
 			 * Only override the user status if we've been given

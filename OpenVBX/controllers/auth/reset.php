@@ -32,6 +32,9 @@ class Reset extends MY_Controller
 
 		$this->template->write('title', '');
 
+		$ci =& get_instance();
+		$ci->cache->enabled(false);
+
 		$this->user_id = $this->session->userdata('user_id');		
 	}
 

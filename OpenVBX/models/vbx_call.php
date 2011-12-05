@@ -28,17 +28,12 @@ class VBX_CallException extends Exception {}
  */
 class VBX_Call extends Model {
 
-	private $cache_key;
-
 	public $total = 0;
-
 	const CACHE_TIME_SEC = 180;
 
-	function __construct()
+	public function __construct()
 	{
 		parent::Model();
-		$ci = &get_instance();
-		$this->cache_key = $ci->twilio_sid . '_calls';
 	}
 
 	/**
@@ -48,25 +43,20 @@ class VBX_Call extends Model {
 	 * @param string $page_size 
 	 * @return void
 	 */
-	function get_calls($offset = 0, $page_size = 20)
+	public function get_calls($offset = 0, $page_size = 20)
 	{
 		$output = array();
 
-		$page_cache_key = $this->cache_key . "_{$offset}_{$page_size}";
-		$total_cache_key = $this->cache_key . '_total';
-
-		if(function_exists('apc_fetch')) {
-			$success = FALSE;
-
-			$total = apc_fetch($total_cache_key, $success);
-			if($total AND $success) $this->total = $total;
-
-			$data = apc_fetch($page_cache_key, $success);
-
-			if($data AND $success) {
-				$output = @unserialize($data);
-				if(is_array($output)) return $output;
-			}
+		$page_cache = 'calls-'.$offset.'-'.$page_size;
+		$total_cache = 'calls-total';
+		
+		$ci =& get_instance();
+		$tenant = $ci->tenant->id;
+		if ($cache = $ci->api_cache->get($page_cache, __CLASS__, $tenant)
+			&& $cache_total = $ci->api_cache->get($total_cache, __CLASS__, $tenant))
+		{
+			$this->total = $cache_total;
+			return $cache;
 		}
 
 		$page = floor(($offset + 1) / $page_size);
@@ -92,10 +82,8 @@ class VBX_Call extends Model {
 			throw new VBX_CallException($e->getMessage());
 		}
 
-		if(function_exists('apc_store')) {
-			apc_store($page_cache_key, serialize($output), self::CACHE_TIME_SEC);
-			apc_store($total_cache_key, $this->total, self::CACHE_TIME_SEC);
-		}
+		$ci->api_cache->set($page_cache, $output, __CLASS__, $tenant, self::CACHE_TIME_SEC);
+		$ci->api_cache->set($total_cache, $this->total, __CLASS__, $tenant, self::CACHE_TIME_SEC);
 
 		return $output;
 	}
@@ -109,7 +97,7 @@ class VBX_Call extends Model {
 	 * @param string $rest_access - token to authenticate the twiml request
 	 * @return void
 	 */
-	function make_call($from, $to, $callerid, $rest_access)
+	public function make_call($from, $to, $callerid, $rest_access)
 	{
 		try
 		{
@@ -142,7 +130,7 @@ class VBX_Call extends Model {
 	}
 
 
-	function make_call_path($to, $callerid, $path, $rest_access)
+	public function make_call_path($to, $callerid, $path, $rest_access)
 	{
 		$recording_url = site_url("twiml/redirect/$path/$rest_access");
 		try {

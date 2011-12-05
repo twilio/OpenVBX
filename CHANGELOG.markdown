@@ -4,6 +4,14 @@
 
 - redesign numbers screen to separate assigned, unassigned, and numbers in-use by other systems
 - change user edit screens to always use dedicated page instead of a popup
+- add object caching layer supporting the following mechanisms:
+	- local (per page load memory cache)
+	- Database
+	- APC
+	- Memcache
+- add API cache that uses the database to cache API results from Twilio
+- clean most models for code consistency & cache efficiency
+- move user `last_seen`, `online` & `last_login` to be user settings
 - add helpful data in user view screen to help admins to inspect users
 - fix password length bug, set min-length to 8
 - upgrade password storage security using [phppass](http://www.openwall.com/phpass/)
@@ -16,6 +24,7 @@
 - increase test coverage, implement data fixtures, and include better test documentation
 - change behavior of TwiML preview links in flow editor to open in a new window
 - add system setting for controlling email notifications for new messages
+- add system setting for controlling the display of the Sandbox number (parent tenant only)
 
 
 ## OpenVBX 1.1.3

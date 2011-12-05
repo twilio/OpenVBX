@@ -26,20 +26,34 @@ class VBX_User extends MY_Model {
 	public $table = 'users';
 
 	static public $joins = array(
-								 'auth_types at' => 'at.id = users.auth_type',
-								 );
+							'auth_types at' => 'at.id = users.auth_type',
+						);
 
-	static public $select = array('users.*',
-								  'at.description as auth_type');
+	static public $select = array(
+							'users.*',
+							'at.description as auth_type'
+						);
 
-	public $fields =  array('id','is_admin', 'is_active', 'first_name',
-							'last_name', 'password', 'invite_code',
-							'email', 'pin', 'notification',
-							'auth_type', 'voicemail', 'tenant_id',
-							'last_login', 'last_seen', 'online');
+	public $fields = array(
+						'id',
+						'is_admin', 
+						'is_active', 
+						'first_name',
+						'last_name', 
+						'password', 
+						'invite_code',
+						'email', 
+						'pin', 
+						'notification',
+						'auth_type', 
+						'voicemail', 
+						'tenant_id',
+					);
 
 	public $admin_fields = array('');
 	
+	public $devices;
+
 	/**
 	 * Set the default min-password length
 	 * Fortunately the word "password" is 8 characters ;)
@@ -67,22 +81,27 @@ class VBX_User extends MY_Model {
 		{
 			$search_options = array('id' => $search_options, 'is_active' => 1);
 		}
-
+		
 		return self::search($search_options, 1, 0);
 	}
 
 	public static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
-		$sql_options = array('joins' => self::$joins,
-							 'select' => self::$select,
-							 );
+		$ci =& get_instance();
+		
+		$sql_options = array(
+			'joins' => self::$joins,
+			'select' => self::$select,
+		);
 		$user = new VBX_User();
-		$users = parent::search(self::$__CLASS__,
-								$user->table,
-								$search_options,
-								$sql_options,
-								$limit,
-								$offset);
+		$users = parent::search(
+			self::$__CLASS__,
+			$user->table,
+			$search_options,
+			$sql_options,
+			$limit,
+			$offset
+		);
 
 		if(empty($users))
 		{
@@ -94,13 +113,13 @@ class VBX_User extends MY_Model {
 			$users = array($users);
 		}
 
-		$ci = &get_instance();
 		$ci->load->model('vbx_device');
 		foreach($users as $i => $user)
 		{
 			$users[$i]->devices = VBX_Device::search(array('user_id' => $user->id), 100);
 
-			if ($users[$i]->online && $users[$i]->online != 9) {
+			if ($users[$i]->setting('online') && $users[$i]->setting('online') != 9) 
+			{
 				array_unshift($users[$i]->devices, new VBX_Device((object) array(
 												'id' => 0,
 												'name' => 'client',
@@ -158,10 +177,9 @@ class VBX_User extends MY_Model {
 			if(OpenVBX::schemaVersion() >= 24)
 			{
 				// Login succeeded
-				$user->last_login = new MY_ModelLiteral('UTC_TIMESTAMP()');
 				try
 				{
-					$user->save();
+					$user->setting_set('last_login', new MY_ModelLiteral('UTC_TIMESTAMP()'));
 				}
 				catch(VBX_UserException $e)
 				{
@@ -203,9 +221,10 @@ class VBX_User extends MY_Model {
 				{
 					$user->password = self::salt_encrypt($password);
 				}
+
 				try
 				{
-					$user->save();
+					$user->setting_set('last_login', new MY_ModelLiteral('UTC_TIMESTAMP()'));
 				}
 				catch(VBX_UserException $e)
 				{
@@ -346,33 +365,34 @@ class VBX_User extends MY_Model {
 		return $group_ids;
 	}
 
-	public function get_users($user_ids)
+	/**
+	 * @deprecated use VBX_User::search() instead
+	 */
+	function get_users($user_ids)
 	{
-		if(empty($user_ids))
+		_deprecated_notice(__METHOD__, '1.1.2', 'VBX_User::search()');
+		
+		if (!is_array($user_ids))
 		{
-			return array();
+			$user_ids = array($user_ids);
 		}
 		
-		$this->where_in('id', $user_ids);
-
-		return $this->get();
+		$search_opts = array(
+			'id__in' => $user_ids
+		);
+		
+		return self::search($search_opts);
 	}
 
-	public function get_user($user_id)
+	/**
+	 * @deprecated use VBX_User::get() instead
+	 * @param string $user_id 
+	 * @return mixed object/null
+	 */
+	function get_user($user_id)
 	{
-		$ci = &get_instance();
-		$ci->db
-			->from($this->table . ' as u')
-			->where('id', intval($user_id));
-
-		$users = $ci->db->get()->result();
-
-		if(!empty($users))
-		{
-			return $users[0];
-		}
-		
-		return NULL;
+		_deprecated_notice(__METHOD__, '1.1.2', 'VBX_User::get');
+		return self::get($user_id);
 	}
 
 	/**
@@ -393,20 +413,14 @@ class VBX_User extends MY_Model {
 		}
 	}
 
+	/**
+	 * @deprecated 1.1.x
+	 * @return void
+	 */
 	public function get_active_users()
 	{
-		$ci =& get_instance();
-
-		$ci->db->flush_cache();
-		$result = $ci->db
-			->select('users.*,at.description as auth_type')
-			->join('auth_types at', 'at.id = users.auth_type')
-			->where('is_active', 1)
-			->where('users.tenant_id', $ci->tenant->id)
-			->from($this->table)
-			->get()->result();
-
-		return $result;
+		_deprecated_notice(__METHOD__, '1.1.2', 'VBX_User::search');
+		return self::search(array('is_active' => 1));
 	}
 
 	public function send_reset_notification()
@@ -483,16 +497,17 @@ class VBX_User extends MY_Model {
 		$ci = &get_instance();
 		$ci->db->from('auth_types');
 
-		if (is_string($auth_type)) 
+		if(is_string($auth_type)) 
 		{
 			$ci->db->where('description', $auth_type);
 		} 
-		elseif (is_integer($auth_type)) 
+		else if(is_integer($auth_type)) 
 		{
 			$ci->db->where('id', $auth_type);
 		}
 
 		$auth_types = $ci->db->get()->result();
+
 		if(isset($auth_types[0]))
 		{
 			return $auth_types[0];
@@ -501,8 +516,24 @@ class VBX_User extends MY_Model {
 		return null;
 	}
 
-	public function save()
+	public function update($id, $params)
+	{		
+		if (isset($params->last_seen))
+		{
+			$replacement = "VBX_User::setting('last_seen', new MY_ModelLiteral('UTC_TIMESTAMP()'))";
+			_deprecated_notice(__CLASS__.'::$last_seen', '1.1.2', $replacement);
+		}
+		return parent::update($id, $params);
+	}
+
+	public function save($force_update = false)
 	{
+		if (isset($this->last_seen))
+		{
+			$replacement = "VBX_User::setting('last_seen', new MY_ModelLiteral('UTC_TIMESTAMP()'))";
+			_deprecated_notice(__CLASS__.'::$last_seen', '1.1.2', $replacement);
+		}
+		
 		if(strlen($this->email) < 0)
 		{
 			throw new VBX_UserException('Email is a required field.');
@@ -520,7 +551,7 @@ class VBX_User extends MY_Model {
 		
 		$ci =& get_instance();
 
-		if(is_string($this->auth_type))
+		if(is_string($this->auth_type) && !is_numeric($this->auth_type))
 		{
 			$results = $ci->db
 				->from('auth_types')
@@ -535,7 +566,7 @@ class VBX_User extends MY_Model {
 			$this->auth_type = $results[0]->id;
 		}
 
-		return parent::save();
+		return parent::save($force_update);
 	}
 
 	public static function signature($user_id)
@@ -571,9 +602,12 @@ class VBX_User extends MY_Model {
 			$settings = VBX_User_Setting::get_by_user($this->id);
 		
 			$this->settings = array();
-			foreach ($settings as $setting)
+			if (!empty($settings))
 			{
-				$this->settings[$setting->key] = $setting;
+				foreach ($settings as $setting)
+				{
+					$this->settings[$setting->key] = $setting;
+				}
 			}
 		}
 		
@@ -609,7 +643,7 @@ class VBX_User extends MY_Model {
 	 */
 	public function setting_set($key, $value)
 	{
-		if (!is_scalar($value))
+		if (!is_scalar($value) && !($value instanceof My_ModelLiteral))
 		{
 			$value = serialize($value);
 		}

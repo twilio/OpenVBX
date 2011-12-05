@@ -207,22 +207,18 @@ class Accounts extends User_Controller {
 	private function get_user()
 	{
 		$user_id = $this->input->post('id');
-
 		$user = VBX_User::get($user_id);
-		$devices = $this->vbx_device->get_by_user($user_id);
-
-		$devices_data = array();
-
-		foreach ($this->vbx_device->get_by_user($user_id) as $device)
-		{
-			$devices_data[] = array("id" => $device->id, "name" => $device->name, "value" => $device->value);
-		}
-
+				
 		$data['json'] = false;
-
 		if(!empty($user))
 		{
-			$data['json'] = array_merge($user->values, array("devices" => $devices_data));
+			$_user = (object) $user->values;
+			$_user->devices = array();
+			foreach ($user->devices as $device)
+			{
+				array_push($_user->devices, (object) $device->values);
+			}
+			$data['json'] = $_user;
 		}
 
 		return $this->respond('', 'accounts', $data);
@@ -279,7 +275,6 @@ class Accounts extends User_Controller {
 			{
 				// It's a new user
 				$user = new VBX_User();
-				$user->online = 9;
 				$shouldSendWelcome = true;
 			}
 		}
@@ -303,7 +298,10 @@ class Accounts extends User_Controller {
 			{
 				$user->save();
 				if ($shouldSendWelcome)
+				{
+					$user->setting_set('online', 9);
 					$user->send_new_user_notification();
+				}
 			}
 			catch(VBX_UserException $e)
 			{
@@ -396,7 +394,7 @@ class Accounts extends User_Controller {
 				'email' => $user->email,
 				'error' => false,
 				'message' => '',
-				'online' => $user->online
+				'online' => $user->setting('online')
 			);
 		}
 
