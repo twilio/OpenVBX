@@ -10,7 +10,11 @@
 - add helpful documentation snippets in the Settings screens
 - add better error messages from failed API transactions
 - add time-zone server setting
+- setting version number in a file instead of from database
+	- allows static operations to properly set an appropriate api user agent
+- changing `Services_Twilio` user agent to identify itself as OpenVBX
 - increase test coverage, implement data fixtures, and include better test documentation
+- change behavior of TwiML preview links in flow editor to open in a new window
 
 
 ## OpenVBX 1.1.3
