@@ -273,8 +273,8 @@ class Inbox extends User_Controller {
 						 . ((strlen($item->content_text) > 125)? '...' : '');
 				}
 					
-				$date_recorded = date('c', strtotime($item->created));
-				$date_updated = date('c', strtotime($item->updated));
+				$date_recorded = date('Y-M-d\TH:i:s+00:00', strtotime($item->created));
+				$date_updated = date('Y-M-d\TH:i:s+00:00', strtotime($item->updated));
 
 				$assigned_user = null;
 				foreach($data['active_users'] as $u)
