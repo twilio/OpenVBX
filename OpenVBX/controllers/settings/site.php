@@ -213,27 +213,32 @@ class Site extends User_Controller
 		if (!empty($data['application_sid']['value']))
 		{
 			try {
-				if (strlen($application->sid) == 0)
+				// only way to be sure on these is to pull them in to variables, ugh...
+				$application_sid = $application->sid;
+				$application_voice_url = $application->voice_url;
+				$application_voice_fallback_url = $application->voice_fallback_url;
+				if (strlen($application_sid) == 0)
 				{
 					// application missing
 					$data['client_application_error'] = 2;
 				}
-				elseif (strlen($application->voice_url) == 0 || 
-						strlen($application->voice_fallback_url) == 0)
+				elseif (strlen($application_voice_url) == 0 || 
+						strlen($application_voice_fallback_url) == 0)
 				{
 					// urls are missing
 					$data['client_application_error'] = 3;
 				}
-				elseif ($application->voice_url != site_url('/twiml/dial') ||
-					$application->voice_fallback_url != asset_url('fallback/voice.php'))
+				elseif ($application_voice_url != site_url('/twiml/dial') ||
+					$application_voice_fallback_url != asset_url('fallback/voice.php'))
 				{
 					// url mismatch
 					$data['client_application_error'] = 4;
 				}
 			}
 			catch (Exception $e) {
-				// @todo show relevant exception data as error
+				$data['client_application_error'] = 5;
 				$data['error'] = 'Could not validate Client Application data: '.$e->getMessage();
+				$data['client_application_error_message'] = $e->getMessage();
 				log_message($e->getMessage());
 			}
 		}
