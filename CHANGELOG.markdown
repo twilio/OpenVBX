@@ -27,6 +27,8 @@
 - change behavior of TwiML preview links in flow editor to open in a new window
 - add system setting for controlling email notifications for new messages
 - add system setting for controlling the display of the Sandbox number (parent tenant only)
+- add upgrade notice functionality to Admin section
+	- automatically detects new tag versions on GitHub and displays a banner to admins
 
 
 ## OpenVBX 1.1.3

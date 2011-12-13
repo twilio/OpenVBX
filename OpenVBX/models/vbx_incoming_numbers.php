@@ -70,9 +70,13 @@ class VBX_Incoming_numbers extends Model
 		$cache_key = 'incoming-numbers';
 		if ($cache = $ci->api_cache->get($cache_key, __CLASS__, $ci->tenant->id))
 		{
-			if (!$retrieve_sandbox && $enabled_sandbox_number)
+			if (!$retrieve_sandbox || !$enabled_sandbox_number)
 			{
-				array_pop($cache);
+				foreach ($cache as $key => $item) {
+					if ($item->id == 'Sandbox') {
+						unset($cache[$key]);
+					}
+				}
 			}
 			return $cache;
 		}
@@ -107,9 +111,13 @@ class VBX_Incoming_numbers extends Model
 
 		$ci->api_cache->set('incoming-numbers', $numbers, __CLASS__, $ci->tenant->id);
 
-		if (!$retrieve_sandbox && $enabled_sandbox_number)
+		if (!$retrieve_sandbox || !$enabled_sandbox_number)
 		{
-			array_pop($numbers);
+			foreach ($cache as $key => $item) {
+				if ($item->id == 'Sandbox') {
+					unset($cache[$key]);
+				}
+			}
 		}
 		
 		return $numbers;
