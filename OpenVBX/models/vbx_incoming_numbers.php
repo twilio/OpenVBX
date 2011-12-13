@@ -67,7 +67,6 @@ class VBX_Incoming_numbers extends Model
 	{		
 		$ci =& get_instance();
 		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
-
 		$cache_key = 'incoming-numbers';
 		if ($cache = $ci->api_cache->get($cache_key, __CLASS__, $ci->tenant->id))
 		{
@@ -101,8 +100,7 @@ class VBX_Incoming_numbers extends Model
 		}
 		
 		$ci = &get_instance();
-		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
-		if ($enabled_sandbox_number && $retrieve_sandbox && $sandbox_number = $this->get_sandbox())
+		if ($enabled_sandbox_number && $sandbox_number = $this->get_sandbox())
 		{
 			$numbers[] = $sandbox_number;
 		}
