@@ -324,7 +324,8 @@ class TwimlDial {
 							$_REQUEST['From'],
 							$_REQUEST['To'],
 							$_REQUEST['RecordingUrl'],
-							$_REQUEST['RecordingDuration']
+							$_REQUEST['RecordingDuration'],
+							($this->transcribe == false) // if not transcribing then notify now
 						);
 		$this->response->say('Your message has been recorded. Goodbye.');
 		$this->hangup();
