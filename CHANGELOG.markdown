@@ -19,14 +19,16 @@
 - upgrade password storage security using [phppass](http://www.openwall.com/phpass/)
 - add helpful documentation snippets in the Settings screens
 - add better error messages from failed API transactions
-- add time-zone server setting
 - setting version number in a file instead of from database
 	- allows static operations to properly set an appropriate api user agent
 - changing `Services_Twilio` user agent to identify itself as OpenVBX
 - increase test coverage, implement data fixtures, and include better test documentation
 - change behavior of TwiML preview links in flow editor to open in a new window
+- add system setting for controlling the system time zone
 - add system setting for controlling email notifications for new messages
 - add system setting for controlling the display of the Sandbox number (parent tenant only)
+- add system setting for controlling the duration of the dail timeout
+	- setting is global
 - add upgrade notice functionality to Admin section
 	- automatically detects new tag versions on GitHub and displays a banner to admins
 

@@ -50,6 +50,7 @@
 				endif; ?>
 				<li class="user" rel="prototype" style="display:none;">
 					<div class="user-utilities">
+						<img class="gravatar" src="<?php echo $default_avatar; ?>" width="30" height="30" />
 						<a class="user-edit" href="#edit"><span class="replace">Edit</span></a>
 						<a class="user-remove" href="#remove"><span class="replace">Remove</span></a>
 					</div>
