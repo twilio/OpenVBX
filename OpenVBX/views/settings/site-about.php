@@ -8,7 +8,17 @@
 	<li><b>Site Revision:</b> <?php echo $site_revision; ?></li>
 	<li><b>Rewrite enabled:</b> <?php echo $rewrite_enabled['value']? 'Yes' : 'No' ?></li>
 <?php endif; /* if parent tenant */ ?>
-	<li><b>Client Application:</b><br />&nbsp; - <?php echo $client_application->voice_url; ?><br />&nbsp; - <?php echo $client_application->voice_fallback_url; ?></li>
+	<li><b>Client Application:</b><br />&nbsp; - <?php 
+		if (empty($client_application_error))
+		{
+			echo $client_application->voice_url.'<br>&nbsp; - '.$client_application->voice_fallback_url;
+		}
+		else 
+		{
+			echo '<b>An error occurred when requesting the Client Application data:</b> '.$client_application_error_message;
+		}
+	?>		
+	</li>
 </ul>
 
 <h3>Caching</h3>

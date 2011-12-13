@@ -108,7 +108,7 @@
 					);
 					echo t_form_dropdown($params, $countries, $numbers_country['value']);
 				?>
-				<img src="<?php echo asset_url(''); ?>assets/i/countries/<?php echo strtolower($numbers_country['value']); ?>.png" />
+				<img src="<?php echo asset_url('assets/i/countries/'.strtolower($numbers_country['value']).'.png'); ?>" />
 			</div>
 		</fieldset>
 	<?php endif; /* count $countries */?>

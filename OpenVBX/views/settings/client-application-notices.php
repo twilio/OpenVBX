@@ -7,9 +7,11 @@
 	<p><b>One or more of the Twilio Client Application URLs are empty:</b></p>
 <?php elseif ($client_application_error === 4): ?>
 	<p><b>One or more of the Twilio Client Application URLs does not correctly match:</b></p>
+<?php elseif ($client_application_error === 5): ?>
+	<p><b>There was an error getting the Client Application data:</b> <?php echo $client_application_error_message; ?></p>
 <?php endif; ?>
 
-<?php if ($client_application_error > 2): ?>
+<?php if (in_array($client_application_error, array(2, 3, 4))): ?>
 	<ul>
 		<li><b>Voice Url:</b> <?php echo $client_application->voice_url; ?></li>
 		<li><b>Voice Fallback Url:</b> <?php echo $client_application->voice_fallback_url; ?></li>
