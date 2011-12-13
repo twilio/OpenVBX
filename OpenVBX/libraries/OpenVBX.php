@@ -133,21 +133,23 @@ class OpenVBX {
 		return VBX_Flow::search($options, $limit, $offset);
 	}
 
-	public static function addVoiceMessage($owner,
-										   $sid,
-										   $caller,
-										   $called,
-										   $recording_url,
-										   $duration)
+	public static function addVoiceMessage($owner, $sid, $to, $from, $recording_url, $duration)
 	{
-		return self::addMessage($owner, $sid, $caller, $called, $recording_url, $duration, VBX_Message::TYPE_VOICE, null);
+		$notify = false;
+		
+		// if transcriptions are turned off we want to notify here on new message
+		// normally the notification will come when the transcription is received
+		$ci =& get_instance();
+		$transcriptions_enabled = $ci->vbx_settings->get('transcriptions', $ci->tenant->id);
+		if (!$transcriptions_enabled)
+		{
+			$notify = (bool) $ci->vbx_settings->get('email_notifications_voice', $ci->tenant->id);
+		}
+		
+		return self::addMessage($owner, $sid, $to, $from, $recording_url, $duration, VBX_Message::TYPE_VOICE, null, $notify);
 	}
 
-	public static function addSmsMessage($owner,
-										 $sid,
-										 $to,
-										 $from,
-										 $body)
+	public static function addSmsMessage($owner, $sid, $to, $from, $body)
 	{
 		return self::addMessage($owner, $sid, $to, $from, '', 0, VBX_Message::TYPE_SMS, $body, true);
 	}

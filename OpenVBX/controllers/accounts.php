@@ -44,6 +44,7 @@ class Accounts extends User_Controller {
 			$data['groups'] = $groups;
 			
 		$data['gravatars'] = $this->vbx_settings->get('gravatars', $this->tenant->id);
+		$data['default_avatar'] = asset_url('assets/i/user-icon.png');
 
 		$this->respond('', 'accounts', $data);
 	}

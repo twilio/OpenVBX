@@ -112,7 +112,7 @@ class Account extends User_Controller {
 		}
 
 		$data['current_user'] = VBX_User::get($this->session->userdata('user_id'));
-
+		
 		return $this->respond('', 'account', $data);
 	}
 
