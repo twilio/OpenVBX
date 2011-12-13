@@ -31,24 +31,24 @@
 			</div>
 
 			<div class="vbx-input-complex vbx-input-container">
-				<label for="show-sandbox-number" class="field-label">Show Sandbox Number</label>
-				<label for="sandbox-on" class="field-label-inline">Show
+				<label for="show-sandbox-number" class="field-label">Sandbox Number Display</label>
+				<label for="sandbox-on" class="field-label-inline">
 					<?php
 						$radio = array(
 							'id' => 'sandbox-on',
 							'name' => 'site[enable_sandbox_number]'
 						);
 						echo form_radio($radio, '1', ($enable_sandbox_number['value'] == 1));
-					?>
+					?> Show
 				</label>
-				<label for="sandbox-off" class="field-label-inline">Hide
+				<label for="sandbox-off" class="field-label-inline">
 					<?php
 						$radio = array(
 							'id' => 'sandbox-off',
 							'name' => 'site[enable_sandbox_number]'
 						);
 						echo form_radio($radio, '0', ($enable_sandbox_number['value'] == 0));
-					?>
+					?> Hide
 				</label>
 				<p class="instruction">Whether or not to show the Sandbox number in the Numbers<br />list and allow the Sandbox number to be assigned to flows.<br />This option is not available to sub-tenants.</p>
 				<br />
@@ -71,23 +71,23 @@
 			
 			<div id="settings-email-notifications" class="vbx-input-complex vbx-input-container">
 				<label class="field-label">Email Notifications</label>
-				<label for="settings-email-notifications-voice" class="field-label-inline">New Voicemail
+				<label for="settings-email-notifications-voice" class="field-label-inline">
 				<?php
 					$params = array(
 						'name' => 'site[email_notifications_voice]',
 						'id' => 'settings-email-notifications-voice'
 					);
 					echo form_checkbox($params, '1', ($email_notifications_voice['value'] == 1));
-				?>
+				?> New Voicemail
 				</label>
-				<label for="settings-email-notifications-sms" class="field-label-inline">New SMS
+				<label for="settings-email-notifications-sms" class="field-label-inline">
 				<?php
 					$params = array(
 						'name' => 'site[email_notifications_sms]',
 						'id' => 'settings-email-notifications-sms'
 					);
 					echo form_checkbox($params, '1', ($email_notifications_sms['value'] == 1));
-				?>
+				?> New SMS
 				</label>
 				<p class="instruction">Control whether new Voice or SMS messages trigger an email<br />notification to the recipient(s).</p>
 				<br />
@@ -120,22 +120,22 @@
 			<fieldset class="vbx-input-complex vbx-input-container">
 	
 				<label class="field-label">Transcribe Recordings</label>
-				<label for="transcribe-on" class="field-label-inline">Transcriptions ON
+				<label for="transcribe-on" class="field-label-inline">
 					<?php 
 						$radio = array(
 							'id' => 'transcribe-on',
 							'name' => 'site[transcriptions]',
 						);
 						echo form_radio($radio, '1', ($transcriptions['value'] == 1)); 
-					?>
+					?> Transcriptions ON
 				</label>
-				<label for="transcribe-off" class="field-label-inline">Transcriptions OFF
+				<label for="transcribe-off" class="field-label-inline">
 					<?php
 						$radio = array_merge(array(
 								'id' => 'transcribe-off'
 							), $radio);
 						echo form_radio($radio, '0', ($transcriptions['value'] == 0));
-					?>
+					?> Transcriptions OFF
 				</label>
 				
 			</fieldset>						
@@ -156,7 +156,7 @@
 							'class' => 'medium'
 						);
 						$options = array();
-						for ($i = 5; $i <= 60; $options[$i] = $i, $i += 5);
+						for ($i = 1; $i <= 60; $options[$i] = $i, $i += 1);
 						echo t_form_dropdown($params, $options, $dial_timeout['value']);
 					?>
 				</label>

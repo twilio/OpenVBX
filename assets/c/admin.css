@@ -715,7 +715,7 @@
 }
 
 /* Multi-Column: http://www.quirksmode.org/css/multicolumn.html */
-/*
+
 .two-col {
 	-moz-column-count: 2;
     -moz-column-gap: 20px;
@@ -733,4 +733,3 @@
 	column-count: 3;
     column-gap: 20px;	
 }
-*/
