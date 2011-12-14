@@ -95,12 +95,7 @@ class Install extends Controller {
 		$this->user['lastname'] = trim($this->input->post('admin_lastname'));
 		$this->user['tenant_id'] = 1;
 
-		$tplvars = array_merge($tplvars,
-							   $this->user,
-							   $this->database,
-							   $this->openvbx,
-							   $this->openvbx_settings
-							   );
+		$tplvars = array_merge($tplvars, $this->user, $this->database, $this->openvbx, $this->openvbx_settings);
 
 		return $tplvars;
 	}
@@ -270,11 +265,8 @@ class Install extends Controller {
 			}
 
 			$this->setup_database($database, $dbh);
-
 			$this->setup_config($database, $openvbx);
-
 			$this->setup_user($user);
-
 			$this->setup_openvbx_settings($openvbx_settings);
 
 			if (!empty($openvbx_settings['connect_application_sid']))
@@ -662,7 +654,6 @@ class Install extends Controller {
 		$twilio_sid = $this->openvbx_settings['twilio_sid'];
 		$twilio_token = $this->openvbx_settings['twilio_token'];
 		$connect_app = $this->openvbx_settings['connect_application_sid'];
-
 		try
 		{
 			// call for most basic of information to see if we have access
@@ -684,17 +675,18 @@ class Install extends Controller {
 			{
 				try {
 					$connect_application = $account->connect_apps->get($connect_app);
-					$friendly_name = $application->friendly_name;
+					$friendly_name = $connect_application->friendly_name;
 				}
 				catch (Exception $e) {
 					switch ($e->getCode()) 
 					{
 						case 0:
 							// return a better message than "resource not found"
-							throw new InstallException('The Connect Application SID &ldquo;'.$connect_app.'&rdquo; was not found.', 0);
+							throw new InstallException('The Connect Application SID &ldquo;'.$connect_app.
+														'&rdquo; was not found.', 0);
 							break;
 						default:
-							throw new InstallException($e->getMessage, $e->getCode);
+							throw new InstallException($e->getMessage(), $e->getCode());
 					}
 				}
 			}
@@ -706,7 +698,7 @@ class Install extends Controller {
 			switch ($e->getCode()) 
 			{
 				case '20003':
-					$json['message'] = 'Authentication Failed. Invalid Twilio SID or Token';
+					$json['message'] = 'Authentication Failed. Invalid Twilio SID or Token.';
 					break;
 				default:
 					$json['message'] = $e->getMessage();
@@ -756,6 +748,9 @@ class Install extends Controller {
 
 	function validate_step5()
 	{
+		$ci =& get_instance();
+		$ci->load->model('vbx_user');
+		
 		$json = array(
 			'success' => true, 
 			'step' => 2, 
@@ -775,10 +770,14 @@ class Install extends Controller {
 				throw new InstallException('Your administrative password was not typed correctly.');
 			}
 			
+			if (strlen($this->user['password']) < VBX_User::MIN_PASSWORD_LENGTH)
+			{
+				throw new InstallException('Password must be at least '.VBX_User::MIN_PASSWORD_LENGTH.' characters.');
+			}
+			
 			if (!filter_var($this->user['email'], FILTER_VALIDATE_EMAIL))
 			{
-				throw new InstallException('Email address is invalid. Please check the '.
-											'address and try again.');
+				throw new InstallException('Email address is invalid. Please check the address and try again.');
 			}
 			
 			$required_fields = array(
@@ -817,7 +816,7 @@ class Install extends Controller {
 			&& is_file(APPPATH.'../htaccess_dist'))
 		{
 			$message = 'Trying to copy `htaccess_dist` to `.htaccess`... ';
-			$result = copy(APPPATH.'../htaccess_dist', APPPATH.'../.htaccess');
+			$result = @copy(APPPATH.'../htaccess_dist', APPPATH.'../.htaccess');
 			$message .= ($result ? 'success' : 'failed');
 			log_message($message);
 		}

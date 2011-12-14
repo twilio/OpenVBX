@@ -31,6 +31,7 @@
 	- setting is global
 - add upgrade notice functionality to Admin section
 	- automatically detects new tag versions on GitHub and displays a banner to admins
+- fix connect app sid validation during install
 
 
 ## OpenVBX 1.1.3

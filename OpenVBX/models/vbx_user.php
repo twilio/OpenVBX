@@ -60,7 +60,7 @@ class VBX_User extends MY_Model {
 	 *
 	 * @var int
 	 */
-	public $min_password_length = 8;
+	const MIN_PASSWORD_LENGTH = 8;
 
 	const HASH_ITERATION_COUNT = 8;
 	const PORTABLE_HASHES = FALSE;
@@ -294,7 +294,7 @@ class VBX_User extends MY_Model {
 	 * Validation rules:
 	 * - the password & confirmation must match
 	 * - password cannot be empty
-	 * - password must be $min_password_length to be valid
+	 * - password must be self::MIN_PASSWORD_LENGTH to be valid
 	 *
 	 * @param string $password 
 	 * @param string $confirmed_password 
@@ -314,9 +314,9 @@ class VBX_User extends MY_Model {
 		{
 			throw new VBX_UserException('Password cannot be empty');
 		}
-		elseif (strlen($password) < $this->min_password_length)
+		elseif (strlen($password) < self::MIN_PASSWORD_LENGTH)
 		{
-			throw new VBX_UserException('Password must be at least '.$this->min_password_length.
+			throw new VBX_UserException('Password must be at least '.self::MIN_PASSWORD_LENGTH.
 										' characters in length');
 		}
 		
