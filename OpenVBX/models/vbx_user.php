@@ -227,6 +227,7 @@ class VBX_User extends MY_Model {
 				if (OpenVBX::schemaVersion() > 63 && strlen($user->password) == 40)
 				{
 					$user->password = self::salt_encrypt($password);
+					$user->save();
 				}
 
 				try
