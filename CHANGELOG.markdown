@@ -15,7 +15,7 @@
 - clean most models for code consistency & cache efficiency
 - move user `last_seen`, `online` & `last_login` to be user settings
 - add helpful data in user view screen to help admins to inspect users
-- fix password length bug, set min-length to 8
+- fix password length bug, set min-length to 8 characters
 - upgrade password storage security using [phppass](http://www.openwall.com/phpass/)
 - add helpful documentation snippets in the Settings screens
 - add better error messages from failed API transactions
