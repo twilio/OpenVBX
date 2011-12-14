@@ -53,7 +53,7 @@ class VBX_User extends MY_Model {
 	public $admin_fields = array('');
 	
 	public $devices;
-
+	
 	/**
 	 * Set the default min-password length
 	 * Fortunately the word "password" is 8 characters ;)
@@ -67,6 +67,13 @@ class VBX_User extends MY_Model {
 
 	public function __construct($object = null)
 	{
+		/**
+		 * User settings can be problematic during upgrade from versions
+		 * that didn't have settings. We need to neuter the settings in
+		 * these cases to allow the upgrade to process before worrying
+		 * about using the settings database table
+		 */
+		$this->settings_available = version_compare(OpenVBX::schemaVersion(), '61', '>=');
 		parent::__construct($object);
 	}
 
@@ -597,7 +604,7 @@ class VBX_User extends MY_Model {
 	 */
 	public function settings()
 	{	
-		if (empty($this->settings))
+		if (empty($this->settings) && $this->settings_available)
 		{
 			$ci =& get_instance();
 			$ci->load->model('vbx_user_setting');
@@ -645,6 +652,11 @@ class VBX_User extends MY_Model {
 	 */
 	public function setting_set($key, $value)
 	{
+		if (!$this->settings_available)
+		{
+			return false;
+		}
+		
 		if (!is_scalar($value) && !($value instanceof My_ModelLiteral))
 		{
 			$value = serialize($value);

@@ -167,8 +167,7 @@ class MY_Model extends Model
 			}
 			else
 			{
-				$ci->db
-					->where($option, $value);
+				$ci->db->where($option, $value);
 			}
 		}
 		

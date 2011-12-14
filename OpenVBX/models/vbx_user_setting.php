@@ -18,7 +18,7 @@ class VBX_User_Setting extends MY_Model {
 		'key',
 		'value'
 	);
-
+	
 	public function __construct($object = null)
 	{
 		parent::__construct($object);

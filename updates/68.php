@@ -62,7 +62,7 @@ function runUpdate_68_alter_users_table()
 	
 	foreach ($columns as $column)
 	{
-		if ($ci->db->field_exists('users', $colun))
+		if ($ci->db->field_exists($column, 'users'))
 		{
 			$ci->dbforge->drop_column('users', $column);
 		}		
