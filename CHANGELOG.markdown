@@ -4,7 +4,7 @@
 
 - redesign numbers screen to separate assigned, unassigned, and numbers in-use by other systems
 - change user edit screens to always use dedicated page instead of a popup
-- add object caching layer supporting the following mechanisms:
+- add [object caching layer](https://github.com/twilio/OpenVBX/wiki/Object-Cache) supporting the following mechanisms:
 	- local (per page load memory cache)
 	- Database
 	- APC

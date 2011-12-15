@@ -31,7 +31,7 @@
 								} 
 							?>
 							<option value="<?php echo $number->phone ?>">
-								<?php echo $number->phone ?>
+								<?php echo $number->name ?>
 							</option>
 							<?php endforeach; ?>
 						</select>
