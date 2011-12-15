@@ -3,8 +3,8 @@ if(!isset($tenants)) { return; }
 ?>
 <h3>Tenants</h3>
 
-<form name="tenants" action="<?php echo site_url('settings/site/tenant') ?>#multi-tenant" method="POST" class="add-tenant-form vbx-form" autocomplete="off">
-	
+<form name="tenants" action="<?php echo site_url('settings/site/tenant') ?>#multi-tenant" method="post" class="add-tenant-form vbx-form" autocomplete="off">
+	<fieldset>
 	<?php if (!isset($connect_application_sid) || empty($connect_application_sid['value'])): ?>
 		<div class="info notice">
 			<p>You don&rsquo;t have a <a href="http://twilio.com/docs/connect" onclick="window.open(this.href); return false;">Twilio Connect</a> Application defined. Your Tenants will be created as a sub-account of your account.</p>
@@ -27,7 +27,7 @@ if(!isset($tenants)) { return; }
 	</div>
 	
 	<div class="vbx-input-complex vbx-input-container">
-		<label for"tenant-url-prefix" class="field-label">Tenant Name:
+		<label for="tenant-url-prefix" class="field-label">Tenant Name:
 			<?php
 				$url_data = array(
 					'name' => 'tenant[url_prefix]',
@@ -57,7 +57,7 @@ if(!isset($tenants)) { return; }
 		</label>
 	<?php endif; ?>
 	</div>
-	
+	</fieldset>
 	<div class="vbx-input-complex vbx-input-container">
 	    <button class="add-tenant-button normal-button" type="submit"><span>Add tenant</span></button>
 	</div>
@@ -68,7 +68,8 @@ if(!isset($tenants)) { return; }
 
 <table class="vbx-items-grid">
 	<tbody>
-	<?php foreach($tenants as $tenant): ?>
+	<?php if (count($tenants)):
+		foreach($tenants as $tenant): ?>
 		<tr class="items-row">
 				<td class="url-tenant"><a href="<?php echo tenant_url('', $tenant->id) ?>"><?php echo tenant_url('', $tenant->id) ?></a></td>
 				<td class="type-tenant"><?php 
@@ -86,6 +87,9 @@ if(!isset($tenants)) { return; }
 				?></td>
 				<td class="edit-tenant"><a href="<?php echo site_url('settings/site/tenant/'.$tenant->id) ?>" class="edit action"><span class="replace">Edit</span></a></td>
 		</tr>
-	<?php endforeach; ?>
+	<?php endforeach; 
+		else: ?>
+		<tr class="items-row"><td>There are no tenants.</td></tr>
+	<?php endif; ?>
 	</tbody>
 </table>

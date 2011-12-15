@@ -1,4 +1,4 @@
-<form name="vbx-system" action="<?php echo site_url('settings/site') ?>#system-config" method="POST" class="vbx-system-form vbx-form">
+<form name="vbx-system" action="<?php echo site_url('settings/site') ?>#system-config" method="post" class="vbx-system-form vbx-form">
 	<div class="two-col">
 
 		<fieldset>	
@@ -108,7 +108,7 @@
 					);
 					echo t_form_dropdown($params, $countries, $numbers_country['value']);
 				?>
-				<img src="<?php echo asset_url('assets/i/countries/'.strtolower($numbers_country['value']).'.png'); ?>" />
+				<img src="<?php echo asset_url('assets/i/countries/'.strtolower($numbers_country['value']).'.png'); ?>" alt="" />
 			</div>
 		</fieldset>
 	<?php endif; /* count $countries */?>

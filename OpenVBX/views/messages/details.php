@@ -1,6 +1,6 @@
 <div class="vbx-content-main">
 
-	<form id="message-details" class="vbx-form" action="<?php echo site_url("messages/details/$id") ?>" method="POST">
+	<form id="message-details" class="vbx-form" action="<?php echo site_url("messages/details/$id") ?>" method="post">
 
 	<div class="vbx-content-menu vbx-content-menu-top">
 		<a href="<?php echo site_url("messages/inbox/$folder_id") ?>" class="back-link">&laquo; Back to <?php echo empty($folder)? 'Inbox' : $folder ?></a>

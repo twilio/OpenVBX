@@ -4,7 +4,7 @@
 	global $dial_disabled;
 	$dial_disabled = false;
 ?>
-<form id="make-call-form" action="" method="POST">
+<form id="make-call-form" action="" method="post">
 
 	<div id="call-options">
 		<div id="call-options-summary">
