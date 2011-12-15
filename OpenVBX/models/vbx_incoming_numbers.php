@@ -186,6 +186,7 @@ class VBX_Incoming_numbers extends Model
 		$num->id = $item->sid ? $item->sid : 'Sandbox';
 		$num->name = $item->friendly_name;
 		$num->phone = format_phone($item->phone_number);
+		$num->phone_number = $item->phone_number;
 		$num->pin = $item->pin ? $item->pin : null;
 		$num->sandbox = $item->pin ? true : false;
 		$num->url = $item->voice_url;
@@ -367,5 +368,41 @@ class VBX_Incoming_numbers extends Model
 	{
 		$ci =& get_instance();
 		$ci->api_cache->invalidate(__CLASS__, $ci->tenant->id);
+	}
+	
+	public static function get($params)
+	{
+		if (empty($params['number_sid']) && empty($params['phone_number']))
+		{
+			return false;
+		}
+		
+		$vbx_incoming_numbers = new self;
+		$numbers = $vbx_incoming_numbers->get_numbers();
+		$incoming_number = false;
+		
+		if (!empty($numbers))
+		{
+			foreach ($numbers as $number)
+			{
+				switch (true)
+				{
+					case !empty($params['number_sid']):
+						if ($number->id == $params['number_sid'])
+						{
+							$incoming_number = $number;
+						}
+						break;
+					case !empty($params['phone_number']):
+						if ($number->phone_number == $params['phone_number'])
+						{
+							$incoming_number = $number;
+						}
+						break;
+				}				
+			}
+		}
+		
+		return $incoming_number;
 	}
 }

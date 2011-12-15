@@ -22,7 +22,7 @@
 - setting version number in a file instead of from database
 	- allows static operations to properly set an appropriate api user agent
 - changing `Services_Twilio` user agent to identify itself as OpenVBX
-- increase test coverage, implement data fixtures, and include better test documentation
+- increased test coverage for applets, implement data fixtures, and include better test documentation
 - change behavior of TwiML preview links in flow editor to open in a new window
 - add system setting for controlling the system time zone
 - add system setting for controlling email notifications for new messages
@@ -32,6 +32,10 @@
 - add upgrade notice functionality to Admin section
 	- automatically detects new tag versions on GitHub and displays a banner to admins
 - fix connect app sid validation during install
+- fix an uncaught exception when trying to send voicemail sms notifications from a non-sms enabled number
+- added check during voicemail notification to not attempt to send SMS notification if the incoming number is not sms enabled
+	- in the future this should fall back to another number that is designated as a fallback SMS notification number.
+- general html & css cleanup
 
 
 ## OpenVBX 1.1.3
