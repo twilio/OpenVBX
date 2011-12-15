@@ -265,9 +265,9 @@ class Install extends Controller {
 			}
 
 			$this->setup_database($database, $dbh);
-			$this->setup_config($database, $openvbx);
-			$this->setup_user($user);
+			$this->setup_config($database, $openvbx);			
 			$this->setup_openvbx_settings($openvbx_settings);
+			$this->setup_user($user);
 
 			if (!empty($openvbx_settings['connect_application_sid']))
 			{
@@ -447,7 +447,6 @@ class Install extends Controller {
 		$this->load->database();
 		$this->config->load('openvbx');
 		$this->load->model('vbx_user');
-
 		$admin = new VBX_User();
 		$admin->email = $user['email'];
 		$admin->password = VBX_User::salt_encrypt($user['password']);
@@ -750,7 +749,6 @@ class Install extends Controller {
 	{
 		$ci =& get_instance();
 		$ci->load->model('vbx_user');
-		
 		$json = array(
 			'success' => true, 
 			'step' => 2, 

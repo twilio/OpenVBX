@@ -351,7 +351,7 @@ $config['sess_time_to_update'] 	= 300;
 |
 */
 $config['cookie_prefix']	= "";
-$config['cookie_domain']	= $config['server_name'];
+$config['cookie_domain']	= parse_url($config['base_url'], PHP_URL_HOST);
 $config['cookie_path']		= str_replace('\\', '/', preg_replace('@/+$@','',dirname($_SERVER['SCRIPT_NAME'])));
 if(empty($config['cookie_path']))
 	$config['cookie_path'] = '/';

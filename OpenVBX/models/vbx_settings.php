@@ -344,7 +344,6 @@ class VBX_Settings extends Model
 			return $cache->value;
 		}
 
-		$ci =& get_instance();
 		$query = $ci->db
 			->select()
 			->from($this->settings_table)
