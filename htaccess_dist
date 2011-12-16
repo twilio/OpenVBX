@@ -23,7 +23,7 @@
 	# MSIE can be an issue, for now catch all MSIE
 	BrowserMatch \bMSIE[56] !no-gzip !gzip-only-text/html
 	# Exclude file types from compression
-	SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|pdf|zip|tar|rar|gz|dmg|mp3|mp4|m4a|m4p|mov|mpe?g|qt)$ no-gzip dont-vary
+	SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|pdf|zip|tar|rar|gz|dmg|mp3|mp4|m4a|m4p|mov|mpe?g|qt|swf)$ no-gzip dont-vary
 	# Make sure proxy servers deliver what they're given
 	<IfModule mod_headers.c>
 		Header append Vary User-Agent env=!dont-vary
