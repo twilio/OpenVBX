@@ -140,12 +140,11 @@ class Site extends User_Controller
 				$data['upgrade_notice'] = true;
 			}
 		}
-		else {
-			// allow tenants to see the rewrite setting
-			$data['rewrite_enabled'] = array(
-				'value' => intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT))
-			);
-		}
+
+		// allow tenants to see the rewrite setting
+		$data['rewrite_enabled'] = array(
+			'value' => intval($this->settings->get('rewrite_enabled', VBX_PARENT_TENANT))
+		);
 
 		if ($this->db->dbdriver == 'mysqli')
 		{
