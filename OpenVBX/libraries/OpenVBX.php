@@ -221,16 +221,19 @@ class OpenVBX {
 		if (empty(self::$schemaVersion))
 		{
 			$ci =& get_instance();
-			$ci->load->model('vbx_settings');
-			if (!$cache && $ci->cache->enabled())
+			if ($ci->db)
 			{
-				$ci->cache->enabled(false);
-				$reenable_cache = true;
-			}
-			self::$schemaVersion = $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
-			if ($reenable_cache)
-			{
-				$ci->cache->enabled(true);
+				$ci->load->model('vbx_settings');
+				if (!$cache && $ci->cache->enabled())
+				{
+					$ci->cache->enabled(false);
+					$reenable_cache = true;
+				}
+				self::$schemaVersion = $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
+				if ($reenable_cache)
+				{
+					$ci->cache->enabled(true);
+				}
 			}
 		}
 		return self::$schemaVersion;

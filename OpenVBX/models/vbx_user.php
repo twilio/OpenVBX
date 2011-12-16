@@ -65,6 +65,9 @@ class VBX_User extends MY_Model {
 	const HASH_ITERATION_COUNT = 8;
 	const PORTABLE_HASHES = FALSE;
 
+	protected $settings;
+	public $settings_available;
+
 	public function __construct($object = null)
 	{
 		/**
@@ -669,7 +672,8 @@ class VBX_User extends MY_Model {
 			$data = (object) array(
 				'user_id' => $this->id,
 				'key' => $key,
-				'value' => $value
+				'value' => $value,
+				'tenant_id' => $this->tenant_id
 			);
 			$settings[$key] = new VBX_User_Setting($data);
 		}
@@ -677,7 +681,7 @@ class VBX_User extends MY_Model {
 		{
 			$settings[$key]->value = $value;
 		}
-		
-		$settings[$key]->save();
+
+		return $settings[$key]->save();
 	}
 }

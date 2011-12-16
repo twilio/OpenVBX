@@ -16,7 +16,8 @@ class VBX_User_Setting extends MY_Model {
 		'id',
 		'user_id',
 		'key',
-		'value'
+		'value', 
+		'tenant_id'
 	);
 	
 	public function __construct($object = null)

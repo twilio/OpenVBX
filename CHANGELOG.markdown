@@ -36,6 +36,7 @@
 - added check during voicemail notification to not attempt to send SMS notification if the incoming number is not sms enabled
 	- in the future this should fall back to another number that is designated as a fallback SMS notification number.
 - general html & css cleanup
+- fix for servers running on non-standard ports so that manually changing the `$config['cooke_path']` is no longer required to be able to log in
 
 
 ## OpenVBX 1.1.3
