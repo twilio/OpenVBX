@@ -18,9 +18,7 @@
 
  * Contributor(s):
  **/
-
-$script_dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-if($script_dir == '/') $script_dir = '';
+$script_dir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 
 define('WEB_ROOT', $script_dir . '/');
 define('ASSET_ROOT', $script_dir . '/assets');

@@ -37,6 +37,7 @@
 	- in the future this should fall back to another number that is designated as a fallback SMS notification number.
 - general html & css cleanup
 - fix for servers running on non-standard ports so that manually changing the `$config['cooke_path']` is no longer required to be able to log in
+- change .htaccess file's `mod_deflate` directives to exclude SWF files
 
 
 ## OpenVBX 1.1.3
