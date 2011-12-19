@@ -7,7 +7,7 @@
 
 
 		<div class="vbx-content-container">
-				<form name="tenant-edit" action="<?php echo site_url('settings/site/tenant/'.$tenant->id) ?>" method="POST" class="vbx-tenant-form vbx-form" autocomplete="off">
+				<form name="tenant-edit" action="<?php echo site_url('settings/site/tenant/'.$tenant->id) ?>" method="post" class="vbx-tenant-form vbx-form" autocomplete="off">
 
 				<div class="vbx-content-section" style="min-height:50px;">
 					<div class="vbx-input-complex vbx-input-container">

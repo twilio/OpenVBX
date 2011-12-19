@@ -717,6 +717,12 @@ Flows.initialize = function() {
 	$('.vbx-form :input, .flow-name-edit :input').change(function() {
 		Flows.modified = true;
 	});
+	
+	$('.view-source').live('click', function(e) {
+		e.stopPropagation();
+		e.preventDefault();
+		window.open(this.href);
+	});
 };
 	
 $(document).ready(function() {

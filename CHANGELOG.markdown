@@ -1,5 +1,46 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2
+
+- redesign numbers screen to separate assigned, unassigned, and numbers in-use by other systems
+- change user edit screens to always use dedicated page instead of a popup
+- add [object caching layer](https://github.com/twilio/OpenVBX/wiki/Object-Cache) supporting the following mechanisms:
+	- local (per page load memory cache)
+	- Database
+	- APC
+	- Memcache
+- add API cache that uses the database to cache API results from Twilio
+- add method to flush caches via About screen
+- show cache object info in About screen
+- clean most models for code consistency & cache efficiency
+- move user `last_seen`, `online` & `last_login` to be user settings
+- add helpful data in user view screen to help admins to inspect users
+- fix password length bug, set min-length to 8 characters
+- upgrade password storage security using [phppass](http://www.openwall.com/phpass/)
+- add helpful documentation snippets in the Settings screens
+- add better error messages from failed API transactions
+- setting version number in a file instead of from database
+	- allows static operations to properly set an appropriate api user agent
+- changing `Services_Twilio` user agent to identify itself as OpenVBX
+- increased test coverage for applets, implement data fixtures, and include better test documentation
+- change behavior of TwiML preview links in flow editor to open in a new window
+- add system setting for controlling the system time zone
+- add system setting for controlling email notifications for new messages
+- add system setting for controlling the display of the Sandbox number (parent tenant only)
+- add system setting for controlling the duration of the dail timeout
+	- setting is global
+- add upgrade notice functionality to Admin section
+	- automatically detects new tag versions on GitHub and displays a banner to admins
+- fix connect app sid validation during install
+- fix an uncaught exception when trying to send voicemail sms notifications from a non-sms enabled number
+- added check during voicemail notification to not attempt to send SMS notification if the incoming number is not sms enabled
+	- in the future this should fall back to another number that is designated as a fallback SMS notification number.
+- general html & css cleanup
+- fix for servers running on non-standard ports so that manually changing the `$config['cooke_path']` is no longer required to be able to log in
+- change .htaccess file's `mod_deflate` directives to exclude SWF files
+- CSS updates to bring modern versions of IE visually up to par with other browsers
+
+
 ## OpenVBX 1.1.3
 
 - fix an issue with call to record where the caller id field is missing and causes the call to fail

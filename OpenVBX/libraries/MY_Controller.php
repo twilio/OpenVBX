@@ -28,9 +28,10 @@ require_once BASEPATH . '../OpenVBX/libraries/Plugin.php';
 require_once BASEPATH . '../OpenVBX/libraries/AppletUI.php';
 require_once BASEPATH . '../OpenVBX/libraries/OpenVBX.php';
 require_once BASEPATH . '../OpenVBX/libraries/PluginData.php';
-require_once BASEPATH . '../OpenVBX/libraries/PluginStore.php'; // Deprecating in 0.75
+#require_once BASEPATH . '../OpenVBX/libraries/PluginStore.php'; // Deprecated in 0.75
 require_once BASEPATH . '../OpenVBX/libraries/FlowStore.php';
 require_once BASEPATH . '../OpenVBX/libraries/AppletInstance.php';
+require_once BASEPATH . '../OpenVBX/libraries/Caches/Abstract.php';
 
 class MY_Controller extends Controller
 {
@@ -56,15 +57,18 @@ class MY_Controller extends Controller
 	{
 		parent::__construct();
 
-		if(!file_exists(APPPATH . 'config/openvbx.php') || !file_exists(APPPATH . 'config/database.php'))
+		if(!file_exists(APPPATH . 'config/openvbx.php') 
+			|| !file_exists(APPPATH . 'config/database.php'))
 		{
 			redirect('install');
 		}
 
 		$this->config->load('openvbx');
-
-		// check for required configuration values
 		$this->load->database();
+		
+		$this->cache = OpenVBX_Cache_Abstract::load();
+		$this->api_cache = OpenVBX_Cache_Abstract::load('db');
+		
 		$this->load->model('vbx_settings');
 		$this->load->model('vbx_user');
 		$this->load->model('vbx_group');
@@ -98,10 +102,13 @@ class MY_Controller extends Controller
 			redirect('');
 		}
 
+		$this->set_time_zone();
+
 		$this->testing_mode = !empty($_REQUEST['vbx_testing_key'])? $_REQUEST['vbx_testing_key'] == $this->config->item('testing-key') : false;
 		if($this->tenant)
 		{
-			$this->config->set_item('sess_cookie_name', $this->tenant->id . '-' . $this->config->item('sess_cookie_name'));
+			$this->config->set_item('sess_cookie_name', $this->tenant->id.'-'. 
+										$this->config->item('sess_cookie_name'));
 			
 			$this->twilio_sid = $this->settings->get('twilio_sid', $this->tenant->id);
 			$token_from = ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT ? VBX_PARENT_TENANT : $this->tenant->id);
@@ -185,6 +192,15 @@ class MY_Controller extends Controller
 		return false;
 	}
 	
+	protected function set_time_zone()
+	{
+		$tz = $this->vbx_settings->get('server_time_zone', $this->tenant->id);
+		if (!empty($tz))
+		{
+			date_default_timezone_set($tz);
+		}
+	}
+	
 	protected function set_request_method($method = null)
 	{
 		$this->request_method = $_SERVER['REQUEST_METHOD'];
@@ -196,9 +212,7 @@ class MY_Controller extends Controller
 
 	protected function set_response_type($type = null)
 	{
-		$version = $this->settings->get('version', 1);
-
-		header("X-OpenVBX-Version: $version");
+		header('X-OpenVBX-Version: '.OpenVBX::version());
 		if(isset($_SERVER['HTTP_ACCEPT']))
 		{
 			$accepts = explode(',', $_SERVER['HTTP_ACCEPT']);
@@ -267,7 +281,8 @@ class MY_Controller extends Controller
 			{
 				error_log($e->getMessage());
 				$ci = &get_instance();
-				$ci->session->set_flashdata('error', 'Failed to fetch link information: '.$e->getMessage());
+				$ci->session->set_flashdata('error', 'Failed to fetch link information: '.
+											$e->getMessage());
 			}
 		}
 
@@ -279,36 +294,31 @@ class MY_Controller extends Controller
 		if($logged_in)
 		{
 			$nav['util_links'] = array(
-									   'account' => 'My Account',
-									   'auth/logout' => 'Log Out',
-									   );
+				'account' => 'My Account',
+				'auth/logout' => 'Log Out'
+			);
 
 			if(!empty($plugin_links['util_links']))
 			{
-				$nav['util_links'] = array_merge($nav['util_links'],
-												 $plugin_links['util_links']);
-
+				$nav['util_links'] = array_merge($nav['util_links'], 
+												$plugin_links['util_links']);
 			}
 
 			$nav['setup_links'] = array();
 
 		    $nav['setup_links'] = array(
-								   'devices' => 'Devices',
-								   'voicemail' => 'Voicemail',
-								   );
+				'devices' => 'Devices',
+				'voicemail' => 'Voicemail'
+			);
 
 			if(!empty($plugin_links['setup_links']))
 			{
-				$nav['setup_links'] = array_merge($nav['setup_links'],
-												  $plugin_links['setup_links']);
-
+				$nav['setup_links'] = array_merge($nav['setup_links'], 
+												$plugin_links['setup_links']);
 			}
 
-
 			$nav['log_links'] = array();
-
 			$nav['admin_links'] = array();
-
 			$nav['site_admin_links'] = array();
 
 			if($is_admin)
@@ -325,11 +335,11 @@ class MY_Controller extends Controller
 				}
 
 				$nav['admin_links'] = array(
-										   'flows' => 'Flows',
-										   'numbers' => 'Numbers',
-										   'accounts' => 'Users',
-										   'settings/site' => 'Settings',
-										   );
+					'flows' => 'Flows',
+					'numbers' => 'Numbers',
+					'accounts' => 'Users',
+					'settings/site' => 'Settings'
+				);
 
 				/* Support plugins that used site_admin */
 				if(!empty($plugin_links['site_admin_links']))
@@ -390,11 +400,11 @@ class MY_Controller extends Controller
 		}
 
 		if($user = VBX_User::get($this->session->userdata('user_id'))) {
-			if ($user->online == 9) {
+			if ($user->setting('online') == 9) {
 				$payload['user_online'] = 'client-first-run';
 			}
 			else {
-				$payload['user_online'] = (bool) $user->online;
+				$payload['user_online'] = (bool) $user->setting('online');
 			}
 		}
 

@@ -4,46 +4,20 @@ include_once dirname(__FILE__).'/../CIUnit.php';
 
 class voicemailGroupSayTest extends OpenVBX_Applet_TestCase
 {
-	private $users = array();
-	private $group = null;
+	private $group_id = 1;
+	
+	private $prompt_message = 'I am group email. Please leave a message.';
 	
 	public function setUp()
 	{
 		parent::setUp();
-		
-		// all this is slow, but it properly sets up relationships
-		$this->users['user1'] = new VBX_User((object) array(
-			'first_name' => 'voicemail',
-			'last_name' => 'test1',
-			'email' => 'voicemailtest1@openvbx.local',
-			'voicemail' => 'Voicemail user 1 no home'
-		));
-		$this->users['user1']->save();
-		$this->users['user1']->set_password('password', 'password');
-	
-		$this->users['user2'] = new VBX_User((object) array(
-			'first_name' => 'voicemail',
-			'last_name' => 'test2',
-			'email' => 'voicemailtest2@openvbx.local',
-			'voicemail' => 'Voicemail user 2 no home'
-		));
-		$this->users['user2']->save();
-		$this->users['user2']->set_password('password', 'password');		
-		
-		// insert a known group to test against
-		$this->group = new VBX_Group((object) array(
-			'name' => 'Test Voicemail Group',
-			'tenant_id' => 1,
-			'is_active' => 1
-		));
-		$this->group->save();
 		
 		$this->setFlow(array(
 			'id' => 1,
 			'user_id' => 1,
 			'created' => NULL,
 			'updated' => NULL,
-			'data' => '{"start":{"name":"Call Start","data":{"next":"start/f274cd"},"id":"start","type":"standard---start"},"f274cd":{"name":"Voicemail","data":{"prompt_say":"I am group email. Please leave a message.","prompt_play":"","prompt_mode":"say","prompt_tag":"global","number":"","library":"","permissions_id":"'.$this->group->id.'","permissions_type":"group"},"id":"f274cd","type":"standard---voicemail"}}',
+			'data' => '{"start":{"name":"Call Start","data":{"next":"start/f274cd"},"id":"start","type":"standard---start"},"f274cd":{"name":"Voicemail","data":{"prompt_say":"'.$this->prompt_message.'","prompt_play":"","prompt_mode":"say","prompt_tag":"global","number":"","library":"","permissions_id":"'.$this->group_id.'","permissions_type":"group"},"id":"f274cd","type":"standard---voicemail"}}',
 			'sms_data' => NULL,
 			'tenant_id' => 1
 		));
@@ -57,20 +31,11 @@ class voicemailGroupSayTest extends OpenVBX_Applet_TestCase
 	}
 	
 	public function tearDown() 
-	{
-		$this->group->remove_user($user1->id);
-		$this->group->remove_user($user2->id);
-		
+	{	
 		$this->CI->db->truncate('group_messages');
 		$this->CI->db->truncate('group_annotations');
 		$this->CI->db->truncate('user_messages');
-		$this->CI->db->truncate('messages');
-		$this->CI->db->delete('users', array('id >' => 1));
-		$this->CI->db->delete('groups', array('id >' => 2));
-		
-		$this->users = array();
-		$this->group = null;
-		
+		$this->CI->db->truncate('messages');		
 		parent::tearDown();
 	}
 
@@ -81,9 +46,11 @@ class voicemailGroupSayTest extends OpenVBX_Applet_TestCase
 		$out = ob_get_clean();
 
 		$xml = simplexml_load_string($out);
-		$this->assertEquals('SimpleXMLElement', get_class($xml));
+		$this->assertInstanceOf('SimpleXMLElement', $xml);
 
-		$this->assertRegExp('|(<Say>I am group email. Please leave a message.</Say>)|', $out);
+		// this regex match is cheap, need better reg-fu to match possible
+		// language and voice attributes that could appear in any order
+		$this->assertRegExp('|(<Say(.*?)>'.$this->prompt_message.'</Say>)|', $out);
 	}
 	
 	public function testVoicemailGroupMessage()

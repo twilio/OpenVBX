@@ -31,17 +31,28 @@ class Install extends Controller {
 	private $account;
 	protected $min_php_version = MIN_PHP_VERSION;
 
-	function Install()
+	public function __construct()
 	{
 		parent::Controller();
-		if(file_exists(APPPATH . 'config/openvbx.php')) $this->config->load('openvbx');
-
-		if(file_exists(APPPATH . 'config/database.php') AND version_compare(PHP_VERSION, $this->min_php_version, '>=')) {
-			$this->load->database();
-
-			redirect('');
+		if(file_exists(APPPATH . 'config/openvbx.php'))
+		{
+			$this->config->load('openvbx');
 		}
 
+		if(file_exists(APPPATH . 'config/database.php') 
+			AND version_compare(PHP_VERSION, $this->min_php_version, '>=')) 
+		{
+			$this->load->database();
+			redirect('');
+		}
+		
+		// cache is evil when not handled properly, assume the 
+		// possibility that we're being reinstalled so lets clear 
+		// any possibly lingering cache artifacts
+		$this->cache = OpenVBX_Cache_Abstract::load();
+		$this->cache->enabled(true);
+		$this->cache->flush();
+		$this->cache->enabled(false);
 	}
 
 	private function input_args()
@@ -84,19 +95,13 @@ class Install extends Controller {
 		$this->user['lastname'] = trim($this->input->post('admin_lastname'));
 		$this->user['tenant_id'] = 1;
 
-		$tplvars = array_merge($tplvars,
-							   $this->user,
-							   $this->database,
-							   $this->openvbx,
-							   $this->openvbx_settings
-							   );
+		$tplvars = array_merge($tplvars, $this->user, $this->database, $this->openvbx, $this->openvbx_settings);
 
 		return $tplvars;
 	}
 
 	private function run_tests()
 	{
-
 		$this->tests = array();
 		$this->pass = TRUE;
 
@@ -104,7 +109,7 @@ class Install extends Controller {
 
 		$this->add_test(version_compare(PHP_VERSION, $this->min_php_version, '>='),
 						'PHP Version',
-						PHP_VERSION,
+						'Supported: '.PHP_VERSION,
 						'You must be running at least PHP '.$this->min_php_version.'; you are using ' . PHP_VERSION);
 
 		$this->add_test(function_exists('mysql_connect'),
@@ -127,6 +132,12 @@ class Install extends Controller {
 						'supported',
 						'missing, but optional',
 						false);
+						
+		$this->add_test(extension_loaded('memcache'),
+						'Memcache',
+						'supported',
+						'missing, but optional',
+						false);
 
 		$this->add_test(function_exists('json_encode'),
 						'JSON',
@@ -136,19 +147,19 @@ class Install extends Controller {
 		$apache_version = function_exists('apache_get_version')? apache_get_version() : '';
 		$this->add_test(function_exists('apache_request_headers'),
 						'Apache Version',
-						preg_replace('/[^0-9.]/', '', $apache_version),
+						$apache_version,
 						'missing, but optional',
 						false);
 
-		$this->add_test(is_writable(APPPATH . 'config'),
+		$this->add_test(is_writable(APPPATH.'config'),
 						'Config Dir',
 						'writable',
-						'permission denied: '. APPPATH . 'config');
+						'permission denied: '.APPPATH.'config');
 						
-		$this->add_test(is_writable(APPPATH . '../audio-uploads'),
+		$this->add_test(is_writable(APPPATH.'../audio-uploads'),
 						'Upload Dir',
 						'writable',
-						'permission denied: '. realpath(APPPATH . '../audio-uploads'));
+						'permission denied: '.realpath(APPPATH.'../audio-uploads'));
 
 		$this->add_test(is_file(APPPATH.'../.htaccess'),
 						'.htaccess File',
@@ -235,33 +246,33 @@ class Install extends Controller {
 			}
 
 			// test for mysqli compat
-			if (function_exists('mysqli_connect')) {
+			if (function_exists('mysqli_connect')) 
+			{
 				// server info won't work without first selecting a table
 				mysql_select_db($database['default']['database']);
 				$server_version = mysql_get_server_info($dbh);
 				if (!empty($server_version)) {
-					if (version_compare($server_version, '4.1.13', '>=') && version_compare($server_version, '5', '<')) {
+					if (version_compare($server_version, '4.1.13', '>=') 
+						&& version_compare($server_version, '5', '<')) 
+					{
 						$database['default']['dbdriver'] = 'mysqli';
 					}
-					elseif (version_compare($server_version, '5.0.7', '>=')) {
+					elseif (version_compare($server_version, '5.0.7', '>=')) 
+					{
 						$database['default']['dbdriver'] = 'mysqli';
 					}
 				}
 			}
 
 			$this->setup_database($database, $dbh);
-
-			$this->setup_config($database, $openvbx);
-
-			$this->setup_user($user);
-
+			$this->setup_config($database, $openvbx);			
 			$this->setup_openvbx_settings($openvbx_settings);
+			$this->setup_user($user);
 
 			if (!empty($openvbx_settings['connect_application_sid']))
 			{
 				$this->setup_connect_app($openvbx_settings);
 			}
-
 		}
 		catch(InstallException $e)
 		{
@@ -312,7 +323,8 @@ class Install extends Controller {
 					}
 				}
 
-				if ($updated) {
+				if ($updated) 
+				{
 					$connect_application->update(array(
 						'FriendlyName' => $connect_application->friendly_name,
 						'Description' => $connect_application->description,
@@ -349,7 +361,8 @@ class Install extends Controller {
 
 			if(!mysql_query($sql, $dbh))
 			{
-				throw new InstallException( "Failed to run sql: ".$sql. " :: ". mysql_error($dbh), 2);
+				throw new InstallException( "Failed to run sql: ".$sql. " :: ". 
+											mysql_error($dbh), 2);
 			}
 		}
 
@@ -434,7 +447,6 @@ class Install extends Controller {
 		$this->load->database();
 		$this->config->load('openvbx');
 		$this->load->model('vbx_user');
-
 		$admin = new VBX_User();
 		$admin->email = $user['email'];
 		$admin->password = VBX_User::salt_encrypt($user['password']);
@@ -443,11 +455,11 @@ class Install extends Controller {
 		$admin->tenant_id = $user['tenant_id'];
 		$admin->is_admin = true;
 		$admin->voicemail = 'Please leave a message after the beep.';
-		$admin->online = 9;
 
 		try
 		{
 			$admin->save();
+			$admin->setting_set('online', 9);
 		}
 		catch(Exception $e)
 		{
@@ -469,13 +481,15 @@ class Install extends Controller {
 			{
 				if($this->vbx_settings->add($key, $val, 1) === false)
 				{
-					throw new InstallException( "Failed to create setting for $key. Please re-create database", 0);
+					throw new InstallException('Failed to create setting for '.
+												$key.'. Please re-create database', 0);
 				}
 			}
 		}
 		catch(SettingsException $e)
 		{
-			throw new InstallException( 'Unable to setup valid instance.  Please re-create your database');
+			throw new InstallException('Unable to setup valid instance. '.
+										'Please re-create your database');
 		}
 	}
 
@@ -496,8 +510,10 @@ class Install extends Controller {
 			{
 				$this->account = OpenVBX::getAccount($settings['twilio_sid'], $settings['twilio_token']);
 			}
-			$applications = $this->account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
-
+			$applications = $this->account->applications->getIterator(0, 10, array(
+				'FriendlyName' => $app_name
+			));
+			
 			$application = false;
 			foreach ($applications as $_application)
 			{
@@ -637,12 +653,11 @@ class Install extends Controller {
 		$twilio_sid = $this->openvbx_settings['twilio_sid'];
 		$twilio_token = $this->openvbx_settings['twilio_token'];
 		$connect_app = $this->openvbx_settings['connect_application_sid'];
-
 		try
 		{
 			// call for most basic of information to see if we have access
 			$account = OpenVBX::getAccount($twilio_sid, $twilio_token);
-			
+
 			/**
 			 * We'll get an account back with empty members, even if we supplied
 			 * bunk credentials, we need to verify that something is there to be
@@ -655,20 +670,22 @@ class Install extends Controller {
 			}
 
 			// check the connect app if a sid is provided
-			if (!empty($connect_app)) {
+			if (!empty($connect_app)) 
+			{
 				try {
 					$connect_application = $account->connect_apps->get($connect_app);
-					$friendly_name = $application->friendly_name;
+					$friendly_name = $connect_application->friendly_name;
 				}
 				catch (Exception $e) {
 					switch ($e->getCode()) 
 					{
 						case 0:
 							// return a better message than "resource not found"
-							throw new InstallException('The Connect Application SID &ldquo;'.$connect_app.'&rdquo; was not found.', 0);
+							throw new InstallException('The Connect Application SID &ldquo;'.$connect_app.
+														'&rdquo; was not found.', 0);
 							break;
 						default:
-							throw new InstallException($e->getMessage, $e->getCode);
+							throw new InstallException($e->getMessage(), $e->getCode());
 					}
 				}
 			}
@@ -680,7 +697,7 @@ class Install extends Controller {
 			switch ($e->getCode()) 
 			{
 				case '20003':
-					$json['message'] = 'Authentication Failed. Invalid Twilio SID or Token';
+					$json['message'] = 'Authentication Failed. Invalid Twilio SID or Token.';
 					break;
 				default:
 					$json['message'] = $e->getMessage();
@@ -730,6 +747,8 @@ class Install extends Controller {
 
 	function validate_step5()
 	{
+		$ci =& get_instance();
+		$ci->load->model('vbx_user');
 		$json = array(
 			'success' => true, 
 			'step' => 2, 
@@ -749,10 +768,14 @@ class Install extends Controller {
 				throw new InstallException('Your administrative password was not typed correctly.');
 			}
 			
+			if (strlen($this->user['password']) < VBX_User::MIN_PASSWORD_LENGTH)
+			{
+				throw new InstallException('Password must be at least '.VBX_User::MIN_PASSWORD_LENGTH.' characters.');
+			}
+			
 			if (!filter_var($this->user['email'], FILTER_VALIDATE_EMAIL))
 			{
-				throw new InstallException('Email address is invalid. Please check the '.
-											'address and try again.');
+				throw new InstallException('Email address is invalid. Please check the address and try again.');
 			}
 			
 			$required_fields = array(
@@ -791,7 +814,7 @@ class Install extends Controller {
 			&& is_file(APPPATH.'../htaccess_dist'))
 		{
 			$message = 'Trying to copy `htaccess_dist` to `.htaccess`... ';
-			$result = copy(APPPATH.'../htaccess_dist', APPPATH.'../.htaccess');
+			$result = @copy(APPPATH.'../htaccess_dist', APPPATH.'../.htaccess');
 			$message .= ($result ? 'success' : 'failed');
 			log_message($message);
 		}

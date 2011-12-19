@@ -33,6 +33,5 @@ function openvbx_mail($recipient, $subject, $template, $maildata = array())
 	$message = $ci->load->view('emails/'.$template, $maildata, true);
 
 	log_message('debug', 'MAILING -- to: '.$recipient.' -- body: '.$message);
-
 	return mail($recipient, '[OpenVBX] '.$subject, $message, $headers);
 }

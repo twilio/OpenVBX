@@ -7,13 +7,14 @@ $CI->load->library('DialList');
 $transcribe = (bool) $CI->vbx_settings->get('transcriptions', $CI->tenant->id);
 $voice = $CI->vbx_settings->get('voice', $CI->tenant->id);
 $language = $CI->vbx_settings->get('voice_language', $CI->tenant->id);
+$timeout = $CI->vbx_settings->get('dial_timeout', $CI->tenant->id);
 
 $dialer = new TwimlDial(array(
 	'transcribe' => $transcribe,
 	'voice' => $voice,
 	'language' => $language,
 	'sequential' => true,
-	'default_timeout' => 15
+	'default_timeout' => $timeout
 ));
 $dialer->set_state();
 
@@ -43,18 +44,22 @@ try {
 			$dialer->add_voice_message();
 			break;
 		default:
-			if ($dialer->dial_whom_selector === 'user-or-group') {
+			if ($dialer->dial_whom_selector === 'user-or-group') 
+			{
 				// create a dial list from the input state
 				$dial_list = DialList::get($dialer->dial_whom_user_or_group);
-	
-				while (count($dial_list)) {
+
+				while (count($dial_list)) 
+				{
 					$to_dial = $dial_list->next();
-					if ($to_dial instanceof VBX_Device) {
+					if ($to_dial instanceof VBX_Device) 
+					{
 						$dialed = $dialer->dial($to_dial);
 					}
 				}
 	
-				if (!$dialed) {
+				if (!$dialed) 
+				{
 					// nobody to call, push directly to voicemail
 					$dialer->noanswer();
 				}

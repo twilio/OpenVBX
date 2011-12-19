@@ -42,7 +42,7 @@ class User_Controller extends MY_Controller
 
 		// check for required configuration values
 		$this->load->database();
-		$this->load->library('ErrorMessages');
+		$this->load->library('ErrorMessages'); // deprecated in 1.2
 		$this->load->model('vbx_rest_access');
 		$this->load->model('vbx_message');
 
@@ -78,13 +78,11 @@ class User_Controller extends MY_Controller
 
 		$user_id = $this->session->userdata('user_id');
 
-		/* Signature check */
+		// Signature check
 		if (!empty($user_id))
 		{
-			$expected_signature = VBX_User::signature($user_id);
-			$actual_signature = $this->session->userdata('signature');
-
-			if ($expected_signature != $actual_signature)
+			$signature = $this->session->userdata('signature');
+			if (!VBX_User::check_signature($user_id, $signature))
 			{
 				$this->session->set_flashdata('error', 'Your session has expired');
 				$this->session->set_userdata('loggedin', false);
@@ -116,9 +114,7 @@ class User_Controller extends MY_Controller
 			try
 			{
 				$user = VBX_User::get($this->user_id);
-				$last_seen = $user->last_seen;
-				$user->last_seen = new MY_ModelLiteral('UTC_TIMESTAMP()');
-				$user->save();
+				$user->setting_set('last_seen', new MY_ModelLiteral('UTC_TIMESTAMP()'));
 			}
 			catch(VBX_UserException $e)
 			{
@@ -160,7 +156,7 @@ class User_Controller extends MY_Controller
 
 	private function upgrade_check()
 	{
-		$currentSchemaVersion = OpenVBX::schemaVersion();
+		$currentSchemaVersion = OpenVBX::schemaVersion(false);
 		$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
 		if($currentSchemaVersion != $upgradingToSchemaVersion)
 		{
@@ -277,25 +273,22 @@ class User_Controller extends MY_Controller
 			$captcha_token = $headers['CaptchaToken'];
 		}
 
-		if (isset($username)
-			&& isset($password))
+		if (isset($username) && isset($password))
 		{
-			log_message('info', 'Authenticating user: '.var_export($username, true));
+			log_message('info', 'Logging in user: '.var_export($username, true));
 
-			$u = VBX_User::authenticate($username,
-										$password,
-										$captcha,
-										$captcha_token);
+			$u = VBX_User::login($username, $password, $captcha, $captcha_token);
 			if($u)
 			{
 				$next = $this->session->userdata('next');
 				$this->session->unset_userdata('next');
-				$userdata = array('email' => $u->email,
-								  'user_id' => $u->id,
-								  'is_admin' => $u->is_admin,
-								  'loggedin' => TRUE,
-								  'signature' => VBX_User::signature($u->id),
-								  );
+				$userdata = array(
+					'email' => $u->email,
+					'user_id' => $u->id,
+					'is_admin' => $u->is_admin,
+					'loggedin' => TRUE,
+					'signature' => VBX_User::signature($u->id),
+				);
 
 				$this->session->set_userdata($userdata);
 			}
@@ -344,14 +337,16 @@ class User_Controller extends MY_Controller
 		$data['user_numbers'] = $this->get_user_numbers();
 		$data['error'] = $this->session->flashdata('error');
 		if(!empty($data['error']))
+		{
 			log_message('error', $data['error']);
+		}
 		$data['section'] = $this->section;
+		
 		return $data;
 	}
 
 	protected function get_user_numbers() 
 	{
-
 		$this->load->model('vbx_device');
 		$numbers = $this->vbx_device->get_by_user($this->user_id);
 
@@ -396,46 +391,4 @@ class User_Controller extends MY_Controller
 	{
 		return $this->tenant;
 	}
-
-	/**
-	 * Init support for Twilio Client
-	 * This method manually loads in the Twilio Client library due to lack of support
-	 * for multiple parameters passing in CodeIgniters Loader.
-	 *
-	 * Application SID is always set by the parent tenant
-	 *
-	 * @deprecated 1.1
-	 * @since 0.93
-	 * @return void
-	 */
-	/*
-	protected function set_client_support() 
-	{
-		if (!empty($this->application_sid)) 
-		{
-			if (!class_exists('Services_Twilio_Capability'))
-			{
-				include_once(APPPATH.'libraries/Services/Twilio/Capability.php');
-			}
-			$this->capability = new Services_Twilio_Capability($this->twilio_sid, $this->twilio_token);
-
-			$user_id = intval($this->session->userdata('user_id'));
-			$user = VBX_user::get(array('id' => $user_id));
-
-			$params = array(
-				'user_id' => $user->user_id
-			);
-
-			try {
-				$this->capability->allowClientOutgoing($this->application_sid, $params);
-				if ($user->online == 1) {
-					$this->capability->allowClientIncoming($user->id);
-				}
-			}
-			catch (Exception $e) {
-				error_log($e->getMessage());
-			}
-		}
-	}
-	*/
 }

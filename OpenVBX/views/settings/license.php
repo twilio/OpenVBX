@@ -51,8 +51,8 @@
 			SWFUpload 2 is (c) 2007-2008 Jake Roberts and is released under the MIT License:
 			http://www.opensource.org/licenses/mit-license.php
 			
-			SWFObject v2.2 <http://code.google.com/p/swfobject/> 
- 			is released under the MIT License <http://www.opensource.org/licenses/mit-license.php> 
+			SWFObject v2.2 &lt;http://code.google.com/p/swfobject/&gt; 
+ 			is released under the MIT License &lt;http://www.opensource.org/licenses/mit-license.php&gt;
 		</pre>
 	</li>
 	<li><b>jQuery Address Plugin</b>

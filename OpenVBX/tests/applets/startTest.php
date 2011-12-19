@@ -34,7 +34,7 @@ class startTest extends OpenVBX_Applet_TestCase
 		$out = ob_get_clean();
 
 		$xml = simplexml_load_string($out);
-		$this->assertEquals('SimpleXMLElement', get_class($xml));
+		$this->assertInstanceOf('SimpleXMLElement', $xml);
 
 		$this->assertRegExp('|(<Redirect>)|', $out); 
 		$this->assertRegExp('|/voice/1/f1e974|', $out);

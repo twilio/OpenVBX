@@ -1,0 +1,57 @@
+first:
+    id: 
+    created: 
+    updated: 
+    read: 
+    call_sid: 
+    caller: 
+    called: 
+    type: 
+    status: 
+    content_url: 
+    content_text: 
+    notes: 
+    size: 
+    assigned_to: 
+    archived: 
+    ticket_status: 
+    tenant_id: 
+
+second:
+    id: 
+    created: 
+    updated: 
+    read: 
+    call_sid: 
+    caller: 
+    called: 
+    type: 
+    status: 
+    content_url: 
+    content_text: 
+    notes: 
+    size: 
+    assigned_to: 
+    archived: 
+    ticket_status: 
+    tenant_id: 
+
+third:
+    id: 
+    created: 
+    updated: 
+    read: 
+    call_sid: 
+    caller: 
+    called: 
+    type: 
+    status: 
+    content_url: 
+    content_text: 
+    notes: 
+    size: 
+    assigned_to: 
+    archived: 
+    ticket_status: 
+    tenant_id: 
+

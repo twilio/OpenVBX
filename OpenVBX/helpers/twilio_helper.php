@@ -126,7 +126,7 @@ if (!function_exists('version_url')) {
 		{
 			$ci =& get_instance();
 			$vers = 'v='.$ci->config->item('site_rev');
-			$pre = (strpos($url, '?') === false ? '?' : '&'); 
+			$pre = (strpos($url, '?') === false ? '?' : '&amp;'); 
 			$url .= $pre.$vers;
 		}
 		return $url;
@@ -268,8 +268,8 @@ if (!function_exists('gravatar_url'))
 		$url = 'http://'.(is_ssl() ? 'secure' : 'www').'.gravatar.com/avatar/'.
 				md5(strtolower(trim($email))).
 				'?s='.intval($size).
-				'&d='.urlencode($default_image).
-				'&r=pg';
+				'&amp;d='.urlencode($default_image).
+				'&amp;r=pg';
 				
 		return $url;
 	}

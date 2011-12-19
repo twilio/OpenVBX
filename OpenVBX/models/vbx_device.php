@@ -54,13 +54,11 @@ class VBX_Device extends MY_Model
 			$search_options = array('id' => $search_options);
 		}
 		
-		return self::search($search_options,
-							1,
-							0);
+		return self::search($search_options, 1, 0);
 	}
 
 	static function search($search_options = array(), $limit = -1, $offset = 0)
-	{
+	{		
 		$sql_options = array('joins' => self::$joins,
 							 'select' => self::$select,
 							 );
@@ -78,9 +76,7 @@ class VBX_Device extends MY_Model
 
 	function add($number)
 	{
-		if(empty($number['value'])
-		   || empty($number['name'])
-		   || empty($number['user_id']))
+		if(empty($number['value']) || empty($number['name']) || empty($number['user_id']))
 		{
 			throw new VBX_DeviceException('Invalid number');
 		}
@@ -90,82 +86,78 @@ class VBX_Device extends MY_Model
 			throw new VBX_DeviceException('Name and number already exist.');
 		}
 
-		try
-		{
+		try {
 			PhoneNumber::validatePhoneNumber($number['value']);
 		}
-		catch(PhoneNumberException $e)
-		{
+		catch(PhoneNumberException $e) {
 			throw new VBX_DeviceException($e->getMessage());
 		}
 		
-		$ci =& get_instance();
+		$device = new self((object) array(
+			'name' => $number['name'],
+			'value' => normalize_phone_to_E164($number['value']),
+			'user_id' => intval($number['user_id']),
+			'sms' => $number['sms'],
+			'tenant_id' => $ci->tenant->id
+		));
+
+		$device->save();
 		
-		if(!($ci->db
-			 ->set('name', $number['name'])
-			 ->set('value', normalize_phone_to_E164($number['value']))
-			 ->set('user_id', $number['user_id'])
-			 ->set('sms', $number['sms'])
-			 ->set('tenant_id', $ci->tenant->id)
-			 ->insert($this->table)))
-		{
-			throw new VBX_DeviceException('Name and number already exist.');
-		}
-
-		return $ci->db->insert_id();
-	}
-
-	function delete($id, $user_id)
-	{
-		$ci =& get_instance();
-
-		$ci->db
-			->where('id', $id)
-			->where('user_id', $user_id)
-			->where('tenant_id', $ci->tenant->id)
-			->delete($this->table);
-
-		if(!$ci->db
-		   ->affected_rows())
-		{
-			throw new VBX_DeviceException('Nothing was deleted');
-		}
+		return $device->id;
 	}
 
 	function get_by_group($group_id)
 	{
-		$ci =& get_instance();
-
-		$ci->db->where_in('user_id', Group::get_user_ids($group_id));
-		$ci->db->where('tenant_id', $ci->tenant->id);
-		$ci->db->from($this->table);
-		$ci->db->order_by('sequence');
-		return $ci->db->get()->result();
+		$search_opts = array(
+			'id__in' => Group::get_user_ids($group_id)
+		);
+		$sql_opts = array(
+			'order_by' => 'sequence'
+		);
+		$devices = parent::search(
+			self::$__CLASS__,
+			$this->table,
+			$search_opts,
+			$sql_opts
+		);
+		
+		return $devices;
 	}
 
 	function get_by_user($user_id)
 	{
-		$ci =& get_instance();
-
-		return $ci->db
-			->from($this->table)
-			->where('user_id', $user_id)
-			->where('tenant_id', $ci->tenant->id)
-			->order_by('sequence')
-			->get()->result();
+		$search_opts = array(
+			'user_id' => intval($user_id)
+		);
+		$sql_opts = array(
+			'order_by' => array('sequence', 'desc')	
+		);
+		$devices = parent::search(
+			self::$__CLASS__,
+			$this->table,
+			$search_opts,
+			$sql_opts
+		);
+				
+		return $devices;
 	}
 
-	function get_by_number($number, $user_id)
-	{
+	public function get_by_number($number, $user_id)
+	{	
 		$number = normalize_phone_to_E164($number);
-		$ci =& get_instance();
-
-		return $ci->db
-			->from($this->table)
-			->where('user_id', $user_id)
-			->where('value', $number)
-			->where('tenant_id', $ci->tenant->id)
-			->get()->row();
+		$search_opts = array(
+			'user_id' => intval($user_id),
+			'value' => normalize_phone_to_E164($number)
+		);
+		$device = parent::search(
+			self::$__CLASS__,
+			$this->table,
+			$search_opts,
+			array(),
+			1
+		);
+		
+		return $device;
 	}
 
 	function save()
@@ -183,7 +175,7 @@ class VBX_Device extends MY_Model
 		{
 			throw new VBX_DeviceException($e->getMessage());
 		}
-		
+				
 		return parent::save();
 	}
 }

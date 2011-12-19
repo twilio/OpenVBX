@@ -31,7 +31,7 @@ class smsReplyTest extends OpenVBX_Applet_TestCase {
 		$out = ob_get_clean();
 
 		$xml = simplexml_load_string($out);
-		$this->assertEquals('SimpleXMLElement', get_class($xml));
+		$this->assertInstanceOf('SimpleXMLElement', $xml);
 
 		$this->assertRegExp('|(<Sms>'.$this->message.'</Sms>)|', $out);
 		$this->assertEquals(0, preg_match('|(<Redirect>)|', $out));
@@ -48,6 +48,6 @@ class smsReplyTest extends OpenVBX_Applet_TestCase {
 		$xml = simplexml_load_string($out);
 		$this->assertEquals('SimpleXMLElement', get_class($xml));
 
-		$this->assertEquals(0, preg_match('|(<Redirect>(.*?)/sms/12345/)|', $out));
+		$this->assertEquals(1, preg_match('|(<Redirect>(.*?)/sms/1/12345</Redirect>)|', $out));
 	}
 }

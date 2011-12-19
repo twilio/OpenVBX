@@ -12,7 +12,8 @@ if(!empty($_REQUEST['RecordingUrl'])) // if we've got a transcription
 						 $CI->input->get_post('From'),
 						 $CI->input->get_post('To'), 
 						 $CI->input->get_post('RecordingUrl'),
-						 $CI->input->get_post('RecordingDuration')
+						 $CI->input->get_post('RecordingDuration'),
+						 ($transcribe == false) // if not transcribing then notify immediately
 					 );		
 }
 else
@@ -39,8 +40,11 @@ else
 	}
 
 	// add a <Record>, and use VBX's default transcription handler
-	$record_params = array();
+	$record_params = array(
+		'transcribe' => false
+	);
 	if ($transcribe) {
+		$recording_params['transcribe'] = true;
 		$record_params['transcribeCallback'] = site_url('/twiml/transcribe');
 	}
 

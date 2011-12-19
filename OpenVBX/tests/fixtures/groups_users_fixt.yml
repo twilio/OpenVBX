@@ -1,0 +1,13 @@
+first:
+    id: 
+    group_id: 1
+    user_id: 2
+    tenant_id: 1
+    order: 1
+
+second:
+    id: 
+    group_id: 1
+    user_id: 3
+    tenant_id: 1
+    order: 2

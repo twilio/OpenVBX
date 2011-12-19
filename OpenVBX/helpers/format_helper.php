@@ -200,12 +200,12 @@ function format_name_as_initials($user)
 	{
 		$initials = "";
 		
-		if (!empty($user->first_name))
+		if ($user->first_name != '')
 		{
 			$initials .= substr($user->first_name, 0, 1);
 		}
 		
-		if (!empty($user->last_name))
+		if ($user->last_name != '')
 		{
 			$initials .= substr($user->last_name, 0, 1);
 		}

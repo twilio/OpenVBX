@@ -18,7 +18,6 @@
 				<ul class="user-list">
 				<?php $admin = OpenVBX::getCurrentUser(); ?>
 				<?php if(isset($users)): 
-					$default_avatar = asset_url('assets/i/user-icon.png');
 					foreach($users as $user): ?>
 				<li class="user" rel="<?php echo $user->id ?>">
 					<div class="user-utilities">
@@ -33,7 +32,7 @@
 							}
 						?>" width="30" height="30" />
 						<?php if($user->id != $admin->id): ?>
-						<a class="user-edit" href="#edit"><span class="replace">Edit</span></a>
+						<a class="user-edit" href="<?php echo site_url('/account/user/'.$user->id); ?>"><span class="replace">Edit</span></a>
 						<a class="user-remove" href="#remove"><span class="replace">Remove</span></a>
 						<?php endif; ?>
 					</div>
@@ -50,6 +49,7 @@
 				endif; ?>
 				<li class="user" rel="prototype" style="display:none;">
 					<div class="user-utilities">
+						<img class="gravatar" src="<?php echo $default_avatar; ?>" width="30" height="30" />
 						<a class="user-edit" href="#edit"><span class="replace">Edit</span></a>
 						<a class="user-remove" href="#remove"><span class="replace">Remove</span></a>
 					</div>
@@ -76,8 +76,8 @@
 							<span class="group-counter"><?php echo count($group->users) ?></span>
 
 							<div class="group-utilities">
-									<a class="group-edit" href="#edit">Edit Group</a>
-									<a class="group-remove" href="#remove">Remove Group</a>
+								<a class="group-edit" href="#edit">Edit Group</a>
+								<a class="group-remove" href="#remove">Remove Group</a>
 							</div>
 
 							<div class="group-info">
@@ -86,14 +86,14 @@
 
 							<ul class="members">
 							<?php foreach($group->users as $user): ?>
-									<li rel="<?php echo $user->user_id; ?>">
+								<li rel="<?php echo $user->user_id; ?>">
 									<?php if(!empty($user->first_name)) : ?>
 									<span><?php echo $user->first_name; ?> <?php echo $user->last_name; ?></span>
 									<?php else: ?>
 									<span><?php echo $user->email; ?></span>
 									<?php endif;?>
 									<a class="remove">Remove</a>
-									</li>
+								</li>
 							<?php endforeach; ?>
 							</ul>
 
@@ -120,37 +120,39 @@
 
 </div><!-- .vbx-content-main -->
 
-<div id="dialog-invite-user" title="Invite User" class="hide dialog">
-	<div class="error-message hide"></div>
-	<form class="vbx-form" onsubmit="return false;">
-		<fieldset class="vbx-input-container">
-		<label class="field-label">Email
-			<input type="text" class="medium" name="email" value="" />
-		</label>
-		</fieldset>
-	</form>
-</div>
+<div id="accounts-dialogs" style="display: none;">
+	<div id="dialog-invite-user" title="Invite User" class="hide dialog">
+		<div class="error-message hide"></div>
+		<form class="vbx-form" onsubmit="return false;">
+			<fieldset class="vbx-input-container">
+			<label class="field-label">Email
+				<input type="text" class="medium" name="email" value="" />
+			</label>
+			</fieldset>
+		</form>
+	</div>
 
-<div id="dialog-google-app-sync" title="Use Google Apps for Domains" class="hide dialog">
-	<div class="error-message hide"></div>
-	<form class="vbx-form" onsubmit="return false;">
-		<p>Enter your Email and Password for your Google Apps Domain</p>
-		<fieldset class="vbx-input-container">
-		<label class="field-label">Email
-			<input type="text" class="medium" name="email" value="" />
-		</label>
-		<label class="field-label">Password
-			<input type="password" class="medium" name="password" value="" />
-		</label>
-		</fieldset>
-	</form>
-</div>
+	<div id="dialog-google-app-sync" title="Use Google Apps for Domains" class="hide dialog">
+		<div class="error-message hide"></div>
+		<form class="vbx-form" onsubmit="return false;">
+			<p>Enter your Email and Password for your Google Apps Domain</p>
+			<fieldset class="vbx-input-container">
+			<label class="field-label">Email
+				<input type="text" class="medium" name="email" value="" />
+			</label>
+			<label class="field-label">Password
+				<input type="password" class="medium" name="password" value="" />
+			</label>
+			</fieldset>
+		</form>
+	</div>
 
-<?php include("user_group_dialogs.php"); ?>
+	<?php include("user_group_dialogs.php"); ?>
 
-<div id="dialog-delete" title="Delete" class="hide dialog">
-	<div class="error-message hide"></div>
-	<div id="dConfirmMsg">
-		<p>Are you sure you want to delete?</p>
+	<div id="dialog-delete" title="Delete" class="hide dialog">
+		<div class="error-message hide"></div>
+		<div id="dConfirmMsg">
+			<p>Are you sure you want to delete?</p>
+		</div>
 	</div>
 </div>

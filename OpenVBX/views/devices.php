@@ -24,7 +24,8 @@
 		<h3>Devices</h3>
 		<p>Ex: your cell phone, your home phone, your office phone, etc.</p>
 		<ol class="device-list <?php if(empty($devices)): ?>hide<?php endif; ?>">
-			<?php foreach($devices as $device): ?>
+			<?php foreach($devices as $device): 
+				if ($device->id == 0) { continue; } ?>
 			<li class="phone device enabled ui-state-default" rel="<?php echo $device->id ?>">
 				<fieldset class="vbx-input-complex">
 

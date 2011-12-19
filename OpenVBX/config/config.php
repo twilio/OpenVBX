@@ -19,23 +19,18 @@ $config['server_name'] = $_SERVER['HTTP_HOST'];
 |	http://example.com/
 |
 */
-$config['base_url']= "http"
-	  . ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')? 's' : '')
-	  . "://" . $config['server_name']
-	  . preg_replace('@/+$@','',
-					 str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']))
-					 )
-	  . '/';
+$config['base_url']= "http".((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')? 's' : '')
+	  				 ."://".$config['server_name']. rtrim(WEB_ROOT, '/').'/';
 
 /*
 |--------------------------------------------------------------------------
 | Site Revision Number
 |--------------------------------------------------------------------------
 |
-| Used for js versioning.
+| Used for asset url versioning.
 |
 */
-$config['site_rev'] = 1014;
+$config['site_rev'] = 1017;
 
 /*
 |--------------------------------------------------------------------------
@@ -137,13 +132,17 @@ $config['index_page'] = 'index.php';
 | 'ORIG_PATH_INFO'	Uses the ORIG_PATH_INFO
 |
 */
-if(isset($_REQUEST['vbxsite'])) {
+if(isset($_REQUEST['vbxsite'])) 
+{
 	/* For mod_rewrite  */
 	$config['uri_protocol'] = 'REQUEST_URI';
-} else {
+} 
+else 
+{
 	/* For non mod_rewrite users - experimental */
 	$config['uri_protocol']	= "PATH_INFO";
 }
+
 /*
 |--------------------------------------------------------------------------
 | URL suffix
@@ -351,10 +350,12 @@ $config['sess_time_to_update'] 	= 300;
 |
 */
 $config['cookie_prefix']	= "";
-$config['cookie_domain']	= $config['server_name'];
-$config['cookie_path']		= str_replace('\\', '/', preg_replace('@/+$@','',dirname($_SERVER['SCRIPT_NAME'])));
+$config['cookie_domain']	= parse_url($config['base_url'], PHP_URL_HOST);
+$config['cookie_path']		= WEB_ROOT;
 if(empty($config['cookie_path']))
+{
 	$config['cookie_path'] = '/';
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -434,7 +435,8 @@ $config['proxy_ips'] = '';
 | Sometimes your local environment just needs some things to be overridden
 |
 */
-if (is_file(APPPATH.'config/config-local.php')) {
+if (is_file(APPPATH.'config/config-local.php')) 
+{
 	include_once(APPPATH.'config/config-local.php');
 }
 

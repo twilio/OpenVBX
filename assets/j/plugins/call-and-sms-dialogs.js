@@ -265,7 +265,7 @@ jQuery(function($) {
 				} else {
 					phone = '';
 				}
-				target = $(link).attr('href');
+				target = $(link).attr('data-href');
 			}
 
 			globalTwilioSmsLock = beingShown = true;

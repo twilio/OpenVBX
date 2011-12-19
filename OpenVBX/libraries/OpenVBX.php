@@ -23,6 +23,9 @@ include(APPPATH.'libraries/Services/Twilio.php');
 
 class OpenVBXException extends Exception {}
 class OpenVBX {
+	protected static $version;
+	protected static $schemaVersion;
+	
 	public static $currentPlugin = null;
 	
 	private static $_twilioService;
@@ -130,25 +133,14 @@ class OpenVBX {
 		return VBX_Flow::search($options, $limit, $offset);
 	}
 
-	public static function addVoiceMessage($owner,
-										   $sid,
-										   $caller,
-										   $called,
-										   $recording_url,
-										   $duration)
+	public static function addVoiceMessage($owner, $sid, $to, $from, $recording_url, $duration, $notify = false)
 	{
-		return self::addMessage($owner, $sid, $caller, $called, $recording_url,
-								$duration, VBX_Message::TYPE_VOICE, null);
+		return self::addMessage($owner, $sid, $to, $from, $recording_url, $duration, VBX_Message::TYPE_VOICE, null, $notify);
 	}
 
-	public static function addSmsMessage($owner,
-										 $sid,
-										 $to,
-										 $from,
-										 $body)
+	public static function addSmsMessage($owner, $sid, $to, $from, $body)
 	{
-		return self::addMessage($owner, $sid, $to, $from, '',
-								0, VBX_Message::TYPE_SMS, $body, true);
+		return self::addMessage($owner, $sid, $to, $from, '', 0, VBX_Message::TYPE_SMS, $body, true);
 	}
 
 	public static function addMessage($owner,
@@ -173,7 +165,6 @@ class OpenVBX {
 			$owner_type = get_class($owner);
 			$owner_type = str_replace('vbx_', '', strtolower($owner_type));
 			$owner_id = $owner->id;
-
 
 			$message = new VBX_Message();
 			$message->owner_type = $owner_type;
@@ -200,24 +191,61 @@ class OpenVBX {
 		}
 	}
 
-	/* Returns the version from the php software on the server */
+	/**
+	 * Returns the OpenVBX software version
+	 * 
+	 * @internal Post 1.1.3 this pulls from the file in `OpenVBX/config/version.php` instead
+	 *			 of pulling from the database. This way the version number can be known without
+	 *			 a functional database (ie: install)
+	 * @return string
+	 */
 	public static function version()
 	{
-		$ci =& get_instance();
-		$ci->load->model('vbx_settings');
-		return $ci->vbx_settings->get('version', VBX_PARENT_TENANT);
+		if (empty(self::$version))
+		{
+			$ci =& get_instance();
+			$ci->config->load('version');
+			self::$version = $ci->config->item('version');
+		}
+		return self::$version;
 	}
 
-	/* Returns the version of the database schema */
+	/**
+	 * Returns the version of the database schema
+	 *
+	 * @static
+	 * @return int
+	 */
 	public static function schemaVersion()
 	{
-		$ci =& get_instance();
-		$ci->load->model('vbx_settings');
-		return $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
+		if (empty(self::$schemaVersion))
+		{
+			$ci =& get_instance();
+			if ($ci->db)
+			{
+				$ci->load->model('vbx_settings');
+				if (!$cache && $ci->cache->enabled())
+				{
+					$ci->cache->enabled(false);
+					$reenable_cache = true;
+				}
+				self::$schemaVersion = $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
+				if ($reenable_cache)
+				{
+					$ci->cache->enabled(true);
+				}
+			}
+		}
+		return self::$schemaVersion;
 	}
 
-	/* Returns the latest version of the schema on the server,
-	 * regardless if its been imported */
+	/**
+	 * Returns the latest version of the schema on the server,
+	 * regardless if its been imported
+	 *
+	 * @static
+	 * @return array
+	 */
 	public static function getLatestSchemaVersion()
 	{
 		$updates = scandir(VBX_ROOT.'/updates/');
@@ -230,6 +258,14 @@ class OpenVBX {
 		return $updates[count($updates)-1];
 	}
 
+	/**
+	 * Set the title of the current page
+	 *
+	 * @static
+	 * @param string $title
+	 * @param bool $overwrite whether to replace or append to the current title
+	 * @return mixed
+	 */
 	public static function setPageTitle($title, $overwrite = false) 
 	{
 		$ci =& get_instance();
@@ -248,21 +284,25 @@ class OpenVBX {
 	 * Twilio Connect Aware. Will return the connect account if applicable.
 	 *
 	 * @throws OpenVBXException if invalid parameters are passed in for new object generation
-	 * @param string $twilio_sid Optional - Twilio Account Sid
-	 * @param string $twilio_token Optional - Twilio Account Token
+	 *
+	 * @static
+	 * @param bool/string $twilio_sid Optional - Twilio Account Sid
+	 * @param bool/string $twilio_token Optional - Twilio Account Token
+	 * @param string $api_version - default api version to use
 	 * @return object Services_Twilio_Rest_Account
 	 */
 	public static function getAccount($twilio_sid = false, $twilio_token = false, $api_version = '2010-04-01') 
 	{
 		$ci =& get_instance();
-		
+
 		// if sid & token are passed, make sure they're not the same as our master
 		// values. If they are, make a new object, otherwise use the same internal object
 		if (!empty($twilio_sid) || !empty($twilio_token)) 
 		{
 			if (!empty($twilio_sid) && !empty($twilio_token)) 
 			{
-				if ($twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) 
+				if ((empty($ci->twilio_sid) && empty($ci->twilio_token)) 
+					|| $twilio_sid != $ci->twilio_sid && $twilio_token != $ci->twilio_token) 
 				{
 					try {
 						$_http_opts = self::get_http_opts();
@@ -323,16 +363,16 @@ class OpenVBX {
 	protected static function get_http_opts()
 	{
 		$ci =& get_instance();
-		
+
 		$_http_opts = array(
 			'host' => 'https://api.twilio.com',
 			'opts' => array(
 				'curlopts' => array(
-					CURLOPT_USERAGENT => Services_Twilio::USER_AGENT.'-openvbx'
+					CURLOPT_USERAGENT => 'openvbx/'.OpenVBX::version()
 				)
 			)
 		);
-		
+
 		// internal api development override, you'll never need this
 		if ($_http_settings = $ci->config->item('_http_settings')) 
 		{
@@ -355,8 +395,8 @@ class OpenVBX {
 	}
 	
 	public function getAccounts() {
-		if (!(self::$_twilioService instanceof Services_Twilio)) {
-			$ci =& get_instance();
+		if (!(self::$_twilioService instanceof Services_Twilio)) 
+		{
 			self::getAccount();
 		}
 		return self::$_twilioService->accounts;
@@ -370,14 +410,15 @@ class OpenVBX {
 	 * 
 	 * If no post_vars are passed then $_POST will be used directly.
 	 *
-	 * @param string $uri 
-	 * @param array $post_vars 
+	 * @param bool/string $uri
+	 * @param bool/array $post_vars
 	 * @return bool
 	 */
 	public static function validateRequest($url = false, $post_vars = false) 
 	{
 		$ci =& get_instance();
-		if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) {
+		if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT) 
+		{
 			return true;
 		}
 		
@@ -431,6 +472,13 @@ class OpenVBX {
 		return $request_signature;
 	}
 	
+	/**
+	 * Verify that we can connect to Twilio using the connect
+	 * tenant's sid & the parent tenant token
+	 *
+	 * @param int $tenant_id 
+	 * @return bool
+	 */
 	public function connectAuthTenant($tenant_id) {
 		$auth = true;
 				
@@ -450,7 +498,7 @@ class OpenVBX {
 									'name' => 'twilio_token',
 									'tenant_id' => VBX_PARENT_TENANT
 								));
-				$account = self::getAccount($sid, $token);
+				$account = self::getAccount($sid->value, $token->value);
 				$account_type = $account->type;
 			}
 			catch (Exception $e) {

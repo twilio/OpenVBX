@@ -30,6 +30,10 @@ class Login extends MY_Controller
 		$this->config->load('openvbx');
 		$this->load->database();
 		$this->template->write('title', '');
+		
+		// no cache
+		$ci =& get_instance();
+		$ci->cache->enabled(false);
 
 		$this->user_id = $this->session->userdata('user_id');
 	}
@@ -41,7 +45,9 @@ class Login extends MY_Controller
 		if($this->session->userdata('loggedin'))
 		{
 			if(VBX_User::signature($this->user_id) == $this->session->userdata('signature'))
+			{
 				return $this->redirect($redirect);
+			}
 		}
 		
 		$this->template->write('title', 'Log In');
@@ -89,27 +95,29 @@ class Login extends MY_Controller
 	{
 		try
 		{
-			$user = VBX_User::authenticate($this->input->post('email'),
-										   $this->input->post('pw'),
-										   $this->input->post('captcha'),
-										   $this->input->post('captcha_token'));
+			$user = VBX_User::login($this->input->post('email'),
+									$this->input->post('pw'),
+									$this->input->post('captcha'),
+									$this->input->post('captcha_token'));
 
 			if ($user) {
 				$connect_auth = OpenVBX::connectAuthTenant($user->tenant_id);
 
 				// we kick out non-admins, admins will have an opportunity to re-auth the account
-				if (!$connect_auth && !$user->is_admin) {
+				if (!$connect_auth && !$user->is_admin) 
+				{
 					$this->session->set_flashdata('error', 'Connect auth denied');
 					return redirect('auth/connect/account_deauthorized');
 				}
 
-				$userdata = array('email' => $user->email,
-								  'user_id' => $user->id,
-								  'is_admin' => $user->is_admin,
-								  'loggedin' => TRUE,
-								  'signature' => VBX_User::signature($user->id),
-								  );
-			
+				$userdata = array(
+					'email' => $user->email,
+					'user_id' => $user->id,
+					'is_admin' => $user->is_admin,
+					'loggedin' => TRUE,
+					'signature' => VBX_User::signature($user->id),
+				);
+
 				$this->session->set_userdata($userdata);
 
 				if(OpenVBX::schemaVersion() >= 24)
@@ -161,7 +169,7 @@ class Login extends MY_Controller
 					{
 						$banner = array(
 							'id' => 'first-login',
-							'html' => 'To start setting up OpenVBX, we suggest you start out with building your first <a href="'.site_url('flows').'">call flow</a>. ',
+							'html' => $this->load->view('banners/first-login', array(), true),
 							'title' => 'Welcome to OpenVBX'
 						);
 						$path = '/'.(($this->tenant->id > 1)? $this->tenant->name : '');
@@ -172,7 +180,7 @@ class Login extends MY_Controller
 				}
 				catch(VBX_IncomingNumberException $e)
 				{
-					/* Handle gracefully but log it */
+					// Handle gracefully but log it
 					log_message('error', $e->getMessage());
 				}
 			}

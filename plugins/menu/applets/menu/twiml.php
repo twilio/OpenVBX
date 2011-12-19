@@ -42,7 +42,7 @@ if($digits !== false)
 		{			 
 			$response->say('You selected an incorrect option.', array(
 					'voice' => $ci->vbx_settings->get('voice', $ci->tenant->id),
-					'voice_language' => $ci->vbx_settings->get('voice_language', $ci->tenant->id)
+					'language' => $ci->vbx_settings->get('voice_language', $ci->tenant->id)
 				));
 			$response->redirect();
 		}

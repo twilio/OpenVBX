@@ -78,6 +78,25 @@
     overflow: auto;
 }
 
+.vbx-table-section .vbx-table-section-header,
+.vbx-table-section .vbx-numbers-section-info {
+	padding: 5px;
+	background: #CCC;
+	color: #444;
+}
+
+.vbx-table-section .vbx-table-section-header {
+	font-size: 1.2em;
+	font-weight: bold;
+	margin: 0;
+	padding-top: 15px;
+}
+
+.vbx-table-section .vbx-table-section-header .toggle-link {
+	font-size: 1em;
+	font-weight: normal;
+}
+
 .section-group {
     float: left;
     width: 30%;
@@ -256,19 +275,26 @@
     border-bottom: 1px solid #FFF;
 }
 
+#vbx-settings-content {
+	border: 1px solid #000;
+    padding: 20px;    
+    margin-top: -1px;
+}
+
 .vbx-tab-view {
 	min-height: 400px;
-    margin-top: -1px;
-    padding: 20px;
     background-color: #FFF;
-    border: 1px solid #000;
     overflow: auto;
 }
 
 .vbx-tab-view h3 {
-    margin-bottom: 20px;
+    margin-top: 25px;
     font-size: 17px;
     color: #555;
+}
+
+.vbx-tab-view h3:first-child {
+	margin-top: 0;
 }
 
 

@@ -27,8 +27,6 @@ class VBX_Sms_messageException extends Exception {}
  */
 class VBX_Sms_message extends Model {
 
-	private $cache_key;
-
 	public $total = 0;
 
 	private static $message_statuses = array('sent', 'failed', 'sending', 'queued');
@@ -53,21 +51,17 @@ class VBX_Sms_message extends Model {
 	{
 		$output = array();
 
-		$page_cache_key = $this->cache_key . "_{$offset}_{$page_size}";
-		$total_cache_key = $this->cache_key . '_total';
+		$ci =& get_instance();
+		
+		$tenant_id = $ci->tenant->id;
+		$page_cache = 'messages-'.$offset.'-'.$page_size;
+		$total_cache = 'messages-total';
 
-		if(function_exists('apc_fetch')) {
-			$success = FALSE;
-
-			$total = apc_fetch($total_cache_key, $success);
-			if($total AND $success) $this->total = $total;
-
-			$data = apc_fetch($page_cache_key, $success);
-
-			if($data AND $success) {
-				$output = @unserialize($data);
-				if(is_array($output)) return $output;
-			}
+		if ($cache = $ci->api_cache->get($page_cache, __CLASS__, $tenant_id) &&
+			$cache_total = $ci->api_cache->get($total_cache, __CLASS__, $tenant_id))
+		{
+			$this->total = $cache_total;
+			return $cache;
 		}
 		
 		$page = floor(($offset + 1) / $page_size);
@@ -91,10 +85,8 @@ class VBX_Sms_message extends Model {
 			throw new VBX_Sms_messageException($e->getMessage());
 		}
 
-		if(function_exists('apc_store')) {
-			apc_store($page_cache_key, serialize($output), self::CACHE_TIME_SEC);
-			apc_store($total_cache_key, $this->total, self::CACHE_TIME_SEC);
-		}
+		$ci->api_cache->set($page_cache, $output, __CLASS__, $tenant_id, self::CACHE_TIME_SEC);
+		$ci->api_cache->set($total_cache, $this->total, __CLASS__, $tenant_id, self::CACHE_TIME_SEC);
 
 		return $output;
 	}

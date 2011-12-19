@@ -25,68 +25,60 @@ class VBX_IncomingNumberException extends Exception {}
 
 class VBX_Incoming_numbers extends Model
 {
-	private $cache_key;
-
-	const CACHE_TIME_SEC = 3600;
-
 	public function __construct()
 	{
 		parent::__construct();
-		$this->cache_key = $this->twilio_sid . '_incoming_numbers';
-
 	}
 
 	public function get_sandbox()
 	{
-		if(function_exists('apc_fetch')) 
+		$ci =& get_instance();
+		if ($cache = $ci->api_cache->get('sandbox', __CLASS__, $ci->tenant->id))
 		{
-			$success = FALSE;
-			$cachekey = $this->cache_key.'sandbox';
-			$sandbox = apc_fetch($cachekey, $success);
-
-			if($sandbox AND $success) 
-			{
-				return @unserialize($sandbox);
-			}
+			return $cache;
 		}
-
+		
 		try {
 			$account = OpenVBX::getAccount();
-			if ($account->type != 'Full')
+			$sandbox = $account->sandbox;
+			if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
 			{
-				$sandbox = $account->sandbox;
-				if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
-				{
-					$sandbox = $this->parseIncomingPhoneNumber($sandbox);
-					if (function_exists('apc_store')) 
-					{
-						$success = apc_store($cachekey, serialize($sandbox), self::CACHE_TIME_SEC);
-					}
-				}
+				$sandbox = $this->parseIncomingPhoneNumber($sandbox);
+				$ci->api_cache->set('sandbox', $sandbox, __CLASS__, $ci->tenant->id);
 			}
 		}
 		catch (Exception $e) {
-			throw new VBX_IncomingNumberException($e->getMessage);
+			$msg = 'Unable to fetch Sandbox information: ';
+			switch ($e->getCode())
+			{
+				case 20003:
+					$msg .= 'Authentication Failed.';
+					break;
+				default:
+					$msg .= $e->getMessage();
+			}
+			throw new VBX_IncomingNumberException($msg, $e->getCode());
 		}
 
 		return $sandbox;
 	}
 
 	public function get_numbers($retrieve_sandbox = true)
-	{
-		if(function_exists('apc_fetch')) 
+	{		
+		$ci =& get_instance();
+		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
+		$cache_key = 'incoming-numbers';
+		if ($cache = $ci->api_cache->get($cache_key, __CLASS__, $ci->tenant->id))
 		{
-			$success = FALSE;
-			$cachekey = $this->cache_key.'numbers'.$retrieve_sandbox;
-			$data = apc_fetch($cachekey, $success);
-			if($data AND $success) 
+			if (!$retrieve_sandbox || !$enabled_sandbox_number)
 			{
-				$numbers = @unserialize($data);
-				if(is_array($numbers))
-				{
-					return $numbers;
+				foreach ($cache as $key => $item) {
+					if ($item->id == 'Sandbox') {
+						unset($cache[$key]);
+					}
 				}
 			}
+			return $cache;
 		}
 
 		$numbers = array();
@@ -99,42 +91,47 @@ class VBX_Incoming_numbers extends Model
 			}
 		}
 		catch (Exception $e) {
-			throw new VBX_IncomingNumberException($e->getMessage());
+			$msg = 'Unable to fetch Numbers: ';
+			switch ($e->getCode())
+			{
+				case 20003:
+					$msg .= 'Authentication Failed.';
+					break;
+				default:
+					$msg .= $e->getMessage();
+			}
+			throw new VBX_IncomingNumberException($msg, $e->getCode());
 		}
 		
 		$ci = &get_instance();
-		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
-		if ($enabled_sandbox_number && $retrieve_sandbox && $sandbox_number = $this->get_sandbox()) 
+		if ($enabled_sandbox_number && $sandbox_number = $this->get_sandbox())
 		{
 			$numbers[] = $sandbox_number;
 		}
 
-		if(function_exists('apc_store')) 
-		{
-			$success = apc_store($cachekey, serialize($numbers), self::CACHE_TIME_SEC);
-		}
+		$ci->api_cache->set('incoming-numbers', $numbers, __CLASS__, $ci->tenant->id);
 
-		return $numbers;
-	}
-	
-	public function get_available_countries()
-	{
-		if (function_exists('apc_fetch'))
+		if (!$retrieve_sandbox || !$enabled_sandbox_number)
 		{
-			$success = FALSE;
-			$data = apc_fetch($this->cache_key.'countries', $success);
-			if ($data AND $success)
-			{
-				$countries = @unserialize($data);
-				if (is_array($countries))
-				{
-					return $countries;
+			foreach ($cache as $key => $item) {
+				if ($item->id == 'Sandbox') {
+					unset($cache[$key]);
 				}
 			}
 		}
 		
-		$countries = array();
+		return $numbers;
+	}
+	
+	public function get_available_countries()
+	{	
 		$ci =& get_instance();
+		if ($cache = $ci->api_cache->get('countries', __CLASS__, $ci->tenant->id))
+		{
+			return $cache;
+		}
+
+		$countries = array();		
 		$ci->config->load('countrycodes');
 		
 		try {
@@ -176,30 +173,10 @@ class VBX_Incoming_numbers extends Model
 			throw new VBX_IncomingNumberException($e->getMessage());
 		}
 
-		ksort($countries);
-
-		if (function_exists('apc_store'))
-		{
-			apc_store($this->cache_key.'countries', serialize($countries));
-		}
+		ksort($countries);	
+		$ci->api_cache->set('countries', $countries, __CLASS__, $ci->tenant->id);
 
 		return $countries;
-	}
-
-	private function clear_cache()
-	{
-		if(function_exists('apc_delete'))
-		{
-			apc_delete($this->cache_key.'numbers');
-			apc_delete($this->cache_key.'numbers1');
-			apc_delete($this->cache_key.'numbers0');
-			apc_delete($this->cache_key.'sandbox');
-			apc_delete($this->cache_key.'sandbox1');
-			apc_delete($this->cache_key.'sandbox0');
-			return TRUE;
-		}
-
-		return FALSE;
 	}
 
 	private function parseIncomingPhoneNumber($item)
@@ -209,6 +186,7 @@ class VBX_Incoming_numbers extends Model
 		$num->id = $item->sid ? $item->sid : 'Sandbox';
 		$num->name = $item->friendly_name;
 		$num->phone = format_phone($item->phone_number);
+		$num->phone_number = $item->phone_number;
 		$num->pin = $item->pin ? $item->pin : null;
 		$num->sandbox = $item->pin ? true : false;
 		$num->url = $item->voice_url;
@@ -227,8 +205,7 @@ class VBX_Incoming_numbers extends Model
 		$num->installed = ($base_pos !== FALSE);
 
 		$matches = array();
-
-		if (!preg_match('/\/(voice|sms)\/(\d+)$/', $num->url, $matches) == 0)
+		if ($num->installed && preg_match('/\/(voice|sms)\/(\d+)$/', $num->url, $matches) > 0)
 		{
 			$num->flow_id = intval($matches[2]);
 		}
@@ -308,9 +285,9 @@ class VBX_Incoming_numbers extends Model
 		
 		try {
 			$account = OpenVBX::getAccount();
-			// purchase tollfree, uses AvailablePhoneNumbers to search first.
 			if(!$is_local) 
 			{
+				// toll-free
 				$numbers = $account->available_phone_numbers
 													->getTollFree($country)
 													->getList();
@@ -327,6 +304,7 @@ class VBX_Incoming_numbers extends Model
 			}
 			else 
 			{ 
+				// local
 				$search_params = array();
 				if (!empty($area_code))
 				{
@@ -386,4 +364,45 @@ class VBX_Incoming_numbers extends Model
 		return TRUE;
 	}
 
+	protected function clear_cache()
+	{
+		$ci =& get_instance();
+		$ci->api_cache->invalidate(__CLASS__, $ci->tenant->id);
+	}
+	
+	public static function get($params)
+	{
+		if (empty($params['number_sid']) && empty($params['phone_number']))
+		{
+			return false;
+		}
+		
+		$vbx_incoming_numbers = new self;
+		$numbers = $vbx_incoming_numbers->get_numbers();
+		$incoming_number = false;
+		
+		if (!empty($numbers))
+		{
+			foreach ($numbers as $number)
+			{
+				switch (true)
+				{
+					case !empty($params['number_sid']):
+						if ($number->id == $params['number_sid'])
+						{
+							$incoming_number = $number;
+						}
+						break;
+					case !empty($params['phone_number']):
+						if ($number->phone_number == $params['phone_number'])
+						{
+							$incoming_number = $number;
+						}
+						break;
+				}				
+			}
+		}
+		
+		return $incoming_number;
+	}
 }

@@ -71,49 +71,49 @@
     margin: 0 5px 0 0;
 }
 
-#phone-numbers-table .number-row .incoming-number-phone,
-#phone-numbers-table .number-row .incoming-number-name {
+.phone-numbers-table .number-row .incoming-number-phone,
+.phone-numbers-table .number-row .incoming-number-name {
 /*    width: 150px;*/
 }
 
-#phone-numbers-table .sandbox-row .sandbox-label,
-#phone-numbers-table .number-label {
+.phone-numbers-table .sandbox-row .sandbox-label,
+.phone-numbers-table .number-label {
     font-weight: bolder;
 	float: left;
 	width: 100%;
 	text-transform: uppercase;
 }
 
-#phone-numbers-table .sandbox-row td {
+.phone-numbers-table .sandbox-row td {
     padding-top: 10px;
     width: 150px;
     background-color: #FFF;
 }
 
-#phone-numbers-table .incoming-number-caps {
+.phone-numbers-table .incoming-number-caps {
 	width: 150px;
 }
-#phone-numbers-table .incoming-number-delete {
+.phone-numbers-table .incoming-number-delete {
 	width: 50px;
 }
 
-#phone-numbers-table .option-selected,
-#phone-numbers-table select {
+.phone-numbers-table .option-selected,
+.phone-numbers-table select {
 	display: block;
 	float: left;
 }
 
-#phone-numbers-table .option-selected {
+.phone-numbers-table .option-selected {
 	margin-top: 3px;
 	cursor: pointer;
 }
 
-#phone-numbers-table select {
+.phone-numbers-table select {
 	padding: 3px 2px;
 }
 
-#phone-numbers-table .cancel,
-#phone-numbers-table .flow {
+.phone-numbers-table .cancel,
+.phone-numbers-table .flow {
 	float: left;
 	margin-left: 10px;
 	cursor: pointer;
@@ -176,6 +176,14 @@
     margin-right: 15px;
 }
 
+#dlg_details ul {
+	margin-left: 15px;
+}
+#dlg_details ul li {
+	list-style: disc outside;
+	margin-bottom: 5px;
+}
+
 #completed-order p {
 	text-align: center;
 }
@@ -199,8 +207,10 @@
 	text-decoration: none;
 	text-align: center;
 	background-color: #4B9727;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
 }
 
 #completed-order .link-button img {
@@ -244,7 +254,6 @@
 	-webkit-border-radius: 4px; /* Saf3+, Chrome */
 	-khtml-border-radius: 4px; /* Konqueror */
 	border-radius: 4px; /* Standard. IE9 */
-
 	-webkit-background-clip: padding-box;
 	overflow: auto;
 }
@@ -456,6 +465,8 @@
     list-style: none;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
     background: #666;
     color: #FFF;
     padding: 8px 10px;
@@ -510,6 +521,8 @@
     border: 1px solid #000;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
 	overflow: auto;
 }
 
@@ -523,6 +536,8 @@
     border: 1px solid #333;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
     overflow: hidden;
 }
 
@@ -581,8 +596,10 @@
 	text-transform: uppercase;
 	background-color: #F0F0F0;
 	border: 1px dashed #999;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
 }
 
 #flows-container .flows-list {
@@ -590,8 +607,10 @@
     padding: 10px;
 	background-color: #E1E1E1;
 	border: 1px solid #999;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
 }
 
 #flows-container .flow {
@@ -602,6 +621,8 @@
     border: 1px solid #777;
     -moz-border-radius: 4px;
     -webkit-border-radius: 4px;
+	-khtml-border-radius: 4px;
+	border-radius: 4px;
 	cursor: move;
 }
 
@@ -707,7 +728,7 @@
 }
 
 /* Multi-Column: http://www.quirksmode.org/css/multicolumn.html */
-/*
+/* not yet ready for prime time
 .two-col {
 	-moz-column-count: 2;
     -moz-column-gap: 20px;

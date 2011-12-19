@@ -202,7 +202,7 @@ class Details extends User_Controller
 				
 				if($assigned)
 				{
-					$assignee = $this->vbx_user->get_user($assigned);
+					$assignee = VBX_User::get($assigned);
 				}
 			}
 
@@ -312,7 +312,8 @@ class Details extends User_Controller
 		$summary = $message->content_text;
 		$this->load->model('vbx_user');
 		$annotations = array();
-		$users = $this->vbx_user->get_active_users();
+		// $users = $this->vbx_user->get_active_users();
+		$users = VBX_User::search(array('is_active' => 1));
 		$active_users = array();
 		foreach($users as $active_user)
 		{
@@ -339,8 +340,8 @@ class Details extends User_Controller
 			 'unread' => ($message->status == 'new')? true : false,
 			 'recording_url' => preg_replace('/http:\/\//', 'https://', $message->content_url),
 			 'recording_length' => format_player_time($message->size),
-			 'received_time' => date('c', strtotime($message->created)),
-			 'last_updated' => date('c', strtotime($message->updated)),
+			 'received_time' => date('Y-M-d\TH:i:s+00:00', strtotime($message->created)),
+			 'last_updated' => date('Y-M-d\TH:i:s+00:00', strtotime($message->updated)),
 			 'called' => format_phone($message->called),
 			 'caller' => format_phone($message->caller),
 			 'original_called' => $message->called,

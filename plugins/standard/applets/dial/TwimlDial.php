@@ -63,8 +63,10 @@ class TwimlDial {
 		$this->dial_whom_instance = get_class($this->dial_whom_user_or_group);
 		
 		if (count($settings)) {
-			foreach ($settings as $setting => $value) {
-				if (isset($this->$setting)) {
+			foreach ($settings as $setting => $value) 
+			{
+				if (isset($this->$setting)) 
+				{
 					$this->$setting = $value;
 				}
 			}
@@ -89,6 +91,8 @@ class TwimlDial {
 	
 	public function callOpts($params) 
 	{
+		$opts = array();
+		
 		if ($params['whisper_to']) 
 		{
 			$opts['url'] = site_url('twiml/whisper?name='.urlencode($params['whisper_to']));
@@ -320,7 +324,8 @@ class TwimlDial {
 							$_REQUEST['From'],
 							$_REQUEST['To'],
 							$_REQUEST['RecordingUrl'],
-							$_REQUEST['RecordingDuration']
+							$_REQUEST['RecordingDuration'],
+							($this->transcribe == false) // if not transcribing then notify now
 						);
 		$this->response->say('Your message has been recorded. Goodbye.');
 		$this->hangup();

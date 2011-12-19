@@ -9,7 +9,9 @@
 				*/ 
 			?>
 			<span class="user-name"><?php echo $user->first_name.' '.$user->last_name; ?></span>
-			<button class="user-dial-button"<?php echo ($dial_disabled ? ' disabled="disabled"' : ''); ?>><span class="button-text">Call</span></button>
+			<button class="user-dial-button"<?php 
+				echo (isset($dial_disabled) && $dial_disabled ? ' disabled="disabled"' : ''); 
+			?>><span class="button-text">Call</span></button>
 			<input type="hidden" name="email" value="<?php echo $user->email; ?>" />
 		</li>
 	<?php endforeach; ?>

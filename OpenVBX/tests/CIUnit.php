@@ -239,7 +239,7 @@ function viewvars()
 
 //=== and off we go ===
 $CI = &set_controller();
-// $CI->load->library('fooStack/Spyc');
-// CIUnit::$spyc = &$CI->spyc;
+$CI->load->library('fooStack/Spyc');
+CIUnit::$spyc = &$CI->spyc;
 $CI->load->library('fooStack/Fixture');
 CIUnit::$fixture = &$CI->fixture;

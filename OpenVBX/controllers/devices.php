@@ -46,10 +46,8 @@ class Devices extends User_Controller {
 		$data = $this->init_view_data();
 		$user = VBX_user::get(array('id' => $this->user_id));
 		$data['user'] = $user;
-
-		$numbers = $this->vbx_device->get_by_user($this->user_id);
-		$data['numbers'] = $numbers;
-		$data['devices'] = $this->vbx_device->get_by_user($this->user_id);
+		
+		$data['numbers'] = $data['devices'] = $user->devices;
 		if(empty($data['devices']))
 		{
 			set_banner('devices',
@@ -94,48 +92,6 @@ class Devices extends User_Controller {
 			$this->data['error_edit'] = '';
 			$this->index();
 		}
-	}
-
-	public function password()
-	{
-		if (!$this->session->userdata('loggedin')) redirect('auth/login');
-
-		$user = VBX_user::get(array('id' => $this->user_id));
-
-		$old_pw = $this->input->post('old_pw');
-		$new_pw = $this->input->post('new_pw1');
-		$new_pw2 = $this->input->post('new_pw2');
-		$this->data['error'] = false;
-		$message = '';
-
-		if($user->password != VBX_User::salt_encrypt($old_pw))
-		{
-			$this->data['error'] = true;
-			$message = 'Password incorrect';
-		}
-		else if($new_pw != $new_pw2)
-		{
-			$this->data['error'] = true;
-			$message = 'Password mismatch';
-		}
-		else
-		{
-			$user->password = VBX_User::salt_encrypt($new_pw);
-			try
-			{
-				$user->save();
-				$message = 'Password changed';
-			}
-			catch(VBX_UserException $e)
-			{
-				$this->data['error'] = true;
-				$message = 'Unable to set password, please try again later.';
-				error_log($e->getMessage());
-			}
-		}
-		$this->data['message'] = $message;
-
-		echo json_encode($this->data);
 	}
 
 	public function number($key = 0)
@@ -314,7 +270,7 @@ class Devices extends User_Controller {
 		{
 			try
 			{
-				$this->vbx_device->delete($id, $this->user_id);
+				$number->delete();
 			}
 			catch(VBX_DeviceException $e)
 			{
