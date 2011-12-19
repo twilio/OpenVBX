@@ -96,7 +96,7 @@ OpenVBX requires the software listed below. It is all available for free and is 
 1. **Config directory writable:** The configuration directory must be writable by the user your webserver is running as for the OpenVBX installation to complete. The path to the configuration directory is `<webroot>/OpenVBX/config`. On unix systems you can adjust the permissions with the `chown` and `chmod` commands.
 1. **SimpleXML support:** OpenVBX requires SimpleXML. If you don't meet this requirement, install the SimpleXML module.
 1. **JSON support:** OpenVBX requires JSON. If you don't meet this requirement install the JSON module.
-1. **Upload directory writable:** The upload directory must be writable by the user your webserver is running as for the OpenVBX installation to complete. The path to the configuration directory is `<webroot>/OpenVBX/audio-uploads`. On unix systems you can adjust the permissions with the `chown` and `chmod` commands.
+1. **Upload directory writable:** The upload directory must be writable by the user your webserver is running as for the OpenVBX installation to complete. The path to the configuration directory is `<webroot>/audio-uploads`. On unix systems you can adjust the permissions with the `chown` and `chmod` commands.
 1. **.htaccess File:** OpenVBX works best with Mod Rewrite enabled. If you've uploaded the contents of OpenVBX using an FTP application then its possible that the .htaccess file was ignored. If the .htaccess file is missing from your install copy the `htaccess_dist` file to `.htaccess` before beginning the install process. Some hosts do not run OpenVBX properly with Mod Rewrite disabled.
 
 

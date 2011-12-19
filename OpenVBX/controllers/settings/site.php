@@ -112,7 +112,7 @@ class Site extends User_Controller
 
 		$data = $this->init_view_data();
 		$current_settings = $this->get_current_settings();
-				
+
 		// insert the server's default time zone in the event none is saved
 		if (empty($current_settings['server_time_zone']))
 		{

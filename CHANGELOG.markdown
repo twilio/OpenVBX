@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## Next
+## OpenVBX 1.2
 
 - redesign numbers screen to separate assigned, unassigned, and numbers in-use by other systems
 - change user edit screens to always use dedicated page instead of a popup
@@ -38,6 +38,7 @@
 - general html & css cleanup
 - fix for servers running on non-standard ports so that manually changing the `$config['cooke_path']` is no longer required to be able to log in
 - change .htaccess file's `mod_deflate` directives to exclude SWF files
+- CSS updates to bring modern versions of IE visually up to par with other browsers
 
 
 ## OpenVBX 1.1.3

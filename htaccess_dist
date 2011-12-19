@@ -34,7 +34,7 @@
 	RewriteEngine ON
 
 	# Set this if you have your installation in a subdirectory
-	# RewriteBase /subdir
+	# RewriteBase /openvbx
 
 	# By default always use SSL
 	#RewriteCond %{HTTPS} !=on

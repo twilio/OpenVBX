@@ -2,13 +2,13 @@
 
 function runUpdate_65()
 {
-	runUpdate_64_password_update();
+	runUpdate_65_password_update();
 	
 	$ci =& get_instance();
 	$ci->vbx_settings->set('schema-version', '65', 1);
 }
 
-function runUpdate_64_password_update()
+function runUpdate_65_password_update()
 {
 	$ci =& get_instance();
 	$ci->load->dbforge();
@@ -23,7 +23,7 @@ function runUpdate_64_password_update()
 	));	
 }
 
-function runUpdate_64_add_dial_timeout()
+function runUpdate_65_add_dial_timeout()
 {
 	$ci =& get_instance();
 	$tenants = $ci->db
@@ -34,7 +34,7 @@ function runUpdate_64_add_dial_timeout()
 	{
 		foreach ($tenants as $tenant)
 		{
-			$ci->vbx_settings->set('dial_timeout', 15, $tenant->id);
+			$ci->vbx_settings->add('dial_timeout', 15, $tenant->id);
 		}
 	}
 }
