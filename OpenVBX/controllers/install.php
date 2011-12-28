@@ -500,7 +500,8 @@ class Install extends Controller {
 	 * @param array $settings 
 	 * @return string Application Sid
 	 */
-	private function get_application($settings) {
+	private function get_application($settings) 
+	{
 		try
 		{
 			$app_token = md5($_SERVER['REQUEST_URI']);
@@ -751,7 +752,7 @@ class Install extends Controller {
 		$ci->load->model('vbx_user');
 		$json = array(
 			'success' => true, 
-			'step' => 2, 
+			'step' => 5, 
 			'message' => 'success'
 		);
 
@@ -809,9 +810,7 @@ class Install extends Controller {
 	 */
 	protected function pre_test_htaccess()
 	{
-		if (!is_file(APPPATH.'../.htaccess') 
-			&& is_writable(APPPATH.'../') 
-			&& is_file(APPPATH.'../htaccess_dist'))
+		if (!is_file(APPPATH.'../.htaccess') && is_writable(APPPATH.'../') && is_file(APPPATH.'../htaccess_dist'))
 		{
 			$message = 'Trying to copy `htaccess_dist` to `.htaccess`... ';
 			$result = @copy(APPPATH.'../htaccess_dist', APPPATH.'../.htaccess');
