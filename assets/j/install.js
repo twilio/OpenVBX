@@ -109,7 +109,7 @@ $(document).ready(function() {
 			success : function(r) {
 				_installSuccess = r.success;
 				if (!r.success) {
-					_this.Steps.triggerError(r.message);
+					_this.Steps.triggerError(r.error);
 				}
 			},
 			error : function(XHR, textStatus, errorThrown) {

@@ -6,7 +6,7 @@
 	- `return-path` won't always override depending upon the server's sendmail configuration
 - fix cache table keys to fix rare condition where mysql would reserve key-name lengths for utf8 making the resulting key length reservation more than 1000 characters
 - add minification config override for servers that don't define a proper server document root
-
+- fix install setup error return to properly display the error
 
 ## OpenVBX 1.2
 
