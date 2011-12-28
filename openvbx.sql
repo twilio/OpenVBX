@@ -258,7 +258,7 @@ CREATE TABLE `cache` (
   `group` varchar(255) NOT NULL default '',
   `value` text NOT NULL,
   `tenant_id` int(11) NOT NULL,
-  PRIMARY KEY  (`key(80)`,`group(80)`,`tenant_id`)
+  PRIMARY KEY  (`key`(80),`group`(80),`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE settings ADD FOREIGN KEY(tenant_id) REFERENCES tenants(id);
