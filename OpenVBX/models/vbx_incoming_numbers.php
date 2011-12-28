@@ -243,7 +243,9 @@ class VBX_Incoming_numbers extends Model
 					'VoiceFallbackMethod' => 'GET',
 					'SmsFallbackMethod' => 'GET',
 					'SmsMethod' => 'POST',
-					'ApiVersion' => '2010-04-01'
+					'ApiVersion' => '2010-04-01',
+					'VoiceApplicationSid' => '',
+					'SmsApplicationSid' => ''
 				));
 		} 
 		catch (Exception $e) 

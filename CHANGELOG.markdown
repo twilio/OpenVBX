@@ -1,5 +1,10 @@
 # OpenVBX Change Log
 
+## Next
+
+- fix number assignment to flow to null ApplicationSid fields as they always trump url values and can prevent a number assignment from taking hold
+
+
 ## OpenVBX 1.2.1
 
 - update outgoing email to properly set `user-agent`, `reply-to` and `return-path` for sent emails
