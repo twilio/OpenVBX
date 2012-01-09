@@ -32,10 +32,14 @@ class PluginData
 
 	public static function startswith($key, $default = null)
 	{
-		$results = VBX_Plugin_Store::search(array('key__like_after' => $key,
-												  'plugin_id' => self::$plugin_id));
+		$results = VBX_Plugin_Store::search(array(
+			'key__like_after' => $key,
+			'plugin_id' => self::$plugin_id
+		));
 		if(!$results)
+		{
 			return $default;
+		}
 		
 		foreach($results as $result)
 		{
@@ -54,17 +58,20 @@ class PluginData
 		$ci = &get_instance();
 		try
 		{
-			$store = VBX_Plugin_Store::get(array('key' => $key,
-												 'plugin_id' => self::$plugin_id));
+			$store = VBX_Plugin_Store::get(array(
+				'key' => $key,
+				'plugin_id' => self::$plugin_id
+			));
 			if(!$store)
+			{
 				return $default;
-			
+			}
 			return json_decode($store->value);
 		}
 		catch(VBX_Plugin_StoreException $e)
 		{
 			error_log($e->getMessage());
-			throw new PluginDataException("Failed to access plugin store: ". $e->getMessage());
+			throw new PluginDataException("Failed to access plugin store: ".$e->getMessage());
 		}
 	}
 
@@ -78,8 +85,10 @@ class PluginData
 		$ci = &get_instance();
 		try
 		{
-			$store = VBX_Plugin_Store::get(array('key' => $key,
-												 'plugin_id' => self::$plugin_id));
+			$store = VBX_Plugin_Store::get(array(
+				'key' => $key,
+				'plugin_id' => self::$plugin_id
+			));
 			if(!$store)
 			{
 				$store = new VBX_Plugin_Store();
@@ -97,8 +106,10 @@ class PluginData
 		catch(VBX_Plugin_StoreException $e)
 		{
 			error_log($e->getMessage());
-			error_log("VBX_Plugin_StoreException while setting values for $key => ". var_export($value, true));
-			throw new PluginDataException("Failed to set values in plugin store: ". $e->getMessage());
+			error_log("VBX_Plugin_StoreException while setting values for $key => ". 
+							var_export($value, true));
+			throw new PluginDataException("Failed to set values in plugin store: ". 
+							$e->getMessage());
 		}
 	}
 
@@ -106,15 +117,19 @@ class PluginData
 	{
 		try
 		{
-			$store = VBX_Plugin_Store::get(array('key' => $key,
-												 'plugin_id' => self::$plugin_id));
+			$store = VBX_Plugin_Store::get(array(
+				'key' => $key,
+				'plugin_id' => self::$plugin_id
+			));
 			$store->delete();
 		}
 		catch(VBX_Plugin_StoreException $e)
 		{
 			error_log($e->getMessage());
-			error_log("VBX_Plugin_StoreException while deleting	 $key => ". var_export($value, true));
-			throw new PluginDataException("Failed to set values in plugin store: ". $e->getMessage());
+			error_log("VBX_Plugin_StoreException while deleting	 $key => ". 
+						var_export($value, true));
+			throw new PluginDataException("Failed to set values in plugin store: ". 
+						$e->getMessage());
 		}
 	}
 
@@ -123,13 +138,16 @@ class PluginData
 	{
 		try
 		{
-			return VBX_Plugin_Store::search(array('plugin_id' => self::$plugin_id));
+			return VBX_Plugin_Store::search(array(
+				'plugin_id' => self::$plugin_id
+			));
 		}
 		catch(VBX_Plugin_StoreException $e)
 		{
 			error_log($e->getMessage());
 			error_log("VBX_Plugin_StoreException while retrieving all keys");
-			throw new PluginDataException("Failed to set values in plugin store: ". $e->getMessage());
+			throw new PluginDataException("Failed to set values in plugin store: ". 
+						$e->getMessage());
 		}
 	}
 
@@ -145,8 +163,9 @@ class PluginData
 		$result = $ci->db->query($sql);
 		
 		if(is_object($result))
+		{
 			return $result->result_array();
-
+		}
 		return;
 	}
 	

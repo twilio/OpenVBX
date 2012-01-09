@@ -90,7 +90,7 @@ class MY_Model extends Model
 		$ci = &get_instance();		
 		$tenant_id = $ci->tenant->id;
 
-		if (self::$caching)
+		if ($class::$caching)
 		{
 			// Check cache first
 			$cached_objects_key = $class.'-'.md5(serialize($search_options).
@@ -216,7 +216,7 @@ class MY_Model extends Model
 			}
 				
 			// cache results
-			if (self::$caching)
+			if ($class::$caching)
 			{
 				$cached_object_ids = array();
 				foreach ($results as $result)
@@ -248,11 +248,7 @@ class MY_Model extends Model
 				$ci = &get_instance();
 				if($value instanceof MY_ModelLiteral)
 				{
-					if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
-						$ci->db->set($key, $value, false);
-					} else {
-						$ci->db->set($key, $value->__toString(), false);
-					}
+					$ci->db->set($key, $value, false);
 				}
 				else
 				{
@@ -296,7 +292,7 @@ class MY_Model extends Model
 		}
 		
 		$classname = get_class($this);
-		if (self::$caching)
+		if ($classname::$caching)
 		{
 			$ci->cache->invalidate($classname, $this->tenant_id);
 		}
@@ -332,7 +328,7 @@ class MY_Model extends Model
 		$this->id = $ci->db->insert_id();
 		
 		$classname = get_class($this);
-		if (self::$caching)
+		if ($classname::$caching)
 		{
 			$ci->cache->invalidate($classname, $this->tenant_id);
 		}
@@ -370,7 +366,7 @@ class MY_Model extends Model
 					$ci->db->delete($this->table);
 					
 					$classname = get_class($this);
-					if (self::$caching)
+					if ($classname::$caching)
 					{
 						$ci->cache->delete($this->id, $classname, $this->tenant_id);
 					}
@@ -386,7 +382,7 @@ class MY_Model extends Model
 			 ->delete($this->table);
 			
 		$classname = get_class($this);
-		if (self::$caching)
+		if ($classname::$caching)
 		{
 			$ci->cache->invalidate($classname, $this->tenant_id);
 		}
@@ -424,7 +420,7 @@ class MY_Model extends Model
 		
 		$ci =& get_instance();
 		$classname = get_class($this);
-		if (self::$caching)
+		if ($classname::$caching)
 		{
 			$ci->cache->invalidate($classname, $this->tenant_id);
 		}
