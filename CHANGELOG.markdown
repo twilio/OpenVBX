@@ -1,5 +1,13 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.2
+
+- fix number assignment to flow to null ApplicationSid fields as they always trump url values and can prevent a number assignment from taking hold
+- fix memcache cache generation method to properly query the objects cache generation
+- fix `VBX_Plugin_Store` to return a generated `id` field when requested. The PluginStore database table doesn't have a primary key of `id` like other cached database data so we need to generate one on a per request basis to enable proper caching of this data.
+- removed a check for php versions < 5.2 in MY_Model
+
+
 ## OpenVBX 1.2.1
 
 - update outgoing email to properly set `user-agent`, `reply-to` and `return-path` for sent emails

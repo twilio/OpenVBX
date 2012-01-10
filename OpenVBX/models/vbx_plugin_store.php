@@ -27,11 +27,13 @@ class VBX_Plugin_Store extends MY_Model
 	public $table = 'plugin_store';
 
 	static public $joins = array();
-	static public $select = array('plugin_store.`key`, plugin_store.`value`, plugin_store.`plugin_id`');
+	static public $select = array(
+		'plugin_store.`key`, plugin_store.`value`, plugin_store.`plugin_id`'
+	);
 
-	var $error_prefix = '';
-	var $error_suffix = '';
-	
+	public $error_prefix = '';
+	public $error_suffix = '';
+		
 	public $fields = array(
 						'key', 
 						'value', 
@@ -39,9 +41,9 @@ class VBX_Plugin_Store extends MY_Model
 					);
 					
 	public $natural_keys = array(
-							'key', 
-							'plugin_id'
-						);
+								'key', 
+								'plugin_id'
+							);
 	
 	function __construct($object = null)
 	{
@@ -84,4 +86,26 @@ class VBX_Plugin_Store extends MY_Model
 		return $values;
 	}
 
+	public function __get($name)
+	{
+		if ($name == 'id')
+		{
+			return $this->_id();
+		}
+		else {
+			return parent::__get($name);
+		}
+	}
+	
+	/**
+	 * This is a haxie to get caching to work properly with PluginData.
+	 * Caching stores items by ID but PluginData objects have a compound
+	 * id, not a unique auto-increment id like everything else.
+	 *
+	 * @return string
+	 */
+	protected function _id()
+	{
+		return $this->values['key'].$this->values['plugin_id'];
+	}
 }

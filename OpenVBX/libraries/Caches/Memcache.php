@@ -73,7 +73,8 @@ class OpenVBX_Cache_Memcache extends OpenVBX_Cache_Abstract
 	private function _generationalize($group, $tenant_id)
 	{
 		$_group = $this->_tenantize_group($group, $tenant_id);
-		if (!($generation = $this->_cache->get($_group, $this->flags)))
+		$_ggroup = $this->_generation_keyname($group, $tenant_id);
+		if (!($generation = $this->_cache->get($_ggroup, $this->flags)))
 		{
 			$generation = 0;
 		}
