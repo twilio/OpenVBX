@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## Next
+## OpenVBX 1.2.2
 
 - fix number assignment to flow to null ApplicationSid fields as they always trump url values and can prevent a number assignment from taking hold
 - fix memcache cache generation method to properly query the objects cache generation
