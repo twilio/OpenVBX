@@ -22,9 +22,7 @@
 class VBX_SettingsException extends Exception {}
 
 class VBX_Settings extends Model
-{
-	private $caching = true;
-	
+{	
 	protected $settings_table = 'settings';
 	protected $tenants_table = 'tenants';
 

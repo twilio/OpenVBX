@@ -38,7 +38,7 @@ class MY_ModelLiteral
 
 class MY_Model extends Model
 {
-	protected static $caching = true;
+	public static $caching = true;
 	protected static $__CLASS__ = __CLASS__;
 
 	public $table = '';
@@ -89,8 +89,8 @@ class MY_Model extends Model
 	{
 		$ci = &get_instance();		
 		$tenant_id = $ci->tenant->id;
-
-		if ($class::$caching)
+		
+		if (self::_caching($class))
 		{
 			// Check cache first
 			$cached_objects_key = $class.'-'.md5(serialize($search_options).
@@ -216,7 +216,7 @@ class MY_Model extends Model
 			}
 				
 			// cache results
-			if ($class::$caching)
+			if (self::_caching($class))
 			{
 				$cached_object_ids = array();
 				foreach ($results as $result)
@@ -292,7 +292,7 @@ class MY_Model extends Model
 		}
 		
 		$classname = get_class($this);
-		if ($classname::$caching)
+		if (self::_caching($classname))
 		{
 			$ci->cache->invalidate($classname, $this->tenant_id);
 		}
@@ -303,8 +303,7 @@ class MY_Model extends Model
 	{
 		$ci = &get_instance();
 		
-		if(isset($this->unique)
-		   && !empty($this->unique))
+		if(isset($this->unique) && !empty($this->unique))
 		{
 			$ci->db->from("{$this->table}");
 			
@@ -321,14 +320,13 @@ class MY_Model extends Model
 			}
 		}
 		
-		   
 		$this->set_fields($params);
 		$ci->db
 			 ->insert($this->table);
 		$this->id = $ci->db->insert_id();
 		
 		$classname = get_class($this);
-		if ($classname::$caching)
+		if (self::_caching($classname))
 		{
 			$ci->cache->invalidate($classname, $this->tenant_id);
 		}
@@ -366,7 +364,7 @@ class MY_Model extends Model
 					$ci->db->delete($this->table);
 					
 					$classname = get_class($this);
-					if ($classname::$caching)
+					if (self::_caching($classname))
 					{
 						$ci->cache->delete($this->id, $classname, $this->tenant_id);
 					}
@@ -382,7 +380,7 @@ class MY_Model extends Model
 			 ->delete($this->table);
 			
 		$classname = get_class($this);
-		if ($classname::$caching)
+		if (self::_caching($classname))
 		{
 			$ci->cache->invalidate($classname, $this->tenant_id);
 		}
@@ -420,7 +418,7 @@ class MY_Model extends Model
 		
 		$ci =& get_instance();
 		$classname = get_class($this);
-		if ($classname::$caching)
+		if (self::_caching($classname))
 		{
 			$ci->cache->invalidate($classname, $this->tenant_id);
 		}
@@ -457,9 +455,23 @@ class MY_Model extends Model
 			{
 				$obj->$key = $value;
 			}
-
 		}
 
 		return $obj;
-   }
+	}
+   
+	/**
+	 * An unfortunate hack for scope resolution in PHP versions less than 5.3
+	 * We have to always use the hack because PHP 5.2 will complain about $class::$var
+	 * even if its hidden via an if statement
+	 * 
+	 * @return bool
+	 */
+	protected function _caching($class)
+	{
+		$_class = new ReflectionClass($class);
+		$caching = $_class->getStaticPropertyValue('caching', self::$caching);
+
+		return $caching;
+	}
 }
