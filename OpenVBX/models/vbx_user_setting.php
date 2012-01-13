@@ -8,7 +8,7 @@ class VBX_User_SettingException extends Exception {}
  * @todo - enable caching based on key?
  */
 class VBX_User_Setting extends MY_Model {	
-	protected static $caching = false;
+	public static $caching = false;
 	protected static $__CLASS__ = __CLASS__;
 	public $table = 'user_settings';
 

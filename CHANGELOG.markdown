@@ -1,5 +1,10 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.3
+
+- fix scoping bug on PHP 5.2 based servers that resulted from previous PluginData cache fix
+
+
 ## OpenVBX 1.2.2
 
 - fix number assignment to flow to null ApplicationSid fields as they always trump url values and can prevent a number assignment from taking hold
