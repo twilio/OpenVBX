@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## Next
+## OpenVBX 1.2.3
 
 - fix scoping bug on PHP 5.2 based servers that resulted from previous PluginData cache fix
 
