@@ -30,7 +30,7 @@ $config['base_url']= "http".((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 
 | Used for asset url versioning.
 |
 */
-$config['site_rev'] = 1018;
+$config['site_rev'] = 1019;
 
 /*
 |--------------------------------------------------------------------------
