@@ -60,6 +60,10 @@ class Connect extends MY_Controller
 				}
 			}
 		}
+		else
+		{
+			log_message('error', 'Could not validate returning user: '.$user_id);
+		}
 
 		$this->returning_user_fail();
 	}
@@ -124,11 +128,12 @@ class Connect extends MY_Controller
 		// jump through hoops to get around the Tenantization
 		$userdata = $this->db->get_where('users', array('id' => $user_id))->result();
 
-		if (!empty($userdata[0])) {
+		if (!empty($userdata[0])) 
+		{
 			$actual_signature = $this->session->userdata('signature');
 			if (VBX_User::check_signature($userdata[0], $actual_signature)) 
 			{
-				return $user;
+				return $userdata[0];
 			}
 			else
 			{

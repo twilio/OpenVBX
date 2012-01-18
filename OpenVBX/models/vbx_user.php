@@ -283,9 +283,9 @@ class VBX_User extends MY_Model {
 		return $login;
 	}
 	
-	public static function check_signature($user_id, $signature)
+	public static function check_signature($user, $signature)
 	{	
-		return ($signature == self::signature($user_id));
+		return ($signature == self::signature($user));
 	}
 
 	/**
@@ -582,10 +582,14 @@ class VBX_User extends MY_Model {
 		return parent::save($force_update);
 	}
 
-	public static function signature($user_id)
+	public static function signature($user)
 	{
-		$user = VBX_User::get($user_id);
-		if(!$user)
+		if (is_numeric($user))
+		{
+			$user = VBX_User::get($user);
+		}
+				
+		if(!$user || !is_object($user))
 		{
 			return null;
 		}
