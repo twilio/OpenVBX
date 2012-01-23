@@ -34,6 +34,7 @@
 
 	$dial_whom_selector = AppletInstance::getValue('dial-whom-selector', 'user-or-group');
 	$no_answer_action = AppletInstance::getValue('no-answer-action', 'voicemail');
+    $whisper = AppletInstance::getValue('dial-whisper', true);
 
 ?>
 <div class="vbx-applet dial-applet">
@@ -75,6 +76,29 @@
 <?php endforeach; ?>
 			</select>
 		</fieldset>
+	</div>
+
+    <br />
+	<h2>Whisper</h2>
+	<div class="radio-table">
+		<table>
+			<tr class="radio-table-row first <?php echo ($whisper) ? 'on' : 'off' ?>">
+				<td class="radio-cell">
+					<input type="radio" class='dial-whisper-radio' name="dial-whisper" value="1" <?php echo ($whisper) ? 'checked="checked"' : '' ?> />
+				</td>
+				<td class="content-cell">
+					<h4>Announce the caller</h4>
+				</td>
+			</tr>
+			<tr class="radio-table-row last <?php echo (!$whisper) ? 'on' : 'off' ?>">
+				<td class="radio-cell">
+					<input type="radio" class='dial-whisper-radio' name="dial-whisper" value="0" <?php echo (!$whisper) ? 'checked="checked"' : '' ?> />
+				</td>
+				<td class="content-cell">
+					<h4>Connect without announcing</h4>
+				</td>
+			</tr>
+		</table>
 	</div>
 
 	<br />
