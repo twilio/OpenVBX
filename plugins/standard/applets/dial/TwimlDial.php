@@ -54,6 +54,7 @@ class TwimlDial {
 		$this->dial_whom_selector = AppletInstance::getValue('dial-whom-selector');
 		$this->dial_whom_user_or_group = AppletInstance::getUserGroupPickerValue('dial-whom-user-or-group');
 		$this->dial_whom_number = AppletInstance::getValue('dial-whom-number');
+        $this->dial_whisper = AppletInstance::getValue('dial-whisper', true);
 
 		$this->no_answer_action = AppletInstance::getValue('no-answer-action', 'hangup');
 		$this->no_answer_group_voicemail = AppletInstance::getAudioSpeechPickerValue('no-answer-group-voicemail');
@@ -93,7 +94,7 @@ class TwimlDial {
 	{
 		$opts = array();
 		
-		if ($params['whisper_to']) 
+		if ($params['whisper_to'] AND $this->dial_whisper) 
 		{
 			$opts['url'] = site_url('twiml/whisper?name='.urlencode($params['whisper_to']));
 		}
