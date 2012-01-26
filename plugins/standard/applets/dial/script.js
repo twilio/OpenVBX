@@ -42,7 +42,7 @@ $(document).ready(function(){
 	});
 
 	// Highlights the region for radio-tables
-	$(".dial-applet input.no-answer-action-radio,.dial-applet input.dial-whom-selector-radio", app).live('click', function(event) {
+	$(".dial-applet input.no-answer-action-radio,.dial-applet input.dial-whom-selector-radio,.dial-applet input.dial-whisper-radio", app).live('click', function(event) {
 		var tr = $(this).closest('tr');
 		$('tr', tr.closest('table')).each(function (index, element) {
 			// Set the others to off

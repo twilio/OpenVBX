@@ -1,5 +1,11 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.4
+
+- fix Connect app authorization return to properly authorize the returning user
+- merge pull request to make whisper on outbound dialing via the Dial applet optional
+
+
 ## OpenVBX 1.2.3
 
 - fix scoping bug on PHP 5.2 based servers that resulted from previous PluginData cache fix
