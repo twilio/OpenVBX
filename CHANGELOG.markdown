@@ -1,9 +1,9 @@
 # OpenVBX Change Log
 
-## Next
+## OpenVBX 1.2.4
 
 - fix Connect app authorization return to properly authorize the returning user
-- Make whisper on outbound dialing via the Dial applet optional
+- merge pull request to make whisper on outbound dialing via the Dial applet optional
 
 
 ## OpenVBX 1.2.3
