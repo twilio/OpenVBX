@@ -280,7 +280,8 @@ class Site extends User_Controller
 						$process_app = true;
 					}
 					
-					if ($name == 'connect_application_sid') {
+					if ($name == 'connect_application_sid') 
+                    {
 						$connect_app_sid = $value;
 						$process_connect_app = true;
 					}
@@ -315,7 +316,7 @@ class Site extends User_Controller
 				
 				$this->session->set_flashdata('error', 'Settings have been saved');
 			}
-			catch(SiteException $e) {
+			catch(Exception $e) {
 				$data['error'] = true;
 				switch($e->getCode()) 
 				{
@@ -391,7 +392,8 @@ class Site extends User_Controller
 
 		if (!empty($update_app))
 		{
-			if (empty($account)) {
+			if (empty($account)) 
+            {
 				$account = OpenVBX::getAccount();
 			}
 
@@ -414,7 +416,8 @@ class Site extends User_Controller
 
 	private function update_connect_app($connect_app_sid)
 	{
-		if (!empty($connect_app_sid) && $this->tenant->id == VBX_PARENT_TENANT) {
+		if (!empty($connect_app_sid) && $this->tenant->id == VBX_PARENT_TENANT) 
+        {
 			$account = OpenVBX::getAccount();
 			$connect_app = $account->connect_apps->get($connect_app_sid);
 		
@@ -429,15 +432,18 @@ class Site extends User_Controller
 			);
 		
 			$updated = false;
-			foreach ($required_settings as $key => $setting) {
+			foreach ($required_settings as $key => $setting) 
+            {
 				$app_key = Services_Twilio::decamelize($key);
-				if ($connect_app->$app_key != $setting) {
+				if ($connect_app->$app_key != $setting) 
+                {
 					$connect_app->$app_key = $setting;
 					$updated = true;
 				}
 			}
 		
-			if ($updated) {
+			if ($updated) 
+            {
 				$connect_app->update(array(
 					'FriendlyName' => $connect_app->friendly_name,
 					'Description' => $connect_app->description,
