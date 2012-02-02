@@ -1,5 +1,13 @@
 # OpenVBX Change Log
 
+## Next
+
+- add `is_numeric` to id check during model save since PHP likes to do weird intval conversions
+- fix log error message when looking for a controller when the base url is being loaded
+- fix error with tenant login when the tenant name was saved with capital letters in it
+- cleaned up license section of the Settings > About screen
+
+
 ## OpenVBX 1.2.4
 
 - fix Connect app authorization return to properly authorize the returning user

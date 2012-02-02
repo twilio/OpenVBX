@@ -27,7 +27,7 @@ class MY_URI extends CI_URI {
 		$ci = &get_instance();
 		if($ci->tenant && $ci->tenant->id > 1)
 		{
-			$uri = preg_replace('/^\/'.$ci->tenant->url_prefix.'/', '', $uri);
+			$uri = preg_replace('/^\/'.$ci->tenant->url_prefix.'/i', '', $uri);
 		}
 		return $uri;
 	}

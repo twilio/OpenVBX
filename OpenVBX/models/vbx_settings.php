@@ -101,12 +101,17 @@ class VBX_Settings extends Model
 				return $cache;
 			}
 		}
-		
+        
+        if (empty($url_prefix))
+        {
+            $url_prefix = '';
+        }
+        
 		$query = $ci->db
 			 ->from($this->tenants_table)
-			 ->where('url_prefix', strtolower($url_prefix))
+			 ->where('url_prefix LIKE', $url_prefix)
 			 ->get();
-			
+        
 		if ($query) 
 		{
 			$tenant = $query->result();
@@ -121,7 +126,7 @@ class VBX_Settings extends Model
 				return $tenant[0];
 			}
 		}
-		
+        
 		return false;
 	}
 

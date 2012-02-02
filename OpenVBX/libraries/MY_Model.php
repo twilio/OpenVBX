@@ -336,7 +336,7 @@ class MY_Model extends Model
 	{
 		$ci = &get_instance();
 		
-		if(intval($this->id) < 1)
+		if(is_numeric($this->id) && intval($this->id) < 1)
 		{
 			if(!empty($this->natural_keys))
 			{

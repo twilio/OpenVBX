@@ -1,3 +1,9 @@
+pre {
+	font-family: consolas, menlo, monaco, "Courier New", courier, monospace;
+	line-height: 1.2em;
+	font-size: 11px;
+}
+
 /* Flows */
 
 .flows-blank {
@@ -725,6 +731,16 @@
 
 .activate-tenant input {
     margin-right: 2px;
+}
+
+/* Licenses */
+ul.licenses li {
+	margin: 5px 0;
+}
+ul.licenses li pre {
+	margin-top: 10px;
+	margin-left: 20px;
+	color: #333;
 }
 
 /* Multi-Column: http://www.quirksmode.org/css/multicolumn.html */

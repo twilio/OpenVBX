@@ -177,10 +177,11 @@ class MY_Router extends CI_Router
 		}
 
 		// Is the controller in a sub-folder?
-		if (is_dir(APPPATH.'controllers/'.$segments[0]))
+		$segment = (!empty($segments[0])) ? $segments[0] : null;
+		if (is_dir(APPPATH.'controllers/'.$segment))
 		{		
 			// Set the directory and remove it from the segment array
-			$this->set_directory($segments[0]);
+			$this->set_directory($segment);
 			$segments = array_slice($segments, 1);
 			
 			if (count($segments) > 0)
@@ -209,7 +210,7 @@ class MY_Router extends CI_Router
 		}
 
 		// Can't find the requested controller...
-		show_404($segments[0]);
+		show_404($segment);
 	}
 	
 	private function _parse_segments($rel_segments, $segments) 
