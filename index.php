@@ -30,8 +30,8 @@ unset($script_dir);
 // least exit gracefully
 if(version_compare(PHP_VERSION, '5', '<'))
 {
-    include('OpenVBX/errors/php4.php');
-    exit;
+	include('OpenVBX/errors/php4.php');
+	exit;
 }
 
 // persist the session if we've exited cleanly

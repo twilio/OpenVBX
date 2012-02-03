@@ -25,29 +25,29 @@
 				Twilio Token
 				<?php
 					if (empty($twilio_token['value']) 
-                        && $this->tenant->type != VBX_Settings::AUTH_TYPE_CONNECT)
+						&& $this->tenant->type != VBX_Settings::AUTH_TYPE_CONNECT)
 					{
 						$this->load->view('settings/twilio-token-notices');
 					}
-                    					
+					
 					$params = array(
 						'id' => 'site-twilio-token',
 						'name' => 'site[twilio_token]',
 						'type' => 'text',
 						'class' => 'medium'
 					);
-                    
-                    if ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT)
-                    {
-                        $params['disabled'] = 'disabled';
-                        $twilio_token['value'] = 'n/a';
-                    }
 					
-                    echo t_form_input($params, @$twilio_token['value']);
+					if ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT)
+					{
+					    $params['disabled'] = 'disabled';
+					    $twilio_token['value'] = 'n/a';
+					}
+					
+					echo t_form_input($params, @$twilio_token['value']);
 				?>
-                <?php if ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT): ?>
-                    <p class="instruction">Your account is using Twilio Connect for authorization.<br />Your account SID is not required.</p>
-                <?php endif; ?>
+				<?php if ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT): ?>
+					<p class="instruction">Your account is using Twilio Connect for authorization.<br />Your account SID is not required.</p>
+				<?php endif; ?>
 			</label>
 		
 			<label for="site-twilio-application-sid" class="field-label<?php if (!empty($client_application_error)) { echo ' info notice'; }; ?>">

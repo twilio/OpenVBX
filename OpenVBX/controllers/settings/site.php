@@ -151,7 +151,7 @@ class Site extends User_Controller
 			$mysql_version = $this->db->conn_id->server_info;
 		}
 		else 
-        {
+		{
 			$mysql_version = mysql_get_server_info($this->db->conn_id);
 		}
 
@@ -282,7 +282,7 @@ class Site extends User_Controller
 					}
 					
 					if ($name == 'connect_application_sid') 
-                    {
+					{
 						$connect_app_sid = $value;
 						$process_connect_app = true;
 					}
@@ -294,10 +294,10 @@ class Site extends User_Controller
 					}
 				}
 				
-                // rewrite enabled is a marker to detect which group of settings
-                // we're currently saving
-                // @todo - include a 'section' or 'group' param in the submitted
-                // data to do this instead and make it more clear to what's happening
+				// rewrite enabled is a marker to detect which group of settings
+				// we're currently saving
+				// @todo - include a 'section' or 'group' param in the submitted
+				// data to do this instead and make it more clear to what's happening
 				if (isset($site['rewrite_enabled']))
 				{
 					foreach ($notification_settings as $name)
@@ -398,7 +398,7 @@ class Site extends User_Controller
 		if (!empty($update_app))
 		{
 			if (empty($account)) 
-            {
+			{
 				$account = OpenVBX::getAccount();
 			}
 
@@ -422,7 +422,7 @@ class Site extends User_Controller
 	private function update_connect_app($connect_app_sid)
 	{
 		if (!empty($connect_app_sid) && $this->tenant->id == VBX_PARENT_TENANT) 
-        {
+		{
 			$account = OpenVBX::getAccount();
 			$connect_app = $account->connect_apps->get($connect_app_sid);
 		
@@ -438,17 +438,17 @@ class Site extends User_Controller
 		
 			$updated = false;
 			foreach ($required_settings as $key => $setting) 
-            {
+			{
 				$app_key = Services_Twilio::decamelize($key);
 				if ($connect_app->$app_key != $setting) 
-                {
+				{
 					$connect_app->$app_key = $setting;
 					$updated = true;
 				}
 			}
 		
 			if ($updated) 
-            {
+			{
 				$connect_app->update(array(
 					'FriendlyName' => $connect_app->friendly_name,
 					'Description' => $connect_app->description,

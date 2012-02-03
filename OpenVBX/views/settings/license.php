@@ -1,7 +1,7 @@
 
 <h3>License</h3>
 
-<p>All of the source code to this product is available  under licenses which are both free and open source. Most is available under the <a href="http://www.mozilla.org/MPL/" onclick="window.open(this.href); return false;">Mozilla Public License (MPL)</a>. That is, you may copy and distribute such software according to the terms of the MPL.</p>
+<p>All of the source code to this product is available	under licenses which are both free and open source. Most is available under the <a href="http://www.mozilla.org/MPL/" onclick="window.open(this.href); return false;">Mozilla Public License (MPL)</a>. That is, you may copy and distribute such software according to the terms of the MPL.</p>
 
 <br />
 
@@ -118,41 +118,41 @@ http://www.opensource.org/licenses/bsd-license.php
 	<li><b>Minify</b>
 		<pre>
 @copyright 2008 Ryan Grove, Stephen Clay. All rights reserved.
-license http://opensource.org/licenses/bsd-license.php  New BSD License
+license http://opensource.org/licenses/bsd-license.php	New BSD License
 link http://code.google.com/p/minify/
 		</pre>
 	</li>
-    <li><b>GitHub API Library</b>
-        <pre>
-@author    Thibault Duplessis &lt;thibault.duplessis at gmail dot com&gt;
+	<li><b>GitHub API Library</b>
+		<pre>
+@author	   Thibault Duplessis &lt;thibault.duplessis at gmail dot com&gt;
 @license   MIT License
-         </pre>
-    </li>
-    <li><b>PasswordHash</b>
-        <pre>
+		 </pre>
+	</li>
+	<li><b>PasswordHash</b>
+		<pre>
 Written by Solar Designer <solar at openwall.com> in 2004-2006 and placed in
-the public domain.  Revised in subsequent years, still public domain.
+the public domain.	Revised in subsequent years, still public domain.
 
 There's absolutely no warranty.
-        </pre>
-    </li>
-    <li><b>fooStack</b>
-        <pre>
+		</pre>
+	</li>
+	<li><b>fooStack</b>
+		<pre>
 fooStack, CIUnit for CodeIgniter
 Copyright (c) 2008-2009 Clemens Gruenberger
 Released under the MIT license, see:
 http://www.opensource.org/licenses/mit-license.php
-        </pre>
-    </li>
-    <li><b>Spyc -- a Simple PHP YAML Class</b>
-        <pre>
+		</pre>
+	</li>
+	<li><b>Spyc -- a Simple PHP YAML Class</b>
+		<pre>
 version: 0.3
 author: [chris wanstrath, chris@ozmm.org]
 websites: [http://www.yaml.org, http://spyc.sourceforge.net]
 license: [MIT License, http://www.opensource.org/licenses/mit-license.php]
 copyright: (c) 2005-2006 Chris Wanstrath
-        </pre>
-    </li>
+		</pre>
+	</li>
 	<li><b>CodeIgniter</b>
 		<pre>
 Copyright (c) 2008, EllisLab, Inc.
