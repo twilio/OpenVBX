@@ -6,6 +6,7 @@
 - fix log error message when looking for a controller when the base url is being loaded
 - fix error with tenant login when the tenant name was saved with capital letters in it
 - cleaned up license section of the Settings > About screen
+- load special error page instead of showing white-screen when running on PHP4
 
 
 ## OpenVBX 1.2.4
