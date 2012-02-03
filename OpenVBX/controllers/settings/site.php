@@ -150,7 +150,8 @@ class Site extends User_Controller
 		{
 			$mysql_version = $this->db->conn_id->server_info;
 		}
-		else {
+		else 
+        {
 			$mysql_version = mysql_get_server_info($this->db->conn_id);
 		}
 
@@ -293,6 +294,10 @@ class Site extends User_Controller
 					}
 				}
 				
+                // rewrite enabled is a marker to detect which group of settings
+                // we're currently saving
+                // @todo - include a 'section' or 'group' param in the submitted
+                // data to do this instead and make it more clear to what's happening
 				if (isset($site['rewrite_enabled']))
 				{
 					foreach ($notification_settings as $name)

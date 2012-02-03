@@ -24,19 +24,30 @@
 			<label for="site-twilio-token" class="field-label<?php if (empty($twilio_sid['value'])) { echo ' info notice'; }; ?>">
 				Twilio Token
 				<?php
-					if (empty($twilio_sid['value']))
+					if (empty($twilio_token['value']) 
+                        && $this->tenant->type != VBX_Settings::AUTH_TYPE_CONNECT)
 					{
 						$this->load->view('settings/twilio-token-notices');
 					}
-					
+                    					
 					$params = array(
 						'id' => 'site-twilio-token',
 						'name' => 'site[twilio_token]',
 						'type' => 'text',
 						'class' => 'medium'
 					);
-					echo t_form_input($params, @$twilio_token['value']);
+                    
+                    if ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT)
+                    {
+                        $params['disabled'] = 'disabled';
+                        $twilio_token['value'] = 'n/a';
+                    }
+					
+                    echo t_form_input($params, @$twilio_token['value']);
 				?>
+                <?php if ($this->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT): ?>
+                    <p class="instruction">Your account is using Twilio Connect for authorization.<br />Your account SID is not required.</p>
+                <?php endif; ?>
 			</label>
 		
 			<label for="site-twilio-application-sid" class="field-label<?php if (!empty($client_application_error)) { echo ' info notice'; }; ?>">
@@ -52,6 +63,7 @@
 						'type' => 'text',
 						'class' => 'medium'
 					);
+                                        
 					echo t_form_input($params, @$application_sid['value']);
 				?>
 				<p class="instruction">This Sid identifies your install for the purposes of making<br />and receiving calls with <a href="http://www.twilio.com/api/client">Twilio Client</a>. The Client Application<br />will be checked and updated for the proper callback urls on save.</p>
