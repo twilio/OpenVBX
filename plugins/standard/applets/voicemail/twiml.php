@@ -41,10 +41,10 @@ else
 
 	// add a <Record>, and use VBX's default transcription handler
 	$record_params = array(
-		'transcribe' => false
+		'transcribe' => 'false'
 	);
 	if ($transcribe) {
-		$recording_params['transcribe'] = true;
+		$record_params['transcribe'] = 'true';
 		$record_params['transcribeCallback'] = site_url('/twiml/transcribe');
 	}
 

@@ -24,6 +24,7 @@ class TwimlDial {
 	
 	public $dial;
 	
+	protected $timeout;
 	protected $transcribe = true;
 	protected $voice = 'man';
 	protected $language = 'en';
@@ -83,7 +84,7 @@ class TwimlDial {
 			$this->dial = $this->response->dial(NULL, array(
 					'action' => current_url(),
 					'callerId' => $this->callerId,
-					'timeout' => $this->default_timeout,
+					'timeout' => (!empty($this->timeout)) ? $this->timeout : $this->default_timeout,
 					'sequential' => ($this->sequential ? 'true' : 'false')
 				));
 		}
@@ -211,6 +212,7 @@ class TwimlDial {
 	public function dialNumber($number) 
 	{
 		$dial = $this->getDial();
+		$number = normalize_phone_to_E164($number);
 		$dial->number($number);
 		$this->state = 'calling';
 		return true;
@@ -283,7 +285,9 @@ class TwimlDial {
 				));
 			}
 			
-			$record_params = array();
+			$record_params = array(
+				'transcribe' => $this->transcribe ? 'true' : 'false'
+			);
 
 			if ($this->transcribe)
 			{

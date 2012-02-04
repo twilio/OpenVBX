@@ -8,6 +8,8 @@
 - cleaned up license section of the Settings > About screen
 - load special error page instead of showing white-screen when running on PHP4
 - fix Settings > Twilio Account view for Connect tenants since the Token is not required
+- fix an issue with passing boolean values to Services Twilio where string literal 'true' and 'false' should be used instead
+- fix an issue that could prevent the dial timeout from being properly applied
 
 
 ## OpenVBX 1.2.4
