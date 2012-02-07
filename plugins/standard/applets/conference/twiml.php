@@ -51,7 +51,8 @@ $confOptions = array(
 $response = new TwimlResponse();
 
 $dial = $response->dial(null, array(
-	'timeout' => $ci->vbx_settings->get('dial_timeout', $ci->tenant->id)
+	'timeout' => $ci->vbx_settings->get('dial_timeout', $ci->tenant->id),
+	'timeLimit' => 14400
 ));
 $dial->conference($confName, $confOptions);
 

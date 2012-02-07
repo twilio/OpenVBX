@@ -18,13 +18,23 @@
 
  * Contributor(s):
  **/
-$script_dir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 
+// set some base information
+$script_dir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 define('WEB_ROOT', $script_dir . '/');
 define('ASSET_ROOT', $script_dir . '/assets');
-
 unset($script_dir);
 
+// PHP 4 will white screen and not give a
+// meaningful error. This allows us to at
+// least exit gracefully
+if(version_compare(PHP_VERSION, '5', '<'))
+{
+	include('OpenVBX/errors/php4.php');
+	exit;
+}
+
+// persist the session if we've exited cleanly
 register_shutdown_function("shutdown");
 function shutdown()
 {

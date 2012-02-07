@@ -95,6 +95,14 @@ class MY_Controller extends Controller
 			$this->session->set_flashdata('error', 'This tenant is no longer active');
 			return redirect(asset_url('auth/logout'));
 		}
+		
+		if ($this->tenant && $this->tenant->url_prefix 
+			&& $this->tenant->url_prefix !== $this->router->tenant)
+		{
+			// case sensitive url faux-pas, redirect to force the url case
+			$this->router->tenant = $this->tenant->url_prefix;
+			return redirect(current_url());
+		}
 
 		if($this->tenant === false)
 		{

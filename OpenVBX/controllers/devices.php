@@ -38,8 +38,6 @@ class Devices extends User_Controller {
 
 	public function index()
 	{
-		if (!$this->session->userdata('loggedin')) redirect('auth/login');
-
 		$this->template->add_js('assets/j/account.js');
 		$this->template->add_js('assets/j/devices.js');
 
@@ -61,8 +59,6 @@ class Devices extends User_Controller {
 
 	public function edit()
 	{
-		if (!$this->session->userdata('loggedin')) redirect('auth/login');
-
 		$is_admin = $this->session->userdata('is_admin');
 		$user = new VBX_User();
 		$params = array();

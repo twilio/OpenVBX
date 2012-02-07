@@ -14,7 +14,7 @@ $dialer = new TwimlDial(array(
 	'voice' => $voice,
 	'language' => $language,
 	'sequential' => true,
-	'default_timeout' => $timeout
+	'timeout' => $timeout
 ));
 $dialer->set_state();
 

@@ -1,5 +1,19 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.5
+
+- add `is_numeric` to id check during model save since PHP likes to do weird intval conversions
+- fix log error message when looking for a controller when the base url is being loaded
+- fix error with tenant login when the tenant name was saved with capital letters in it. Tenants are now redirected to their correct, proper-case url
+- load special error page instead of showing white-screen when running on PHP4
+- fix Settings > Twilio Account view for Connect tenants since the Token is not required
+- fix an issue with passing boolean values to Services Twilio where string literal 'true' and 'false' should be used instead
+- fix an issue that could prevent the dial timeout from being properly applied
+- explicitly setting the `timeLimit` value on the conference dial to the stated default of 4 hours as a user has reported being cut-off at 1 hour
+- adding check for `safe_mode` and `open_basedir` restrictions as they disallow the setting of `CURLOPT_FOLLOWLOCATION` (and kills the GitHub tag request for the upgrade check)
+- cleaned up license section of the Settings > About screen
+
+
 ## OpenVBX 1.2.4
 
 - fix Connect app authorization return to properly authorize the returning user

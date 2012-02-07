@@ -129,7 +129,15 @@ class Site extends User_Controller
 		$data['tenant_mode'] = self::MODE_SINGLE;
 
 		$data['openvbx_version'] = OpenVBX::version();
-		if($this->tenant->name == 'default')
+		
+		// determine wether we can successfully use the GitHub api library
+		// to check our current tag against available tags. See ::can_check_upgrade()
+		// for a full explanation.
+		// @todo - find a more graceful way around this
+		// @todo - notify admin that checks can't be made?
+		$data['check_upgrade'] = $this->can_check_upgrade();
+
+		if($this->tenant->name == 'default' && $data['check_upgrade'])
 		{
 			$data['tenant_mode'] = self::MODE_MULTI;
 			$data['tenants'] = $this->settings->get_all_tenants();
@@ -150,7 +158,8 @@ class Site extends User_Controller
 		{
 			$mysql_version = $this->db->conn_id->server_info;
 		}
-		else {
+		else 
+		{
 			$mysql_version = mysql_get_server_info($this->db->conn_id);
 		}
 
@@ -280,7 +289,8 @@ class Site extends User_Controller
 						$process_app = true;
 					}
 					
-					if ($name == 'connect_application_sid') {
+					if ($name == 'connect_application_sid') 
+					{
 						$connect_app_sid = $value;
 						$process_connect_app = true;
 					}
@@ -292,6 +302,10 @@ class Site extends User_Controller
 					}
 				}
 				
+				// rewrite enabled is a marker to detect which group of settings
+				// we're currently saving
+				// @todo - include a 'section' or 'group' param in the submitted
+				// data to do this instead and make it more clear to what's happening
 				if (isset($site['rewrite_enabled']))
 				{
 					foreach ($notification_settings as $name)
@@ -315,7 +329,7 @@ class Site extends User_Controller
 				
 				$this->session->set_flashdata('error', 'Settings have been saved');
 			}
-			catch(SiteException $e) {
+			catch(Exception $e) {
 				$data['error'] = true;
 				switch($e->getCode()) 
 				{
@@ -391,7 +405,8 @@ class Site extends User_Controller
 
 		if (!empty($update_app))
 		{
-			if (empty($account)) {
+			if (empty($account)) 
+			{
 				$account = OpenVBX::getAccount();
 			}
 
@@ -414,7 +429,8 @@ class Site extends User_Controller
 
 	private function update_connect_app($connect_app_sid)
 	{
-		if (!empty($connect_app_sid) && $this->tenant->id == VBX_PARENT_TENANT) {
+		if (!empty($connect_app_sid) && $this->tenant->id == VBX_PARENT_TENANT) 
+		{
 			$account = OpenVBX::getAccount();
 			$connect_app = $account->connect_apps->get($connect_app_sid);
 		
@@ -429,15 +445,18 @@ class Site extends User_Controller
 			);
 		
 			$updated = false;
-			foreach ($required_settings as $key => $setting) {
+			foreach ($required_settings as $key => $setting) 
+			{
 				$app_key = Services_Twilio::decamelize($key);
-				if ($connect_app->$app_key != $setting) {
+				if ($connect_app->$app_key != $setting) 
+				{
 					$connect_app->$app_key = $setting;
 					$updated = true;
 				}
 			}
 		
-			if ($updated) {
+			if ($updated) 
+			{
 				$connect_app->update(array(
 					'FriendlyName' => $connect_app->friendly_name,
 					'Description' => $connect_app->description,
@@ -702,6 +721,36 @@ class Site extends User_Controller
 			$available_themes[$theme] = ucwords($theme);
 		}
 		return $available_themes;
+	}
+	
+	/**
+	 * We need to check for a few obscure parameters to see
+	 * if we're gonna have problems with the GitHub API during
+	 * the update check.
+	 * 
+	 * If either `safe_mode` or `open_basedir` are in effect then
+	 * `CURLOPT_FOLLOWLOCATION` won't set as a curlopt. Since the 
+	 * GitHub API uses this and also uses `curl_setopt_array` that
+	 * means that if either of these are set then all of the curl
+	 * settings fail to set.
+	 * 
+	 * This is a stop-gap measure until something more graceful
+	 * can be implemented
+	 *
+	 * @return bool
+	 */
+	protected function can_check_upgrade()
+	{
+		$this->safe_mode = ini_get('safe_mode');
+		$this->open_basedir = ini_get('open_basedir');
+		
+		$can_check = true;
+		if ($this->safe_mode || strlen($this->open_basedir) > 0)
+		{
+			$can_check = false;
+		}
+
+		return $can_check;
 	}
 	
 	/**
