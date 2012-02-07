@@ -129,7 +129,10 @@ class Site extends User_Controller
 		$data['tenant_mode'] = self::MODE_SINGLE;
 
 		$data['openvbx_version'] = OpenVBX::version();
-		if($this->tenant->name == 'default')
+		
+		$data['check_upgrade'] = $this->can_check_upgrade();
+
+		if($this->tenant->name == 'default' && $data['check_upgrade'])
 		{
 			$data['tenant_mode'] = self::MODE_MULTI;
 			$data['tenants'] = $this->settings->get_all_tenants();
@@ -713,6 +716,20 @@ class Site extends User_Controller
 			$available_themes[$theme] = ucwords($theme);
 		}
 		return $available_themes;
+	}
+	
+	protected function can_check_upgrade()
+	{
+		$this->safe_mode = ini_get('safe_mode');
+		$this->open_basedir = ini_get('open_basedir');
+		
+		$can_check = true;
+		if ($this->safe_mode || strlen($this->open_basedir) > 0)
+		{
+			$can_check = false;
+		}
+
+		return $can_check;
 	}
 	
 	/**
