@@ -1,10 +1,10 @@
 # OpenVBX Change Log
 
-## Next
+## OpenVBX 1.2.5
 
 - add `is_numeric` to id check during model save since PHP likes to do weird intval conversions
 - fix log error message when looking for a controller when the base url is being loaded
-- fix error with tenant login when the tenant name was saved with capital letters in it
+- fix error with tenant login when the tenant name was saved with capital letters in it. Tenants are now redirected to their correct, proper-case url
 - load special error page instead of showing white-screen when running on PHP4
 - fix Settings > Twilio Account view for Connect tenants since the Token is not required
 - fix an issue with passing boolean values to Services Twilio where string literal 'true' and 'false' should be used instead
