@@ -130,6 +130,11 @@ class Site extends User_Controller
 
 		$data['openvbx_version'] = OpenVBX::version();
 		
+		// determine wether we can successfully use the GitHub api library
+		// to check our current tag against available tags. See ::can_check_upgrade()
+		// for a full explanation.
+		// @todo - find a more graceful way around this
+		// @todo - notify admin that checks can't be made?
 		$data['check_upgrade'] = $this->can_check_upgrade();
 
 		if($this->tenant->name == 'default' && $data['check_upgrade'])
@@ -718,6 +723,22 @@ class Site extends User_Controller
 		return $available_themes;
 	}
 	
+	/**
+	 * We need to check for a few obscure parameters to see
+	 * if we're gonna have problems with the GitHub API during
+	 * the update check.
+	 * 
+	 * If either `safe_mode` or `open_basedir` are in effect then
+	 * `CURLOPT_FOLLOWLOCATION` won't set as a curlopt. Since the 
+	 * GitHub API uses this and also uses `curl_setopt_array` that
+	 * means that if either of these are set then all of the curl
+	 * settings fail to set.
+	 * 
+	 * This is a stop-gap measure until something more graceful
+	 * can be implemented
+	 *
+	 * @return bool
+	 */
 	protected function can_check_upgrade()
 	{
 		$this->safe_mode = ini_get('safe_mode');

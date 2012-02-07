@@ -10,7 +10,7 @@
 - fix an issue with passing boolean values to Services Twilio where string literal 'true' and 'false' should be used instead
 - fix an issue that could prevent the dial timeout from being properly applied
 - explicitly setting the `timeLimit` value on the conference dial to the stated default of 4 hours as a user has reported being cut-off at 1 hour
-- adding check for `safe_mode` and `open_basedir` restrictions as they disallow the setting of `CURLOPT_RETURNTRANSFER` (and kills the GitHub tag request for the upgrade check)
+- adding check for `safe_mode` and `open_basedir` restrictions as they disallow the setting of `CURLOPT_FOLLOWLOCATION` (and kills the GitHub tag request for the upgrade check)
 - cleaned up license section of the Settings > About screen
 
 
