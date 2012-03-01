@@ -3,6 +3,7 @@
 ## Next
 
 - properly formulate gravatar urls when using https
+- properly handle exceptions when calling GitHub for latest tag data during version check
 
 
 ## OpenVBX 1.2.5
