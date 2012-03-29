@@ -1,5 +1,10 @@
 # OpenVBX Change Log
 
+## Next
+
+- include and always use Twilio SSL Certificate
+
+
 ## OpenVBX 1.2.5
 
 - add `is_numeric` to id check during model save since PHP likes to do weird intval conversions

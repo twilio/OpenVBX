@@ -368,7 +368,8 @@ class OpenVBX {
 			'host' => 'https://api.twilio.com',
 			'opts' => array(
 				'curlopts' => array(
-					CURLOPT_USERAGENT => 'openvbx/'.OpenVBX::version()
+					CURLOPT_USERAGENT => 'openvbx/'.OpenVBX::version(),
+					CURLOPT_CAINFO => APPPATH . 'libraries/Services/twilio_ssl_certificate.crt'
 				)
 			)
 		);
