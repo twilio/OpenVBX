@@ -2,7 +2,8 @@
 
 ## Next
 
-- include and always use Twilio SSL Certificate
+- include option to use Twilio SSL Certificate when making api requests. Fixes issue on some hosts where curl certs are out of date
+- add pagination to Flows screen. Previous limit was 100 flows displayed on a single screen
 
 
 ## OpenVBX 1.2.5
