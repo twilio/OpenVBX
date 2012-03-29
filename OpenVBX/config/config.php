@@ -30,7 +30,7 @@ $config['base_url']= "http".((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 
 | Used for asset url versioning.
 |
 */
-$config['site_rev'] = 1021;
+$config['site_rev'] = 1022;
 
 /*
 |--------------------------------------------------------------------------
@@ -426,6 +426,20 @@ $config['rewrite_short_tags'] = FALSE;
 |
 */
 $config['proxy_ips'] = '';
+
+
+/*
+|--------------------------------------------------------------------------
+| Use Twilio API Certificate
+|--------------------------------------------------------------------------
+|
+| Curl certificates on some systems are either incomplete or out of date and
+| this can effect connectivity to the Twilio API. If you're getting an error
+| "error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify 
+| failed (0)" then set the option below to true.
+|
+*/
+$config['twilio_use_certificate'] = false;
 
 /*
 |--------------------------------------------------------------------------

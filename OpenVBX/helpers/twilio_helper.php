@@ -265,7 +265,8 @@ if (!function_exists('gravatar_url'))
 {
 	function gravatar_url($email, $size = 30, $default_image)
 	{
-		$url = 'http://'.(is_ssl() ? 'secure' : 'www').'.gravatar.com/avatar/'.
+		$url = (is_ssl() ? 'https://secure' : 'http://www').
+				'.gravatar.com/avatar/'.
 				md5(strtolower(trim($email))).
 				'?s='.intval($size).
 				'&amp;d='.urlencode($default_image).

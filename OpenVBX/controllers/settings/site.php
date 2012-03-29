@@ -142,7 +142,7 @@ class Site extends User_Controller
 			$data['tenant_mode'] = self::MODE_MULTI;
 			$data['tenants'] = $this->settings->get_all_tenants();
 			$data['latest_version'] = $this->get_latest_tag();
-			
+
 			if (version_compare($data['openvbx_version'], $data['latest_version'], '<'))
 			{
 				$data['upgrade_notice'] = true;
@@ -768,23 +768,29 @@ class Site extends User_Controller
 			return $cache;
 		}
 		
-		include_once(APPPATH.'libraries/Github/Autoloader.php');
-		Github_Autoloader::register();
+		try {
+			include_once(APPPATH.'libraries/Github/Autoloader.php');
+			Github_Autoloader::register();
 		
-		$gh = new Github_Client;
-		$tags = $gh->getRepoApi()->getRepoTags('twilio', 'openvbx');
+			$gh = new Github_Client;
+			$tags = $gh->getRepoApi()->getRepoTags('twilio', 'openvbx');
 		
-		$latest = false;
+			$latest = false;
 		
-		if (is_array($tags) && count($tags) > 0)
-		{
-			$list = array_keys($tags);
-			usort($list, array($this, 'version_sort'));
-			$latest = array_pop($list);
+			if (is_array($tags) && count($tags) > 0)
+			{
+				$list = array_keys($tags);
+				usort($list, array($this, 'version_sort'));
+				$latest = array_pop($list);
+			}
+		
+			$this->api_cache->set('latest_version', $latest, 'Site', $this->tenant->id);
 		}
-		
-		$this->api_cache->set('latest_version', $latest, 'Site', $this->tenant->id);
-		
+		catch (Exception $e) {
+			$latest = false;
+			error_log('Could not check latest OpenVBX Version: '.$e->getMessage());
+		}
+
 		return $latest;
 	}
 	

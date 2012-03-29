@@ -1,5 +1,14 @@
 # OpenVBX Change Log
 
+## Next
+
+- properly formulate gravatar urls when using https
+- properly handle exceptions when calling GitHub for latest tag data during version check
+- include option to use Twilio SSL Certificate when making api requests. Fixes issue on some hosts where curl certs are out of date
+- add pagination to Flows screen. Previous limit was 100 flows displayed on a single screen
+- added proper asset url versioning to iframe assets
+
+
 ## OpenVBX 1.2.5
 
 - add `is_numeric` to id check during model save since PHP likes to do weird intval conversions

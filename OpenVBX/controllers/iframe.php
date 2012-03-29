@@ -63,7 +63,8 @@ class Iframe extends User_Controller {
 		if (function_exists('twilio_dev_mods')) {
 			$data = twilio_dev_mods($data);
 		}
-				
+		
+		$data['site_rev'] = $this->config->item('site_rev');
 		$data['browserphone'] = $this->init_browserphone_data($data['callerid_numbers']);
 		
 		$this->load->view('iframe', $data);

@@ -372,6 +372,11 @@ class OpenVBX {
 				)
 			)
 		);
+		
+		// optionally load in the included cert for api communication
+		if ($use_certificate = $ci->config->item('twilio_use_certificate')) {
+			$_http_opts['opts']['curlopts'][CURLOPT_CAINFO] = APPPATH . 'libraries/Services/twilio_ssl_certificate.crt';
+		}
 
 		// internal api development override, you'll never need this
 		if ($_http_settings = $ci->config->item('_http_settings')) 

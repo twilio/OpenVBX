@@ -64,6 +64,16 @@ class VBX_Flow extends MY_Model {
 		$sum = $ci->db->count_all_results();
 		return $sum + 1;
 	}
+	
+	static function count() {
+		$obj = new self();
+		$ci = &get_instance();
+		$count = $ci->db->count_all_results($obj->table);
+		if ($count > 0) {
+			return $count;
+		}
+		return false;
+	}
 
 	static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
