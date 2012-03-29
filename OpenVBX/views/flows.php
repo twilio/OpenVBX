@@ -1,4 +1,4 @@
-<div class="vbx-content-main">
+<div class="vbx-content-main vbx-flows">
 
 		<div class="vbx-content-menu vbx-content-menu-top">
 			<h2 class="vbx-content-heading">Flows</h2>
@@ -7,6 +7,7 @@
 				<li class="menu-item"><button class="add-button add-flow" type="button"><span>New Flow</span></button></li>
 			</ul>
 			<?php endif; ?>
+			<?php echo $pagination; ?>
 		</div><!-- vbx-content-menu -->
 
 		<?php if(!empty($items)): ?>

@@ -6,6 +6,9 @@
     font-size: 16px;
     font-weight: bold;
 }
+.vbx-flows .vbx-content-menu .pagination {
+	margin-right: 20px;
+}
 
 .pagination a,
 .pagination .current {

@@ -23,12 +23,15 @@ require_once(APPPATH.'libraries/twilio.php');
 
 class Flows extends User_Controller {
 
+	private $flows_per_page = '50';
+
 	function __construct()
 	{
 		parent::__construct();
 		$this->load->library('applet');
 		$this->section = 'flows';
 		$this->admin_only($this->section);
+		$this->load->library('pagination');
 	}
 
 	function index()
@@ -46,11 +49,18 @@ class Flows extends User_Controller {
 	
 	private function flows()
 	{
+		$max = $this->input->get_post('max');
+		$offset = $this->input->get_post('offset');
+		
+		if (empty($max)) {
+			$max = $this->flows_per_page;
+		}
+		
 		$this->template->add_js('assets/j/flows.js');
 		
 		$data = $this->init_view_data();
 		
-		$flows = VBX_Flow::search(array(), 100, 0);
+		$flows = VBX_Flow::search(array(), $max, $offset);
 		if(empty($flows))
 		{
 			set_banner('flows', $this->load->view('banners/flows-start', array(), true));
@@ -70,6 +80,17 @@ class Flows extends User_Controller {
 		
 		$data['items'] = $flows_with_numbers;
 		$data['highlighted_flows'] = array($this->session->flashdata('flow-first-save', 0));
+		
+		// pagination
+		$total_items = VBX_Flow::count();
+		$page_config = array(
+			'base_url' => site_url('flows/'),
+			'total_rows' => $total_items,
+			'per_page' => $max
+		);
+		$this->pagination->initialize($page_config);
+		$data['pagination'] = CI_Template::literal($this->pagination->create_links());
+		
 		$this->respond('Call Flows', 'flows', $data);
 	}
 

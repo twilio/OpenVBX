@@ -768,15 +768,14 @@ class Site extends User_Controller
 			return $cache;
 		}
 		
-		$latest = false;
-
 		try {
 			include_once(APPPATH.'libraries/Github/Autoloader.php');
-			
 			Github_Autoloader::register();
+		
 			$gh = new Github_Client;
 			$tags = $gh->getRepoApi()->getRepoTags('twilio', 'openvbx');
 		
+			$latest = false;
 		
 			if (is_array($tags) && count($tags) > 0)
 			{
@@ -784,12 +783,14 @@ class Site extends User_Controller
 				usort($list, array($this, 'version_sort'));
 				$latest = array_pop($list);
 			}
-		}
-		catch (Github_HttpClient_Exception $e) {
-			log_message('error', 'Failed to fetch GitHub tags: '.$e->getMessage());
-		}
 		
-		$this->api_cache->set('latest_version', $latest, 'Site', $this->tenant->id);
+			$this->api_cache->set('latest_version', $latest, 'Site', $this->tenant->id);
+		}
+		catch (Exception $e) {
+			$latest = false;
+			error_log('Could not check latest OpenVBX Version: '.$e->getMessage());
+		}
+
 		return $latest;
 	}
 	
