@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## Next
+## OpenVBX 1.2.6
 
 - properly formulate gravatar urls when using https
 - properly handle exceptions when calling GitHub for latest tag data during version check
