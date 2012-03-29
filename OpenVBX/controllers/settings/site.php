@@ -142,7 +142,7 @@ class Site extends User_Controller
 			$data['tenant_mode'] = self::MODE_MULTI;
 			$data['tenants'] = $this->settings->get_all_tenants();
 			$data['latest_version'] = $this->get_latest_tag();
-			
+
 			if (version_compare($data['openvbx_version'], $data['latest_version'], '<'))
 			{
 				$data['upgrade_notice'] = true;
