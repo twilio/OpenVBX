@@ -14,7 +14,7 @@
 	<script type="text/javascript" src="<?php echo asset_url('assets/j/iframe.js'); ?>"></script>
 	<script type="text/javascript" src="<?php echo asset_url('assets/j/client.js'); ?>"></script>
 <?php else: ?>
-	<script type="text/javascript" src="<?php echo asset_url('assets/min/?g=iframejs'); ?>"></script>
+	<script type="text/javascript" src="<?php echo asset_url('assets/min/?g=iframejs&v='.$site_rev); ?>"></script>
 <?php endif; ?>	
 </head>
 <body>
@@ -27,6 +27,6 @@
 
 <script type="text/javascript" src="<?php echo $twilio_js; ?>"></script>
 <?php $this->load->view('js-init'); ?>
-<script type="text/javascript" src="<?php echo asset_url('assets/j/iframe.js') ?>"></script>
+<script type="text/javascript" src="<?php echo asset_url('assets/j/iframe.js?v='.$site_rev) ?>"></script>
 </body>
 </html>
