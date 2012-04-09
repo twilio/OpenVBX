@@ -30,7 +30,7 @@ Open your web browser and navigate to the URL of your OpenVBX installation. The 
 
 ## Step 4: Connect to Twilio
 
-During the install process, you will be prompted for your Twilio API credentials. You can obtain your _Account SID_ and _Auth Token_ from your [Twilio Dashboard](https://www.twilio.com/user/account/). You must be logged into your Twilio account to access the dashboard. If you don't have a Twilio account [register for a free trial](https://www.twilio.com/try-twilio) and we'll include $30.00 worth of credit to help you get started.
+During the install process, you will be prompted for your Twilio API credentials. You can obtain your _Account SID_ and _Auth Token_ from your [Twilio Dashboard](https://www.twilio.com/user/account/). You must be logged into your Twilio account to access the dashboard. If you don't have a Twilio account [register for a free trial](https://www.twilio.com/try-twilio).
 
 
 ## Step 5: Login
@@ -112,7 +112,7 @@ OpenVBX requires a MySQL database. You should create a database, and a user with
 
 ## Connect to your Twilio account
 
-OpenVBX requires a Twilio account to enable provisioning phone numbers, sending and receiving voice calls, and sending and receiving SMS. If you don't have a Twilio account, [register for a free trial](https://www.twilio.com/try-twilio) and we'll include $30.00 worth of credit to help you get started.
+OpenVBX requires a Twilio account to enable provisioning phone numbers, sending and receiving voice calls, and sending and receiving SMS. If you don't have a Twilio account, [register for a free trial](https://www.twilio.com/try-twilio).
 
 1. **Twilio SID:** This is your account identifier, it is unique to you and can be shared.
 1. **Twilio Token:** This is the key to your Twilio account, it is private and should not be shared.

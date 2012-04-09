@@ -1,6 +1,11 @@
 # OpenVBX Change Log
 
-## Next
+## OpenVBX 1.2.7
+
+- remove reference to $30 credit when signing up for a Twilio trial accounts
+
+
+## OpenVBX 1.2.6
 
 - properly formulate gravatar urls when using https
 - properly handle exceptions when calling GitHub for latest tag data during version check
