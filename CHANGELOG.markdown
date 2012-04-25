@@ -1,5 +1,10 @@
 # OpenVBX Change Log
 
+## Next
+
+- Fixed TwimlDial class to properly set the dial timeout as passed in. Fixes an issue where the system settings dial timeout value wouldn't apply to the dial applet.
+
+
 ## OpenVBX 1.2.7
 
 - remove reference to $30 credit when signing up for a Twilio trial accounts
