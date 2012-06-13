@@ -136,16 +136,19 @@ class Site extends User_Controller
 		// @todo - find a more graceful way around this
 		// @todo - notify admin that checks can't be made?
 		$data['check_upgrade'] = $this->can_check_upgrade();
-
-		if($this->tenant->name == 'default' && $data['check_upgrade'])
+		
+		if($this->tenant->name == 'default')
 		{
 			$data['tenant_mode'] = self::MODE_MULTI;
 			$data['tenants'] = $this->settings->get_all_tenants();
-			$data['latest_version'] = $this->get_latest_tag();
-
-			if (version_compare($data['openvbx_version'], $data['latest_version'], '<'))
-			{
-				$data['upgrade_notice'] = true;
+			
+			if ($data['check_upgrade']) {
+				$data['latest_version'] = $this->get_latest_tag();
+		
+				if (version_compare($data['openvbx_version'], $data['latest_version'], '<'))
+				{
+					$data['upgrade_notice'] = true;
+				}
 			}
 		}
 

@@ -1,5 +1,12 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.8
+
+- Fixed TwimlDial class to properly set the dial timeout as passed in. Fixes an issue where the system settings dial timeout value wouldn't apply to the dial applet.
+- No longer using VBX settings for rewrite to allow or deny GET params in the request validation to support GET as well as POST methods on incoming TwiML requests. Props to @fomojola.
+- Fixed an issue where a server that doesn't support the GitHub library for version checking would also hide the Tenants Settings tab.
+
+
 ## OpenVBX 1.2.7
 
 - remove reference to $30 credit when signing up for a Twilio trial accounts
