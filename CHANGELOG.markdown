@@ -1,5 +1,10 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.9
+
+- Reverted previous change made in 1.2.8 that allowed for GET params in request validations when using pretty urls.
+
+
 ## OpenVBX 1.2.8
 
 - Fixed TwimlDial class to properly set the dial timeout as passed in. Fixes an issue where the system settings dial timeout value wouldn't apply to the dial applet.
