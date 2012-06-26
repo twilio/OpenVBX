@@ -4,11 +4,19 @@ $response = new TwimlResponse;
 $now = date_create('now');
 $today = date_format($now, 'w') - 1;
 
-// Stored in the database as range_0_from ... range_6_from
-// 0 == Monday, 6 == Sunday. 
-// We need to add this logic to "loop around" back to 6 instead
-// of using "-1" for sunday.
-if ($today == -1) { $today = 6; }
+// The names of the applet instance variables for "from" and "to" times 
+// are of the form: "range_n_from" and "range_n_to" where "n" 
+// is a value between 0 and 6 (inclusive). 0 represents Monday
+// and 6 represents Sunday. In PHP, the value of date_format($now, 'w')
+// for Sunday is 0 - for Monday the value is 1 - and so on.
+// Here, we need to compensate for this by checking to see if the value
+// of date_format($now, 'w') - 1 is -1, and, if so, bring Sunday
+// back into the valid range of values by setting $today to 6.
+
+if ($today == -1) 
+{ 
+  $today = 6; 
+}
 
 $response->redirect(AppletInstance::getDropZoneUrl(
   ($from = AppletInstance::getValue("range_{$today}_from"))
