@@ -4,6 +4,7 @@
 
 - Fix improper exception pass through that would show the wrong error message to a user when updating settings.
 - Adding a favicon to help keep server logs quiet.
+- Fix to timing applet to properly handle wrapping around to Sunday.
 
 
 ## OpenVBX 1.2.9
