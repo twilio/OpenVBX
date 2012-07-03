@@ -424,7 +424,7 @@ class Site extends User_Controller
 				catch (Exception $e) {
 					$this->session->set_flashdata('error', 'Could not update '.
 												'Application: '.$e->getMessage());
-					throw new SiteException($e->getMessage());
+					throw new SiteException($e->getMessage(), $e->getCode());
 				}
 			}					
 		}
@@ -514,7 +514,7 @@ class Site extends User_Controller
 			}
 		}
 		catch (Exception $e) {
-			throw new VBX_SettingsException($e->getMessage());
+			throw new VBX_SettingsException($e->getMessage(), $e->getCode());
 		}
 
 		return $application->sid;
