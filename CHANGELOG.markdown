@@ -1,5 +1,11 @@
 # OpenVBX Change Log
 
+## Next
+
+- Fix improper exception pass through that would show the wrong error message to a user when updating settings.
+- Adding a favicon to help keep server logs quiet.
+
+
 ## OpenVBX 1.2.9
 
 - Reverted previous change made in 1.2.8 that allowed for GET params in request validations when using pretty urls.
