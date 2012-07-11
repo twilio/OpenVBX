@@ -12,6 +12,7 @@ $waitUrl = AppletInstance::getValue('wait-url', $defaultWaitUrl);
 $hasModerator = false;
 
 if (!is_null($moderator)) {
+	$hasModerator = true;
 	switch(get_class($moderator))
 	{
 		case 'VBX_User':
@@ -19,7 +20,6 @@ if (!is_null($moderator)) {
 			{
 				if($device->value == $caller)
 				{
-					$hasModerator = true;
 					$isModerator = true;
 				}
 			}
@@ -32,7 +32,6 @@ if (!is_null($moderator)) {
 				{
 					if($device->value == $caller)
 					{
-						$hasModerator = true;
 						$isModerator = true;
 					}
 				}
