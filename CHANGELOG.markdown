@@ -7,6 +7,7 @@
 - Fix to timing applet to properly handle wrapping around to Sunday.
 - Fix to conference applet to properly set the hasModerator flag and not allow just anyone to start a conference.
 - Disable sandbox display by default. Sandbox is now deprecated by Twilio on all new accounts.
+- Remove call to `uniqid` in conference applet `ui.php` since `uniqid` seems to have issues on different systems. Replaced with call to `mt_rand`.
 
 
 ## OpenVBX 1.2.9

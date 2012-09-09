@@ -30,7 +30,7 @@ $musicOptions = array(
 				<option value="<?php echo $option['url']?>" <?php echo ($waitUrl == $option['url'])? 'selected="selected"' : '' ?>><?php echo $option['name']; ?></option>
 				<?php endforeach; ?>
 			</select>
-			<input type="hidden" name="conf-id" value="<?php echo AppletInstance::getValue('conf-id', uniqid('conf_')) ?>" />
+			<input type="hidden" name="conf-id" value="<?php echo AppletInstance::getValue('conf-id', 'conf_'.mt_rand()) ?>" />
 		</fieldset>
 		</div><!-- .vbx-full-pane -->
 
