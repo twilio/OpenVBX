@@ -447,7 +447,21 @@ class OpenVBX {
 		// is properly appended to the url when being reconstructed
 		if (!empty($_SERVER['QUERY_STRING']) && strpos($url, $_SERVER['QUERY_STRING']) === false)
 		{
-			$url .= '?'.$_SERVER['QUERY_STRING'];
+			$qs = parse_str($_SERVER['QUERY_STRING']);
+			
+			// make sure that the rewrite var doesn't stay in the query 
+			// string if we're not doing rewriting
+			if ($ci->vbx_settings->get('rewrite_enabled', VBX_PARENT_TENANT) < 1) {
+				foreach ($qs as $name => $value) {
+					if ($name == 'vbxsite') {
+						unset($qs[$name]);
+					}
+				}
+			}
+			
+			if (!empty($qs)) {
+				$url .= '?' . http_build_query($qs);
+			}
 		}
 	
 		if (empty($post_vars)) 
@@ -455,7 +469,7 @@ class OpenVBX {
 			// we weren't handed post-vars, use the default
 			$post_vars = $_POST;
 		}
-
+		
 		return self::$_twilioValidator->validate(self::getRequestSignature(), $url, $post_vars);
 	}
 	

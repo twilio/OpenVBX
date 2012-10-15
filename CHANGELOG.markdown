@@ -8,6 +8,9 @@
 - Fix to conference applet to properly set the hasModerator flag and not allow just anyone to start a conference.
 - Disable sandbox display by default. Sandbox is now deprecated by Twilio on all new accounts.
 - Remove call to `uniqid` in conference applet `ui.php` since `uniqid` seems to have issues on different systems. Replaced with call to `mt_rand`.
+- Fix request validation where url rewriting is enabled but the `vbxsite` variable still appears in the request uri parameter.
+- Fix unnecessary failure when trying to install on `localhost`.
+- Fix for emails not containing the properly adjusted message time.
 
 
 ## OpenVBX 1.2.9

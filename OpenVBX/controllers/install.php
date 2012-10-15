@@ -223,7 +223,6 @@ class Install extends Controller {
 		$tplvars = $this->input_args();
 
 		$this->run_tests();
-		$this->openvbx_settings['application_sid'] = $this->get_application($this->openvbx_settings);
 
 		$json['tests'] = $this->tests;
 		$json['pass'] = $this->pass;
@@ -237,6 +236,8 @@ class Install extends Controller {
 
 		try
 		{
+			$this->openvbx_settings['application_sid'] = $this->get_application($this->openvbx_settings);
+
 			if(!($dbh = @mysql_connect($database['default']['hostname'],
 									   $database['default']['username'],
 									   $database['default']['password'])))

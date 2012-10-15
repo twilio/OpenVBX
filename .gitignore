@@ -6,3 +6,4 @@ audio-uploads/*
 apc.php
 info.php
 memcache.php
+.idea
