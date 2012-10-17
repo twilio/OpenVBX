@@ -59,9 +59,11 @@ class VBX_Device extends MY_Model
 
 	static function search($search_options = array(), $limit = -1, $offset = 0)
 	{		
-		$sql_options = array('joins' => self::$joins,
-							 'select' => self::$select,
-							 );
+		$sql_options = array(
+			'joins' => self::$joins,
+			'select' => self::$select,
+			'order_by' => array('sequence', 'desc'),
+		);
 		$device = new self();
 		
 		$devices = parent::search(self::$__CLASS__,

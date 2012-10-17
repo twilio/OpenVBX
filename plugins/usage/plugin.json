@@ -1,0 +1,12 @@
+{
+	"name": "Twilio Usage",
+	"author": "shawn@twilio.com",
+	"description": "A sample plugin for viewing usage data & costs.",
+	"links": [{
+		"menu": "Usage",
+		"url": "usage",
+		"script": "usage.php",
+		"label": "Usage"
+	}],
+	"disabled": true
+}

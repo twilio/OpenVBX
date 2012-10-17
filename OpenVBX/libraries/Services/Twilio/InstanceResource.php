@@ -23,23 +23,32 @@ abstract class Services_Twilio_InstanceResource
         if (!is_array($params)) {
             $params = array($params => $value);
         }
-        $this->proxy->updateData($params);
+        $decamelizedParams = $this->client->createData($this->uri, $params);
+        $this->updateAttributes($decamelizedParams);
     }
 
-    /**
-     * Set this resource's proxy.
+    /* 
+     * Add all properties from an associative array (the JSON response body) as 
+     * properties on this instance resource, except the URI
      *
-     * @param Services_Twilio_DataProxy $proxy An instance of DataProxy
-     *
-     * @return null
+     * @param stdClass $params An object containing all of the parameters of 
+     *      this instance
+     * @return null Purely side effecting
      */
-    public function setProxy($proxy)
-    {
-        $this->proxy = $proxy;
+    public function updateAttributes($params) {
+        unset($params->uri);
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
+        }
     }
 
     /**
      * Get the value of a property on this resource.
+     * 
+     * To help with lazy HTTP requests, we don't actually retrieve an object 
+     * from the API unless you really need it. Hence, this function may make 
+     * API requests if the property you're requesting isn't available on the 
+     * resource.
      *
      * @param string $key The property name
      *
@@ -50,6 +59,10 @@ abstract class Services_Twilio_InstanceResource
         if ($subresource = $this->getSubresources($key)) {
             return $subresource;
         }
-        return $this->proxy->$key;
+        if (!isset($this->$key)) {
+            $params = $this->client->retrieveData($this->uri);
+            $this->updateAttributes($params);
+        }
+        return $this->$key;
     }
 }

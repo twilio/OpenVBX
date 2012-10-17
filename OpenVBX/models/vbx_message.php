@@ -435,7 +435,7 @@ class VBX_Message extends Model {
 
 		$notification_setting = 'email_notifications_'.$message->type;
 		$email_notify = $ci->vbx_settings->get($notification_setting, $ci->tenant->id);
-		
+
 		// check the incoming number's capabilities and don't even try to send
 		// an SMS notification if the number is not allowed to send SMS messages
 		$incoming_number = VBX_Incoming_numbers::get(array(

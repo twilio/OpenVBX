@@ -10,42 +10,28 @@
  * @link     http://pear.php.net/package/Services_Twilio
  */ 
 abstract class Services_Twilio_Resource
-    implements Services_Twilio_DataProxy
 {
-    protected $name;
-    protected $proxy;
     protected $subresources;
 
-    public function __construct(Services_Twilio_DataProxy $proxy)
+    public function __construct($client, $uri, $params = array())
     {
         $this->subresources = array();
-        $this->proxy = $proxy;
-        $this->name = get_class($this);
-        $this->init();
+        $this->client = $client;
+
+        foreach ($params as $name => $param) {
+            $this->$name = $param;
+        }
+
+        $this->uri = $uri;
+        $this->init($client, $uri);
     }
 
-    protected function init()
+    protected function init($client, $uri)
     {
         // Left empty for derived classes to implement
     }
 
-    public function retrieveData($path, array $params = array())
-    {
-        return $this->proxy->retrieveData($path, $params);
-    }
-
-    public function deleteData($path, array $params = array())
-    {
-        return $this->proxy->deleteData($path, $params);
-    }
-
-    public function createData($path, array $params = array())
-    {
-        return $this->proxy->createData($path, $params);
-    }
-
-    public function getSubresources($name = null)
-    {
+    public function getSubresources($name = null) {
         if (isset($name)) {
             return isset($this->subresources[$name])
                 ? $this->subresources[$name]
@@ -54,17 +40,33 @@ abstract class Services_Twilio_Resource
         return $this->subresources;
     }
 
-    public function addSubresource($name, Services_Twilio_Resource $res)
-    {
-        $this->subresources[$name] = $res;
-    }
-
     protected function setupSubresources()
     {
         foreach (func_get_args() as $name) {
-            $constantized = ucfirst(Services_Twilio_Resource::camelize($name));
+            $constantized = ucfirst(self::camelize($name));
             $type = "Services_Twilio_Rest_" . $constantized;
-            $this->addSubresource($name, new $type($this));
+            $this->subresources[$name] = new $type(
+                $this->client, $this->uri . "/$constantized"
+            );
+        }
+    }
+
+    /* 
+     * Get the resource name from the classname
+     * 
+     * Ex: Services_Twilio_Rest_Accounts -> Accounts
+     *
+     * @param boolean $camelized Whether to return camel case or not
+     */
+    public function getResourceName($camelized = false) 
+    {
+        $name = get_class($this);
+        $parts = explode('_', $name);
+        $basename = end($parts);
+        if ($camelized) {
+            return $basename;
+        } else {
+            return self::decamelize($basename);
         }
     }
 
@@ -77,9 +79,29 @@ abstract class Services_Twilio_Resource
         );
     }
 
-    public static function camelize($word)
-    {
+    /**
+     * Return camelized version of a word
+     * Examples: sms_messages => SMSMessages, calls => Calls, 
+     * incoming_phone_numbers => IncomingPhoneNumbers
+     *
+     * @param string $word The word to camelize
+     * @return string
+     */
+    public static function camelize($word) {
         return preg_replace('/(^|_)([a-z])/e', 'strtoupper("\\2")', $word);
+    }
+
+    /**
+     * Get the value of a property on this resource.
+     * 
+     * @param string $key The property name
+     * @return mixed Could be anything.
+     */
+    public function __get($key) {
+        if ($subresource = $this->getSubresources($key)) {
+            return $subresource;
+        }
+        return $this->$key;
     }
 }
 

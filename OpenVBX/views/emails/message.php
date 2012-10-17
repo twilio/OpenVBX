@@ -11,8 +11,9 @@ echo "\n\n";
 
 if($message->type == 'voice')
 {
+	$created = date('Y-m-d H:i:s', strtotime($message->created . ' +0000'));
 	echo "-----------------------------------\n\n";
-	echo "Voicemail recorded {$message->created}\n\n";
+	echo "Voicemail recorded {$created}\n\n";
 	echo "Length of voicemail: {$message->size} seconds\n\n";
 }
 
