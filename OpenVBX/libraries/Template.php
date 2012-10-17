@@ -392,7 +392,7 @@ class CI_Template {
 				}
 			}
 		}
-		elseif (is_object($data)) {
+		elseif (is_object($data) && !is_a($data, 'Services_Twilio_InstanceResource')) {
 			$vars = get_object_vars($data);
 			foreach ($vars as $key => $propval) {
 				$data->{$key} = self::clean_output($propval);

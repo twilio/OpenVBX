@@ -15,7 +15,8 @@
 	</div><!-- .vbx-content-tabs -->
 	
 	<div id="vbx-settings-content">
-		<?php 
+
+		<?php
 			if (isset($upgrade_notice) && $upgrade_notice === true)
 			{
 				$this->load->view('settings/upgrade-notice.php', compact(

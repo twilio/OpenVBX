@@ -1,10 +1,8 @@
 <?php
 
-class Services_Twilio_Rest_Account
-    extends Services_Twilio_InstanceResource
-{
-    protected function init()
-    {
+class Services_Twilio_Rest_Account extends Services_Twilio_InstanceResource {
+
+    protected function init($client, $uri) {
         $this->setupSubresources(
             'applications',
             'available_phone_numbers',
@@ -17,12 +15,15 @@ class Services_Twilio_Rest_Account
             'recordings',
             'sms_messages',
             'transcriptions',
-			'connect_apps',
-			'authorized_connect_apps'
+            'connect_apps',
+            'authorized_connect_apps',
+            'usage_records',
+            'usage_triggers',
+            'queues'
         );
 
         $this->sandbox = new Services_Twilio_Rest_Sandbox(
-            new Services_Twilio_CachingDataProxy('Sandbox', $this)
+            $client, $uri . '/Sandbox'
         );
     }
 }

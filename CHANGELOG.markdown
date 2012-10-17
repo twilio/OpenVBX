@@ -11,6 +11,9 @@
 - Fix request validation where url rewriting is enabled but the `vbxsite` variable still appears in the request uri parameter.
 - Fix unnecessary failure when trying to install on `localhost`.
 - Fix for emails not containing the properly adjusted message time.
+- Fix device call sequence to respect the sequence when dialing a user.
+- Trust Twilio REST Api objects when scrubbing data.
+- Add sample plugin for Twilio Usage API data.
 
 
 ## OpenVBX 1.2.9
