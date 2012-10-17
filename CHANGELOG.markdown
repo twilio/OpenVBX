@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## Next
+## OpenVBX 1.2.10
 
 - Fix improper exception pass through that would show the wrong error message to a user when updating settings.
 - Adding a favicon to help keep server logs quiet.
