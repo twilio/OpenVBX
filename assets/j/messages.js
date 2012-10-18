@@ -3,7 +3,7 @@
  *  Version 1.1 (the "License"); you may not use this file except in
  *  compliance with the License. You may obtain a copy of the License at
  *  http://www.mozilla.org/MPL/
- 
+
  *  Software distributed under the License is distributed on an "AS IS"
  *  basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  *  License for the specific language governing rights and limitations
@@ -49,15 +49,15 @@ Message.Detail = {
 
 					/* Update the counts */
 					$.ajax({
-						url : OpenVBX.home + '/messages/inbox', 
-						success : function(data) { 
+						url : OpenVBX.home + '/messages/inbox',
+						success : function(data) {
 							if(!data.error) {
 								$.each(data.folders, function(i) {
 									$('.count[rel="'+this['id']+'"]').text(this['new']);
 								});
 							}
 						},
-						type: 'GET', 
+						type: 'GET',
 						dataType: 'json'
 					});
 
@@ -83,12 +83,12 @@ Message.Detail = {
 		this.update(id, data, success);
 	}
 };
-	
+
 Message.Player = {
 	getRecordingUrls : function(afterFetch) {
 		if(Message.Player.messageIdsToRecordingURLs) {
 			return afterFetch();
-		} 
+		}
 
 		$.ajax({
 			success : function(data) {
@@ -100,31 +100,31 @@ Message.Player = {
 
 				if( 'recording_url' in data )
 					Message.Player.messageIdsToRecordingURLs[data.id] = data.recording_url + '.mp3';
-				if( 'messages' in data )	
+				if( 'messages' in data )
 					for( var id in Message.Player.messages ) {
 						var item = data.messages[id];
 						Message.Player.messageIdsToRecordingURLs[item.id] = item.recording_url + '.mp3';
 					}
 
-				Message.Player.allowPause = true;  
+				Message.Player.allowPause = true;
 				return afterFetch();
 			},
 			type : 'GET',
 			dataType : 'json'
 		});
 	},
-	
+
 	messageIdsToRecordingURLs : null,
-	
+
 	currentSoundObject : null,
 	currentMessageAnchor : null,
-	
+
 	lastLoadBarHandler : null,
-	
+
 	// When 'allowPause' is true, the Play button will turn to a
 	// Pause button after the message starts playing.
 	allowPause : false,
-	
+
 	nextMessageToPlayAnchor : null,
 
  	togglePlayForMessage : function(anchor) {
@@ -140,7 +140,7 @@ Message.Player = {
 				Message.Player.currentSoundObject.stop();
 
 			} else if (Message.Player.currentMessageAnchor != null && Message.Player.currentMessageAnchor == anchor) {
-				
+
 				if (Message.Player.currentSoundObject.paused) {
 					Message.Player.currentSoundObject.resume();
 				} else if (Message.Player.allowPause) {
@@ -157,23 +157,23 @@ Message.Player = {
 		Message.Player.getRecordingUrls(function(){ _togglePlayForMessage(anchor)});
 
 	},
-	
+
 	playMessage: function(anchor) {
 		Message.Player.currentMessageAnchor = anchor;
-		
+
 		anchor = $(anchor);
 		var id = anchor.attr('id').replace('play-', '');
-		
+
 		Message.Player.currentSoundId = "message-" + id;
-		
+
 		if (!(id in Message.Player.messageIdsToRecordingURLs)) {
 			throw "Unable to find the recording URL for id '" + id + "'";
 		}
-		
+
 		var recordingURL = Message.Player.messageIdsToRecordingURLs[id];
 
 		var messageRow = anchor.closest('.message-row');
-			
+
 		var playPauseStopButton = messageRow.find('.playback-button');
 		var player = messageRow.find('.player');
 		var transcript = messageRow.find('.transcript');
@@ -188,10 +188,10 @@ Message.Player = {
 			// we start playing...
 			loadBar.css('width', '100%');
 			playBar.css('width', percentPlayed + '%');
-			
+
 			playTime.text(convertMsecsToMinutesAndSeconds(soundObject.position));
 		};
-		
+
 		var finishOrStop = function() {
 			playPauseStopButton.removeClass('pause').removeClass('stop').addClass('play');
 			player.removeClass('current-player').hide();
@@ -199,7 +199,7 @@ Message.Player = {
 			Message.Player.currentMessageAnchor = null;
 			Message.Player.currentSoundObject.destruct();
 			Message.Player.currentSoundObject = null;
-			
+
 			// If there's a message waiting to play, let's play it.
 			if (Message.Player.nextMessageToPlayAnchor != null) {
 				var nextMessage = Message.Player.nextMessageToPlayAnchor;
@@ -213,13 +213,13 @@ Message.Player = {
 			url: recordingURL,
 			onplay: function() {
 				playPauseStopButton.removeClass('play');
-				
+
 				if (Message.Player.allowPause) {
 					playPauseStopButton.addClass('pause');
 				} else {
 					playPauseStopButton.addClass('stop');
 				}
-				
+
 				player.addClass('current-player').show();
 				transcript.hide();
 			},
@@ -246,24 +246,24 @@ Message.Player = {
 			}
 		});
 		Message.Player.currentSoundObject.play();
-		
-		
+
+
 		if (Message.Player.lastLoadBarHandler != null) {
 			loadBar.unbind('click', Message.Player.lastLoadBarHandler);
 		}
-		
+
 		Message.Player.lastLoadBarHandler = function(e) {
 			e.stopPropagation();
 
 			var soundObject = Message.Player.currentSoundObject;
-			
+
 			var offset = loadBar.offset();
 			var xOffset = e.pageX - offset.left;
 			var width = loadBar.width();
 			var percent = (xOffset / width)
-			
+
 			var msecPosition = ((xOffset / width) * soundObject.durationEstimate);
-			
+
 			soundObject.setPosition(msecPosition);
 			updatePlayBarAndTimeWithPercent(soundObject, Math.round((xOffset / width) * 100));
 		};
@@ -273,61 +273,61 @@ Message.Player = {
 };
 
 $(document).ready(function() {
-	
+
 	(function(){
 
 		var now = new Date();
 		var midnightToday = new Date(now.getFullYear() , now.getMonth(), now.getDate(), 0, 0, 0).getTime();
 		var firstOfTheYear = new Date(now.getFullYear(), 0, 1, 0, 0, 0).getTime();
-		
+
 		$(".unformatted-absolute-timestamp").each(function(index, element) {
 			element = $(element);
 
 			var timestamp = parseInt(element.text()) * 1000;;
 
 			element.text(convertTimeToString(timestamp, midnightToday, firstOfTheYear));
-			
+
 			element.removeClass('hide');
 		});
-		
+
 		var refreshRelativeTimes = function() {
 			$(".unformatted-relative-timestamp").each(function(index, element) {
 				element = $(element);
-				
+
 				var timestamp = element.data('timestamp');
-				
+
 				if (!timestamp) {
 					// Store away the original time because we're about to
 					// erase the body of this element
 					timestamp = parseInt(element.text()) * 1000;
 					element.data('timestamp', timestamp);
 				}
-				
+
 				var nowTime = (new Date().getTime());
 				var timeDiff = (nowTime - timestamp);
-				
+
 				var minsAgo = Math.floor(timeDiff / 1000 / 60);
 				var hoursAgo = Math.floor(timeDiff / 1000 / 60 / 60);
-				
+
 				if (nowTime > timestamp && (nowTime - timestamp) < 60 * 60 * 1000) {
 					// show relative time - it's less than an hour old AND
 					// it's not in the future (it could happen!)
 
 					var text;
-					
+
 					if (hoursAgo == 0) {
 						text = minsAgo + " minutes ago";
 					} else {
 						text = hoursAgo + " hour" + (hoursAgo > 1 ? "s" : "") + " ago";
 					}
-					
+
 					element.text(text);
-					
+
 				} else {
 					// show absolute time
 					element.text(convertTimeToString(timestamp));
-				}	
-				
+				}
+
 				element.removeClass('hide');
 			});
 		}
@@ -337,8 +337,8 @@ $(document).ready(function() {
 		// And, refresh these relative times once a minute
 		setInterval(refreshRelativeTimes, 60 * 1000);
 	})();
-	
-	
+
+
 	Message.Player.player = $('#audio-player');
 
 	$('a.quick-play').click( function(event) {
@@ -346,25 +346,25 @@ $(document).ready(function() {
 		Message.Player.togglePlayForMessage(this);
 	});
 
-	$('.caller-id-phone a').click(function() { 
+	$('.caller-id-phone a').click(function() {
 		var anchor = $(this);
 		if(anchor.parents('ul.caller-id-phone')) {
 			anchor.hide()
 				.parents('ul')
 				.append('<li class="calling">Calling...</li>');
-			
+
 		} else {
 			anchor.hide()
 				.parent()
 				.append('<li class="calling">Calling...</li>');
 		}
-		
+
 		var call_params = {
 			callerid : $('.callerid', this).text(),
 			from : $('.from', this).text(),
 			to: $('.to', this).text()
 		};
-				
+
 		if ($('#vbx-client-status').hasClass('online')) {
 			$.post(
 				$(this).attr('href'),
@@ -373,7 +373,7 @@ $(document).ready(function() {
 					if (!data.error) {
 						window.parent.Client.call($.extend(call_params, { 'Digits': 1 }));
 						$('.quick-call-popup .calling').remove();
-						$('.quick-call-popup.open').toggleClass('open');					
+						$('.quick-call-popup.open').toggleClass('open');
 					}
 				},
 				'json'
@@ -407,7 +407,7 @@ $(document).ready(function() {
 		return false;
 
 	});
-	
+
 	// If someone clicks in the quick-call-popup, don't act as if
 	// they wanted the click to go through and take them to the details page.
 	// NOTE: The click for the call button still works, and is caught elsewhere.
@@ -418,7 +418,7 @@ $(document).ready(function() {
 	$('.quick-sms-popup').click(function(){
 		return false;
 	});
-	
+
 
 	$('.quick-sms-popup .send-button').click(function(event) {
 		var popup = $(this).parents('.quick-sms-popup');
@@ -447,11 +447,11 @@ $(document).ready(function() {
 	});
 
 	$('.message-row').hover(
-		function() { 
-			$(this).addClass('hover'); 
-		}, 
-		function() { 
-			$(this).removeClass('hover'); 
+		function() {
+			$(this).addClass('hover');
+		},
+		function() {
+			$(this).removeClass('hover');
 		}
 	);
 
@@ -460,12 +460,12 @@ $(document).ready(function() {
 		$(this).parent().addClass('mousedown');
 	})
 
-		
+
 	$('body').mouseup(function() {
 		$('.message-row').removeClass('mousedown')
 	});
 
-	
+
 	$('.message-row td.message-details-link').click(function() {
 		$(this).parent().addClass('clicked');
 		document.location = OpenVBX.home + '/messages/details/' + $(this).parent().attr('rel');
@@ -499,7 +499,7 @@ $(document).ready(function() {
 	});
 
 	$('.assign-button').buttonista({ menu : '.assign-to-popup' });
-	
+
 	// When the assign to popup comes up, want to position it so that
 	// the little person icon in the popup appears directly over top of
 	// the person icon in the message row.  If we can't have that, we just
@@ -523,7 +523,7 @@ $(document).ready(function() {
 		if (assignToPopup.bottom() > visibleBottomOffset) {
 			assignToPopup.bottom(visibleBottomOffset - 10);
 		}
-	
+
 		event.preventDefault();
 	});
 
@@ -532,13 +532,13 @@ $(document).ready(function() {
 	var updateCount = function() {
 		var length = $(this).val().length;
 		$(this).parents('.quick-sms-popup, #reply-sms')
-			.children('.count')
+			.find('.count')
 			.text(160 - length);
 	};
-	$('.quick-sms-popup input[name="content"]').live('keypress', updateCount);
+	$('.quick-sms-popup input[name="content"]').live('keyup', updateCount);
 	$('.quick-sms-popup input[name="content"]').keypress();
-	$('#reply-sms textarea').live('keypress', updateCount);
-	$('#reply-sms textarea').live('change', updateCount);
+	$('#reply-sms textarea').live('keyup', updateCount);
+	$('#reply-sms textarea').live('keyup', updateCount);
 	$('#reply-sms textarea').keypress();
 	$('#reply-sms .submit-button').click(function(event) {
 		event.preventDefault();
@@ -587,16 +587,16 @@ $(document).ready(function() {
 									   $.notify('Deleted '+ id.length + ' message' + (id.length > 1 ? 's' : ''));
 								   });
 		}
-		
+
 		return false;
 	});
 
 	$('.assign-user-list .user a').live('click', function(event) {
 		event.preventDefault();
 		var anchor = $(this);
-		
+
 		var initials;
-		
+
 		var matches = anchor.text().match(/\((..)\)$/)
 
 		if (matches) {
@@ -604,7 +604,7 @@ $(document).ready(function() {
 		} else {
 		    initials = "";
 		}
-		
+
 		Message.Detail.assign($(this).parents('tr').attr('rel'),
 							  $(this).attr('rel'),
 							  function() {
