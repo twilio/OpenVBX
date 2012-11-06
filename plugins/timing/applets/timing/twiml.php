@@ -1,8 +1,12 @@
 <?php
 $response = new TwimlResponse;
 
+function modwrap($num, $mod) {
+    return ($mod + ($num % $mod)) % $mod;
+}
+
 $now = date_create('now');
-$today = date_format($now, 'w') - 1;
+$today = modwrap(date_format($now, 'w') - 1, 7);
 
 /** 
  * The names of the applet instance variables for "from" and "to" times 
