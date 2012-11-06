@@ -528,7 +528,7 @@ $(document).ready(function() {
 	});
 
 	$('.quick-call-button').buttonista({ menu : '.quick-call-popup' });
-	$('.quick-sms-button').buttonista({ menu : '.quick-sms-popup', toggler : '.sms-toggler' });
+	$('.quick-sms-button').buttonista({ menu : '.quick-sms-popup', toggler : '.sms-toggler', focus: '.sms-message' });
 	var updateCount = function() {
 		var length = $(this).val().length;
 		$(this).parents('.quick-sms-popup, #reply-sms')
