@@ -3,6 +3,7 @@
 ## Next
 
 - Fix character counting on message detail page. Props to @walker.
+- Add focus to inputs on certain dialogs and pickers. Props to @walker.
 
 ## OpenVBX 1.2.10
 
