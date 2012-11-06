@@ -1,5 +1,9 @@
 # OpenVBX Change Log
 
+## Next
+
+- Fix character counting on message detail page. Props to @walker.
+
 ## OpenVBX 1.2.10
 
 - Fix improper exception pass through that would show the wrong error message to a user when updating settings.
