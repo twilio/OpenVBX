@@ -4,6 +4,7 @@
 
 - Fix character counting on message detail page. Props to @walker.
 - Add focus to inputs on certain dialogs and pickers. Props to @walker.
+- Bump Twilio JS to 1.1 for WebRTC support.
 
 ## OpenVBX 1.2.10
 
