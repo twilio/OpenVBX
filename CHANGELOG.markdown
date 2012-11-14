@@ -1,5 +1,11 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.11
+
+- Fix character counting on message detail page. Props to @walker.
+- Add focus to inputs on certain dialogs and pickers. Props to @walker.
+- Bump Twilio JS to 1.1 for WebRTC support.
+
 ## OpenVBX 1.2.10
 
 - Fix improper exception pass through that would show the wrong error message to a user when updating settings.

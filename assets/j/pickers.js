@@ -443,11 +443,16 @@ var Pickers = {
 			audioChoice.find('.audio-choice-editor').show();
 			// And then the individual editor for the input method we've chosen.
 			audioChoice.find('.audio-choice-editor .audio-choice-' + selection).show();
-
-			if (selection == 'read-text') {
+			
+			if (selection == 'record') {
+				// Focus on phone number input area
+				audioChoice.find('.audio-choice-editor .audio-choice-' + selection).find('input.medium').focus();
+			} else if (selection == 'read-text') {
 				// Start with whatever the current value is.
 				var text = audioChoice.find('input[name$="_say"]').val();
 				audioChoice.find('.audio-choice-editor .audio-choice-' + selection).find('textarea').val(text);
+				// Focus on the input area
+				audioChoice.find('.audio-choice-editor .audio-choice-' + selection).find('textarea').focus();
 			} else if (selection == 'library') {
 
 				// Normally we'd register to receive change() events via .live(...) but that apparenlty doesn't

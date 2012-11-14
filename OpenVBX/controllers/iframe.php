@@ -42,7 +42,7 @@ class Iframe extends User_Controller {
 			'site_title' => 'OpenVBX',
 			'iframe_url' => site_url('/messages'),
 			'users' => $this->get_users(),
-			'twilio_js' => $this->twilio_js_baseurl.'/libs/twiliojs/1.0/'.$this->twilio_js_file,
+			'twilio_js' => $this->twilio_js_baseurl.'/libs/twiliojs/1.1/'.$this->twilio_js_file,
 			'client_capability' => null
 		));
 		
