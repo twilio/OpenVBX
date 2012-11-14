@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## Next
+## OpenVBX 1.2.11
 
 - Fix character counting on message detail page. Props to @walker.
 - Add focus to inputs on certain dialogs and pickers. Props to @walker.

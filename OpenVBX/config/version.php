@@ -1,3 +1,3 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-$config['version'] = '1.2.10';
+$config['version'] = '1.2.11';
