@@ -1,5 +1,9 @@
 # OpenVBX Change Log
 
+## Next
+
+- Fix cache table `value` field to be `mediumblob` instead of `text`. Fixes an issue where large lists of phone numbers (300+) would overflow the value field and corrupt the cached data.
+
 ## OpenVBX 1.2.11
 
 - Fix character counting on message detail page. Props to @walker.
