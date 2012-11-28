@@ -12,12 +12,6 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 	}
 	
 	public function __destruct() {}
-	
-	public function _keyname($group)
-	{
-		// mash up the group with the group's generation
-		
-	}
 		
 	public function _set($key, $data, $group, $tenant_id,  $expires = null)
 	{	
