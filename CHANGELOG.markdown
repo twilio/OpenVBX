@@ -5,6 +5,7 @@
 - Fix cache table `value` field to be `mediumblob` instead of `text`. Fixes an issue where large lists of phone numbers (300+) would overflow the value field and corrupt the cached data.
 - Fix exception with latest versions of PHP when a default timezone is not set.
 - Fix Github API request for upgrade version check to use Github API V3.
+- Removing Sandbox number access. Sandbox numbers are no longer supported by Twilio.
 
 
 ## OpenVBX 1.2.11

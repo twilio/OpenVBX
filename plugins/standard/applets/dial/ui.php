@@ -3,7 +3,7 @@
 	$ci->load->model('vbx_incoming_numbers');
 	
 	try {
-		$numbers = $ci->vbx_incoming_numbers->get_numbers(false);
+		$numbers = $ci->vbx_incoming_numbers->get_numbers();
 	}
 	catch (VBX_IncomingNumberException $e) {
 		log_message('Incoming numbers exception: '.$e->getMessage.' :: '.$e->getCode());
