@@ -130,7 +130,6 @@ class VBX_Incoming_numbers extends Model
 		$num->name = $item->friendly_name;
 		$num->phone = format_phone($item->phone_number);
 		$num->phone_number = $item->phone_number;
-		$num->pin = $item->pin ? $item->pin : null;
 		$num->url = $item->voice_url;
 		$num->method = $item->voice_method;
 		$num->smsUrl = $item->sms_url;
