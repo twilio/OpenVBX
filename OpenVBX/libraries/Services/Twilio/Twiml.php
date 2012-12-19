@@ -81,9 +81,9 @@ class Services_Twilio_Twiml
         }
         /* addChild does not escape XML, while addAttribute does.
          * 
-         * We want ampersands to be spoken?
          */
-        $normalized = utf8_encode(html_entity_decode($noun, null, 'ISO-8859-1'));
+		
+		$normalized = htmlspecialchars($noun, ENT_COMPAT, 'ISO-8859-1', false);
         //then escape it again
         $child = empty($noun)
             ? $this->element->addChild(ucfirst($verb))
