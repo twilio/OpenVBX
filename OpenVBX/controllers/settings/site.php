@@ -772,21 +772,19 @@ class Site extends User_Controller
 		}
 		
 		try {
-			include_once(APPPATH.'libraries/Github/Autoloader.php');
-			Github_Autoloader::register();
-		
-			$gh = new Github_Client;
-			$tags = $gh->getRepoApi()->getRepoTags('twilio', 'openvbx');
-		
+			include_once(APPPATH . 'libraries/VBX_Github_Client.php');
+			$gh = new VBX_Github_Client;			
+			$tags = $gh->getTags();
+						
 			$latest = false;
-		
+					
 			if (is_array($tags) && count($tags) > 0)
 			{
 				$list = array_keys($tags);
 				usort($list, array($this, 'version_sort'));
 				$latest = array_pop($list);
 			}
-		
+								
 			$this->api_cache->set('latest_version', $latest, 'Site', $this->tenant->id);
 		}
 		catch (Exception $e) {

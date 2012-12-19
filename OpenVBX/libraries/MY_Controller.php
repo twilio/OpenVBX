@@ -206,6 +206,10 @@ class MY_Controller extends Controller
 		if (!empty($tz))
 		{
 			date_default_timezone_set($tz);
+		} 
+		else 
+		{
+			date_default_timezone_set(date_default_timezone_get());
 		}
 	}
 	

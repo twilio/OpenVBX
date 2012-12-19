@@ -11,7 +11,7 @@ function runUpdate_45() {
 	
 	if (count($tenants)) {
 		$ci->load->model('vbx_incoming_numbers');
-		$numbers = $ci->vbx_incoming_numbers->get_numbers($retrieve_sandbox = true);
+		$numbers = $ci->vbx_incoming_numbers->get_numbers();
 		foreach ($tenants as $tenant) {
 			error_log("Updating to 2010: ". var_export($tenant, true));
 			$twilio_sid = $ci->settings->get('twilio_sid', $tenant->id);

@@ -29,30 +29,6 @@
 				<p class="instruction">Must be a CNAME for api.twilio.com<br />See the Twilio documentation on <a href="http://www.twilio.com/docs/api/rest/tips#vanity-urls">Vanity Urls</a> for more info.</p>
 				<br />
 			</div>
-
-			<div class="vbx-input-complex vbx-input-container">
-				<label for="show-sandbox-number" class="field-label">Sandbox Number Display</label>
-				<label for="sandbox-on" class="field-label-inline">
-					<?php
-						$radio = array(
-							'id' => 'sandbox-on',
-							'name' => 'site[enable_sandbox_number]'
-						);
-						echo form_radio($radio, '1', ($enable_sandbox_number['value'] == 1));
-					?> Show
-				</label>
-				<label for="sandbox-off" class="field-label-inline">
-					<?php
-						$radio = array(
-							'id' => 'sandbox-off',
-							'name' => 'site[enable_sandbox_number]'
-						);
-						echo form_radio($radio, '0', ($enable_sandbox_number['value'] == 0));
-					?> Hide
-				</label>
-				<p class="instruction">Whether or not to show the Sandbox number in the Numbers<br />list and allow the Sandbox number to be assigned to flows.<br />This option is not available to sub-tenants.</p>
-				<br />
-			</div>
 		<?php endif; /* END PARENT TENANT ONLY */ ?>
 				
 			<div class="vbx-input-complex vbx-input-container">
