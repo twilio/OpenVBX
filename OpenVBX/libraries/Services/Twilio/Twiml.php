@@ -79,27 +79,11 @@ class Services_Twilio_Twiml
         if (is_array($noun)) {
             list($attrs, $noun) = array($noun, '');
         }
-        /* addChild does not escape XML, while addAttribute does. This means if 
-         * you pass unescaped ampersands ("&") to addChild, you will generate 
-         * an error. 
-         *
-         * Some inexperienced developers will pass in unescaped ampersands, and 
-         * we want to make their code work, by escaping the ampersands for them 
-         * before passing the string to addChild. (with htmlentities)
-         *
-         * However other people will know what to do, and their code 
-         * already escapes ampersands before passing them to addChild. We don't 
-         * want to break their existing code by turning their &amp;'s into 
-         * &amp;amp;
-         *
-         * So we end up with the following matrix:
-         *
-         * We want & to turn into &amp; before passing to addChild
-         * We want &amp; to stay as &amp; before passing to addChild
-         *
-         * The following line accomplishes the desired behavior.
+        /* addChild does not escape XML, while addAttribute does.
+         * 
          */
-        $normalized = htmlentities($noun, null, null, false);
+		
+		$normalized = htmlspecialchars($noun, ENT_COMPAT, 'ISO-8859-1', false);
         //then escape it again
         $child = empty($noun)
             ? $this->element->addChild(ucfirst($verb))
