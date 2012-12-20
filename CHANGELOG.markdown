@@ -7,7 +7,7 @@
 - Fix Github API request for upgrade version check to use Github API V3.
 - Removing Sandbox number access. Sandbox numbers are no longer supported by Twilio.
 	- Also fixes an issue when loading phone number lists where looking for the pin attribute would cause a series of unecessary api calls.
-
+- Updating Twilio PHP library to fix issue with special characters in TwiML output.
 
 ## OpenVBX 1.2.11
 
