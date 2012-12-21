@@ -9,7 +9,7 @@ Installing OpenVBX is quick and easy, just follow this five step guide to get up
 
 * Web Server
 * MySQL 5+
-* PHP 5.2+
+* PHP 5.2.3+
 * [Twilio Account](https://www.twilio.com/try-twilio)
 
 
@@ -87,7 +87,7 @@ This page provides detailed information for each step of the OpenVBX install pro
 
 OpenVBX requires the software listed below. It is all available for free and is open source. OpenVBX is supported and should run on all major linux distributions. OpenVBX may run on other platforms (namely Windows) but is currently unsupported.
 
-1. **PHP version:** We recommend PHP 5.2 or higher
+1. **PHP version:** We recommend PHP 5.2.3 or higher
 1. **CURL support:** OpenVBX requires CURL. If you don't meet this requirement, install the CURL module.
 1. **Apache version:** We recommend Apache version 2.2+. Earlier versions and other web servers may work, but are currently unsupported.
 1. **MySQL support:** We require MySQL version 5+.

@@ -1,7 +1,7 @@
 # Requirements
 -----------------------------
  * Web Server
- * PHP 5.2+
+ * PHP 5.2.3+
  * MySQL 5+
  * Twilio Account
 
@@ -35,7 +35,7 @@ written permission.
 # More Information
 -----------------------------
 Visit http://openvbx.org  
-Chick Peas and gravy.
+Pineapple and gravy.
 
 
 Please remember that your use of OpenVBX in connection with the Twilio 
