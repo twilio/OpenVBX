@@ -1,5 +1,24 @@
 # OpenVBX Change Log
 
+## Next
+
+- Fix cache table `value` field to be `mediumblob` instead of `text`. Fixes an issue where large lists of phone numbers (300+) would overflow the value field and corrupt the cached data.
+- Fix exception with latest versions of PHP when a default timezone is not set.
+- Fix Github API request for upgrade version check to use Github API V3.
+- Removing Sandbox number access. Sandbox numbers are no longer supported by Twilio.
+	- Also fixes an issue when loading phone number lists where looking for the pin attribute would cause a series of unecessary api calls.
+- Updating Twilio PHP library to fix issue with special characters in TwiML output.
+- Fix issue with double-encoded entities that manifested in flow editor. Use the `double_encode` flag in `htmlspecialchars` to protect against it happening.
+    - Minimum PHP version bumped to 5.2.3 to accommodate the double encode flag.
+
+
+## OpenVBX 1.2.11
+
+- Fix character counting on message detail page. Props to @walker.
+- Add focus to inputs on certain dialogs and pickers. Props to @walker.
+- Bump Twilio JS to 1.1 for WebRTC support.
+
+
 ## OpenVBX 1.2.10
 
 - Fix improper exception pass through that would show the wrong error message to a user when updating settings.

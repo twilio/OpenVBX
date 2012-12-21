@@ -55,7 +55,7 @@ class AppletUIWidget
 	{
 		if(is_string($data))
 		{
-			return htmlspecialchars($data);
+			return htmlspecialchars($data, ENT_COMPAT, 'UTF-8', false);
 		}
 		else if(is_array($data))
 		{

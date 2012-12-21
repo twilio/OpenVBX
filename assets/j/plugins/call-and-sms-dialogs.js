@@ -289,6 +289,7 @@ jQuery(function($) {
 			$('input[name="to"]', dialog).val(phone);
 			$('input[name="target"]', dialog).val(target);
 			$('.screen').show();
+			dialog.find('input.small').focus();
 			
 			currentDialogType = 'sms';
 			currentDialogHideFunction = function() {

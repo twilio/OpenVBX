@@ -30,54 +30,12 @@ class VBX_Incoming_numbers extends Model
 		parent::__construct();
 	}
 
-	public function get_sandbox()
-	{
-		$ci =& get_instance();
-		if ($cache = $ci->api_cache->get('sandbox', __CLASS__, $ci->tenant->id))
-		{
-			return $cache;
-		}
-		
-		try {
-			$account = OpenVBX::getAccount();
-			$sandbox = $account->sandbox;
-			if (!empty($sandbox) && ($sandbox instanceof Services_Twilio_Rest_Sandbox)) 
-			{
-				$sandbox = $this->parseIncomingPhoneNumber($sandbox);
-				$ci->api_cache->set('sandbox', $sandbox, __CLASS__, $ci->tenant->id);
-			}
-		}
-		catch (Exception $e) {
-			$msg = 'Unable to fetch Sandbox information: ';
-			switch ($e->getCode())
-			{
-				case 20003:
-					$msg .= 'Authentication Failed.';
-					break;
-				default:
-					$msg .= $e->getMessage();
-			}
-			throw new VBX_IncomingNumberException($msg, $e->getCode());
-		}
-
-		return $sandbox;
-	}
-
-	public function get_numbers($retrieve_sandbox = true)
+	public function get_numbers($retrieve_sandbox = 'deprecated')
 	{		
 		$ci =& get_instance();
-		$enabled_sandbox_number = $ci->settings->get('enable_sandbox_number', $ci->tenant->id);
 		$cache_key = 'incoming-numbers';
 		if ($cache = $ci->api_cache->get($cache_key, __CLASS__, $ci->tenant->id))
 		{
-			if (!$retrieve_sandbox || !$enabled_sandbox_number)
-			{
-				foreach ($cache as $key => $item) {
-					if ($item->id == 'Sandbox') {
-						unset($cache[$key]);
-					}
-				}
-			}
 			return $cache;
 		}
 
@@ -102,24 +60,9 @@ class VBX_Incoming_numbers extends Model
 			}
 			throw new VBX_IncomingNumberException($msg, $e->getCode());
 		}
-		
-		$ci = &get_instance();
-		if ($enabled_sandbox_number && $sandbox_number = $this->get_sandbox())
-		{
-			$numbers[] = $sandbox_number;
-		}
 
 		$ci->api_cache->set('incoming-numbers', $numbers, __CLASS__, $ci->tenant->id);
 
-		if (!$retrieve_sandbox || !$enabled_sandbox_number)
-		{
-			foreach ($cache as $key => $item) {
-				if ($item->id == 'Sandbox') {
-					unset($cache[$key]);
-				}
-			}
-		}
-		
 		return $numbers;
 	}
 	
@@ -183,12 +126,10 @@ class VBX_Incoming_numbers extends Model
 	{
 		$num = new stdClass();
 		$num->flow_id = null;
-		$num->id = $item->sid ? $item->sid : 'Sandbox';
+		$num->id = $item->sid;
 		$num->name = $item->friendly_name;
 		$num->phone = format_phone($item->phone_number);
 		$num->phone_number = $item->phone_number;
-		$num->pin = $item->pin ? $item->pin : null;
-		$num->sandbox = $item->pin ? true : false;
 		$num->url = $item->voice_url;
 		$num->method = $item->voice_method;
 		$num->smsUrl = $item->sms_url;
@@ -227,13 +168,7 @@ class VBX_Incoming_numbers extends Model
 
 		try {
 			$account = OpenVBX::getAccount();
-			if (strtolower($phone_id) == 'sandbox') 
-			{
-				$number = $account->sandbox;
-			}
-			else {
-				$number = $account->incoming_phone_numbers->get($phone_id);
-			}
+			$number = $account->incoming_phone_numbers->get($phone_id);
 
 			$number->update(array(
 					'VoiceUrl' => $voice_url,

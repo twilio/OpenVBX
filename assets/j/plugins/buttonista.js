@@ -27,6 +27,12 @@ jQuery.fn.buttonista = function(options) {
 	var toggleMenu = function() {
 		$(this).parent()
 			.children(settings.menu).toggleClass('open');
+		if($(this).parent().children(settings.menu).hasClass('open') &&
+			typeof settings.focus != 'undefined')
+		{
+			$(this).parent()
+				.children(settings.menu).children(settings.focus).focus()
+		}
 		return false;
 	};
 	

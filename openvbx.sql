@@ -256,7 +256,7 @@ DROP TABLE IF EXISTS `cache`;
 CREATE TABLE `cache` (
   `key` varchar(255) NOT NULL default '',
   `group` varchar(255) NOT NULL default '',
-  `value` text NOT NULL,
+  `value` MEDIUMBLOB NOT NULL,
   `tenant_id` int(11) NOT NULL,
   PRIMARY KEY  (`key`(80),`group`(80),`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

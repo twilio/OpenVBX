@@ -87,7 +87,7 @@ class AudioSpeechPickerWidget extends AppletUIWidget
 		$ci->load->model('vbx_incoming_numbers');
 		try
 		{
-			$numbers = $ci->vbx_incoming_numbers->get_numbers(false);
+			$numbers = $ci->vbx_incoming_numbers->get_numbers();
 			foreach ($numbers as $number)
 			{
 				// find the first number that has voice enabled

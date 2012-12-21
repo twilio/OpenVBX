@@ -277,7 +277,7 @@ class Flows extends User_Controller {
 		{
 			$flow_data = get_object_vars($flow_obj);
 		}
-		
+
 		// add start instance if it's not there
 		if(!isset($flow_data['start']))
 		{
