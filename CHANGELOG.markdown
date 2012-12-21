@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## Next
+## OpenVBX 1.2.12
 
 - Fix cache table `value` field to be `mediumblob` instead of `text`. Fixes an issue where large lists of phone numbers (300+) would overflow the value field and corrupt the cached data.
 - Fix exception with latest versions of PHP when a default timezone is not set.
