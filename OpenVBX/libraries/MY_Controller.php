@@ -424,7 +424,6 @@ class MY_Controller extends Controller
 											$this->session->userdata('is_admin'));
 		$payload = array_merge($payload, $navigation);
 		$payload = $this->template->clean_output($payload);
-
 		$this->template->write_view('wrapper_header', $layout_dir.'/wrapper_header', $payload);
 		$this->template->write_view('header', $layout_dir.'/header', $payload);
 		$this->template->write_view('utility_menu', $layout_dir.'/utility_menu', $payload);

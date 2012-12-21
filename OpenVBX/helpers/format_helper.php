@@ -233,7 +233,7 @@ function html($data)
 {
 	if(is_string($data))
 	{
-		return htmlspecialchars($data);
+		return htmlspecialchars($data, ENT_COMPAT, 'UTF-8', false);
 	}
 
 	if(is_array($data))
@@ -242,7 +242,7 @@ function html($data)
 		{
 			if(is_string($val))
 			{
-				$data[$key] = htmlspecialchars($val);
+				$data[$key] = htmlspecialchars($val, ENT_COMPAT, 'UTF-8', false);
 			}
 			else if(is_array($val))
 			{

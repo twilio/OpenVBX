@@ -8,6 +8,9 @@
 - Removing Sandbox number access. Sandbox numbers are no longer supported by Twilio.
 	- Also fixes an issue when loading phone number lists where looking for the pin attribute would cause a series of unecessary api calls.
 - Updating Twilio PHP library to fix issue with special characters in TwiML output.
+- Fix issue with double-encoded entities that manifested in flow editor. Use the `double_encode` flag in `htmlspecialchars` to protect against it happening.
+    - Minimum PHP version bumped to 5.2.3 to accommodate the double encode flag.
+
 
 ## OpenVBX 1.2.11
 

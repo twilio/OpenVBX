@@ -238,7 +238,7 @@
 
 		private function encode($t)
 		{
-			return htmlspecialchars($t);
+			return htmlspecialchars($t, ENT_COMPAT, 'UTF-8', false);
 		}
 
 		/*

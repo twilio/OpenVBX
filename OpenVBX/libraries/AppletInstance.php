@@ -109,11 +109,12 @@ class AppletInstance
 			
 			if(is_null($list))
 			{
-				return html($default);
+                return $default;
 			}
 
-			return html($list);
+            return $list;
 		}
+
 		return isset(self::$instance->$name)? self::$instance->$name : $default;
 	}
 	public static function getDropZoneValue($name = 'dropZone')
