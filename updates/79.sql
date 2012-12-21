@@ -1,0 +1,1 @@
+UPDATE `settings` SET `value` = 79 WHERE `name` = 'schema-version';
