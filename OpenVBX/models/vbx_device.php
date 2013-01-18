@@ -115,7 +115,7 @@ class VBX_Device extends MY_Model
 			'id__in' => Group::get_user_ids($group_id)
 		);
 		$sql_opts = array(
-			'order_by' => 'sequence',
+			'order_by' => 'sequence'
 		);
 		$devices = parent::search(
 			self::$__CLASS__,
@@ -133,7 +133,7 @@ class VBX_Device extends MY_Model
 			'user_id' => intval($user_id)
 		);
 		$sql_opts = array(
-			'order_by' => array('sequence', 'asc')	
+			'order_by' => array('sequence', 'asc')
 		);
 		$devices = parent::search(
 			self::$__CLASS__,
