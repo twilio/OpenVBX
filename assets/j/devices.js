@@ -44,6 +44,12 @@ $(document).ready(function() {
 				var ajaxUrl = OpenVBX.home + '/devices/number/add';
 				var params = $('#dialog-number').values();
 
+				if($('.device-list').css('display')=='none') {
+					params['number[sequence]'] = 0;
+				} else {
+					params['number[sequence]'] = $('.device-list').length;
+				}
+
 				$.post(ajaxUrl, params, function(data) {
 
 					$('#dialog-number .error-message').text(data.message).removeClass('hide');
