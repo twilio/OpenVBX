@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## Next
+## OpenVBX 1.2.12
 
 - Send proper JSON header during install steps.
 
