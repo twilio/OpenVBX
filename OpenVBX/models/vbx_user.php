@@ -435,6 +435,12 @@ class VBX_User extends MY_Model {
 		return self::search(array('is_active' => 1));
 	}
 
+    /*
+     * This method attempts to send the notification and gives us a true/false
+     *    depending on if it worked.
+     *
+     * @return boolean
+     */
 	public function send_reset_notification()
 	{
 		// Set a random invitation code for resetting password
@@ -446,9 +452,14 @@ class VBX_User extends MY_Model {
 			'invite_code' => $this->invite_code,
 			'reset_url' => tenant_url("/auth/reset/{$this->invite_code}", $this->tenant_id)
 		);
-		openvbx_mail($this->email, 'Reset your password', 'password-reset', $maildata);
+		return openvbx_mail($this->email, 'Reset your password', 'password-reset', $maildata);
 	}
 
+	/*
+	 * This method attempts to send the email and returns a boolean depending on if it worked.
+	 *
+	 * @return boolean
+	 */
 	public function send_new_user_notification()
 	{
 		// Set a random invitation code for resetting password
@@ -461,7 +472,7 @@ class VBX_User extends MY_Model {
 			'name' => $this->first_name,
 			'reset_url' => tenant_url("/auth/reset/{$this->invite_code}", $this->tenant_id)
 		);
-		openvbx_mail($this->email, 'Welcome aboard', 'welcome-user', $maildata);
+		return openvbx_mail($this->email, 'Welcome aboard', 'welcome-user', $maildata);
 	}
 
 	/**

@@ -110,9 +110,14 @@ class Reset extends MY_Controller
 		else
 		{
 			$user = new VBX_User($user);
-			$user->send_reset_notification();
-			$this->session->set_flashdata('error',
-										  'To complete the password reset, check your inbox.');
+			$emailSent = $user->send_reset_notification();
+			if ($emailSent) {
+				$this->session->set_flashdata('error',
+                            'To complete the password reset, check your inbox.');
+			} else {
+				$this->session->set_flashdata('error',
+							'The email was not sent. Contact your admin.');
+			}
 			return redirect('auth/login');
 		}
 
