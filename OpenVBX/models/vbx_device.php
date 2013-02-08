@@ -62,7 +62,7 @@ class VBX_Device extends MY_Model
 		$sql_options = array(
 			'joins' => self::$joins,
 			'select' => self::$select,
-			'order_by' => array('sequence', 'desc'),
+			'order_by' => array('sequence', 'asc'),
 		);
 		$device = new self();
 		
@@ -100,6 +100,7 @@ class VBX_Device extends MY_Model
 			'value' => normalize_phone_to_E164($number['value']),
 			'user_id' => intval($number['user_id']),
 			'sms' => $number['sms'],
+			'sequence' => $number['sequence'],
 			'tenant_id' => $ci->tenant->id
 		));
 
@@ -132,7 +133,7 @@ class VBX_Device extends MY_Model
 			'user_id' => intval($user_id)
 		);
 		$sql_opts = array(
-			'order_by' => array('sequence', 'desc')	
+			'order_by' => array('sequence', 'asc')
 		);
 		$devices = parent::search(
 			self::$__CLASS__,
