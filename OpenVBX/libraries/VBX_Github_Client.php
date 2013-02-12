@@ -77,12 +77,15 @@ class VBX_Github_Client {
 	 * @return mixed bool|string
 	 */
 	protected function isJsonError() {
-		$jsonErr = json_last_error();
 		
-		if ($jsonErr != JSON_ERROR_NONE) {
-			return $this->jsonErrors[$jsonErr];
-		}
-		
+        if (function_exists('json_last_error')) {
+            $jsonErr = json_last_error();
+
+            if ($jsonErr != JSON_ERROR_NONE) {
+                return $this->jsonErrors[$jsonErr];
+            }
+        }
+
 		return false;
 	}
 }
