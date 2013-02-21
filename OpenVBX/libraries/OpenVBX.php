@@ -224,7 +224,7 @@ class OpenVBX {
 			if ($ci->db)
 			{
 				$ci->load->model('vbx_settings');
-				if (!$cache && $ci->cache->enabled())
+				if (!$ci->cache && $ci->cache->enabled())
 				{
 					$ci->cache->enabled(false);
 					$reenable_cache = true;
