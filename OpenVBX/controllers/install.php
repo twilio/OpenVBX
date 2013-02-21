@@ -286,7 +286,7 @@ class Install extends Controller {
 			$json['step'] = $e->getCode();
 		}
 
-		echo json_encode($json);
+        $this->json_return($json);
 	}
 	
 	private function setup_connect_app($settings) 
@@ -568,8 +568,7 @@ class Install extends Controller {
 		
 		if($step == 1) 
 		{
-			echo json_encode($json);
-			return;
+            $this->json_return($json);
 		}
 
 		$tplvars = $this->input_args();
@@ -591,7 +590,7 @@ class Install extends Controller {
 		}
 
 		$json['tplvars'] = $tplvars;
-		echo json_encode($json);
+        $this->json_return($json);
 	}
 
 	function validate_step2()
@@ -819,4 +818,10 @@ class Install extends Controller {
 			log_message($message);
 		}
 	}
+
+    protected function json_return($data) {
+        header('Content-type: application/json');
+        echo json_encode($data);
+        exit;
+    }
 }
