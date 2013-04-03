@@ -55,8 +55,8 @@ class VBX_Github_Client {
 		$response = curl_exec($curl);
 		
 		if (!$response) {
-			$err = curl_error($ch);
-			$errNo = curl_errno($ch);
+			$err = curl_error($curl);
+			$errNo = curl_errno($curl);
 			throw new Exception('HTTP communication error: ' . $errNo . ', ' . $err);
 		}
 		

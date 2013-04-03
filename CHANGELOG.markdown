@@ -1,5 +1,9 @@
 # OpenVBX Change Log
 
+## Current
+
+- Fix curl error handling on GitHub API calls
+
 ## OpenVBX 1.2.12
 
 - Send proper JSON header during install steps.
