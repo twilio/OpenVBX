@@ -55,7 +55,7 @@ class TwimlDial {
 		$this->dial_whom_selector = AppletInstance::getValue('dial-whom-selector');
 		$this->dial_whom_user_or_group = AppletInstance::getUserGroupPickerValue('dial-whom-user-or-group');
 		$this->dial_whom_number = AppletInstance::getValue('dial-whom-number');
-        $this->dial_whisper = AppletInstance::getValue('dial-whisper', true);
+		$this->dial_whisper = AppletInstance::getValue('dial-whisper', true);
 
 		$this->no_answer_action = AppletInstance::getValue('no-answer-action', 'hangup');
 		$this->no_answer_group_voicemail = AppletInstance::getAudioSpeechPickerValue('no-answer-group-voicemail');
@@ -118,6 +118,10 @@ class TwimlDial {
 		{
 			$dialed = $this->dialDevice($device_or_user);
 		}
+		elseif (strpos($device->value, 'client:') !== false)
+		{
+			$dialed = $this->dialSip($device_or_user);
+		}
 		else 
 		{
 			$dialed = $this->dialNumber($device_or_user);
@@ -148,6 +152,10 @@ class TwimlDial {
 			if (strpos($device->value, 'client:') !== false) 
 			{
 				$dial->client(str_replace('client:', '', $device->value), $call_opts);
+			}
+			elseif (strpos($device->value, 'sip:') !== false)
+			{
+				$dial->sip($device->value, $call_opts);
 			}
 			else 
 			{
@@ -188,6 +196,10 @@ class TwimlDial {
 					{
 						$dial->client(str_replace('client:', '', $device->value), $call_opts);
 					}
+                        		elseif (strpos($device->value, 'sip:') !== false)
+                	        	{
+                		                $dial->sip($device->value, $call_opts);
+		                        }
 					else 
 					{
 						$dial->number($device->value, $call_opts);
@@ -214,6 +226,20 @@ class TwimlDial {
 		$dial = $this->getDial();
 		$number = normalize_phone_to_E164($number);
 		$dial->number($number);
+		$this->state = 'calling';
+		return true;
+	}
+
+	/**
+	 * Dial a Sip, no special sauce here
+	 *
+	 * @param string $number 
+	 * @return bool
+	 */
+	public function dialSip($number) 
+	{
+		$dial = $this->getDial();
+		$dial->sip($number);
 		$this->state = 'calling';
 		return true;
 	}
