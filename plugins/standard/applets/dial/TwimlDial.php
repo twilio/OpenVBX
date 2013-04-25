@@ -109,7 +109,7 @@ class TwimlDial {
 	public function dial($device_or_user) 
 	{
 		$dialed = false;
-		
+	
 		if ($device_or_user instanceof VBX_User) 
 		{
 			$dialed = $this->dialUser($device_or_user);
@@ -118,7 +118,7 @@ class TwimlDial {
 		{
 			$dialed = $this->dialDevice($device_or_user);
 		}
-		elseif (strpos($device->value, 'client:') !== false)
+		elseif (strpos($device_or_user, 'sip:') !== false)
 		{
 			$dialed = $this->dialSip($device_or_user);
 		}

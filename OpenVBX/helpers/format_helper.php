@@ -24,6 +24,10 @@
 // make a series of digits into a properly formatted US phone number
 function format_phone($number)
 {
+        if (strpos($number, 'sip:') !== false) {
+                return $number;
+        }
+
 	$no = preg_replace('/[^0-9+]/', '', $number);
 
 	if(strlen($no) == 11 && substr($no, 0, 1) == "1")
