@@ -360,6 +360,11 @@ class Twiml extends MY_Controller {
 			{
 				$this->dial_user_by_client_id($this->input->get_post('to'), $options);
 			}
+			elseif(strpos($to, 'sip:') !== false)
+			{
+				$dial = $this->response->dial(NULL, $options);
+				$dial->sip($to);
+			}
 			else 
 			{
 				$to = normalize_phone_to_E164($to);
