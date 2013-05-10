@@ -101,9 +101,12 @@ class VBX_Call extends Model {
 	{
 		try
 		{
-			PhoneNumber::validatePhoneNumber($from);
-			// handle being passed an email address for calls to browser clients
-			if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+			// handle being passed a sip urls
+			if (strpos($from, 'sip:') === false) {
+				PhoneNumber::validatePhoneNumber($from);
+			}
+			// handle being passed an email address for calls to browser clients and sip urls
+			if (!filter_var($to, FILTER_VALIDATE_EMAIL) && strpos($to, 'sip:') === false) {
 				PhoneNumber::validatePhoneNumber($to);
 			}
 		}
@@ -112,12 +115,15 @@ class VBX_Call extends Model {
 			throw new VBX_CallException($e->getMessage());
 		}
 		
-		// don't normalize email addresses that are used to identify browser clients
-		if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+		// don't normalize email addresses that are used to identify browser clients or sip urls
+		if (!filter_var($to, FILTER_VALIDATE_EMAIL) && strpos($to, 'sip:') === false) {
 			$to = PhoneNumber::normalizePhoneNumberToE164($to);
 		}
 		$callerid = PhoneNumber::normalizePhoneNumberToE164($callerid);
-		$from = PhoneNumber::normalizePhoneNumberToE164($from);
+		// handle sip urls
+		if (strpos($from, 'sip:') === false) {
+			$from = PhoneNumber::normalizePhoneNumberToE164($from);
+		}
 		$twiml_url = site_url("twiml/dial").'?'.http_build_query(compact('callerid', 'to', 'rest_access'));
 
 		try {

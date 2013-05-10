@@ -144,9 +144,15 @@ class Devices extends User_Controller {
 
 		$number = $this->input->post('device');
 		$device = VBX_Device::get($device_id);
+
 		if(isset($number['value']))
 		{
-			$device->value = normalize_phone_to_E164($number['value']);
+			$device->value = $number['value'];
+
+	                // don't normalize sip addresses.
+			if (strpos($device->value, 'sip:') === false) {
+				$device->value = normalize_phone_to_E164($device->value);
+			}
 		}
 
 		if(isset($number['sms']))
@@ -217,7 +223,12 @@ class Devices extends User_Controller {
 	{
 		$number = array();
 		$number = $this->input->post('number');
-		$number['value'] = normalize_phone_to_E164($number['value']);
+
+		// don't normalize sip addresses.
+		if (strpos($number['value'], 'sip:') === false) {
+			$number['value'] = normalize_phone_to_E164($number['value']);
+		}
+
 		$number['user_id'] = $this->user_id;
 		// sms is always enabled by default
 		$number['sms'] = 1;

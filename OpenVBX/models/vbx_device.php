@@ -88,16 +88,22 @@ class VBX_Device extends MY_Model
 			throw new VBX_DeviceException('Name and number already exist.');
 		}
 
-		try {
-			PhoneNumber::validatePhoneNumber($number['value']);
-		}
-		catch(PhoneNumberException $e) {
-			throw new VBX_DeviceException($e->getMessage());
+		// don't validate if it's a sip url.
+		if (strpos($number['value'], 'sip:') === false)
+		{
+			$number['value'] = normalize_phone_to_E164($number['value']);
+
+			try {
+				PhoneNumber::validatePhoneNumber($number['value']);
+			}
+			catch(PhoneNumberException $e) {
+				throw new VBX_DeviceException($e->getMessage());
+			}
 		}
 		
 		$device = new self((object) array(
 			'name' => $number['name'],
-			'value' => normalize_phone_to_E164($number['value']),
+			'value' => $number['value'],
 			'user_id' => intval($number['user_id']),
 			'sms' => $number['sms'],
 			'sequence' => $number['sequence'],
@@ -170,13 +176,17 @@ class VBX_Device extends MY_Model
 			throw new VBX_DeviceException('Name is empty');
 		}
 		
-		try
+                // don't validate if it's a sip url.
+                if (strpos($this->value, 'sip:') === false)
 		{
-			PhoneNumber::validatePhoneNumber($this->value);
-		}
-		catch(PhoneNumberException $e)
-		{
-			throw new VBX_DeviceException($e->getMessage());
+			try
+			{
+				PhoneNumber::validatePhoneNumber($this->value);
+			}
+			catch(PhoneNumberException $e)
+			{
+				throw new VBX_DeviceException($e->getMessage());
+			}
 		}
 				
 		return parent::save();
