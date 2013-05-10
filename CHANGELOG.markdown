@@ -4,7 +4,7 @@
 
 - Fix curl error handling on GitHub API calls
 
-## OpenVBX 1.2.12
+## OpenVBX 1.2.13
 
 - Send proper JSON header during install steps.
 
