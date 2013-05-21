@@ -56,7 +56,7 @@ class MY_Model extends Model
 		{
 			foreach($this->fields as $property)
 			{
-				$this->values[$property] = $object->$property;
+				$this->values[$property] = isset($object->property) ? $object->$property : null;
 			}
 		}
 		

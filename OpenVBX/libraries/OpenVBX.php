@@ -223,14 +223,18 @@ class OpenVBX {
 			$ci =& get_instance();
 			if ($ci->db)
 			{
+                $reenable_cache = false;
+
 				$ci->load->model('vbx_settings');
-				if (!$ci->cache && $ci->cache->enabled())
+				if (isset($ci->cache) && $ci->cache->enabled())
 				{
 					$ci->cache->enabled(false);
 					$reenable_cache = true;
 				}
+
 				self::$schemaVersion = $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
-				if ($reenable_cache)
+
+                if ($reenable_cache)
 				{
 					$ci->cache->enabled(true);
 				}

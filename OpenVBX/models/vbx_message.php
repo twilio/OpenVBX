@@ -409,7 +409,6 @@ class VBX_Message extends Model {
 		}
 		$message->content_url = $vm_url;
 
-		$users = array();
 		$notify = array();
 		if($message->owner_type == 'user')
 		{
@@ -420,7 +419,6 @@ class VBX_Message extends Model {
 			}
 		}
 
-		$group_users = array();
 		if($message->owner_type == 'group')
 		{
 			$user_ids = $ci->vbx_group->get_user_ids($message->owner_id);
@@ -441,54 +439,66 @@ class VBX_Message extends Model {
 		$incoming_number = VBX_Incoming_numbers::get(array(
 			'phone_number' => normalize_phone_to_E164($message->called)
 		));
+
+        $sms_notify = false;
+
 		if (!empty($incoming_number) && $incoming_number->capabilities->sms == 1)
 		{
 			$sms_notify = true;
 		}
 
-		if ($email_notify || $sms_notify)
+		if (!$email_notify && !$sms_notify)
 		{
-			foreach($user_ids as $user_id)
-			{
-				$user = VBX_User::get($user_id);
-				$ci->load->model('vbx_device');
-				$ci->load->model('vbx_sms_message');
-				$numbers = VBX_Device::search(array('user_id' => $user_id));
-				$message_type = 'Voicemail';
-				if($message->type == 'sms')
-				{
-					$message_type = 'SMS';
-					$owner = '';
-				}
+            return false;
+        }
 
-				if($email_notify)
-				{
-					$email_subject = "New $owner $message_type Notification - {$message->caller}";
-					openvbx_mail($user->email, $email_subject, 'message', compact('message'));
-				}
-				
-				if ($sms_notify)
-				{
-					foreach($numbers as $number)
-					{
-						if($number->value && $number->sms)
-						{
-							try
-							{
-								$ci->vbx_sms_message->send_message($message->called, // SMS from incoming number
-																$number->value, // SMS to user
-																$this->tiny_notification_message($message)
-															);
-							}
-							catch(VBX_Sms_messageException $e)
-							{
-								log_message('error', 'unable to send sms alert, reason: '.$e->getMessage());
-							}
-						}
-					}
-				} // if ($sms_notify)
-			} 
-		} // if ($email_notify || $sms_notify)
+        if (!count($user_ids)) {
+            return false;
+        }
+
+        foreach($user_ids as $user_id)
+        {
+            $user = VBX_User::get($user_id);
+            $ci->load->model('vbx_device');
+            $ci->load->model('vbx_sms_message');
+            $numbers = VBX_Device::search(array('user_id' => $user_id));
+            $message_type = 'Voicemail';
+
+            $_owner = $owner;
+
+            if($message->type == 'sms')
+            {
+                $message_type = 'SMS';
+                $_owner = '';
+            }
+
+            if($email_notify)
+            {
+                $email_subject = "New {$_owner} $message_type Notification - {$message->caller}";
+                openvbx_mail($user->email, $email_subject, 'message', compact('message'));
+            }
+
+            if ($sms_notify)
+            {
+                foreach($numbers as $number)
+                {
+                    if($number->value && $number->sms)
+                    {
+                        try
+                        {
+                            $ci->vbx_sms_message->send_message($message->called, // SMS from incoming number
+                                                            $number->value, // SMS to user
+                                                            $this->tiny_notification_message($message)
+                                                        );
+                        }
+                        catch(VBX_Sms_messageException $e)
+                        {
+                            log_message('error', 'unable to send sms alert, reason: '.$e->getMessage());
+                        }
+                    }
+                }
+            }
+        }
 	}
 
 	function tiny_notification_message($message)

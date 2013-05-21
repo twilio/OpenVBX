@@ -108,7 +108,7 @@ class VBX_Group extends MY_Model {
 			$groups[$gu->group_id]->users[$gu->user_id] = $gu; 
 		}
 		
-		if($limit == 1 && count($groups) == 1)
+		if($limit == 1 && count($groups) > 0)
 		{
 			$groups = current($groups);
 		}
