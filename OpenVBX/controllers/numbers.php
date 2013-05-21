@@ -103,6 +103,8 @@ class Numbers extends User_Controller
 				}
 				$item->capabilities = $capabilities;
 
+                $item->status = null;
+
 				if ($item->installed)
 				{
 					// Number is installed in this instance of OpenVBX

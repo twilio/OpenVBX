@@ -2,12 +2,10 @@
 
 ## Current
 
-- Fix curl error handling on GitHub API calls
-
-## Next
-
+- Fix curl error handling on GitHub API calls.
 - Adding SIP validation helper.
 - No longer including client/account data in encoded json to avoid icky 'recursion detected' warning in JSON encode.
+- Fix notice in logs about undefined `status` member on phone number entries.
 
 
 ## OpenVBX 1.2.13
