@@ -6,7 +6,8 @@
 
 ## Next
 
-- adding SIP validation helper
+- Adding SIP validation helper.
+- No longer including client/account data in encoded json to avoid icky 'recursion detected' warning in JSON encode.
 
 
 ## OpenVBX 1.2.13
