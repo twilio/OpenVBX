@@ -4,6 +4,11 @@
 
 - Fix curl error handling on GitHub API calls
 
+## Next
+
+- adding SIP validation helper
+
+
 ## OpenVBX 1.2.13
 
 - Send proper JSON header during install steps.
