@@ -2,11 +2,11 @@
 /**
  * CodeIgniter
  *
- * An open source application development framework for PHP 4.3.2 or newer
+ * An open source application development framework for PHP 5.1.6 or newer
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -30,15 +30,17 @@ class CI_Session {
 	var $sess_use_database			= FALSE;
 	var $sess_table_name			= '';
 	var $sess_expiration			= 7200;
+	var $sess_expire_on_close		= FALSE;
 	var $sess_match_ip				= FALSE;
 	var $sess_match_useragent		= TRUE;
 	var $sess_cookie_name			= 'ci_session';
 	var $cookie_prefix				= '';
 	var $cookie_path				= '';
 	var $cookie_domain				= '';
+	var $cookie_secure				= FALSE;
 	var $sess_time_to_update		= 300;
 	var $encryption_key				= '';
-	var $flashdata_key 				= 'flash';
+	var $flashdata_key				= 'flash';
 	var $time_reference				= 'time';
 	var $gc_probability				= 5;
 	var $userdata					= array();
@@ -51,7 +53,7 @@ class CI_Session {
 	 * The constructor runs the session routines automatically
 	 * whenever the class is instantiated.
 	 */
-	function CI_Session($params = array())
+	public function __construct($params = array())
 	{
 		log_message('debug', "Session Class Initialized");
 
@@ -60,9 +62,14 @@ class CI_Session {
 
 		// Set all the session preferences, which can either be set
 		// manually via the $params array above or via the config file
-		foreach (array('sess_encrypt_cookie', 'sess_use_database', 'sess_table_name', 'sess_expiration', 'sess_match_ip', 'sess_match_useragent', 'sess_cookie_name', 'cookie_path', 'cookie_domain', 'sess_time_to_update', 'time_reference', 'cookie_prefix', 'encryption_key') as $key)
+		foreach (array('sess_encrypt_cookie', 'sess_use_database', 'sess_table_name', 'sess_expiration', 'sess_expire_on_close', 'sess_match_ip', 'sess_match_useragent', 'sess_cookie_name', 'cookie_path', 'cookie_domain', 'cookie_secure', 'sess_time_to_update', 'time_reference', 'cookie_prefix', 'encryption_key') as $key)
 		{
 			$this->$key = (isset($params[$key])) ? $params[$key] : $this->CI->config->item($key);
+		}
+
+		if ($this->encryption_key == '')
+		{
+			show_error('In order to use the Session class you are required to set an encryption key in your config file.');
 		}
 
 		// Load the string helper so we can use the strip_slashes() function
@@ -90,7 +97,7 @@ class CI_Session {
 		{
 			$this->sess_expiration = (60*60*24*365*2);
 		}
-		 
+
 		// Set the cookie name
 		$this->sess_cookie_name = $this->cookie_prefix.$this->sess_cookie_name;
 
@@ -106,10 +113,10 @@ class CI_Session {
 		}
 
 		// Delete 'old' flashdata (from last request)
-	   	$this->_flashdata_sweep();
+		$this->_flashdata_sweep();
 
 		// Mark all new flashdata as old (data will be deleted before next request)
-	   	$this->_flashdata_mark();
+		$this->_flashdata_mark();
 
 		// Delete expired sessions if necessary
 		$this->_sess_gc();
@@ -181,12 +188,8 @@ class CI_Session {
 			return FALSE;
 		}
 
-		// Turning user-agent checking on will break the SWFUpload client, as it apparently sends its own
-		// user agent separate from the browser.
-		$this->sess_match_useragent = FALSE;
-
 		// Does the User Agent Match?
-		if ($this->sess_match_useragent == TRUE AND trim($session['user_agent']) != trim(substr($this->CI->input->user_agent(), 0, 50)))
+		if ($this->sess_match_useragent == TRUE AND trim($session['user_agent']) != trim(substr($this->CI->input->user_agent(), 0, 120)))
 		{
 			$this->sess_destroy();
 			return FALSE;
@@ -311,10 +314,11 @@ class CI_Session {
 		$sessid .= $this->CI->input->ip_address();
 
 		$this->userdata = array(
-							'session_id' 	=> md5(uniqid($sessid, TRUE)),
-							'ip_address' 	=> $this->CI->input->ip_address(),
-							'user_agent' 	=> substr($this->CI->input->user_agent(), 0, 50),
-							'last_activity'	=> $this->now
+							'session_id'	=> md5(uniqid($sessid, TRUE)),
+							'ip_address'	=> $this->CI->input->ip_address(),
+							'user_agent'	=> substr($this->CI->input->user_agent(), 0, 120),
+							'last_activity'	=> $this->now,
+							'user_data'		=> ''
 							);
 
 
@@ -395,7 +399,7 @@ class CI_Session {
 	function sess_destroy()
 	{
 		// Kill the session DB row
-		if ($this->sess_use_database === TRUE AND isset($this->userdata['session_id']))
+		if ($this->sess_use_database === TRUE && isset($this->userdata['session_id']))
 		{
 			$this->CI->db->where('session_id', $this->userdata['session_id']);
 			$this->CI->db->delete($this->sess_table_name);
@@ -410,6 +414,9 @@ class CI_Session {
 					$this->cookie_domain,
 					0
 				);
+
+		// Kill session data
+		$this->userdata = array();
 	}
 
 	// --------------------------------------------------------------------
@@ -432,11 +439,11 @@ class CI_Session {
 	 * Fetch all session data
 	 *
 	 * @access	public
-	 * @return	mixed
+	 * @return	array
 	 */
 	function all_userdata()
 	{
-		return ( ! isset($this->userdata)) ? FALSE : $this->userdata;
+		return $this->userdata;
 	}
 
 	// --------------------------------------------------------------------
@@ -655,14 +662,16 @@ class CI_Session {
 			$cookie_data = $cookie_data.md5($cookie_data.$this->encryption_key);
 		}
 
+		$expire = ($this->sess_expire_on_close === TRUE) ? 0 : $this->sess_expiration + time();
+
 		// Set the cookie
 		setcookie(
 					$this->sess_cookie_name,
 					$cookie_data,
-					$this->sess_expiration + time(),
+					$expire,
 					$this->cookie_path,
 					$this->cookie_domain,
-					0
+					$this->cookie_secure
 				);
 	}
 
@@ -684,12 +693,18 @@ class CI_Session {
 		{
 			foreach ($data as $key => $val)
 			{
-				$data[$key] = str_replace('\\', '{{slash}}', $val);
+				if (is_string($val))
+				{
+					$data[$key] = str_replace('\\', '{{slash}}', $val);
+				}
 			}
 		}
 		else
 		{
-			$data = str_replace('\\', '{{slash}}', $data);
+			if (is_string($data))
+			{
+				$data = str_replace('\\', '{{slash}}', $data);
+			}
 		}
 
 		return serialize($data);
@@ -715,13 +730,16 @@ class CI_Session {
 		{
 			foreach ($data as $key => $val)
 			{
-				$data[$key] = str_replace('{{slash}}', '\\', $val);
+				if (is_string($val))
+				{
+					$data[$key] = str_replace('{{slash}}', '\\', $val);
+				}
 			}
 
 			return $data;
 		}
 
-		return str_replace('{{slash}}', '\\', $data);
+		return (is_string($data)) ? str_replace('{{slash}}', '\\', $data) : $data;
 	}
 
 	// --------------------------------------------------------------------

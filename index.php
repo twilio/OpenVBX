@@ -90,7 +90,8 @@ $system_folder = "system";
  | NO TRAILING SLASH!
  |
 */
-$application_folder = dirname(__FILE__) . '/OpenVBX';
+//$application_folder = dirname(__FILE__) . '/OpenVBX';
+$application_folder = 'OpenVBX';
 
 /*
  |===============================================================
@@ -136,9 +137,11 @@ else
  |
 */
 define('EXT', '.'.pathinfo(__FILE__, PATHINFO_EXTENSION));
-define('FCPATH', __FILE__);
+define('FCPATH', str_replace(SELF, '', __FILE__));
 define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 define('BASEPATH', $system_folder.'/');
+// Name of the "system folder"
+define('SYSDIR', trim(strrchr(trim(BASEPATH, '/'), '/'), '/'));
 
 if (is_dir($application_folder))
 {
@@ -162,7 +165,7 @@ else
  | And away we go...
  |
 */
-require_once BASEPATH.'codeigniter/CodeIgniter'.EXT;
+require_once BASEPATH.'core/CodeIgniter.php';
 
 /* End of file index.php */
 /* Location: ./index.php */

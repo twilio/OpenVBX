@@ -23,7 +23,7 @@ require_once(APPPATH . 'libraries/twilio.php');
 
 class VBX_AccountsException extends Exception {}
 
-class VBX_Accounts extends Model
+class VBX_Accounts extends CI_Model
 {
 	public function __construct()
 	{

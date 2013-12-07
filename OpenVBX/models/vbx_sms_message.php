@@ -25,7 +25,7 @@ class VBX_Sms_messageException extends Exception {}
 /*
  * SMS Message Class
  */
-class VBX_Sms_message extends Model {
+class VBX_Sms_message extends CI_Model {
 
 	public $total = 0;
 
@@ -35,7 +35,7 @@ class VBX_Sms_message extends Model {
 
 	function __construct()
 	{
-		parent::Model();
+		parent::__construct();
 		$ci = &get_instance();		
 		$this->cache_key = $ci->twilio_sid . '_sms';
 	}

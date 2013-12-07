@@ -62,7 +62,7 @@ $autoload['helper'] = array('applet', 'url', 'format', 'form', 'mail', 'json', '
 |	$autoload['plugin'] = array('captcha', 'js_calendar');
 */
 
-$autoload['plugin'] = array();
+// $autoload['plugin'] = array();
 
 
 /*
