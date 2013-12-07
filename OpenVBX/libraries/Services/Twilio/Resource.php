@@ -8,7 +8,7 @@
  * @author   Neuman Vong <neuman@twilio.com>
  * @license  http://creativecommons.org/licenses/MIT/ MIT
  * @link     http://pear.php.net/package/Services_Twilio
- */ 
+ */
 abstract class Services_Twilio_Resource {
     protected $subresources;
 
@@ -50,14 +50,14 @@ abstract class Services_Twilio_Resource {
         }
     }
 
-    /* 
+    /*
      * Get the resource name from the classname
-     * 
+     *
      * Ex: Services_Twilio_Rest_Accounts -> Accounts
      *
      * @param boolean $camelized Whether to return camel case or not
      */
-    public function getResourceName($camelized = false) 
+    public function getResourceName($camelized = false)
     {
         $name = get_class($this);
         $parts = explode('_', $name);
@@ -71,28 +71,35 @@ abstract class Services_Twilio_Resource {
 
     public static function decamelize($word)
     {
-        return preg_replace(
-            '/(^|[a-z])([A-Z])/e',
-            'strtolower(strlen("\\1") ? "\\1_\\2" : "\\2")',
+        $callback = create_function('$matches',
+            'return strtolower(strlen("$matches[1]") ? "$matches[1]_$matches[2]" : "$matches[2]");');
+
+        return preg_replace_callback(
+            '/(^|[a-z])([A-Z])/',
+            $callback,
             $word
         );
     }
 
     /**
      * Return camelized version of a word
-     * Examples: sms_messages => SMSMessages, calls => Calls, 
+     * Examples: sms_messages => SMSMessages, calls => Calls,
      * incoming_phone_numbers => IncomingPhoneNumbers
      *
      * @param string $word The word to camelize
      * @return string
      */
     public static function camelize($word) {
-        return preg_replace('/(^|_)([a-z])/e', 'strtoupper("\\2")', $word);
+        $callback = create_function('$matches', 'return strtoupper("$matches[2]");');
+
+        return preg_replace_callback('/(^|_)([a-z])/',
+            $callback,
+            $word);
     }
 
     /**
      * Get the value of a property on this resource.
-     * 
+     *
      * @param string $key The property name
      * @return mixed Could be anything.
      */
@@ -104,19 +111,19 @@ abstract class Services_Twilio_Resource {
     }
 
     /**
-     * Print a JSON representation of this object. Strips the HTTP client 
+     * Print a JSON representation of this object. Strips the HTTP client
      * before returning.
      *
-     * Note, this should mainly be used for debugging, and is not guaranteed 
+     * Note, this should mainly be used for debugging, and is not guaranteed
      * to correspond 1:1 with the JSON API output.
      *
-     * Note that echoing an object before an HTTP request has been made to 
+     * Note that echoing an object before an HTTP request has been made to
      * "fill in" its properties may return an empty object
      */
     public function __toString() {
         $out = array();
         foreach ($this as $key => $value) {
-            if ($key !== "client") {
+            if ($key !== "client" && $key !== "subresources") {
                 $out[$key] = (string)$value;
             }
         }
