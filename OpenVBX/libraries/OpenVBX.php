@@ -224,6 +224,7 @@ class OpenVBX {
 			if ($ci->db)
 			{
 				$ci->load->model('vbx_settings');
+				$reenable_cache = false;
 				if (!$ci->cache && $ci->cache->enabled())
 				{
 					$ci->cache->enabled(false);
@@ -470,7 +471,7 @@ class OpenVBX {
 			// we weren't handed post-vars, use the default
 			$post_vars = $_POST;
 		}
-
+		
 		return self::$_twilioValidator->validate(self::getRequestSignature(), $url, $post_vars);
 	}
 	

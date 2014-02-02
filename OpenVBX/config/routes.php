@@ -41,7 +41,6 @@
 */
 
 $route['default_controller'] = 'iframe';
-$route['scaffolding_trigger'] = '';
 
 $route['install'] = 'install';
 $route['upgrade'] = 'upgrade';

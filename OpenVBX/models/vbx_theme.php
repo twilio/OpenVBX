@@ -21,7 +21,7 @@
 	
 class VBX_ThemeException extends Exception {}
 
-class VBX_Theme extends Model
+class VBX_Theme extends CI_Model
 {
 	public function __construct()
 	{

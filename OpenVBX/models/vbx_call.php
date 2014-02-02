@@ -26,14 +26,14 @@ class VBX_CallException extends Exception {}
 /*
  * Call Class
  */
-class VBX_Call extends Model {
+class VBX_Call extends CI_Model {
 
 	public $total = 0;
 	const CACHE_TIME_SEC = 180;
 
 	public function __construct()
 	{
-		parent::Model();
+		parent::__construct();
 	}
 
 	/**

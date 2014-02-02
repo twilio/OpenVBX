@@ -23,7 +23,7 @@ require_once(APPPATH . 'libraries/twilio.php');
 
 class VBX_IncomingNumberException extends Exception {}
 
-class VBX_Incoming_numbers extends Model
+class VBX_Incoming_numbers extends CI_Model
 {
 	public function __construct()
 	{
