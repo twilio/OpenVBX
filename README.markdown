@@ -23,6 +23,13 @@ Body:
 
 For a list of common/known issues see the  [Troubleshooting Guide/Common Issues Page](https://github.com/twilio/OpenVBX/wiki/OpenVBX-Troubleshooting---Common-Issues)
 
+# Contributing to OpenVBX
+-----------------------------
+
+When working on OpenVBX try to work on the develop branch. This is where all work is done before being completed and merged in to master. No work goes directly to master.
+
+To open a pull request against OpenVBX open it from your develop branch on to the main develop branch. We will end up pulling any requests against master in to a feature branch off of develop before merging the pull request.
+
 # Trademarks
 -----------------------------
 "OpenVBX" and "Twilio" are trademarks of Twilio, Inc., all rights 
