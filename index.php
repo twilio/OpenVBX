@@ -90,7 +90,6 @@ $system_folder = "system";
  | NO TRAILING SLASH!
  |
 */
-//$application_folder = dirname(__FILE__) . '/OpenVBX';
 $application_folder = 'OpenVBX';
 
 /*
