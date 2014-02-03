@@ -24,7 +24,7 @@ class VBX_MessageException extends Exception {}
 /*
  * Message Class
  */
-class VBX_Message extends Model {
+class VBX_Message extends CI_Model {
 
 	public $auto_populate_has_one = TRUE;
 	public $has_one = array('group', 'user');

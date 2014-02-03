@@ -223,18 +223,15 @@ class OpenVBX {
 			$ci =& get_instance();
 			if ($ci->db)
 			{
-                $reenable_cache = false;
-
 				$ci->load->model('vbx_settings');
-				if (isset($ci->cache) && $ci->cache->enabled())
+				$reenable_cache = false;
+				if (!$ci->cache && $ci->cache->enabled())
 				{
 					$ci->cache->enabled(false);
 					$reenable_cache = true;
 				}
-
 				self::$schemaVersion = $ci->vbx_settings->get('schema-version', VBX_PARENT_TENANT);
-
-                if ($reenable_cache)
+				if ($reenable_cache)
 				{
 					$ci->cache->enabled(true);
 				}
@@ -379,7 +376,7 @@ class OpenVBX {
 		
 		// optionally load in the included cert for api communication
 		if ($use_certificate = $ci->config->item('twilio_use_certificate')) {
-			$_http_opts['opts']['curlopts'][CURLOPT_CAINFO] = APPPATH . 'libraries/Services/twilio_ssl_certificate.crt';
+			$_http_opts['opts']['curlopts'][CURLOPT_CAINFO] = APPPATH . 'libraries/Services/cacert.pem';
 		}
 
 		// internal api development override, you'll never need this
@@ -474,7 +471,7 @@ class OpenVBX {
 			// we weren't handed post-vars, use the default
 			$post_vars = $_POST;
 		}
-
+		
 		return self::$_twilioValidator->validate(self::getRequestSignature(), $url, $post_vars);
 	}
 	
