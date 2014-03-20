@@ -14,7 +14,7 @@ class TwimlDial {
 	private $use_ci_session = true;
 	
 	static $hangup_stati = array('completed', 'answered');
-	static $voicemail_stati = array('no-answer', 'failed');
+	static $voicemail_stati = array('no-answer', 'failed', 'busy');
 	static $default_voicemail_message = 'Please leave a message. Press the pound key when you are finished.';
 	
 	protected $cookie_name;
