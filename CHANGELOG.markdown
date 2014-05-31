@@ -9,6 +9,7 @@
 - Send `busy` calls to voicemail in the dial applet. (Thanks @chadsmith)
 - Clarify verbiage in iPhone install guide. (Thanks @plaidfluff)
 - Remove obsolete override of `setTimeout` in `global.js` that was causing an untold myriad of issues.
+- Update `VBX_Github_Client` to use new PHP 5.5 goodness when available.
 
 
 ## OpenVBX 1.2.13
