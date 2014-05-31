@@ -30,17 +30,6 @@ OpenVBX.error = {
 	}
 }
 
-var _st = window.setTimeout;
-
-window.setTimeout = function(fRef, mDelay) {
-	if(typeof fRef == "function") {
-		var argu = Array.prototype.slice.call(arguments,2);
-		var f = (function(){ fRef.apply(null, argu); });
-		return _st(f, mDelay);
-	}
-	return _st(fRef,mDelay);
-}
-
 $.fn.extend({
 	left: function(value) {
 		if (value === undefined) {
