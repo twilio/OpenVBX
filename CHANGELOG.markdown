@@ -5,6 +5,7 @@
 - Fix curl error handling on GitHub API calls.
 - Adding SIP validation helper.
 - Clean up various innocuous log notices.
+- Upgrade Twilio PHP api library (Thanks @guyhughes)
 
 
 ## OpenVBX 1.2.13
