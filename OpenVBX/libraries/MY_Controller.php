@@ -441,14 +441,12 @@ class MY_Controller extends Controller
 
 		if($this->input->get_post('no_layout') == 1)
 		{
-			echo $this->template->render('content_main');
-			return;
+			return $this->template->render('content_main');
 		}
 
 		if($this->input->get_post('barebones') == 1)
 		{
-			echo $this->template->render('content');
-			return;
+			$this->template->render('content');
 		}
 
 		return $this->template->render();
