@@ -6,6 +6,7 @@
 - Adding SIP validation helper.
 - Clean up various innocuous log notices.
 - Upgrade Twilio PHP api library (Thanks @guyhughes)
+- Send `busy` calls to voicemail in the dial applet (Thanks @chadsmith)
 
 
 ## OpenVBX 1.2.13
