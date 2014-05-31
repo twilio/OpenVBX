@@ -15,6 +15,7 @@
 ## OpenVBX 1.2.13
 
 - Send proper JSON header during install steps.
+- Fix bug in Twilio Services usage where custom certificate would not load.
 
 
 ## OpenVBX 1.2.12
