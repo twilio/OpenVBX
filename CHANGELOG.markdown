@@ -10,6 +10,7 @@
 - Clarify verbiage in iPhone install guide. (Thanks @plaidfluff)
 - Remove obsolete override of `setTimeout` in `global.js` that was causing an untold myriad of issues.
 - Update `VBX_Github_Client` to use new PHP 5.5 goodness when available.
+- Rework template loading to allow for ajax-loading of chrome-less templates.
 
 
 ## OpenVBX 1.2.13

@@ -222,6 +222,21 @@ class CI_Template {
    // --------------------------------------------------------------------
    
    /**
+    * Retrieve a list of set regions
+    *
+    * @return mixed array|false
+    */
+   function get_regions() {
+	   if (count($this->regions)) {
+		   return $this->regions;
+	   }
+	   
+	   return false;
+   }
+   
+   // --------------------------------------------------------------------
+   
+   /**
 	* Dynamically add region to the currently set template
 	*
 	* @access  public

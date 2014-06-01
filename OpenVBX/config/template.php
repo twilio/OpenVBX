@@ -58,26 +58,30 @@ $template['active_template'] = 'default';
 
 $template['default']['template'] = 'layout/template';
 $template['default']['regions'] = array(
-   'title',
-   'wrapper_header',
-   'header',
-   'utility_menu',
-   'context_menu',
-   'content',
-   'content_header',
-   'content_main',
-   'content_sidebar',
-   'content_footer',
-   'footer',
-   'wrapper_footer',
-   'error_dialog',
-   'audio_dialog',
-   'speech_dialog',
-   'analytics',
+	'title',
+	'wrapper_header',
+	'header',
+	'utility_menu',
+	'context_menu',
+	'content_header',
+	'content_sidebar',
+	'content_footer',
+	'footer',
+	'wrapper_footer',
+	'error_dialog',
+	'analytics',
+	'content',
+	'content_main',
 );
 $template['default']['parser'] = 'parser';
 $template['default']['parser_method'] = 'parse';
 $template['default']['parse_template'] = FALSE;
+
+$template['dialog'] = $template['default'];
+$template['dialog']['template'] = 'dialog';
+$template['dialog']['regions'] = array(
+	'content',
+);
 
 /* End of file template.php */
 /* Location: ./system/application/config/template.php */
