@@ -12,6 +12,7 @@
 - Update `VBX_Github_Client` to use new PHP 5.5 goodness when available.
 - Rework template loading to allow for ajax-loading of chrome-less templates.
 - Update SMS message sending to use new `/Messages` endpoint to enable 1600 character message lengths. Individual plugins will need to update on their own to take advantage of the extra available message length.
+- Fix setting of modal global default options.
 
 
 ## OpenVBX 1.2.13

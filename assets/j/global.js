@@ -168,7 +168,7 @@ $(document).ready(function() {
 		$.post(url, data, callback, "json");
 	};
 
-	$.extend($.ui.dialog.defaults, {
+	$.extend($.ui.dialog.prototype.options, {
 		autoOpen: false,
 		closeOnEscape: true,
 		closeText: '',
