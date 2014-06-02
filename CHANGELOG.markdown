@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## Current
+## OpenVBX 1.2.14
 
 - Fix curl error handling on GitHub API calls.
 - Adding SIP validation helper.
