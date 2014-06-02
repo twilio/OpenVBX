@@ -95,7 +95,7 @@ class FlowStore
 		catch(VBX_Flow_StoreException $e)
 		{
 			error_log($e->getMessage());
-			error_log("VBX_Flow_StoreException while deleting $key => ". var_export($value, true));
+			error_log("VBX_Flow_StoreException while deleting `$key`");
 			throw new FlowStoreException("Failed to set values in flow store: ". $e->getMessage());
 		}
 	}

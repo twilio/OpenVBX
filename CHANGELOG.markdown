@@ -1,5 +1,10 @@
 # OpenVBX Change Log
 
+## Current
+
+- Various small fixes found through static analysis.
+
+
 ## OpenVBX 1.2.14
 
 - Fix curl error handling on GitHub API calls.

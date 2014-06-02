@@ -119,8 +119,7 @@
 							<td>&nbsp;&nbsp;&nbsp;</td>
 							<td style="width: 100%; vertical-align: middle; text-align: right;">
 								<label><b>Personalized Greeting</b>
-								<?php echo AppletUI::AudioSpeechPicker('no-answer-group-voicemail',
-									  'No one is currently available to take your call, please leave a message after the beep.'); ?>
+								<?php echo AppletUI::AudioSpeechPicker('no-answer-group-voicemail'); ?>
 								</label>
 							</td>
 						</tr></table>
