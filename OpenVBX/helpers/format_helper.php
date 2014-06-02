@@ -55,7 +55,6 @@ function normalize_phone_to_E164($phone) {
 		return "+1{$matches[1]}";
 	}
 
-
 	// validate INTL DID
 	if(preg_match('/^\+?([2-9][0-9]{8,14})$/', $phone, $matches)){
 		return "+{$matches[1]}";
@@ -259,4 +258,61 @@ function html($data)
 		}
 	}
 	return $data;
+}
+
+if (!function_exists('validate_sip_address')) {
+	/**
+	 * Validate a SIP address
+	 *
+	 * Valid SIP Address formats: (sip:user@server[:port])
+	 *	sip:joe.bloggs@212.123.1.213
+	 *	sip:joe.bloggs@212.123.1.213:8090
+	 *	sip:support@phonesystem.3cx.com
+	 *	sip:support@phonesystem.3cx.com:8090
+	 *	sip:22444032@phonesystem.3cx.com
+	 *	sip:22444032@phonesystem.3cx.com:8090
+	 * 
+	 * @param string $addr
+	 * @return bool
+	 */
+	function validate_sip_address($addr) {
+		# explode on ':' will give us [protocol, address, [port]] 
+		$scheme = explode(':', $addr);
+
+		# no sip, cry
+		if ($scheme[0] !== 'sip') 
+		{
+			return false;
+		}
+	
+		# port is optional
+		if (isset($scheme[2]) && !is_numeric($scheme[2])) 
+		{
+			return false;
+		}
+	
+		# easy out, if it looks like an email address its OK
+		if (filter_var($scheme[1], FILTER_VALIDATE_EMAIL) == $scheme[1]) 
+		{
+			return true;
+		}
+	
+		# not so easy, is probably 'user@ip', ie: 'user@10.1.5.100'
+		# explode on '@' will give us [user, address] 
+		$parts = explode('@', $scheme[1]);
+	
+		# invalid count of parts
+		if (count($parts) != 2) 
+		{
+			return false;
+		}
+	
+		# invalid address portion
+		if (filter_var($parts[1], FILTER_VALIDATE_URL|FILTER_VALIDATE_IP) == false) 
+		{
+			return false;
+		}
+	
+		return true;
+	}
 }

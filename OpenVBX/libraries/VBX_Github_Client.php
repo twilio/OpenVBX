@@ -55,8 +55,8 @@ class VBX_Github_Client {
 		$response = curl_exec($curl);
 		
 		if (!$response) {
-			$err = curl_error($ch);
-			$errNo = curl_errno($ch);
+			$err = curl_error($curl);
+			$errNo = curl_errno($curl);
 			throw new Exception('HTTP communication error: ' . $errNo . ', ' . $err);
 		}
 		
@@ -77,15 +77,22 @@ class VBX_Github_Client {
 	 * @return mixed bool|string
 	 */
 	protected function isJsonError() {
+        if (!function_exists('json_last_error')) {
+			return false;
+		}
 		
-        if (function_exists('json_last_error')) {
-            $jsonErr = json_last_error();
+		$jsonErr = json_last_error();
+		
+		if ($jsonErr == JSON_ERROR_NONE) {
+			return false;
+		}
+		
+		// oh, you lucky php 5.5 users
+		if (function_exists('json_last_error_msg')) {
+			$jsonErr = json_last_error_msg();
+			return is_null($jsonErr) ? false : $jsonErr;
+		}
 
-            if ($jsonErr != JSON_ERROR_NONE) {
-                return $this->jsonErrors[$jsonErr];
-            }
-        }
-
-		return false;
+		return isset($this->jsonErrors[$jsonErr]) ? $this->jsonErrors[$jsonErr] : false;
 	}
 }

@@ -373,9 +373,7 @@ class MY_Controller extends Controller
 	}
 
 	protected function template_respond($title, $section, $payload, $layout, $layout_dir = 'content')
-	{
-		$this->template->write('title', $title);
-
+	{		
 		if(isset($payload['json']))
 		{
 			unset($payload['json']);
@@ -424,31 +422,47 @@ class MY_Controller extends Controller
 											$this->session->userdata('is_admin'));
 		$payload = array_merge($payload, $navigation);
 		$payload = $this->template->clean_output($payload);
-		$this->template->write_view('wrapper_header', $layout_dir.'/wrapper_header', $payload);
-		$this->template->write_view('header', $layout_dir.'/header', $payload);
-		$this->template->write_view('utility_menu', $layout_dir.'/utility_menu', $payload);
-		$this->template->write_view('context_menu', $layout_dir.'/context_menu', $payload);
-		$this->template->write_view('content_header', $layout_dir.'/content_header', $payload);
-		$this->template->write_view('content_sidebar', $layout_dir.'/content_sidebar', $payload);
-		$this->template->write_view('content_footer', $layout_dir.'/content_footer', $payload);
-		$this->template->write_view('footer', $layout_dir.'/footer', $payload);
-		$this->template->write_view('wrapper_footer', $layout_dir.'/wrapper_footer', $payload);
-		$this->template->write_view('error_dialog', $layout_dir.'/error_dialog', $payload);
-		$this->template->write_view('analytics', $layout_dir.'/analytics', $payload);
-		$this->template->write_view('content', $section, $payload);
-		$content = $this->template->render('content');
-		$this->template->write_view('content_main', $layout_dir.'/content_main', compact('content'));
+		
+		$template_regions = $this->template->get_regions();
+		foreach (array_keys($template_regions) as $region) 
+		{
+			if (strpos($region, '_') === 0) 
+			{
+				continue;
+			}
+			
+			if ($region == 'title') 
+			{
+				$this->template->write('title', $title);
+				continue;
+			}
+
+			$view = $layout_dir . '/' . $region;
+			$content = $payload;
+			
+			if ($region == 'content_main') 
+			{
+				$content = array(
+					'content' => $this->template->render('content'),
+				);
+				$view = $layout_dir . '/content_main';
+			} 
+			elseif ($region == 'content') 
+			{
+				$view = $section;
+			}
+			
+			$this->template->write_view($region, $view, $content);
+		}
 
 		if($this->input->get_post('no_layout') == 1)
 		{
-			echo $this->template->render('content_main');
-			return;
+			return $this->template->render('content_main');
 		}
 
 		if($this->input->get_post('barebones') == 1)
 		{
-			echo $this->template->render('content');
-			return;
+			$this->template->render('content');
 		}
 
 		return $this->template->render();

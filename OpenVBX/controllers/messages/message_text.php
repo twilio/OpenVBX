@@ -34,7 +34,7 @@ class Message_Text extends User_Controller
 	{
 		try
 		{
-			$content = substr($this->input->post('content'), 0, 160);
+			$content = substr($this->input->post('content'), 0, 1600);
 			$to = $this->input->post('to');
 			$from = $this->input->post('from');
 			$numbers = array();

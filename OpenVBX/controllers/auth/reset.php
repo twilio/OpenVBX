@@ -91,25 +91,23 @@ class Reset extends MY_Controller
 		}
 
 		$user = VBX_User::get(array(
-			'email' => $this->input->post('email'),
+			'email' => $email,
 			'is_active' => 1,
 		));
-		
-		if(empty($user))
+
+        if(empty($user))
 		{
 			$this->session->set_flashdata('error', 'No active account found.');
 			return redirect('auth/reset');
 		}
 
 		if($user->auth_type == 'google')
-
 		{
 			header('Location: http://www.google.com/support/accounts/bin/answer.py?answer=48598&hl=en&ctx=ch_Login&fpUrl=https%3A%2F%2Fwww.google.com%2Faccounts%2FForgotPasswd%3FfpOnly%3D1%26continue%3Dhttp%253A%252F%252Fwww.google.com%252F%26hl%3Den');
 			return;
 		}
 		else
 		{
-			$user = new VBX_User($user);
 			$emailSent = $user->send_reset_notification();
 			if ($emailSent) {
 				$this->session->set_flashdata('error',

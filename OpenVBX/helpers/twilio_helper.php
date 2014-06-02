@@ -145,25 +145,25 @@ if (!function_exists('_deprecated_notice')) {
 	 */
 	function _deprecated_notice($method, $version, $replacement = null) {
 		if (!is_null($replacement)) {
-			$message = sprintf('`%s` is deprecated since version %f. Use `%s` instead.');
+			$message = sprintf('`%s` is deprecated since version %f. Use `%s` instead.', $method, $version, $replacement);
 		}
 		else {
-			$message = sprintf('`%s` is deprecated since version %f.');			
+			$message = sprintf('`%s` is deprecated since version %f.', $method, $version);
 		}
 		log_message('error', $message);
-		trigger_error($message, E_WARNING);
+		trigger_error($message, E_USER_WARNING);
 	}
 }
 
 if (!function_exists('t_form_dropdown')) {
-	/**
-	 * An easier to use version of form_dropdown
-	 *
-	 * @param array $params 
-	 * @param array $options 
-	 * @param string $selected 
-	 * @return string HTML
-	 */
+    /**
+     * An easier to use version of form_dropdown
+     *
+     * @param array $params
+     * @param array $options
+     * @param bool|string $selected
+     * @return string HTML
+     */
 	function t_form_dropdown($params, $options, $selected = false)
 	{
 		$name = '';
@@ -187,13 +187,13 @@ if (!function_exists('t_form_dropdown')) {
 
 if (!function_exists('t_form_input'))
 {
-	function t_form_input($params, $value)
-	{		
+	function t_form_input($params, $value = '')
+	{
+        $data = array();
+
 		if (!empty($params['name']))
 		{
-			$data = array(
-				'name' => $params['name']
-			);
+			$data['name'] = $params['name'];
 		}
 		
 		$extra = '';

@@ -49,6 +49,8 @@ try {
 				// create a dial list from the input state
 				$dial_list = DialList::get($dialer->dial_whom_user_or_group);
 
+                $dialed = false;
+
 				while (count($dial_list)) 
 				{
 					$to_dial = $dial_list->next();

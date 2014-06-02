@@ -51,7 +51,7 @@ class Dialog extends User_Controller {
 	{
 		parent::__construct();
 		$this->admin_only('dialogs');
-		$this->template->write('title', 'dialogs');
+		$this->template->set_template('dialog');
 	}
 	
 	function usergroup()

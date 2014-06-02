@@ -56,7 +56,7 @@ class MY_Model extends Model
 		{
 			foreach($this->fields as $property)
 			{
-				$this->values[$property] = $object->$property;
+				$this->values[$property] = isset($object->$property) ? $object->$property : null;
 			}
 		}
 		
@@ -89,12 +89,13 @@ class MY_Model extends Model
 	{
 		$ci = &get_instance();		
 		$tenant_id = $ci->tenant->id;
-		
+
+        $cached_objects_key = $class.'-'.md5(serialize($search_options).
+     									serialize($sql_options).$limit.$offset);
+
 		if (self::_caching($class))
 		{
 			// Check cache first
-			$cached_objects_key = $class.'-'.md5(serialize($search_options).
-									serialize($sql_options).$limit.$offset);
 			if ($cached_keys = $ci->cache->get($cached_objects_key, $class, $tenant_id))
 			{
 				$cached_objects = array();

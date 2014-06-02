@@ -562,7 +562,7 @@ class VBX_User extends MY_Model {
 		{
 			throw new VBX_UserException('Email is a required field.');
 		}
-		
+
 		if(!(strpos($this->email, '@') > 0))
 		{
 			throw new VBX_UserException('Valid email address is required');

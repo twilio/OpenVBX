@@ -22,5 +22,5 @@ else
 	$response_text = $prompt;
 }
 
-$response->sms($response_text);
+$response->message($response_text);
 $response->Respond();

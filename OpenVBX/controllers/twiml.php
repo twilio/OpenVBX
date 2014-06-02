@@ -83,7 +83,7 @@ class Twiml extends MY_Controller {
 		$flow_id = $this->set_flow_id($flow_id);
 		$flow = $this->get_flow();
 		$flow_data = array();
-		if(is_object($flow))
+		if(is_object($flow) && strlen($flow->sms_data))
 		{
 			$flow_data = get_object_vars(json_decode($flow->sms_data));
 		}
@@ -110,7 +110,7 @@ class Twiml extends MY_Controller {
 		$flow_id = $this->set_flow_id($flow_id);
 		$flow = $this->get_flow();
 		$flow_data = array();
-		if(is_object($flow))
+		if(is_object($flow) && strlen($flow->data))
 		{
 			$flow_data = get_object_vars(json_decode($flow->data));
 		}

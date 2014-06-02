@@ -3,7 +3,7 @@ $sms = AppletInstance::getValue('sms');
 $next = AppletInstance::getDropZoneUrl('next');
 
 $response = new TwimlResponse;
-$response->sms($sms);
+$response->message($sms);
 if(!empty($next))
 {
 	$response->redirect($next);

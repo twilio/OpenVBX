@@ -66,7 +66,7 @@ class DialList implements Countable
 				else 
 				{
 					// list of user ids, populate list
-					$users = VBX_User::get_users($user_ids);
+					$users = VBX_User::get_users($users_or_group);
 				}
 				break;
 			case $users_or_group instanceof VBX_Group:

@@ -1,8 +1,24 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.14
+
+- Fix curl error handling on GitHub API calls.
+- Adding SIP validation helper.
+- Clean up various innocuous log notices.
+- Upgrade Twilio PHP api library. (Thanks @guyhughes)
+- Send `busy` calls to voicemail in the dial applet. (Thanks @chadsmith)
+- Clarify verbiage in iPhone install guide. (Thanks @plaidfluff)
+- Remove obsolete override of `setTimeout` in `global.js` that was causing an untold myriad of issues.
+- Update `VBX_Github_Client` to use new PHP 5.5 goodness when available.
+- Rework template loading to allow for ajax-loading of chrome-less templates.
+- Update SMS message sending to use new `/Messages` endpoint to enable 1600 character message lengths. Individual plugins will need to update on their own to take advantage of the extra available message length.
+- Fix setting of modal global default options.
+
+
 ## OpenVBX 1.2.13
 
 - Send proper JSON header during install steps.
+- Fix bug in Twilio Services usage where custom certificate would not load.
 
 
 ## OpenVBX 1.2.12

@@ -44,7 +44,7 @@
 				<br class="clear" />
 
 				<label class="field-label">Message
-					<textarea class="sms-message" name="content" placeholder="Enter your message, must be 160 characters or less."></textarea><span class="count">160</span>
+					<textarea class="sms-message" name="content" placeholder="Enter your message, must be 1600 characters or less. (higher rates may apply for messages of more than 160 characters)"></textarea><span class="count">1600</span>
 				</label>
 			</fieldset>
 

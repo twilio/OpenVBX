@@ -73,7 +73,7 @@ Now log in to your install and follow the upgrade instructions (which, really, c
 
 ## Rollback
 
-Should something go wrong you can roll back your install by reverting the folder names on your OpenVBX install and restoring the database from your backup. If this does happen then please open a ticket on (the Forums)[http://getsatisfaction.com/openvbx]. 
+Should something go wrong you can roll back your install by reverting the folder names on your OpenVBX install and restoring the database from your backup. If this does happen then please open a ticket on [the Forums](http://getsatisfaction.com/openvbx). 
 
 Be sure to include:
 
