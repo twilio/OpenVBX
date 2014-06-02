@@ -51,7 +51,7 @@ if($sms_found)
 }
 else
 {
-	$response->sms('Unable to send sms message');
+	$response->message('Unable to send sms message');
 }
 
 $response->respond();

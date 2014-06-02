@@ -68,7 +68,7 @@ class VBX_Sms_message extends Model {
 		
 		try {
 			$account = OpenVBX::getAccount();
-			$messages = $account->sms_messages->getIterator($page, $page_size, array());
+			$messages = $account->messages->getIterator($page, $page_size, array());
 			if (count($messages)) {
 				$this->total = count($messages);
 				foreach ($messages as $message) {
@@ -98,10 +98,7 @@ class VBX_Sms_message extends Model {
 		
 		try {
 			$account = OpenVBX::getAccount();
-			$response = $account->sms_messages->create($from,
-														$to,
-														$message
-													);
+			$response = $account->messages->sendMessage($from, $to, $message);
 		}
 		catch (Exception $e) {
 			throw new VBX_Sms_messageException($e->getMessage());

@@ -372,7 +372,7 @@ jQuery(function($) {
 	var updateCount = function() {
 		var length = $(this).val().length;
 		$('.count', dialog)
-			.text(160 - length);
+			.text(1600 - length);
 	};
 
 	$('textarea', dialog).live('keypress', updateCount);
