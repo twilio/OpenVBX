@@ -1,0 +1,168 @@
+[
+    {
+        "Name": "DopplrVBX",
+        "Description": "A suite of applets for the smart traveller's phone system.",
+        "Website": "https:\/\/github.com\/johndbritton\/DopplrVBX"
+    },
+    {
+        "Name": "Highrise Page for OpenVBX",
+        "Description": "When this page is open, it will notify you in real-time of incoming calls to your devices. It will also redirect you to the caller's profile page in Highrise.",
+        "Website": "https:\/\/github.com\/thevinci\/HighrisePage-VBX---discontinued-"
+    },
+    {
+        "Website": "https:\/\/github.com\/thevinci\/Search-VBX---discontinued-",
+        "Name": "Search for OpenVBX"
+    },
+    {
+        "Name": "Wikipedia for OpenVBX",
+        "Website": "https:\/\/github.com\/thevinci\/Wikipedia-VBX---discontinued-",
+        "Description": "This adds Wikipedia functionality to your text call flow. Users can now text a phrase to their OpenVBX numbers and the server will text back the results of the phrase."
+    },
+    {
+        "Name": "Password for OpenVBX",
+        "Website": "https:\/\/github.com\/thevinci\/Password-VBX---discontinued-"
+    },
+    {
+        "Website": "https:\/\/github.com\/thevinci\/Expense-VBX---discontinued-",
+        "Name": "Expense for OpenVBX"
+    },
+    {
+        "Name": "Address Book for OpenVBX",
+        "Website": "https:\/\/github.com\/thevinci\/AddressBook-VBX---discontinued-"
+    },
+    {
+        "Website": "https:\/\/github.com\/thevinci\/Zendesk-VBX---discontinued-",
+        "Name": "Zendesk for OpenVBX",
+        "Description": "Zendesk tickets will automatically create a ticket for incoming calls to OpenVBX."
+    },
+    {
+        "Name": "Highrise Dial for OpenVBX",
+        "Website": "https:\/\/github.com\/thevinci\/HighriseDial-VBX---discontinued-",
+        "Description": "Record live conversations to OpenVBX and Highrise."
+    },
+    {
+        "Name": "Highrise Callflow for OpenVBX",
+        "Website": "https:\/\/github.com\/thevinci\/HighriseCallflow-VBX---discontinued-",
+        "Description": "Redirect incoming calls based on if they are in Highrise or not."
+    },
+    {
+        "Name": "Highrise Voicemail for OpenVBX",
+        "Website": "https:\/\/github.com\/thevinci\/HighriseVoicemail-VBX---discontinued-",
+        "Description": "Voicemail are recorded to OpenVBX and Highrise."
+    },
+    {
+        "Name": "Plugin Installer - OpenVBX",
+        "Website": "https:\/\/github.com\/kressaty\/OpenVBX-Plugin-Installer",
+        "Description": "Basic uploader for OpenVBX - very beta, used for development quickness for now."
+    },
+    {
+        "Website": "https:\/\/github.com\/kressaty\/OpenVBX-Plugin-Call-Log",
+        "Description": "Basic call log for OpenVBX.",
+        "Name": "Call Log - OpenVBX"
+    },
+    {
+        "Name": "Curling - OpenVBX",
+        "Description": "OpenVBX applet that makes a request to a webserver and reads back the text returned",
+        "Website": "https:\/\/github.com\/kressaty\/OpenVBX-Plugin-Curling"
+    },
+    {
+        "Name": "FourSquare Plugin for OpenVBX",
+        "Website": "https:\/\/github.com\/andrewwatson\/FourSquare-VBX-Plugin",
+        "Description": "These plugins allow you to control the routing of your call flow based on FourSquare Checkins.  You can filter according to Venue ID or Category."
+    },
+    {
+        "Name": "Chirbit Posting",
+        "Website": "https:\/\/github.com\/andrewwatson\/Chirbit-VBX-Plugin",
+        "Description": "Create a phone interface for posting Audio snippets to Chirbit.com"
+    },
+    {
+        "Website": "https:\/\/github.com\/Beans0063\/vbx-intelligence",
+        "Description": "Framework for real-time display of contextual business intelligence.",
+        "Name": "VBX Intelligence"
+    },
+    {
+        "Name": "Subscriptions Plugin",
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Plugin-Subscriptions",
+        "Description": "OpenVBX Subscriptions plugin adds text message marketing and auto-dialing to OpenVBX. Create opt-in subscription lists to send text updates or automated phone calls using any OpenVBX flow."
+    },
+    {
+        "Description": "Slightly more advanced keyword matching for SMS menus. Lets you choose which applet to run when a keyword is matched. (Great when paired with my Subscriptions plugin!)",
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Plugin-Match",
+        "Name": "Keyword Matching for SMS Menus"
+    },
+    {
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Plugin-Outbound",
+        "Name": "Outbound Flows Plugin",
+        "Description": "Lets you call out with a flow or send messages to someone else from a flow."
+    },
+    {
+        "Description": "Slightly more advanced keyword matching for SMS menus. Lets you choose which applet to run when a keyword is matched. (Great when paired with my Subscriptions plugin!)",
+        "Name": "Keyword Matching for SMS Menus",
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Plugin-Match"
+    },
+    {
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Plugin-Export",
+        "Name": "Import \/ Export Flows",
+        "Description": "The Import \/ Export Flows plugin allows you to quickly import and export your flows."
+    },
+    {
+        "Description": "Track the current activity in the flow in Google Analytics.",
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Plugin-Analytics",
+        "Name": "Google Analytics Plugin"
+    },
+    {
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Plugin-Twitter",
+        "Name": "Twitter Plugin",
+        "Description": "Say or reply with the most recent tweet of the specified user."
+    },
+    {
+        "Description": "An applet plugin for OpenVBX that continues the flow by starting another flow or redirecting to the URL of another Twilio app",
+        "Website": "https:\/\/github.com\/kmorrill\/Transfer-for-OpenVBX",
+        "Name": "Transfer Plugin"
+    },
+    {
+        "Website": "https:\/\/github.com\/kmorrill\/CallerId-for-OpenVBX",
+        "Name": "Caller ID Routing",
+        "Description": "Route your inbound SMS messages or phone calls based on the caller ID of the incoming message\/call."
+    },
+    {
+        "Website": "https:\/\/github.com\/tjlytle\/OpenVBX-ClickToFlow",
+        "Description": "Click-To-Flow allows a traditional 'click-to-call' form to initiate a call flow. No intermediate code is needed to call the POSTed number and connect it to any given flow. Currently it requires modified OpenVBX source, until unauthenticated plugin requests are supported in the official release.",
+        "Name": "Click to Flow Plugin"
+    },
+    {
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Plugin-Split",
+        "Description": "A\/B split testing for OpenVBX.",
+        "Name": "A\/B Split Plugin"
+    },
+    {
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Plugin-Cookies",
+        "Name": "Cookies Plugin",
+        "Description": "Store, retrieve, and check a caller's cookies"
+    },
+    {
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Plugin-Polls",
+        "Name": "Polls Plugin",
+        "Description": "Allows for phone and text message polling."
+    },
+    {
+        "Name": "Automatic Upgrade Plugin",
+        "Description": "One click updates for OpenVBX.",
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Automatic-Upgrade"
+    },
+    {
+        "Name": "OpenVBX - Twilio Notification Plugin",
+        "Description": "Reports Twilio Notifications",
+        "Website": "https:\/\/github.com\/dthawkins\/OpenVBX---Twilio-Notifications-Plugin"
+    },
+    {
+        "Website": "https:\/\/github.com\/chadsmith\/OpenVBX-Plugin-Stripe",
+        "Name": "Stripe Payments Plugin",
+        "Description": "Take payments over the phone using stripe.com"
+    },
+    {
+        "Name": "FlowTest",
+        "Website": "https:\/\/github.com\/tjlytle\/FlowTest",
+        "Description": "FlowTest allows you to test OpenVBX Call Flows - as well as the text-to-speech engine - using the new OpenVBX Browser Phone. Instead of dialing in multiple times as you tweak your flows, you can can now test without even using your phone."
+    }
+]

@@ -1,0 +1,12 @@
+{ 
+	"name": "Scheduling",
+	"author": "Xerxes the Monkey <hello@twilio.com>",
+	"description": "Display a list of all calls and messages.",
+	"url": "http://openvbx.org",
+	"links": [{
+		"menu": "Call Log",
+		"url": "call_log",
+		"script": "call_log.php",
+		"label": "Call Log"
+	}]
+}

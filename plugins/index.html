@@ -1,0 +1,83 @@
+---
+layout: default
+category: plugins
+---
+
+<div class="yui-gc">
+	<div class="yui-u first">
+		<h2 class="section-heading">Community Plugins</h2>
+		<h3 class="section-heading">Extend OpenVBX with Advanced Functionality</h3>
+
+		<p class="section-sub-blurb">Use plugins to add new functionality and customize OpenVBX to fit your needs. Make your own, or use plugins the community has created.</p>
+
+		<a class="submit-plugin-button" href="{{ site.new_plugin_url }}">Submit Your Plugin &raquo;</a>
+		
+		<br class="clear" />
+		
+		<ul id="plugin-list" class="plugin-list"></ul>
+		
+		<span class="plugins-pagination plugins-pagination-meta">Viewing <span class="plugins-view">x</span> of <span class="plugins-count">y</span></span>
+		
+		<span id="plugin-paging" class="plugins-pagination">
+			<span class="pagination-link prev disabled"><a href="#page-prev">&laquo; prev</a></span>
+			<span class="pagination-link next"><a href="#page-next">next &raquo;</a></span>
+		</span>
+		
+		<a class="submit-plugin-button" href="{{ site.new_plugin_url }}">Submit Your Plugin &raquo;</a>
+		
+		<br class="clear" />
+
+		<p class="license">Prior to downloading any third party plug-in or other software, please review Twilio&rsquo;s terms and policies regarding <a href="{{ site.baseurl }}/license/#third-party-materials">Third Party Material</a></p>
+
+	</div><!-- .yui-u first -->
+	<div class="yui-u">
+		<div id="iphone">
+			<img class="new-icon" src="{{ site.baseurl }}/images/new-icon.png" alt="New" />
+			<a href="{{ site.baseurl }}/iphone/" title="Download OpenVBX for iPhone">
+				<img id="iphone-icon-58" src="{{ site.baseurl }}/images/iphone-icon-58.png" alt="Download OpenVBX for iPhone" />
+			</a>
+			<h3 class="app-heading"><a href="{{ site.baseurl }}/iphone/">OpenVBX for iPhone</a></h3>
+			<p class="app-blurb">Install the new companion iPhone app from the <a href="http://itunes.com/app/openvbx">AppStore</a> today.</p>
+			<p class="app-blurb">Since it&rsquo;s open source, you can <a href="https://github.com/twilio/OpenVBX-iPhone ">download the source</a>.</p>
+    	</div>
+		
+		<ul class="plugin-faqs">
+			<li>
+				<h3>Where do I submit my plugin, so it&rsquo;s on OpenVBX.org?</h3>
+				<p><a href="{{ site.new_plugin_url }}">Tell us</a>, and we&rsquo;ll post it here. Check out our guidelines for building a successful plugin.</p>
+			</li>
+			<li>
+				<h3>Who can make plugins?</h3>
+				<p>You can! Are you looking for a custom plugin, integration, or functionality that hasn&rsquo;t been built yet? Be the first!</p>
+			</li>
+			<li>
+				<h3>How do I make a plugin?</h3>
+				<p>Building a basic plugin only takes a few minutes. Check out our <a href="{{ site.baseurl }}/docs/api/2010-06-01/plugin/">Plugin API</a> docs for details on how to get started.</p>
+			</li>
+			<li>
+				<h3>OpenVBX Plugin Installation Guide</h3>
+				<ol class="section-list">
+					<li>Download the plugin to <code>/plugins</code> and unzip</li>
+					<li>Launch your OpenVBX installation</li>
+					<li>Navigate to Settings in the Admin section</li>
+					<li>Select the Plugins tab</li>
+					<li>Select the &ldquo;Configure&rdquo; link next to your plugin to ensure installation was successful, and configure any settings</li>
+				</ol>
+			</li>
+		</ul>
+	</div><!-- .yui-u -->
+</div><!-- .yui-gc 66/33-->
+
+<ul id="plugin-list-template" class="hide">
+	<li class="plugin-item">
+		<div class="image-frame">
+			<a href="" title="">
+				<img src="{{ site.baseurl }}/images/plugin-icon.png" alt="Plugin" />
+			</a>
+		</div>
+		
+		<h3 class="plugin-name section-sub-heading"><a href=""></a></h3>
+		<p class="plugin-url"><a href=""></a></p>
+		<p class="plugin-desc">&nbsp;</p>
+	</li>			
+</ul>

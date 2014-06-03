@@ -1,0 +1,100 @@
+/* HTML, Body and Wrap */
+
+html, body {
+	height: 100%;
+	background-color: #F7F7F7;
+}
+
+#wrap {
+	min-height: 100%;
+}
+
+#doc4 {
+	padding-bottom: 300px; /* Same as footer height */
+	background-color: #F7F7F7;
+	overflow: auto;
+}
+
+/* Header */
+
+#hd {
+	background-color: #F7F7F7;
+}
+
+#hd-wrap {
+	width: 974px;
+	margin: 0 auto;
+	padding-top: 5px;
+}
+
+#openvbx-logo a {
+	float: left;
+	height: 54px;
+	width: 233px;
+	margin-top: 10px;
+	background: url('../images/openvbx-web-logo.png') no-repeat center center;
+}
+
+/* Footer */
+
+#ft {
+	position: relative;
+	height: 300px;
+	margin-top: -300px;
+	background-color: #EEE;
+	clear: both;
+}
+
+#footer-wrap {
+	width: 974px;
+	margin: 0 auto;
+	padding: 20px 0;
+	text-align: left;
+}
+
+.footer-sub-section {
+	clear: both;
+}
+
+.footer-sub-section a,
+.footer-sub-section a:visited,
+.footer-sub-section a:hover,
+.footer-sub-section a:active {
+	color: #555;
+}
+
+.about-openvbx {
+	float: left;
+	padding: 10px;
+	font-size: 11px;
+	color: #777;
+}
+
+.copyright {
+	float: right;
+	padding: 10px;
+	font-size: 11px;
+	color: #777;
+}
+
+/* Global */
+
+span.replace {
+	display: none;
+}
+
+br.clear {
+	clear: both;
+}
+
+br.clear-left {
+	clear: left;
+}
+
+br.clear-right {
+	clear: right;
+}
+
+.hide {
+	display: none;
+}

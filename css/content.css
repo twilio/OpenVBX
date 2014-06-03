@@ -1,0 +1,823 @@
+/* Content Body */
+
+#bd {
+	padding: 30px 0;
+	color: #444;
+}
+
+#bd a:link {
+	font-weight: bold;
+	color: #008484;
+	color: #069;
+	text-decoration: none;
+}
+
+#bd a:visited {
+	font-weight: bold;
+	color: #00A4A4;
+	color: #369;
+	text-decoration: none;
+}
+
+#bd a:hover {
+	color: #064B4F;
+	color: #06F;
+	text-decoration: none;
+}
+
+#bd a:active {
+	font-weight: bold;
+	color: #008484;
+	color: #333;
+	text-decoration: none;
+}
+
+#bd strong {
+	font-weight: bold;
+	color: #222;
+}
+
+
+
+/* Sections */
+
+h2.section-heading {
+	font-size: 32px;
+	font-weight: bold;
+	color: #212121;
+	letter-spacing: -1px;
+}
+
+h3.section-heading {
+	margin-bottom: 20px;
+	font-size: 24px;
+	font-weight: bold;
+	color: #4C4C4C;
+	letter-spacing: -1px;
+}
+
+.section-heading-blurb {
+	font-size: 24px;
+	color: #8D8D8D;
+}
+
+.section-sub-heading {
+	margin-top: 20px;
+	font-size: 17px;
+	color: #444;
+}
+
+.section-sub-blurb {
+	font-size: 17px;
+	color: #444;
+}
+
+.section-list {
+	margin: 10px 0 10px 15px;
+}
+
+ul.section-list>li {
+	list-style: disc;
+	margin: 0 0 10px 15px;
+	font-size: 17px;
+	color: #444;
+}
+
+ol.section-list>li {
+	list-style: decimal;
+	margin: 0 0 10px 15px;
+	font-size: 17px;
+	color: #444;
+}
+
+/* Section Boxes */
+
+.section-box {
+	margin-top: 30px;
+	padding: 20px 25px;
+	background-color: #FFF;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.section-box-heading {
+	margin-bottom: 10px;
+	font-size: 25px;
+	color: #5EBFFF;
+	color: #74C729;
+	color: #63AA22;
+}
+
+.section-box-blurb {
+	margin-bottom: 10px;
+	font-size: 17px;
+	color: #444;
+}
+
+.section-box .section-list {
+	margin-left: 5px;
+}
+
+
+
+/* Section Box Grid */
+
+.section-box-grid-50 {
+	width: 100%;
+	margin-top: 30px;
+	background-color: #CCC;
+	overflow: auto;
+}
+
+.section-box-grid-50 .section-box {
+	float: left;
+	width: 49%;
+	margin: 0 1.99% 20px 0;
+	padding: 0;
+}
+
+.section-box-grid-50 .last {
+	margin-right: 0;
+}
+
+
+/* Section Break */
+
+.section-break {
+	margin: 15px 0;
+	padding-top: 5px;
+	border-top: 1px solid #CCC;
+}
+
+.section-break h2.section-sub-heading {
+	font-size: 28px;
+}
+
+
+
+/* Section Box Video */
+
+.section-video-first {
+	padding-left: 42px;
+}
+
+.section-video-last {
+	padding-left: 42px;
+}
+
+
+
+/* Press */
+
+.press-list {
+	margin: 0 0 2em 0;
+}
+
+.press-list .press-item {
+	margin: 0 0 1.5em 0;
+}
+
+.press-list .press-item h3 {
+	font-size: 17px;
+}
+
+.press-list .item-url {
+	margin-top: 2px;
+	font-size: 11px;
+	color: #999;
+}
+
+
+
+
+/* About */
+
+.contact-box ul {
+	margin: 20px 0;
+}
+
+.contact-box li {
+	margin: 0 0 20px 0;
+}
+
+.contact-box h3 {
+	margin-top: 1.5em;
+}
+
+.contact-box p {
+	margin-bottom: 1em;
+}
+
+.logos-box .section-sub-blurb {
+	margin-bottom: 15px;
+}
+
+.logos-box img {
+	margin: 30px 0 10px 0;
+}
+
+.logos-box ul {
+	margin-bottom: 40px;
+	overflow: auto;
+	clear: both;
+}
+
+.logos-box li {
+	display: inline;
+}
+
+.logos-box li a {
+	display: block;
+	float: left;
+	margin: 5px 12px 5px 0;
+}
+
+.logo-copyright {
+	font-size: 11px;
+	color: #999;
+}
+
+
+
+/* How It Works */
+
+#how-it-works-steps {
+	position: relative;
+	margin-top: 40px;
+}
+
+#step-1 {
+	height: 510px;
+	margin-bottom: 30px;
+	background: url('../images/twilio-powers-openvbx.png') no-repeat center top;
+}
+
+#step-2 {
+	height: 570px;
+	margin-bottom: 30px;
+	background: url('../images/connect-to-business.png') no-repeat center top;
+}
+
+#how-it-works-steps h3 {
+	padding-top: 30px;
+	font-size: 24px;
+	color: #069;
+	text-align: center;
+}
+
+#openvbx-desc {
+	float: left;
+	width: 260px;
+	margin: 80px 0 0 40px;
+	font-size: 19px;
+	color: #555;
+}
+
+#openvbx-list {
+	float: right;
+	margin: 70px 70px 0 0;
+	font-size: 17px;
+	color: #777;
+}
+
+#openvbx-list li {
+	margin-bottom: 12px;
+}
+
+#twilio-desc {
+	float: left;
+	width: 260px;
+	margin: 170px 0 0 40px;
+	font-size: 19px;
+	color: #555;
+}
+
+#twilio-list {
+	float: right;
+	margin: 160px 70px 0 0;
+	font-size: 17px;
+	color: #777;
+}
+
+#twilio-list li {
+	margin-bottom: 12px;
+}
+
+
+/* Download-iPhone */
+#iphone .download-iphone-section {
+	float: left;
+	width: 160px;
+	margin: 20px 10px;
+	text-align: center;
+}
+
+#download-iphone-source img {
+	margin: 8px 0 9px 0;
+}
+
+
+/* iPhone */
+.iphone-section-heading {
+	width: 650px;
+}
+
+#iphone-icon-72 {
+	float: left;
+	margin: 0 20px 20px 0;
+}
+
+#iphone-case {
+	position: relative;
+	height: 750px;
+	width: 440px;
+	background: url('../images/openvbx-for-iphone.png') no-repeat center center;
+}
+
+#iphone-case .bx-wrapper {
+	position: absolute;
+	top: 127px;
+	left: 88px;
+	border: none;
+}
+#iphone-case .bx-wrapper,
+#iphone-case .bx-wrapper .bx-window {
+	width: 268px;
+	height: 385px;
+}
+
+#iphone-screen {
+	background: none;
+}
+
+#iphone-screen img {
+	position: absolute;
+}
+
+#iphone-available {
+	clear: both;
+	margin: 10px 0 20px 0;
+}
+
+#iphone-available #app-store-badge {
+	margin: 0 0 0 100px;
+}
+
+#iphone-available #github-logo {
+	margin: 0 0 0 50px;
+}
+
+#iphone-features {
+	height: 385px;
+}
+
+#iphone-features .section-sub-blurb {
+	margin-bottom: 30px;
+}
+
+.iphone-screen-thumb {
+	float: left;
+	height: 138px;
+	width: 96px;
+	margin: 25px 5px 20px 30px;
+	border: 2px solid #CCC;
+}
+
+.iphone-screen-thumb:hover {
+	border: 2px solid #74C729;
+}
+
+
+
+
+
+/* Docs */
+
+.docs-content .section-box {
+	margin: 20px 0;
+	padding: 0;
+	background: none;
+}
+
+.docs-content .section-sub-blurb {
+	padding-right: 30px;
+}
+
+#browserphone-docs-fl {
+	float: right;
+	margin-left: 30px;
+	margin-top: -16px;
+}
+
+/* Plugins */
+
+.submit-plugin-button,
+.submit-plugin-button:active,
+.submit-plugin-button:visited {
+	display: block;
+	float: right;
+	margin: 15px 0 0 0;
+	padding: 9px 12px;
+	font-size: 13px;
+	font-weight: bold;
+	color: #FFF !important;
+	background-color: #74C729;
+	background-color: #069;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+.submit-plugin-button:hover {
+	color: #FFF !important;
+	background-color: #528D1D;
+	background-color: #06F;
+}
+
+.plugin-list {
+	margin: 10px 0 10px 0;
+}
+
+.plugin-list .plugin-item {
+	margin-bottom: 20px;
+	padding: 15px;
+	background-color: #FFF;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	overflow: auto;
+}
+.plugin-list .image-frame {
+	width: 64px;
+	height: 64px;
+	overflow: hidden;
+	float: left;
+}
+
+.plugin-list .plugin-item img {
+	float: left;
+	margin: 0 20px 10px 0;
+}
+
+.plugin-list .section-sub-heading {
+	margin: 0;
+	float: left;
+	width: 500px;
+	margin-left: 25px;
+}
+
+.plugin-list .plugin-url {
+	margin-bottom: 5px;
+	float: left;
+	width: 500px;
+	margin-left: 25px;
+}
+
+.plugin-list .plugin-url a {
+	font-weight: bold;
+	color: #999 !important;
+}
+
+.plugin-list .plugin-desc {
+	margin-left: 25px;
+	float: left;
+	width: 500px;
+}
+
+
+
+.plugin-faqs {
+	padding: 15px;
+}
+
+.plugin-faqs li {
+	margin-bottom: 30px;
+}
+
+.plugin-faqs li h3 {
+	margin-bottom: 5px;
+	font-size: 17px;
+	color: #63AA22;
+}
+
+.plugin-faqs .section-list li {
+	font-size: 13px;
+}
+
+/* Get Involved */
+
+.join-community {
+	margin: 30px 0;
+}
+
+.stay-connected {
+	margin: 30px 0 0 0;
+}
+
+#stay-connected-form {
+	margin: 15px 0;
+}
+
+.mailing-list-form .medium {
+	width: 245px !important;
+}
+
+.twitter,
+.facebook {
+	padding: 0 0 0 15px;
+}
+
+.twitter .section-sub-heading {
+	padding-left: 24px;
+	background: url('../images/twitter-icon-small.png') no-repeat left center;
+}
+
+.facebook .section-sub-heading {
+	padding-left: 24px;
+	background: url('../images/facebook-icon-small.png') no-repeat left center;
+}
+
+.support {
+	margin-bottom: 30px;
+}
+
+.support p {
+	margin-bottom: 10px
+}
+
+.support img.logo {
+	float: right;
+	margin: 5px 15px 15px 25px;
+}
+
+.bug-tracker {
+	margin-bottom: 30px;
+}
+
+.bug-tracker p {
+	margin-bottom: 10px
+}
+
+.bug-tracker img.logo {
+	float: right;
+	margin: 5px 45px 15px 25px;
+}
+
+/* Download */
+
+#download-links {
+	overflow: auto;
+}
+
+.download-zip,
+.download-tar {
+	float: left;
+	margin-right: 15px;
+}
+
+.download-zip .file-size,
+.download-tar .file-size {
+	display: block;
+	padding: 5px 0;
+	font-size: 12px;
+	color: #666;
+	text-align: center;
+}
+
+.github-logo {
+	margin: 15px 0 10px 40px;
+}
+
+#about-github .ssh {
+	padding: 10px;
+	border: 1px solid #DDD;
+}
+
+#requirements {
+	margin: 30px 0;
+}
+
+#requirements .notice {
+	margin: 1.5em 0 0 22px;
+	font-size: 12px;
+	color: #666;
+}
+
+.short-install-steps li {
+	list-style: decimal;
+	margin: 10px 0 10px 25px;
+	font-size: 16px;
+}
+
+.short-install-steps p {
+	padding-bottom: 10px;
+	font-size: 11px;
+}
+
+/* Installation */
+
+ol.install-steps,
+ol.upgrade-steps {
+	margin: 20px 0;
+	list-style: decimal;
+}
+
+ol.install-steps li,
+ol.upgrade-steps li {
+	margin: 0 0 45px 35px;
+	list-style: decimal;
+	font-size: 21px;
+}
+
+ol.install-steps h3,
+ol.upgrade-steps h3 {
+	margin-bottom: 5px;
+	font-size: 21px;
+	font-weight: bold;
+}
+
+ol.install-steps p,
+ol.upgrade-steps p {
+	line-height: 1.4em;
+	font-size: 14px;
+}
+
+#install-details .section-box-blurb {
+	margin-bottom: 25px;
+}
+
+#install-details .section-list li {
+	margin-bottom: 20px;
+}
+
+#install-details .section-list h3 {
+	font-weight: bold;
+}
+
+/* License */
+
+#license p {
+	margin-bottom: 1.5em;
+}
+
+.license {
+	margin: 25px 0;
+	padding: 15px;
+	font-size: 12px;
+	line-height: 1.4em;
+	background-color: #EEE;
+	border: 1px solid #CCC;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+/* Forms */
+
+.vbx-form .field-label {
+	display: block;
+	margin-bottom: 12px;
+	font-size: 13px;
+	color: #404040;
+}
+
+.vbx-form .instruction {
+	font-size: 11px;
+	color: #666;
+	font-style: italic;
+}
+
+.vbx-form input.small {
+	display: block;
+	width: 140px;
+	margin-top: 3px;
+	padding: 0 5px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
+}
+
+.vbx-form input.medium {
+	display: block;
+	width: 290px;
+	margin-top: 3px;
+	padding: 0 5px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
+}
+
+.vbx-form input.large {
+	display: block;
+	width: 540px;
+	margin-top: 3px;
+	padding: 0 5px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
+}
+
+.vbx-form input.submit {
+	padding: 6px 10px;
+	cursor: pointer;
+}
+
+/* Search Results */
+
+.gsc-search-box {
+	border: none;
+}
+
+.gsc-search-box td.gsc-input {
+	padding-right: 10px !important;
+}
+
+.gsc-search-box input.gsc-input {
+	padding: 5px;
+}
+
+.cse .gsc-branding,
+.gsc-branding {
+	display: none;
+}
+
+.gsc-resultsRoot {
+	padding: 2px 3pxe
+	border: none;
+}
+
+.cse .gsc-resultsHeader,
+.gsc-resultsHeader {
+	display: none;
+	border: none;
+}
+
+.gsc-wrapper {
+	border: none;
+}
+
+.gsc-results,
+.gsc-webResult {
+	border: none;
+}
+
+.cse .gsc-webResult.gsc-result,
+.gsc-webResult.gsc-result {
+	padding: 15px 0;
+	margin-bottom: 1em;
+}
+
+a.gs-title b {
+	color: #222 !important;
+}
+
+/* Upgrade Guide */
+
+#upgrade-guide h3.section-sub-heading {
+	font-weight: bold;
+	margin: 20px 0 15px 0;
+}
+
+/* Link Buttons */
+
+.download-button {
+	display: block;
+	padding: 10px;
+	font-size: 25px;
+	font-weight: normal;
+	color: #FFF !important;
+	text-align: center;
+	text-decoration: none;
+	background-color: #63AA22;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.download-button:hover {
+	background-color: #06F;
+}
+
+.zipball-button,
+.tarball-button {
+	display: block;
+	height: 40px;
+	line-height: 40px;
+	width: 110px;
+	padding: 40px 0 5px 0;
+	font-size: 21px;
+	font-weight: normal;
+	color: #FFF !important;
+	text-align: center;
+	text-decoration: none;
+	background: #333 url('../images/download-arrow.png') no-repeat center 20px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.zipball-button:active,
+.tarball-button:active {
+	background-color: #111;
+}

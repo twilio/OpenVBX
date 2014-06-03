@@ -1,0 +1,55 @@
+<div id="hd">
+	<div id="hd-wrap">
+		<h1 id="openvbx-logo"><a href="{{ site.baseurl }}/"><span class="replace">OpenVBX</span></a></h1>     
+		<nav>
+			<ul class="main-nav">
+				<li class="nav-item{% if page.url == '/how-it-works/' %} selected{% endif %}"><a href="{{ site.baseurl }}/how-it-works/" title="What is OpenVBX?">How It Works</a></li>
+				<li class="nav-item{% if page.url == '/faq/' %} selected{% endif %}"><a href="{{ site.baseurl }}/faq/" title="FAQ, Frequently asked questions.">FAQ</a></li>
+				<li class="nav-item{% if page.category == 'docs' %} selected{% endif %}"><a href="{{ site.baseurl }}/docs/" title="Documentation, tutorials, examples.">Docs</a></li>
+				<li class="nav-item{% if page.category == 'plugins' %} selected{% endif %}"><a href="{{ site.baseurl }}/plugins/" title="Extend with plugins.">Plugins</a></li>
+				<li class="nav-item{% if page.category == 'get-involved' %} selected{% endif %}"><a href="{{ site.baseurl }}/get-involved/" title="Join the community.">Get Involved</a></li>
+				<li class="nav-item"><a href="http://getsatisfaction.com/openvbx" title="Forums">Forums</a></li>
+				<li id="search-nav-item">
+					<form action="{{ site.baseurl }}/search/" method="get" id="search-box">
+						<input type="text" name="q" id="search-keywords" value="" placeholder="Search" />
+					</form>
+				</li>
+			</ul><!-- #main-nav -->
+		</nav>
+	</div><!-- #hd-wrap -->
+</div><!-- #hd -->
+
+<div id="sub-hd">
+	<nav>
+		<ul class="sub-nav">
+			<li id="download-nav-item" class="nav-item">
+				<a href="{{ site.baseurl }}/download/" title="Get it. Got it? Good.">
+					<span class="replace">Download Now</span>
+					<span class="zip-size">5.5MB <strong>zip</strong></span>
+					<span class="tgz-size">5.0MB <strong>tgz</strong></span>
+				</a>
+			</li>
+			{% if page.category == 'download' %}
+				<li class="sub-nav-item{% if page.url == '/download/' %} selected{% endif %}"><a href="{{ site.baseurl }}/download/">Current Version</a></li>
+				<li class="sub-nav-item{% if page.url == '/install/' %} selected{% endif %}"><a href="{{ site.baseurl }}/install/">Installation Guide</a></li>
+				<li class="sub-nav-item{% if page.url == '/upgrade/' %} selected{% endif %}"><a href="{{ site.baseurl }}/upgrade/">Upgrade Guide</a></li>
+			{% endif %}{% if page.category == 'docs' %}
+				<li class="sub-nav-item{% if page.url == '/docs/' %} selected{% endif %}"><a href="{{ site.baseurl }}/docs/">Main Page</a></li>
+				<li class="sub-nav-item{% if page.url contains 'docs/quickstart' %} selected{% endif %}"><a href="{{ site.baseurl }}/docs/quickstart/">Quickstart Guides</a></li>
+				<li class="sub-nav-item{% if page.url contains 'docs/api' %} selected{% endif %}"><a href="{{ site.baseurl }}/docs/api/2010-06-01/plugin/">Plugin API</a></li>
+				<li class="sub-nav-item{% if page.url contains 'docs/themes' %} selected{% endif %}"><a href="{{ site.baseurl }}/docs/themes/">Themes</a></li>
+				<li class="sub-nav-item{% if page.url contains 'docs/browserphone' %} selected{% endif %}"><a href="{{ site.baseurl }}/docs/browserphone/">Browser Phone</a></li>
+			{% endif %}{% if page.category == 'plugins' %}
+				<li class="sub-nav-item{% if page.url == '/plugins/' %} selected{% endif %}"><a href="{{ site.baseurl }}/plugins/">Browse Plugins</a></li>
+				<li class="sub-nav-item{% if page.url == '/plugins/submit/' %} selected{% endif %}"><a href="{{ site.new_plugin_url }}">Submit a plugin</a></li>
+			{% endif %}{% if page.category == 'get-involved' %}
+				<li class="sub-nav-item selected"><a href="{{ site.baseurl }}/get-involved/">Join the community</a></li>
+				<li class="sub-nav-item"><a href="https://github.com/twilio/OpenVBX/issues">Bug Tracker</a></li>
+				<li class="sub-nav-item"><a href="http://blog.openvbx.org">OpenVBX Blog</a></li>
+			{% endif %}{% if page.category == 'how-it-works' %}
+				<li class="sub-nav-item{% if page.url == '/how-it-works/' %} selected{% endif %}"><a href="{{ site.baseurl }}/how-it-works/">Step-by-Step</a></li>
+				<li class="sub-nav-item{% if page.url == '/videos/' %} selected{% endif %}"><a href="{{ site.baseurl }}/videos/">Intro Videos</a></li>
+			{% endif %}
+		</ul><!-- .sub-nav -->
+	</nav>
+</div><!-- #sub-hd -->

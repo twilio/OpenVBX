@@ -1,0 +1,5 @@
+.monkey-theme #openvbx-logo a {
+	height: 82px;
+    width: 300px;
+    background: #FFF url('images/monkey-phone.png') no-repeat left top;
+}

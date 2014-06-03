@@ -1,0 +1,26 @@
+---
+layout: default
+category: search
+---
+
+<h2 class="section-heading">Search Results</h2>
+<div id="cse" class="section-box">Loading</div>
+
+<script type="text/javascript">
+	var query = false;
+	if(search = window.location.href.match(/(\?|&)q=(.*)(&|$)/)) {
+		query = decodeURIComponent(search[2].replace(/\+/g, " "));
+	}
+
+	google.load('search', '1', {language : 'en'});
+
+	google.setOnLoadCallback(function() {
+		var customSearchControl = new google.search.CustomSearchControl('009653677423610680294:emznxwsfjwy');
+		customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+		customSearchControl.draw('cse');
+	
+		if (query) {
+			customSearchControl.execute(query);
+		}
+	}, true);
+</script>

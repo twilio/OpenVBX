@@ -1,0 +1,52 @@
+/* Google Form */
+
+#gform {
+	padding: 20px 0;
+}
+
+#gform label {
+	display: block;
+	font-size: 14px;
+}
+
+#gform input {
+	margin: 3px 0 15px 0;
+	padding: 4px 5px;
+	font-size: 19px;
+	font-weight: bold;
+	color: #444;
+	border: 1px solid #555;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+}
+
+#gform .ss-q-short {
+	width: 260px
+}
+
+#gform textarea {
+	width: 500px;
+	margin: 3px 0 15px 0;
+	padding: 4px 5px;
+	font-size: 16px;
+	color: #444;
+	border: 1px solid #555;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+}
+
+#gform #submit-button {
+	padding: 7px 10px;
+	font-size: 14px;
+	color: #FFF;
+	background-color: #444;
+	border: 1px solid #222;
+	cursor: pointer;
+}
+
+.ss-footer {
+	padding-top: 40px;
+	font-size: 10px;
+}

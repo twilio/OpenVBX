@@ -1,0 +1,126 @@
+---
+layout: default
+category: download
+---
+
+<div id="upgrade-guide" class="yui-gc">
+	<div class="yui-u first">
+		<h2 id="openvbx_upgrade_guide" class="section-heading">OpenVBX Upgrade Guide</h2>
+
+		<p class="section-sub-blurb">Upgrading OpenVBX is easy, just follow the steps below to upgrade your install.</p>
+		
+		<div class="section-box">
+			<h2 id="backup_first" class="section-box-heading">Backup First</h2>
+
+			<p class="section-box-blurb">The first thing to before upgrading any software is to make backup copies of your code and your data.  How you can accomplish this depends on your hosting provider.  If you have shell access you can just use mysqldump to make an export of your database.  If you don&#8217;t have shell access than you probably have a control panel like cPanel.</p>
+
+			<p class="section-box-blurb">Make a backup copy of your database and your OpenVBX installation because there are uploaded audio files and configuration files in there.</p>
+		</div><!-- #backup_first -->
+
+		<div class="section-box">
+			<h2 id="upload_openvbx" class="section-box-heading">Upload OpenVBX</h2>
+
+			<p class="section-box-blurb">The next step is to get the latest version of OpenVBX from the <a href="https://github.com/twilio/OpenVBX">OpenVBX GitHub Repository</a>. There are two ways to get the new code on to your server:</p>
+
+			<p class="section-box-blurb">Upload the archive NEXT to your current install of OpenVBX. Do not overwrite the current install of OpenVBX.</p>
+
+			<h3 id="via_ftp" class="section-sub-heading">Via FTP</h3>
+
+			<ol class="section-list">
+				<li>Go to the GitHub repository, click on the &#8220;Downloads&#8221; button in the upper right. A small popup window will appear. Click on one of the two Download links at the top of popup to download your preferred archive format.</li>
+				<li>Upload the code to the server.
+					<ul class="section-list">
+						<li>If your host allows you to run commands via your FTP client and your FTP client can expand archives then simply upload the archive to your host and expand it there.</li>
+						<li>If you cannot expand the archive on the server then expand it on your local computer and upload the expanded folder to your host. This will be a bit slower, but will work just the same.</li>
+				</ul></li>
+			</ol>
+
+			<h3 id="via_curl_wget" class="section-sub-heading">Via curl/wget</h3>
+
+			<p class="section-box-blurb">If you have shell access to your server then you can bypass FTP and directly download and expand the archive on the server. Download your preferred archive format via <code>curl</code> or <code>wget</code>. The current production ready version of OpenVBX will always be available at:</p>
+
+			<ul class="section-list">
+				<li>Tarball: <a href="https://github.com/twilio/OpenVBX/tarball/master">https://github.com/twilio/OpenVBX/tarball/master</a></li>
+				<li>Zip: <a href="https://github.com/twilio/OpenVBX/zipball/master">https://github.com/twilio/OpenVBX/zipball/master</a></li>
+			</ul>
+		</div><!-- #upload_openvbx -->
+		
+		<div class="section-box">
+			<h2 id="transfer_config_audio_files" class="section-box-heading">Transfer Config &amp; Audio Files</h2>
+
+			<p class="section-box-blurb">You should now have your old OpenVBX install and your new OpenVBX install sitting next to each other in the same directory. We now need to copy your configuration and audio uploads to the new install.</p>
+
+			<h3 id="configuration_files" class="section-sub-heading">Configuration Files</h3>
+
+			<p class="section-box-blurb"><b>Copy</b> the following files from your old install to your new install:</p>
+
+			<ul class="section-list">
+				<li><code>OpenVBX/config/database.php</code></li>
+				<li><code>OpenVBX/config/openvbx.php</code></li>
+			</ul>
+
+			<p class="section-box-blurb">If you&#8217;ve modified any other files check them against the files in the new OpenVBX version and copy over your changes to the new versions. Do no completely copy over the old versions as you might overwrite changes in the new files.</p>
+
+			<p class="section-box-blurb">If you&#8217;ve modified the following files, copy them to the new install as well. They will overwrite existing files:</p>
+
+			<ul class="section-list">
+				<li><code>.htaccess</code></li>
+			</ul>
+
+			<h3 id="audio_uploads" class="section-sub-heading">Audio Uploads</h3>
+
+			<p class="section-box-blurb"><b>Copy</b> the files from your old <code>audio-uploads/</code> directory to your new <code>audio-uploads/</code> directory.</p>
+		</div><!-- #transfer_config_audio_files -->
+
+		<div class="section-box">
+			<h2 id="permissions" class="section-box-heading">Permissions</h2>
+
+			<p class="section-box-blurb">Once you&#8217;ve copied over the necessary files make sure that the <code>OpenVBX/config/</code> and <code>audio-uploads/</code> directories have the proper permissions. If the directories are not writable by the web server you can adjust the directory permissions using the <code>chown</code> and <code>chmod</code> commands.</p>
+		</div><!-- #permissions -->
+		
+		<div class="section-box">
+			<h2 id="go_live" class="section-box-heading">Go Live</h2>
+
+			<p class="section-box-blurb">Putting the new version of OpenVBX live is now just a simple matter of renaming your directories. Rename your old version of OpenVBX to a temporary name and rename the new version of OpenVBX to the name that your old one used to have.</p>
+
+			<p class="section-box-blurb">Now log in to your install and follow the upgrade instructions (which, really, consists of clicking a few buttons).</p>
+		</div><!-- #go_live -->
+		
+		<div class="section-box">
+			<h2 id="rollback" class="section-box-heading">Rollback</h2>
+
+			<p class="section-box-blurb">Should something go wrong you can roll back your install by reverting the folder names on your OpenVBX install and restoring the database from your backup. If this does happen then please open a ticket on <a href="http://getsatisfaction.com/openvbx">the Forums</a>.</p>
+
+			<p class="section-box-blurb">Be sure to include:</p>
+			<ol class="section-list">
+				<li>Your hosting provider</li>
+				<li>Your PHP version</li>
+				<li>Your MySQL version</li>
+				<li>Version of OpenVBX you are upgrading from and the version that you are upgrading to</li>
+			</ol>
+		</div><!-- #rollback -->
+	</div><!-- .yui-u -->
+	
+	<div class="yui-u">
+		<div class="section-box">
+			<h3 class="section-box-heading">Requirements</h3>
+			<ul class="section-list">
+				<li>Web Server<br />Apache or Nginx</li>
+				<li>MySQL 5+</li>
+				<li>PHP 5.2</li>
+				<li><a href="https://www.twilio.com/try-twilio">Twilio Account</a></li>
+			</ul>
+			</div><!-- .section-box -->
+
+			<div class="section-box">
+			<h3 class="section-box-heading">More Resources</h3>
+			<ul class="section-list">
+				<li><a href="{{ site.baseurl }}/plugins/">Extend OpenVBX by installing a plugin or writing your own</a></li>
+				<li><a href="{{ site.baseurl }}/get-involved/">Scratch your own itch and help improve OpenVBX</a></li>
+				<li><a href="{{ site.baseurl }}/docs/">Read the documentation</a></li>
+				<li><a href="http://getsatisfaction.com/openvbx">Visit the Forums</a></li>
+			</ul>
+		</div><!-- .section-box -->
+	</div><!-- .yui-u -->
+	
+</div><!-- .yui-gc -->

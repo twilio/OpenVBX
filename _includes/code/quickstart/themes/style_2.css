@@ -1,0 +1,15 @@
+.monkey-theme a:link {
+    color: #4DA6FF;
+}
+
+.monkey-theme a:visited {
+	color: #444;
+}
+
+.monkey-theme a:hover {
+	color: #333;
+}
+
+.monkey-theme a:active {
+	color: #000;
+}

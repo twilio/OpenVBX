@@ -1,0 +1,60 @@
+---
+layout: default
+category: how-it-works
+---
+
+<div class="yui-gc">
+
+	<div class="yui-u">
+		<div class="section-box">
+			<ul id="playlist">
+				<li class="playlist-item selected">
+					<a href="#cBDqyvJzRYA">Introducing OpenVBX</a>
+				</li>
+				<li class="playlist-item">
+					<a href="#oxtDBTYz7Ds">OpenVBX with Twilio Client</a>
+				</li>
+				<li class="playlist-item">
+					<a href="#mOMMl8CCaYY">The Inbox</a>
+				</li>
+				<li class="playlist-item">
+					<a href="#NIHfBg80hhc">Virtual Phone Numbers<br />&amp; Call Flows</a>
+				</li>
+				<li class="playlist-item">
+					<a href="#HQFObjPXKDU">Users &amp; Groups</a>
+				</li>
+			
+			</ul>
+		</div>
+	</div>
+
+	<div id="yui-u first">
+		<h2 class="section-heading">Introduction Videos</h2>
+		
+		<div id="ytplayer"></div>
+
+		<script>
+			var tag = document.createElement('script');
+			tag.src = "https://www.youtube.com/player_api";
+			var firstScriptTag = document.getElementsByTagName('script')[0];
+			firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+			var player;
+			function onYouTubePlayerAPIReady() {
+				player = new YT.Player('ytplayer', {
+					height: '360',
+					width: '640',
+					videoId: 'cBDqyvJzRYA',
+					playerVars: {
+						autoplay: 1,
+						autohide: 1,
+						playsinline: 1,
+						rel: 0,
+						showinfo: 0,
+						iv_load_policy: 3
+					}
+				});
+			}
+		</script>
+	</div>
+</div>

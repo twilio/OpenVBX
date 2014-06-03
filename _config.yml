@@ -1,0 +1,11 @@
+# Site settings
+title: "OpenVBX: the Web-based, Open Source Phone System for Business"
+email: openvbx@twilio.com
+description: "OpenVBX allows developers to build voice and SMS applications for business, such as toll free phone numbers, call forwarding, voicemail, visual voicemail, voicemail transcriptions, and auto-attendants.  It's like Google Voice, but open source and for business."
+baseurl: "/OpenVBX"
+url: "http://www.openvbx.org"
+new_plugin_url: "https://github.com/twilio/openvbx/issues/new?title=New%20Plugin%20Submission:%20[your%20plugin%20name%20here]&body=Plugin%20Name:%0APlugin%20Url:%0APlugin%20Description:"
+
+# Build settings
+markdown: kramdown
+permalink: pretty

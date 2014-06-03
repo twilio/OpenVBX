@@ -1,0 +1,16 @@
+.monkey-theme #vbx-main-nav .vbx-nav-title {
+	background-color: #B3AB88;
+	color: #333028;
+}
+
+.monkey-theme #vbx-main-nav .vbx-nav-item a {
+	background-color: #FFD561;
+	color: #333028;
+	border-bottom: 1px solid #B3AB88;
+}
+
+.monkey-theme #vbx-main-nav .selected a, 
+#vbx-main-nav .selected a:hover {
+	background-color: #FFF3B2;
+	color: #B3AB88;
+}

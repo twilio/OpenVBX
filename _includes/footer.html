@@ -1,0 +1,102 @@
+<div id="ft">
+	<div id="footer-wrap">
+
+		<ul class="footer-nav-section">
+			<li class="nav-item{% if page.category == 'download' %} selected{% endif %}">
+				<a href="{{ site.baseurl }}/download/" title="Get it. Got it? Good.">Download</a>
+				<ul>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/download/">Current Version</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/install/">Installation Guide</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/upgrade/">Upgrade Guide</a>
+					</li>
+				</ul>
+			</li>
+		</ul><!-- .footer-nav-section -->
+
+		<ul class="footer-nav-section">
+			<li class="nav-item{% if page.category == 'faq' %} selected{% endif %}">
+				<a href="{{ site.baseurl }}/how-it-works/" title="How it works.">How It Works</a>
+				<ul>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/how-it-works/">Step-by-step</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/videos/">Intro Videos</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/faq/">FAQ</a>
+					</li>
+				</ul>
+
+			</li>
+		</ul><!-- .footer-nav -->
+
+		<ul class="footer-nav-section">
+			<li class="nav-item{% if page.category == 'docs' %} selected{% endif %}">
+				<a href="{{ site.baseurl }}/docs/" title="Documentation, tutorials, best practices.">Documentation</a>
+				<ul>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/docs/">Main Page</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/docs/quickstart/">Quickstart Guides</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/docs/api/2010-06-01/plugin/">Plugin API</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/docs/themes/">Themes</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/docs/browserphone/">Browser Phone</a>
+					</li>
+				</ul>
+			</li>
+		</ul><!-- .footer-nav-section -->
+
+		<ul class="footer-nav-section">
+			<li class="nav-item{% if page.category == 'plugins' %} selected{% endif %}">
+				<a href="{{ site.baseurl }}/plugins/" title="Extend with plugins.">Plugins</a>
+				<ul>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/plugins/">Browse</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="{{ site.new_plugin_url }}">Submit a plugin</a>
+					</li>
+				</ul>
+			</li>
+		</ul><!-- .footer-nav-section -->
+
+		<ul class="footer-nav-section last">
+			<li class="nav-item{% if page.category == 'get-involved' %} selected{% endif %}">
+				<a href="{{ site.baseurl }}/get-involved/" title="Get Involved">Get Involved</a>
+				<ul>
+					<li class="sub-nav-item">
+						<a href="{{ site.baseurl }}/get-involved/">Join the community</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="http://getsatisfaction.com/openvbx">Forums</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="https://github.com/twilio/OpenVBX/issues/">Bug Tracker</a>
+					</li>
+					<li class="sub-nav-item">
+						<a href="http://blog.openvbx.org">OpenVBX Blog</a>
+					</li>
+				</ul>
+			</li>
+		</ul><!-- .footer-nav-section -->
+
+		<div class="footer-sub-section">
+			<p class="copyright">Copyright &copy;2014 OpenVBX and the OpenVBX logo are trademarks. Twilio, TwiML, and OpenVBX are trademarks of Twilio, Inc.<p>
+			<p class="about-openvbx">OpenVBX is powered by <a href="http://www.twilio.com">Twilio</a> &bull; <a href="{{ site.baseurl }}/about/">About Us</a> &bull; <a href="{{ site.baseurl }}/license/" title="Mozilla Public License">MPL</a></p>
+		</div><!-- .footer-sub-section -->
+
+	</div><!-- #footer-wrap -->
+</div><!-- #ft -->

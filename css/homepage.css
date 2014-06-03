@@ -1,0 +1,217 @@
+/* Homepage Masthead */
+
+#homepage-masthead {
+	margin: 0 0 30px 0;
+}
+
+#homepage-masthead .bx-wrapper,
+#homepage-masthead .bx-wrapper .bx-window {
+	height: 280px;
+	width: 474px;
+}
+
+#homepage-masthead .bx-wrapper {
+	margin: 10px 0 4px 0;
+	border: 1px solid #444;
+	border-bottom: 6px solid #069;
+}
+#homepage-screenshot {
+	height: 280px;
+	width: 474px;
+	overflow: hidden;
+}
+
+.thumb-screen {
+	display: block;
+	float: left;
+	margin-right: 4px;
+	width: 90px;
+	height: 62px;
+	border: 1px solid #BBB;
+	border-bottom: 6px solid #BBB;
+}
+
+.thumb-screen:hover,
+.thumb-screen.pager-active {
+	border: 1px solid #000;
+	border-bottom: 6px solid #069;
+}
+
+.last-screen {
+	margin: 0;
+}
+
+.homepage-main-section {
+	padding: 15px 20px 0 0;
+}
+
+.homepage-main-section .section-heading {
+	margin-bottom: 20px;
+	font-size: 36px;
+}
+
+.homepage-main-section .section-sub-blurb {
+	margin-bottom: 10px;
+	font-size: 13px;
+	line-height: 1.6em;
+}
+
+#homepage-masthead .section-list {
+	margin-left: 5px;
+}
+
+#homepage-masthead .download-button {
+	float: left;
+	width: 200px;
+	margin: 20px 0;
+}
+
+#homepage-masthead .learn-more,
+#homepage-masthead .learn-more:active,
+#homepage-masthead .learn-more:visited {
+	display: block;
+	margin: 15px 0 0 0;
+	padding: 16px 28px;
+	font-size: 21px;
+	font-weight: bold;
+	color: #FFF !important;
+	text-align: center;
+	background-color: #74C729;
+	background-color: #069;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+#homepage-masthead .learn-more:hover {
+	color: #FFF !important;
+	background-color: #528D1D;
+	background-color: #06F;
+}
+
+/* iPhone */
+
+#iphone {
+	position: relative;
+	min-height: 80px;
+	margin: 35px 0 0 0;
+	clear: both;
+}
+
+#iphone .new-icon {
+	position: absolute;
+	top: -12px;
+	left: -20px;
+}
+
+#iphone-icon-58 {
+	float: left;
+	margin: 0 10px 20px 0;
+}
+
+#iphone .app-heading {
+	margin: 0 0 3px 0;
+	padding: 4px 0 0 0;
+	font-size: 19px;
+	font-weight: normal;
+	color: #555;
+}
+
+#iphone .app-blurb {
+	margin: 0 0 3px 0;
+	color: #666;
+	font-size: 13px;
+}
+
+#browserphone h3 a {
+	position: relative;
+}
+
+#browserphone h3 a .new-icon {
+	position: absolute;
+	top: -12px;
+	right: -27px;
+}
+
+/* Hosting Providers */
+/* Also used for the Download page section */
+#hosting-providers-section-box {
+	overflow: auto;
+}
+
+#hosting-providers-section-box #hosting-providers {
+	margin: 20px 0 0 0;
+	text-align: center;
+}
+
+#hosting-providers-section-box .provider {
+	margin: 0 10px 20px 0;
+}
+
+#hosting-providers-section-box .provider a {
+	display: block;
+}
+
+#hosting-providers-section-box #dreamhost-logo {
+	padding: 12px 20px;
+}
+
+#hosting-providers-section-box #godaddy-logo {
+	padding: 0 20px;
+}
+
+#hosting-providers-section-box #standingcloud-logo {
+	padding: 14px 0 10px 0;
+	margin: 0 0 0 15px;
+}
+
+/* Homepage Sub Section */
+
+#homepage-sub-section .section-box {
+	min-height: 220px;
+}
+
+#homepage-sub-section .notice {
+	margin: 20px 0;
+	font-size: 11px;
+}
+
+#homepage-sub-section .latest-release {
+	margin: 0 0 30px 0;
+}
+
+#homepage-sub-section .latest-release h3 {
+	margin-bottom: 2px;
+	font-size: 17px;
+}
+
+#homepage-sub-section .docs-section-list {
+	margin: 0;
+	padding: 0;
+}
+
+#homepage-sub-section .docs-section-list li {
+	list-style: none;
+	margin: 0 0 1.5em 0;
+}
+
+#homepage-sub-section .docs-section-list p {
+	font-size: 13px;
+}
+
+/* Link Buttons */
+
+.link-buttons {
+	margin: 20px 0 40px 0;
+	overflow: auto;
+}
+
+.download-link-button,
+.developer-link-button {
+	float: left;
+}
+
+.download-link-button {
+	margin-left: 10px;
+	margin-right: 25px;
+}

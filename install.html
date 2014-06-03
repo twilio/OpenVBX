@@ -1,0 +1,225 @@
+---
+layout: default
+category: download
+---
+
+<div class="yui-gc">
+	<div class="yui-u first">
+		<h2 class="section-heading">Installation Guide</h2>
+
+		<p class="section-sub-blurb">Installing OpenVBX is quick and easy, just follow this five step guide to get up and running in no time. We&rsquo;ve also put together an <a href="{{ site.baseurl }}/upgrade">upgrade guide</a> for you, when you&rsquo;re ready.</p>
+		
+		<ol class="install-steps">
+			<li>
+				<h3>Get the Code</h3>
+				<p><a href="{{ site.baseurl }}/download/">Download</a> the latest release and unpack the source code into your webroot.</p>
+			</li>
+			<li>
+				<h3>Create a new MySQL database</h3>
+				<p>In addition to the database, create a MySQL database user who has all of the privileges to modify it.</p>
+			</li>
+			<li>
+				<h3>Run the installer</h3>
+				<p>Open your web browser and navigate to the URL of your OpenVBX installation. The installer will check that your system meets the minimum requirements and will configure your new phone system. You may have to adjust the permissions on the OpenVBX upload and configuration directories.</p>
+			</li>
+			<li>
+				<h3>Connect to Twilio</h3>
+				<p>During the install process, you will be prompted for your Twilio API credentials. You can obtain your Account SID and Auth Token from your <a href="https://www.twilio.com/user/account/">Twilio Dashboard</a>. If you don&rsquo;t have a Twilio account you can <a href="https://www.twilio.com/try-twilio">register for a free trial</a>.</p>
+			</li>
+			<li>
+				<h3>Login</h3>
+				<p>Navigate to the URL of your OpenVBX installation and login using the account you created during the installation. Once you&rsquo;re logged in you&rsquo;ll be able to add users and groups to your new phone system. You can also add devices, provision phone numbers, configure voicemail, and design call flows.</p>
+			</li>
+			<li>
+				<h3>Profit!</h3>
+				<p>That&rsquo;s it, you&rsquo;re all set. OpenVBX is open source and extensible so feel free to skin it, hack it, and sell it!</p>
+			</li>
+		</ol>
+
+
+		<div id="install-details">
+			<h2 class="section-heading">Detailed Instructions</h2>
+			<p class="section-sub-blurb">This section provides detailed information for each step of the OpenVBX install process.</p> 
+
+			<div class="section-box">
+				<h2 class="section-box-heading"><a name="step1">Server Check</a></h2> 
+		 
+				<p class="section-box-blurb">OpenVBX requires the software listed below. It is all available for free and is open
+					source. OpenVBX is supported and should run on all major linux distributions. OpenVBX
+					may run on other platforms (namely Windows) but is currently unsupported.</p> 
+		 
+				<ul class="section-list"> 
+					<li>
+						<h3>PHP version</h3>
+						<p>PHP 5.2.3 or higher.</p>
+					</li> 
+					<li>
+						<h3>CURL support</h3>
+						<p>OpenVBX requires CURL. If you don&rsquo;t meet this requirement, install the CURL module.</p>
+					</li> 
+					<li>
+						<h3>Apache version</h3>
+						<p>We recommend Apache version 2.2+. Earlier versions and other web servers may work, but are currently unsupported.</p> 
+					</li> 
+					<li>
+						<h3>MySQL support</h3>
+						<p>We require MySQL version 5+.</p>
+					</li> 
+					<li>
+						<h3>APC &amp; Memcache support (optional)</h3>
+						<p>APC is recommended, but not required. APC &amp; Memcache are used to provide advanced caching that help speed up OpenVBX.</p> 
+					</li> 
+					<li>
+						<h3>Config directory writable</h3>
+						<p>The configuration directory must be writable by the user your webserver is running as for the OpenVBX installation to complete. The path to the configuration directory is &lsquo;/OpenVBX/config&rsquo;. On unix systems you can adjust the permissions with the <code>chown</code> and <code>chmod</code> commands.</p>
+					</li> 
+					<li>
+						<h3>SimpleXML support</h3>
+						<p>OpenVBX requires SimpleXML. If you don&rsquo;t meet this requirement, install the SimpleXML module.</p> 
+					</li> 
+					<li>
+						<h3>Upload directory writable</h3>
+						<p>The upload directory must be writable by the user your webserver is running as for the OpenVBX installation to complete. The path to the configuration directory is &lsquo;&lt;webroot&gt;/OpenVBX/audio-<WBR>uploads&rsquo;. On unix systems you can adjust the permissions with the <code>chown</code> and <code>chmod</code> commands.</p> 
+					</li> 
+					<li>
+						<h3>The .htaccess file is present</h3>
+						<p>The .htaccess file is required to run OpenVBX with mod_rewrite. OpenVBX will attempt to create this file during the install if it is missing.</p>
+					</li>
+				</ul> 
+			</div><!-- .section-box -->
+			
+			<div class="section-box">
+				<h2 class="section-box-heading"><a name="step2">Configure Database</a></h2> 
+		 
+				<p class="section-box-blurb">OpenVBX requires a MySQL database. You should create a database, and a user with permissions to access the database for OpenVBX. If you are running OpenVBX on a shared hosting environment, you may have to use the tools provided by your hosting provider to create a new database and database user.</p> 
+		 
+				<ul class="section-list"> 
+					<li>
+						<h3>Hostname</h3>
+						<p>In most cases this should be &lsquo;localhost&rsquo;. If your database server is on a machine other than your webserver, specify it&rsquo;s address here.</p> 
+					</li> 
+					<li>
+						<h3>Username</h3>
+						<p>The username to use when connecting to MySQL</p>
+					</li> 
+					<li>
+						<h3>Password</h3>
+						<p>The password to use when connecting to MySQL</p>
+					</li> 
+					<li>
+						<h3>Database Name</h3>
+						<p>The name of your OpenVBX database.</p>
+					</li> 
+				</ul> 
+			</div><!-- .section-box -->
+
+			<div class="section-box">
+				<h2 class="section-box-heading"><a name="step3">Connect to your Twilio account</a></h2> 
+		 
+				<p class="section-box-blurb">OpenVBX requires a Twilio account to enable provisioning phone numbers, sending and receiving voice calls, and sending and receiving SMS. If you don&rsquo;t have a Twilio account you can <a href="https://www.twilio.com/try-twilio" target="_blank">register for a free trial</a>.</p> 
+		 
+				<ul class="section-list"> 
+					<li>
+						<h3>Twilio SID</h3>
+						<p>This is your account identifier, it is unique to you and can be shared.</p>
+					</li> 
+					<li>
+						<h3>Twilio Token</h3>
+						<p>This is the key to your Twilio account, it is private and should not be shared.</p> 
+					</li> 
+				</ul> 
+		
+				<p class="section-box-blurb">If you plan on hosting multiple tenants on your install and would like each tenant&rsquo;s activity to be billed to their account instead of to your account you can set up a Connect Application.</p>
+		
+				<p class="section-box-blurb">When creating your application use these settings:</p>
+		
+				<ul class="section-list">
+					<li>
+						<h3>Friendly Name</h3>
+						<p>App name shown to the tenant when they are asked to authorize the App.</p>
+					</li>
+					<li>
+						<h3>Company Name &amp; Description</h3>
+						<p><i>Optional.</i> Description shown to the tenant when they are asked to authorize the App.</p>
+					</li>
+					<li>
+						<h3>Homepage URL &amp; Authorize URL</h3>
+						<p>The full url to your web-root. ie: <i>http://example.org</i></p>
+						<p>These will be updated during the install process.</p>
+					</li>
+					<li>
+						<h3>Deauthorize URL</h3>
+						<p><i>leave blank</i></p>
+						<p>This will be updated during the install process.</p>
+					</li>
+					<li>
+						<h3>Access Required</h3>
+						<p>Select &ldquo;Read all account data&rdquo; &amp; &ldquo;Charge account for usage&rdquo;</p>
+					</li>
+				</ul>
+			</div><!-- .section-box -->
+
+			<div class="section-box">
+		 		<h2 class="section-box-heading"><a name="step4">Options</a></h2> 
+		 
+				<p class="section-box-blurb">OpenVBX has the ability to send email notifications to users. This includes password reset emails, voicemail and SMS notifications, as well as notifications defined by plugins.</p> 
+		 
+				<ul class="section-list"> 
+					<li>
+						<h3>From Email</h3>
+						<p>This email address will be used in the from field of emails sent from your OpenVBX installation.</p> 
+					</li> 
+				</ul> 
+			</div><!-- .section-box -->
+
+			<div class="section-box"> 	
+				<h2 class="section-box-heading"><a name="step5">Your Account</a></h2> 
+		 
+				<p class="section-box-blurb">In order to administer your OpenVBX installation you&rsquo;ll need to create a user account. This is the account that will be used to manage your OpenVBX installation. This information can be updated later from within OpenVBX.</p> 
+		 
+				<ul class="section-list"> 
+				  <li>
+					<h3>First Name</h3>
+					<p>The first name of your OpenVBX administrator.</p>
+				  </li> 
+				  <li>
+					<h3>Last Name</h3>
+					<p>The last name of your OpenVBX administrator.</p>
+				  </li> 
+				  <li>
+					<h3>Email</h3>
+					<p>The email address to be associated with your OpenVBX admin account.</p>
+				  </li> 
+				  <li>
+					<h3>Password</h3>
+					<p>The password for your OpenVBX admin account.</p>
+				  </li> 
+				</ul>
+			</div><!-- .section-box -->
+			
+		</div><!-- #install-details -->
+	</div><!-- .yui-u first -->
+
+	<div class="yui-u">
+		<div class="section-box">
+			<h3 class="section-box-heading">Requirements</h3>
+			<ul class="section-list">
+				<li>Web Server<br />Apache or Nginx</li>
+				<li>MySQL 5+</li>
+				<li>PHP 5.2</li>
+				<li><a href="https://www.twilio.com/try-twilio">Twilio Account</a></li>
+			</ul>
+			</div><!-- .section-box -->
+
+			<div class="section-box">
+			<h3 class="section-box-heading">More Resources</h3>
+			<ul class="section-list">
+				<li><a href="{{ site.baseurl }}/plugins">Extend OpenVBX by installing a plugin or writing your own</a></li>
+				<li><a href="{{ site.baseurl }}/get-involved">Scratch your own itch and help improve OpenVBX</a></li>
+				<li><a href="{{ site.baseurl }}/docs">Read the documentation</a></li>
+				<li><a href="http://getsatisfaction.com/openvbx">Visit the Forums</a></li>
+			</ul>
+		</div><!-- .section-box -->
+	</div><!-- .yui-u -->
+	
+</div><!-- .yui-gc 66/33 -->

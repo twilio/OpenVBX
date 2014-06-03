@@ -1,0 +1,7 @@
+UserAgent: *
+Disallow: /images
+Disallow: /css
+Disallow: /js
+Disallow: *.yml
+Disallow: *.json
+Disallow: *.php

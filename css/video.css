@@ -1,0 +1,33 @@
+.video-player {
+	height: 285px;
+	width: 455px;
+	background: url('../images/video-placeholder.png') no-repeat center center;
+}
+
+#playlist .playlist-item a,
+#playlist .playlist-item a:active,
+#playlist .playlist-item a:visited {
+	display: block;
+	margin: 15px 0 0 0;
+	padding: 16px 28px;
+	font-size: 14px;
+	font-weight: bold;
+	color: #FFF !important;
+	text-align: center;
+	background-color: #74C729;
+	background-color: #069;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+#playlist .playlist-item a:hover {
+	color: #FFF !important;
+	background-color: #528D1D;
+	background-color: #06F;
+}
+
+#playlist .playlist-item.selected a {
+	background-color: #63AA22;
+}

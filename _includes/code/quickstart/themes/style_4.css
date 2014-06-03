@@ -1,0 +1,18 @@
+.monkey-theme .vbx-content-tabs {
+	background-color: #7E944B;
+}
+
+.monkey-theme .vbx-content-heading {
+	color: #CECD96;
+}
+
+.monkey-theme .vbx-content-tabs li a:link, 
+.vbx-content-tabes li a:visited {
+	background-color: #FFF3B2;
+	color: #333028;
+}
+
+.monkey-theme .vbx-content-tabs li.selected a:link, 
+.vbx-content-tabs li.selected a:visited {
+	background-color: #fff;
+}

@@ -1,0 +1,152 @@
+/* Markdown */
+
+#md {
+	padding: 15px;
+	background-color: #FFF;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+#md h1 {
+	margin-bottom: 20px;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+#md h2 {
+	margin-bottom: 5px;
+	font-size: 25px;
+}
+
+#md h3 {
+	margin: 60px 0 10px 0;
+	font-size: 21px;
+	color: #74C729;
+	color: #63AA22;
+}
+
+#md h3 em {
+	font-size: 18px;
+	font-style: italic;
+	color: #74C729;
+	color: #63AA22;
+}
+
+#md h4 {
+	margin: 30px 0 10px 0;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+#md p {
+	line-height: 1.4em;
+	margin-bottom: 1.5em;
+}
+
+#md table {
+	width: 100%;
+	border: 2px solid #CCC;
+}
+
+#md table th {
+	padding: 5px 8px;
+	font-size: 10px;
+	font-weight: bold;
+	color: #777;
+	background-color: #EEE;
+	border-bottom: 2px solid #CCC;
+	border-right: 1px solid #CCC;
+}
+
+#md table td {
+	padding: 8px;
+	color: #333;
+	border-top: 1px solid #DDD;
+	border-right: 1px solid #DDD;
+}
+
+#md table .col-1 {
+	width: 25%;
+}
+
+#md table .col-2 {
+	width: 15%;
+}
+
+#md table .col-3 {
+	width: 60%;
+}
+
+#md table td ul,
+#md table td ol {
+	margin: 0 0 0 35px;
+}
+
+#md ul,
+#md ol {
+	margin: 0 0 1.5em 35px;
+}
+
+#md ul li {
+	list-style: disc;
+	padding: 3px 0;
+}
+
+#md ol li {
+	list-style: decimal;
+	padding: 2px 0;
+}
+
+#md em {
+	color: #999;
+}
+
+#md strong {
+	font-weight: bold;
+	color: #555;
+}
+
+#md a.next-page {
+	float: left;
+	display: block;
+	margin: 20px 0;
+	padding: 10px 14px;
+	color: #FFF;
+	background-color: #069;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+#md a.next-page span {
+	display: block;
+	float: right;
+	height: 14px;
+	width: 10px;
+	margin-top: 2px;
+	margin-left: 10px;
+	background: #069 url('../images/pagination-arrow.png') no-repeat center center;
+}
+
+#md a.prev-page {
+	float: left;
+	display: block;
+	margin: 20px 15px 20px 0;
+	padding: 10px 14px;
+	color: #555;
+	background-color: #CCC;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+#md a.prev-page span {
+	display: block;
+	float: left;
+	height: 14px;
+	width: 10px;
+	margin-top: 2px;
+	margin-right: 10px;
+	background: #CCC url('../images/back-arrow.png') no-repeat center center;
+}
