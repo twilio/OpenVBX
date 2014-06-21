@@ -363,17 +363,24 @@ class User_Controller extends MY_Controller
 	protected function get_twilio_numbers() 
 	{
 		$this->load->model('vbx_incoming_numbers');
+		$this->load->model('vbx_outgoing_caller_ids');
 		$numbers = array();
 		try
 		{
 			/* Retrieve twilio numbers w/o sandbox */
 			$numbers = $this->vbx_incoming_numbers->get_numbers();
+			$callerIds = $this->vbx_outgoing_caller_ids->get_caller_ids();
+      $numbers = array_merge($numbers, $callerIds);
 		}
 		catch(VBX_IncomingNumberException $e)
 		{
 			error_log($e->getMessage());
 			throw new User_ControllerException($e->getMessage());
 			/* Silent fail */
+		}
+		catch (VBX_OutgoingCallerIdException $e)
+		{
+			throw new NumbersException($e->getMessage(), $e->getCode());
 		}
 
 		return $numbers;

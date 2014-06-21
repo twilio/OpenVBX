@@ -1,12 +1,19 @@
 <?php
 	$ci =& get_instance();
 	$ci->load->model('vbx_incoming_numbers');
+	$ci->load->model('vbx_outgoing_caller_ids');
 	
 	try {
 		$numbers = $ci->vbx_incoming_numbers->get_numbers();
+		$callerIds = $ci->vbx_outgoing_caller_ids->get_caller_ids();
+		$numbers = array_merge($numbers, $callerIds);
 	}
 	catch (VBX_IncomingNumberException $e) {
 		log_message('Incoming numbers exception: '.$e->getMessage.' :: '.$e->getCode());
+		$numbers = array();
+	}
+	catch (VBX_OutgoingCallerIdException $e) {
+		log_message('Outgoing callerids exception: '.$e->getMessage.' :: '.$e->getCode());
 		$numbers = array();
 	}
 	
