@@ -164,5 +164,10 @@
         "Name": "FlowTest",
         "Website": "https:\/\/github.com\/tjlytle\/FlowTest",
         "Description": "FlowTest allows you to test OpenVBX Call Flows - as well as the text-to-speech engine - using the new OpenVBX Browser Phone. Instead of dialing in multiple times as you tweak your flows, you can can now test without even using your phone."
-    }
+    },
+	{
+		"Name": "Signal Fuse Call Tracking Plugin",
+		"Website": "https://github.com/BrightTag/OpenVBX-Plugin-Fuse",
+		"Description": "Collect and connect your call information to your online and offline signals using Signal Fuse."
+	}
 ]
