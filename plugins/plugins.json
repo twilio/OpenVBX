@@ -169,5 +169,10 @@
 		"Name": "Signal Fuse Call Tracking Plugin",
 		"Website": "https://github.com/BrightTag/OpenVBX-Plugin-Fuse",
 		"Description": "Collect and connect your call information to your online and offline signals using Signal Fuse."
+	},
+	{
+		"Name": "Recording Plugin",
+		"Website": "https://github.com/kernworks/OpenVBX-Plugin-Recording",
+		"Description": "A Plugin for OpenVBX that adds announcement and recording features."
 	}
 ]
