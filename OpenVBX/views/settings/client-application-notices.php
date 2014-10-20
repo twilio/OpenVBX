@@ -1,6 +1,10 @@
 <div style="margin: 10px 0">
 <?php if ($client_application_error === 1): ?>
-	<p><b>Your Client Application Sid is empty.</b> The Browser Phone will not function correctly while this value is empty. Please go to your <a href="http://www.twilio.com/login" onclick="window.open(this.href); return false;">Twilio Account Portal</a>, click on Applications, copy the Application Sid for your OpenVBX install, and paste it in to this field.</p>
+	<p><b>Your Client Application Sid is empty.</b> The Browser Phone will not function correctly 
+		while this value is empty. Please go to your <a href="http://www.twilio.com/login" onclick="window.open(this.href); return false;">Twilio Account Portal</a>, 
+		click on "DEV TOOLS" in the header, then on "CONNECT APPS" in the sub-nav, then copy the 
+		Application Sid (long string that begins with "CN") for your OpenVBX install, and paste it 
+		in to this field.</p>
 <?php elseif ($client_application_error === 2): ?>
 	<p><b>Twilio Client Application not found.</b></p>
 <?php elseif ($client_application_error === 3): ?>
