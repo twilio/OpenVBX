@@ -541,11 +541,11 @@ class Accounts extends User_Controller {
 
 		$this->respond('', 'accounts', $data);
 	}
-    	
-    	public function get_group_users()
-     	{
-     		$id = $this->input->post('group_id');
-		$json = array('message' => '',
+	
+		public function get_group_users()
+		{
+			$id = $this->input->post('group_id');
+			$json = array('message' => '',
 					'error' => false);
 		try
 		{
