@@ -4,7 +4,7 @@
 		<li class="vbx-util-item"><span class="username"><?php echo $user->email ?></span></li>
 		<?php endif; ?>
 		<!-- Disabled for now... 
-		<?php if(!empty($callerid_numbers)): ?>
+		<?php if(count_callerid_numbers() > 0): ?>
 		<?php foreach($callerid_numbers as $i => $number): ?>
 			<?php if(isset($number->trial) && $number->trial): ?>
 			<li class="util-menu-item"><p>(Trial Mode)</p></li>

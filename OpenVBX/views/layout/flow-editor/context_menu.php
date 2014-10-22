@@ -32,13 +32,13 @@
 
 		</div><!-- #vbx-context-menu .context-menu -->
 
-		<?php if(!empty($callerid_numbers) && count($callerid_numbers) > 1): ?>
+		<?php if(count_callerid_numbers() > 1): ?>
 		<select name="callerid" class="small hide">
 			<?php foreach($callerid_numbers as $number): ?>
 			<option value="<?php echo $number->phone ?>"><?php echo $number->phone ?></option>
 			<?php endforeach; ?>
 		</select>
-		<?php elseif(!empty($callerid_numbers) && count($callerid_numbers) == 1): ?>
+	<?php elseif(count_callerid_numbers() == 1): ?>
 		<?php $c = $callerid_numbers[0]; ?>
 		<?php if(isset($c->trial) && $c->trial == 1): ?>
 		<input type="hidden" name="callerid" value="" class="small" />

@@ -81,6 +81,84 @@ if (!function_exists('validate_rest_request')) {
 	}
 }
 
+if (!function_exists('generate_capability_token')) {
+	/**
+	 * Generate a capability token for Twilio Client
+	 *
+	 * @param string $allow_incoming 
+	 * @return string
+	 */
+	function generate_capability_token($allow_incoming = true) {
+		$ci =& get_instance();
+		$capability = new Services_Twilio_Capability($ci->twilio_sid, $ci->twilio_token);
+
+		$user_id = intval($ci->session->userdata('user_id'));
+		$user = VBX_user::get(array('id' => $user_id));
+
+		$params = array(
+			'user_id' => $user->user_id,
+		);
+		
+		$token = null;
+		try {
+			$capability->allowClientOutgoing($ci->application_sid, $params);
+			if ($allow_incoming) {
+				$capability->allowClientIncoming($user->id);
+			}
+			$token = $capability->generateToken(VBX_Settings::CLIENT_TOKEN_TIMEOUT);
+		}
+		catch (Exception $e) {
+			log_message('error', $e->getMessage());
+		}
+		
+		return $token;
+	}
+}
+
+if (!function_exists('count_callerid_numbers')) {
+	/**
+	 * Counts the number of Phone numbers available
+	 *
+	 * @return int
+	 */
+	function count_callerid_numbers() {
+		$ci =& get_instance();
+		$ci->load->model('vbx_incoming_numbers');
+		$numbers = array();
+		try
+		{
+			/* Retrieve twilio numbers w/o sandbox */
+			$numbers = $ci->vbx_incoming_numbers->get_numbers();
+		}
+		catch(VBX_IncomingNumberException $e)
+		{
+			error_log($e->getMessage());
+			throw new User_ControllerException($e->getMessage());
+			/* Silent fail */
+			return 0;
+		}
+		return count($numbers);
+	}
+}
+
+if (!function_exists('web_calling_enabled')) {
+	/**
+	 * Determine if there are numbers and a Twilio Client Application SID available for making a call.
+	 *
+	 * @return boolean
+	 */
+	function web_calling_enabled() {
+		$ci =& get_instance();
+		
+		$application_sid = $ci->vbx_settings->get('application_sid', $ci->tenant->id);
+		if(count_callerid_numbers()==0)
+			return false;
+ 		else if(!$application_sid || empty($application_sid))
+			return false;
+		return true;
+	}
+}
+
 if (!function_exists('clean_digits')) {
 	/**
 	 * Cleans Hash and Star characters from returned Digits
@@ -317,4 +395,3 @@ if (!function_exists('set_last_known_url'))
 	}
 }
 
-?>
