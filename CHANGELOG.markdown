@@ -4,6 +4,7 @@
 
 - Various small fixes found through static analysis.
 - Update verbiage for locating Connect Apps in the Twilio Account Portal. (Thanks @brylie)
+- Add endpoint to retrieve list of user ids for a group. (Thanks @joepikowski)
 
 
 ## OpenVBX 1.2.14
