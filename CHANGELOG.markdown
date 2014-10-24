@@ -10,6 +10,7 @@
 - Add a local dev helper that replaces `localhost` with `127.0.0.1` to satisfy the Twilio api url validation when configuring phone numbers on a local testing machine.
 - Fix GitHub update lookup by adding a user agent string to the GitHub api request.
 - Update Text to Speech options to include the Alice voice and Italian voice language options.
+- Fix pricing information url in phone number purchase dialog.
 
 
 ## OpenVBX 1.2.14
