@@ -6,6 +6,9 @@
 - Update verbiage for locating Connect Apps in the Twilio Account Portal. (Thanks @brylie)
 - Add endpoint to retrieve list of user ids for a group. (Thanks @joepikowski)
 - Update Twilio JS to load version 1.2.
+- Fixes to enable international phone number purchasing. The process still requires a re-design but now a persistent admin user can use error messages to navigate the land mines of phone number availability and address requirements.
+- Add a local dev helper that replaces `localhost` with `127.0.0.1` to satisfy the Twilio api url validation when configuring phone numbers on a local testing machine.
+- Fix GitHub update lookup by adding a user agent string to the GitHub api request.
 
 
 ## OpenVBX 1.2.14
