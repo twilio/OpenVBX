@@ -220,8 +220,8 @@ class VBX_Incoming_numbers extends Model
 		$params = array(
 			'VoiceUrl' => $voice_url,
 			'SmsUrl' => $sms_url,
-			'VoiceFallbackUrl' => base_url().'fallback/voice.php',
-			'SmsFallbackUrl' => base_url().'fallback/sms.php',
+			'VoiceFallbackUrl' => $this->base_url().'fallback/voice.php',
+			'SmsFallbackUrl' => $this->base_url().'fallback/sms.php',
 			'VoiceFallbackMethod' => 'GET',
 			'SmsFallbackMethod' => 'GET',
 			'SmsMethod' => 'POST',
@@ -349,5 +349,20 @@ class VBX_Incoming_numbers extends Model
 		}
 		
 		return $incoming_number;
+	}
+	
+	/**
+	 * Modified base_url to substitute 'localhost' for '127.0.0.1' so that
+	 * first time local phone number setup works against Twilio's callback
+	 * url validation.
+	 */
+	protected function base_url() {
+		$base_url = base_url();
+		
+		if (strpos($base_url, '://localhost')) {
+			str_replace('://localhost', '://127.0.0.1', $base_url);
+		}
+				
+		return $base_url;
 	}
 }
