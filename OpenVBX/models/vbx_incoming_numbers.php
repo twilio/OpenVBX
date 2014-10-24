@@ -110,6 +110,9 @@ class VBX_Incoming_numbers extends Model
 								$country->search = '+'.$country->code.' (*)';
 							}
 						}
+						
+						// we'll not need this again
+						unset($country->client);
 						$countries[$country->country_code] = $country;
 					}
 				}
