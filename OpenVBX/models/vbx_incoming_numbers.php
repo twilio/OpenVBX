@@ -25,6 +25,11 @@ class VBX_IncomingNumberException extends Exception {}
 
 class VBX_Incoming_numbers extends Model
 {
+	public static $areaCodeCountries = array(
+		'US',
+		'CA',
+	);
+	
 	public function __construct()
 	{
 		parent::__construct();
@@ -245,10 +250,10 @@ class VBX_Incoming_numbers extends Model
 				$search_params = array();
 				if (!empty($area_code))
 				{
-					$search_params['AreaCode'] = $area_code;
+					$param = in_array($country, self::$areaCodeCountries) ? 'AreaCode' : 'Contains';
+					$search_params[$param] = $area_code;
 				}
-				$numbers = $account->available_phone_numbers
-													->getList($country, 'Local', $search_params);
+				$numbers = $account->available_phone_numbers->getList($country, 'Local', $search_params);
 
 				if (count($numbers->available_phone_numbers))
 				{
@@ -258,8 +263,8 @@ class VBX_Incoming_numbers extends Model
 				{
 					if (!empty($area_code))
 					{
-						$message = 'Could not find any numbers in Area Code "'.$area_code.'". '.
-								'Please try again later or try a different Area Code.';
+						$message = 'Could not find any numbers with "'.$area_code.'". '.
+								'Please try again later or try a different prefix.';
 					}
 					else 
 					{
