@@ -36,7 +36,7 @@
 
 	/*
 	 * TwilioRestResponse holds all the REST response data
-	 * Before using the reponse, check IsError to see if an exception
+	 * Before using the response, check IsError to see if an exception
 	 * occurred with the data sent to Twilio
 	 * ResponseXml will contain a SimpleXml object with the response xml
 	 * ResponseText contains the raw string response
@@ -54,7 +54,7 @@
 		public $ErrorMessage;
 
 		public function __construct($url, $text, $status) {
-			// Deprecatation Notice
+			// Deprecation Notice
 			_deprecated_notice(__CLASS__, '1.0.4', 'Services_Twilio');
 
 			preg_match('/([^?]+)\??(.*)/', $url, $matches);
