@@ -155,7 +155,8 @@
 						);
 						$options = array(
 							'man' => 'Man',
-							'woman' => 'Woman'
+							'woman' => 'Woman',
+							'alice' => 'Alice',
 						);
 						echo t_form_dropdown($params, $options, $voice['value']);
 					?>
@@ -175,7 +176,8 @@
 							'en' => 'English',
 							'fr' => 'French',
 							'de' => 'German',
-							'es' => 'Spanish'
+							'it' => 'Italian',
+							'es' => 'Spanish',
 						);
 						echo t_form_dropdown($params, $options, $voice_language['value']);
 					?>

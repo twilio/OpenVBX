@@ -76,7 +76,7 @@ class AudioFiles extends User_Controller
 
 	function index()
 	{
-		$this->respond('', 'library', $data);
+		$this->respond('', 'library', array());
 	}
 
 	function add_file()

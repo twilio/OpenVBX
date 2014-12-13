@@ -372,7 +372,7 @@ class OpenVBX {
 			'host' => 'https://api.twilio.com',
 			'opts' => array(
 				'curlopts' => array(
-					CURLOPT_USERAGENT => 'openvbx/'.OpenVBX::version()
+					CURLOPT_USERAGENT => self::getVbxUserAgentString(),
 				)
 			)
 		);
@@ -401,6 +401,10 @@ class OpenVBX {
 		}
 		
 		return $_http_opts;
+	}
+	
+	public static function getVbxUserAgentString() {
+		return 'openvbx/' . OpenVBX::version();
 	}
 	
 	public function getAccounts() {

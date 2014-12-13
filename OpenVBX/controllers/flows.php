@@ -63,7 +63,7 @@ class Flows extends User_Controller {
 		$flows = VBX_Flow::search(array(), $max, $offset);
 		if(empty($flows))
 		{
-			set_banner('flows', $this->load->view('banners/flows-start', array(), true));
+			set_banner('flows', 'Flows', $this->load->view('banners/flows-start', array(), true));
 		}
 
 		$flows_with_numbers = array();

@@ -61,6 +61,8 @@ class Accounts extends User_Controller {
 				return $this->delete_group();
 			case 'order':
 				return $this->order_group();
+			case 'users':
+				return $this->get_group_users();
 			default:
 				$json = array('success' => FALSE,
 							  'error' => "No such method [$method]");
@@ -534,6 +536,28 @@ class Accounts extends User_Controller {
 			log_message('error', $json['message'].': '.$e->getMessage());
 		}
 
+
+		$data['json'] = $json;
+
+		$this->respond('', 'accounts', $data);
+	}
+	
+		public function get_group_users()
+		{
+			$id = $this->input->post('group_id');
+			$json = array('message' => '',
+					'error' => false);
+		try
+		{
+			$user_ids = VBX_Group::get_user_ids($id);
+			$json = $user_ids;
+		}
+ 		catch(Exception $e)
+		{
+			$json['message'] = 'Unable to get users in group';
+			$json['error'] = true;
+			log_message('error', $json['message'].': '.$e->getMessage());
+		}
 
 		$data['json'] = $json;
 

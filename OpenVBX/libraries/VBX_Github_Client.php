@@ -51,6 +51,7 @@ class VBX_Github_Client {
 		curl_setopt($curl, CURLOPT_URL, $getUrl);
 		curl_setopt($curl, CURLOPT_HEADER, 0);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_USERAGENT, OpenVBX::getVbxUserAgentString());
 		
 		$response = curl_exec($curl);
 		
@@ -65,7 +66,7 @@ class VBX_Github_Client {
 		$decoded = json_decode($response, true);
 		
 		if ($jsonErr = $this->isJsonError()) {
-			throw new Exception($jsonErr);
+			throw new Exception('JSON Error: ' . $jsonErr);
 		}
 				
 		return $decoded;

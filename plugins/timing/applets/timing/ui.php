@@ -24,8 +24,7 @@ $now = new DateTime('now');
 			echo AppletUI::timeRange(
 				"range_$index",
 				AppletInstance::getValue("range_{$index}_from", $default),
-				AppletInstance::getValue("range_{$index}_to", '05:00PM'),
-				$day
+				AppletInstance::getValue("range_{$index}_to", '05:00PM')
 			);
 ?>
 			<a href="#" class="timing-<?php echo $state; ?>"><?php echo $state; ?></a>

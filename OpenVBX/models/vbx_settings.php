@@ -255,7 +255,7 @@ class VBX_Settings extends Model
 		}
 
 		if(isset($tenant['name'])
-		   && preg_match('/[^0-9A-Za-z_-]/', $name) > 0)
+		   && preg_match('/[^0-9A-Za-z_-]/', $tenant['name']) > 0)
 		{
 			$errors[] = "Tenant name contains invalid characters. ".
 						"Allowed characters: alphanumeric, dashes, and underscores.";
