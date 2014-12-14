@@ -11,6 +11,7 @@
 - Fix GitHub update lookup by adding a user agent string to the GitHub api request.
 - Update Text to Speech options to include the Alice voice and Italian voice language options.
 - Fix pricing information url in phone number purchase dialog.
+- Fix typos (Thanks @RoyHP)
 
 
 ## OpenVBX 1.2.14
