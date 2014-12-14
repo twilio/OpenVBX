@@ -12,6 +12,7 @@
 - Update Text to Speech options to include the Alice voice and Italian voice language options.
 - Fix pricing information url in phone number purchase dialog.
 - Fix typos (Thanks @RoyHP)
+- Remove mention of the iPhone app since it is unfortunately no longer maintained or supported. All functionality is retained, just not advertised.
 
 
 ## OpenVBX 1.2.14
