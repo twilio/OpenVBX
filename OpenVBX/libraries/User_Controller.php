@@ -156,7 +156,7 @@ class User_Controller extends MY_Controller
 
 	private function upgrade_check()
 	{
-		$currentSchemaVersion = OpenVBX::schemaVersion(false);
+		$currentSchemaVersion = OpenVBX::schemaVersion();
 		$upgradingToSchemaVersion = OpenVBX::getLatestSchemaVersion();
 		if($currentSchemaVersion != $upgradingToSchemaVersion)
 		{

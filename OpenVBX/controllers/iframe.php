@@ -23,26 +23,23 @@
 
 class Iframe extends User_Controller {
 
-	protected $client_token_timeout;
-	
-	protected $tjs_baseurl = '';
-	protected $tjs_file = '';
-
-	public function __construct() {
-		parent::__construct();
-		
-		$this->twilio_js_baseurl = 'http'.(is_ssl() ? 's' : '').'://static.twilio.com';
-		$this->twilio_js_file = 'twilio'.
-							($this->config->item('use_unminimized_js') ? '' : '.min').'.js';
-	}
+	protected $client_token_timeout;	
+	protected $twilio_js_version = '1.2';
 
 	function index() {
 		$data = $this->init_view_data();
+		
+		$twilio_js = sprintf('%s://static.twilio.com/libs/twiliojs/%s/twilio%s.js', 
+			'http'.(is_ssl() ? 's' : ''),
+			$this->twilio_js_version,
+			($this->config->item('use_unminimized_js') ? '' : '.min')
+		);
+		
 		$data = array_merge($data, array(
 			'site_title' => 'OpenVBX',
 			'iframe_url' => site_url('/messages'),
 			'users' => $this->get_users(),
-			'twilio_js' => $this->twilio_js_baseurl.'/libs/twiliojs/1.1/'.$this->twilio_js_file,
+			'twilio_js' => $twilio_js,
 			'client_capability' => null
 		));
 		

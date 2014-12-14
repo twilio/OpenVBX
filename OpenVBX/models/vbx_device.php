@@ -95,6 +95,8 @@ class VBX_Device extends MY_Model
 			throw new VBX_DeviceException($e->getMessage());
 		}
 		
+		$ci = &get_instance();
+		
 		$device = new self((object) array(
 			'name' => $number['name'],
 			'value' => normalize_phone_to_E164($number['value']),

@@ -43,16 +43,10 @@ class Devices extends User_Controller {
 
 		$data = $this->init_view_data();
 		$user = VBX_user::get(array('id' => $this->user_id));
-		$data['user'] = $user;
 		
+		$data['user'] = $user;
 		$data['numbers'] = $data['devices'] = $user->devices;
-		if(empty($data['devices']))
-		{
-			set_banner('devices',
-					   'Want someone to be able to reach you on your work or cell phone?',
-					   'Add a device below.'
-					   );
-		}
+		$data['show_iphone_app'] = $this->config->item('show_iphone_app') ? true : false;
 
 		return $this->respond('', 'devices', $data);
 	}

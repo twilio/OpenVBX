@@ -558,6 +558,7 @@ class VBX_Message extends Model {
 			 ->get()->result();
 
 		$inbox_id = 0;
+		$folders[$inbox_id] = new StdClass;
 		$folders[$inbox_id]->id = $inbox_id;
 		$folders[$inbox_id]->name ='Inbox';
 		$folders[$inbox_id]->type = 'inbox';

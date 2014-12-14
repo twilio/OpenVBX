@@ -30,7 +30,7 @@
 				<span id="number-input-wrapper"><span id="area-code-wrapper">1 + (<input type="text" id="iAreaCode" name="area_code" maxlength="5" />)</span> &hellip;</span>
 			</fieldset>
 		</div>
-		<p>Buying a phone number will charge your Twilio account. See <a href="http://www.twilio.com/pricing-signup" target="_blank">Twilio.com</a> for pricing information.</p>
+		<p>Buying a phone number will charge your Twilio account. See <a href="http://www.twilio.com/voice/pricing" target="_blank">Twilio.com</a> for pricing information.</p>
 	</form>
 
 	<div id="completed-order" class="hide">

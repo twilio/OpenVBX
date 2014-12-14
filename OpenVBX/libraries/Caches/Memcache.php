@@ -59,7 +59,7 @@ class OpenVBX_Cache_Memcache extends OpenVBX_Cache_Abstract
 						list($server, $port) = explode(':', $server);
 					}
 				
-					$memcache->addServer($server, $port);
+					$this->_cache->addServer($server, $port);
 				}
 			}
 		}

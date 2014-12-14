@@ -25,6 +25,11 @@ class VBX_IncomingNumberException extends Exception {}
 
 class VBX_Incoming_numbers extends Model
 {
+	public static $areaCodeCountries = array(
+		'US',
+		'CA',
+	);
+	
 	public function __construct()
 	{
 		parent::__construct();
@@ -105,6 +110,9 @@ class VBX_Incoming_numbers extends Model
 								$country->search = '+'.$country->code.' (*)';
 							}
 						}
+						
+						// we'll not need this again
+						unset($country->client);
 						$countries[$country->country_code] = $country;
 					}
 				}
@@ -212,8 +220,8 @@ class VBX_Incoming_numbers extends Model
 		$params = array(
 			'VoiceUrl' => $voice_url,
 			'SmsUrl' => $sms_url,
-			'VoiceFallbackUrl' => base_url().'fallback/voice.php',
-			'SmsFallbackUrl' => base_url().'fallback/sms.php',
+			'VoiceFallbackUrl' => $this->base_url().'fallback/voice.php',
+			'SmsFallbackUrl' => $this->base_url().'fallback/sms.php',
 			'VoiceFallbackMethod' => 'GET',
 			'SmsFallbackMethod' => 'GET',
 			'SmsMethod' => 'POST',
@@ -245,10 +253,10 @@ class VBX_Incoming_numbers extends Model
 				$search_params = array();
 				if (!empty($area_code))
 				{
-					$search_params['AreaCode'] = $area_code;
+					$param = in_array($country, self::$areaCodeCountries) ? 'AreaCode' : 'Contains';
+					$search_params[$param] = $area_code;
 				}
-				$numbers = $account->available_phone_numbers
-													->getList($country, 'Local', $search_params);
+				$numbers = $account->available_phone_numbers->getList($country, 'Local', $search_params);
 
 				if (count($numbers->available_phone_numbers))
 				{
@@ -258,8 +266,8 @@ class VBX_Incoming_numbers extends Model
 				{
 					if (!empty($area_code))
 					{
-						$message = 'Could not find any numbers in Area Code "'.$area_code.'". '.
-								'Please try again later or try a different Area Code.';
+						$message = 'Could not find any numbers with "'.$area_code.'". '.
+								'Please try again later or try a different prefix.';
 					}
 					else 
 					{
@@ -341,5 +349,20 @@ class VBX_Incoming_numbers extends Model
 		}
 		
 		return $incoming_number;
+	}
+	
+	/**
+	 * Modified base_url to substitute 'localhost' for '127.0.0.1' so that
+	 * first time local phone number setup works against Twilio's callback
+	 * url validation.
+	 */
+	protected function base_url() {
+		$base_url = base_url();
+		
+		if (strpos($base_url, '://localhost')) {
+			str_replace('://localhost', '://127.0.0.1', $base_url);
+		}
+				
+		return $base_url;
 	}
 }

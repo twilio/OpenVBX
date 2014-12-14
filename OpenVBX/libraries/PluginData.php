@@ -126,8 +126,7 @@ class PluginData
 		catch(VBX_Plugin_StoreException $e)
 		{
 			error_log($e->getMessage());
-			error_log("VBX_Plugin_StoreException while deleting	 $key => ". 
-						var_export($value, true));
+			error_log("VBX_Plugin_StoreException while deleting	 `$key`");
 			throw new PluginDataException("Failed to set values in plugin store: ". 
 						$e->getMessage());
 		}

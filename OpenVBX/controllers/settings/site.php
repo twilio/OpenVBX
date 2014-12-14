@@ -408,10 +408,7 @@ class Site extends User_Controller
 
 		if (!empty($update_app))
 		{
-			if (empty($account)) 
-			{
-				$account = OpenVBX::getAccount();
-			}
+			$account = OpenVBX::getAccount();
 
 			foreach ($update_app as $app) 
 			{

@@ -87,6 +87,7 @@
 		</div><!-- .device-container -->
 		</form>
 
+		<?php if($show_iphone_app): ?>
 		<div class="application-container">
 			<div class="application">
 				<img class="app-icon" src="<?php echo ASSET_ROOT ?>/i/iphone-icon-58.png" alt="OpenVBX for iPhone" />
@@ -98,8 +99,9 @@
 						<button class="email-button"><span>Start the Quick Install</span></button>
 					</fieldset>
 				</form>
-			</div><!-- .application -->
-		</div><!-- .application-container -->
+			</div>
+		</div>
+		<?php endif;?>
 
 		</div><!-- .vbx-content-section -->
 

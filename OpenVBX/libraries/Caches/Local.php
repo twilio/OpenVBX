@@ -44,7 +44,7 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 			}
 			else
 			{
-				$this->_delete($key, $_group);
+				$this->_delete($key, $_group, $tenant_id);
 			}
 		}
 
@@ -71,7 +71,7 @@ class OpenVBX_Cache_Local extends OpenVBX_Cache_Abstract
 			unset($this->_cache[$_group]);
 		}
 		
-		return $true;
+		return true;
 	}
 	
 	public function _flush()
