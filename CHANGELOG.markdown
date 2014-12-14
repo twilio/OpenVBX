@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## Current
+## OpenVBX 1.2.15
 
 - Various small fixes found through static analysis.
 - Update verbiage for locating Connect Apps in the Twilio Account Portal. (Thanks @brylie)
