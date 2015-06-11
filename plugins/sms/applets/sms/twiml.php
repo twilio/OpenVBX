@@ -3,10 +3,13 @@ $sms = AppletInstance::getValue('sms');
 $next = AppletInstance::getDropZoneUrl('next');
 
 $response = new TwimlResponse;
-$response->message($sms);
-if(!empty($next))
+if(AppletInstance::getFlowType() == 'voice') 
 {
-	$response->redirect($next);
+    $response->sms($sms);
+} 
+else 
+{
+    $response->message($sms);
 }
 
 $response->respond();
