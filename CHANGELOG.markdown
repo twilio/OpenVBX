@@ -1,5 +1,10 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.16
+
+- Update SMS Applet to properly use `<Sms>` TwiML when sending messages during voice flows. (Thanks @gegere)
+
+
 ## OpenVBX 1.2.15
 
 - Various small fixes found through static analysis.
