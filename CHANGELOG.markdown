@@ -1,5 +1,9 @@
 # OpenVBX Change Log
 
+## OpenVBX Next
+
+- Fix implementation of `OpenVBX::connectAuthTenant()` by making it static.
+
 ## OpenVBX 1.2.16
 
 - Update SMS Applet to properly use `<Sms>` TwiML when sending messages during voice flows. (Thanks @gegere)
