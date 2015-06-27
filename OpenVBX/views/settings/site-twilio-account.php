@@ -1,4 +1,4 @@
-<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#twilio-account" method="post" class="vbx-settings-form vbx-form" autocomplete="off">
+<form name="vbx-settings" action="<?php echo site_url('settings/site/account') ?>#twilio-account" method="post" class="vbx-settings-form vbx-form" autocomplete="off">
 	<div class="two-col">	
 		<h3>Twilio Account</h3>
 

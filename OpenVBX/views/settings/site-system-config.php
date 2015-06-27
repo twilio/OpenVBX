@@ -163,27 +163,34 @@
 				</label>
 			</div>
 
-			<div class="vbx-input-complex vbx-input-container">
+			<div class="vbx-input-complex vbx-input-container<?php
+				echo $voice['value'] !== 'man' && $voice['value'] !== 'woman' ? ' hide' : '';
+			?>" id="lang-code-default">
 				<label class="field-label">Voice Language
 					<?php
-						$params = array(
+						echo t_form_dropdown(array(
 							'name' => 'site[voice_language]',
-							'id' => 'site-voice-lang',
+							'id' => 'site-voice-lang-default',
 							'class' => 'medium'
-						);
-						$options = array(
-							'en-gb' => 'British English',
-							'en' => 'English',
-							'fr' => 'French',
-							'de' => 'German',
-							'it' => 'Italian',
-							'es' => 'Spanish',
-						);
-						echo t_form_dropdown($params, $options, $voice_language['value']);
+						), $lang_codes['default'], $voice_language['value']);
 					?>
 				</label>
 			</div>
-		
+
+			<div class="vbx-input-complex vbx-input-container<?php
+				echo $voice['value'] == 'man' || $voice['value'] == 'woman' ? ' hide' : '';
+			?>" id="lang-code-extended">
+				<label class="field-label">Voice Language
+					<?php
+						echo t_form_dropdown(array(
+							'name' => 'site[voice_language]',
+							'id' => 'site-voice-lang-extended',
+							'class' => 'medium'
+						), $lang_codes['extended'], $voice_language['value']);
+					?>
+				</label>
+			</div>
+
 			<p class="instruction">See the Twilio Documentation for <a href="http://www.twilio.com/docs/api/twiml/say#attributes-voice">Voice &amp; Language Attributes</a><br />for more info.</p>
 		</fieldset>
 	</div>
