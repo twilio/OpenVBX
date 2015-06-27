@@ -216,7 +216,11 @@ class Site extends User_Controller
 					$data['error'] .= $e->getMessage();
 			}
 		}
-				
+
+		// load language codes for text-to-speech
+		$this->config->load('langcodes');
+		$data['lang_codes'] = $this->config->item('lang_codes');
+
 		// verify Client Application data
 		$data['client_application_error'] = false;
 		$account = OpenVBX::getAccount();
