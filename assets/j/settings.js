@@ -84,5 +84,5 @@ $(document).ready(function() {
 			langCodesDisable(defaultLanguages);
 			langCodesEnable(extendedLanguages);
 		}
-	});
+	}).trigger('change');
 });
