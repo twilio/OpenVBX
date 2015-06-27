@@ -1,6 +1,6 @@
 <h3>Theme</h3>
 
-<form name="vbx-settings" action="<?php echo site_url('settings/site') ?>#theme" method="post" class="vbx-settings-form vbx-form">
+<form name="vbx-settings" action="<?php echo site_url('settings/site/theme') ?>#theme" method="post" class="vbx-settings-form vbx-form">
 
 	<fieldset class="vbx-input-container">
 		<label for="site-theme" class="field-label">Choose a theme

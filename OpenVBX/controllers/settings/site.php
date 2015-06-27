@@ -28,6 +28,8 @@ class Site extends User_Controller
 	const MODE_MULTI = 1;
 	const MODE_SINGLE = 2;
 
+	protected $form_action;
+
 	function __construct()
 	{
 		parent::__construct();
@@ -44,6 +46,7 @@ class Site extends User_Controller
 	private function site($action, $id)
 	{
 		$this->section = 'settings/site';
+		$this->form_action = $action;
 
 		switch($action)
 		{
@@ -81,7 +84,7 @@ class Site extends User_Controller
 					return $this->get_tenant($id);
 				}
 			default:
-				return redirect('settings/site');
+				return redirect('settings/site#multi-tenant');
 		}
 	}
 
@@ -354,12 +357,24 @@ class Site extends User_Controller
 		
 		flush_minify_caches();
 
-		if($this->response_type == 'html')
-		{
-			redirect('settings/site');
+		$returnSection = '';
+		switch($this->form_action) {
+			case 'account':
+				$returnSection = '#twilio-account';
+				break;
+			case 'theme':
+				$returnSection = '#theme';
+				break;
+			default;
+				$returnSection = '#system-config';
 		}
 
-		$this->respond('', 'settings/site', $data);
+		if($this->response_type == 'html')
+		{
+			redirect('settings/site' . $returnSection);
+		}
+
+		$this->respond('', 'settings/site' . $returnSection, $data);
 	}
 
 	private function update_application($app_sid)
