@@ -6,6 +6,7 @@
 - Fix Text to Speech voice and language picker to properly present and use extended language codes when using the Alice voice.
 - Clean up settings forms to redirect back to the same form after submission.
 - Fix bug that prevented the population of the Twilio Client Application SID during installation.
+- Adding (long overdue) pagination to Numbers screen.
 
 
 ## OpenVBX 1.2.16

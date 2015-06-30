@@ -26,28 +26,51 @@ class Numbers extends User_Controller
 	private $error_message = FALSE;
 	private $new_number = null;
 
+	private $numbers_per_page = 50;
+
 	function __construct()
 	{
 		parent::__construct();
 		$this->section = 'numbers';
 		$this->template->write('title', 'Numbers');
 		$this->load->model('vbx_incoming_numbers');
+		$this->load->library('pagination');
 	}
 
 	function index()
 	{
 		$this->admin_only($this->section);
 		$this->template->add_js('assets/j/numbers.js');
-		
+
+		$max = $this->input->get_post('max');
+		$offset = $this->input->get_post('offset');
+
+		if (empty($offset)) {
+			$offset = 0;
+		}
+
+		if (empty($max)) {
+			$max = $this->numbers_per_page;
+		}
+
 		$data = $this->init_view_data();
 		$data['selected_country'] = $this->vbx_settings->get('numbers_country', $this->tenant->id);
 		
 		$numbers = array();
+		$total_numbers = 0;
 		$data['countries'] = array();
 		$data['openvbx_js']['countries'] = array();
 		try
 		{
 			$numbers = $this->vbx_incoming_numbers->get_numbers();
+
+			/**
+			 * $numbers is a list of phone numbers straight from the Twilio API,
+			 * there's no fancy query logic here, just slicing up the array.
+			 */
+			$total_numbers = count($numbers);
+			$numbers = array_slice($numbers, $offset, $max, true);
+
 			$countries = $this->vbx_incoming_numbers->get_available_countries();
 
 			// lighten the payload as we don't need the url data in the view
@@ -103,7 +126,7 @@ class Numbers extends User_Controller
 				}
 				$item->capabilities = $capabilities;
 
-                $item->status = null;
+				$item->status = null;
 
 				if ($item->installed)
 				{
@@ -148,6 +171,15 @@ class Numbers extends User_Controller
 		}
 
 		$data['counts'] = $this->message_counts();
+
+		// pagination
+		$page_config = array(
+			'base_url' => site_url('numbers'),
+			'total_rows' => $total_numbers,
+			'per_page' => $max
+		);
+		$this->pagination->initialize($page_config);
+		$data['pagination'] = CI_Template::literal($this->pagination->create_links());
 
 		$this->respond('', 'numbers/numbers', $data);
 	}
