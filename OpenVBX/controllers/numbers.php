@@ -108,10 +108,6 @@ class Numbers extends User_Controller
 				}
 				
 				$item->phone_formatted = format_phone($item->phone);
-				if (!empty($item->pin))
-				{
-					$item->pin = implode('-', str_split($item->pin, 4));
-				}
 
 				$capabilities = array();
 				if (!empty($item->capabilities)) 

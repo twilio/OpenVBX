@@ -34,7 +34,6 @@
 					<?php endif; /* Sandbox */ ?>
 					<?php 
 						echo $item->phone; 
-						echo !empty($item->pin)? ' Pin: '.$item->pin : '';
 					?> <a href="#<?php echo $item->id; ?>" class="incoming-number-details-toggle toggle-link">details</a>
 					<br />
 					<ul id="other-details-<?php echo $item->id; ?>" class="incoming-number-other-detail" style="display: none;">
@@ -66,9 +65,7 @@
 					?>
 				</td>
 				<td class="incoming-number-delete">
-				<?php if(empty($item->pin)): ?>
 					<a href="numbers/delete/<?php echo $item->id; ?>" class="action trash delete"><span class="replace">Delete</span></a>
-				<?php endif; ?>
 				</td>
 			</tr>
 		<?php endforeach; ?>
