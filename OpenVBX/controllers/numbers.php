@@ -26,7 +26,7 @@ class Numbers extends User_Controller
 	private $error_message = FALSE;
 	private $new_number = null;
 
-	private $numbers_per_page = 50;
+	private $numbers_per_page = 1;
 
 	function __construct()
 	{
@@ -63,14 +63,6 @@ class Numbers extends User_Controller
 		try
 		{
 			$numbers = $this->vbx_incoming_numbers->get_numbers();
-
-			/**
-			 * $numbers is a list of phone numbers straight from the Twilio API,
-			 * there's no fancy query logic here, just slicing up the array.
-			 */
-			$total_numbers = count($numbers);
-			$numbers = array_slice($numbers, $offset, $max, true);
-
 			$countries = $this->vbx_incoming_numbers->get_available_countries();
 
 			// lighten the payload as we don't need the url data in the view
@@ -132,12 +124,12 @@ class Numbers extends User_Controller
 					
 					array_push($data['incoming_numbers'], $item);
 				}
-				elseif (!empty($item->url) || !empty($item->smsUrl))
+				elseif ((!empty($item->url) || !empty($item->smsUrl)) && $offset == 0)
 				{
 					// Number is in use elsewhere
 					array_push($data['other_numbers'], $item);
 				}
-				else
+				elseif ($offset == 0)
 				{
 					// Number is open for use
 					array_push($data['available_numbers'], $item);
@@ -167,6 +159,13 @@ class Numbers extends User_Controller
 		}
 
 		$data['counts'] = $this->message_counts();
+
+		/**
+		 * $numbers is a list of phone numbers straight from the Twilio API,
+		 * there's no fancy query logic here, just slicing up the array.
+		 */
+		$total_numbers = count($data['incoming_numbers']);
+		$data['incoming_numbers'] = array_slice($data['incoming_numbers'], $offset, $max, true);
 
 		// pagination
 		$page_config = array(
