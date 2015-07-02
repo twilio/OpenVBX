@@ -26,7 +26,7 @@ class Numbers extends User_Controller
 	private $error_message = FALSE;
 	private $new_number = null;
 
-	private $numbers_per_page = 1;
+	private $numbers_per_page = 50;
 
 	function __construct()
 	{
