@@ -30,7 +30,6 @@
 					<?php endif; /* Sandbox */ ?>
 					<?php 
 						echo $item->phone; 
-						echo !empty($item->pin)? ' Pin: '.$item->pin : '';
 					?>
 				</td>
 				<td class="incoming-number-flow">
@@ -52,9 +51,7 @@
 					?>
 				</td>
 				<td class="incoming-number-delete">
-				<?php if(empty($item->pin)): ?>
 					<a href="numbers/delete/<?php echo $item->id; ?>" class="action trash delete"><span class="replace">Delete</span></a>
-				<?php endif; ?>
 				</td>
 			</tr>
 		<?php endforeach; ?>

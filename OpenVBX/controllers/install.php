@@ -236,7 +236,7 @@ class Install extends Controller {
 
 		try
 		{
-			$this->openvbx_settings['application_sid'] = $this->get_application($this->openvbx_settings);
+			$openvbx_settings['application_sid'] = $this->get_application($this->openvbx_settings);
 
 			if(!($dbh = @mysql_connect($database['default']['hostname'],
 									   $database['default']['username'],

@@ -5,4 +5,5 @@
 		<li class="menu-item"><button class="add-button add number"><span>Get a Number</span></button></li>
 	</ul>
 	<?php endif; ?>
+	<?php echo $pagination; ?>
 </div><!-- .vbx-content-menu -->

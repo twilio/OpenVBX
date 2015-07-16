@@ -505,7 +505,7 @@ class OpenVBX {
 	 * @param int $tenant_id 
 	 * @return bool
 	 */
-	public function connectAuthTenant($tenant_id) {
+	public static function connectAuthTenant($tenant_id) {
 		$auth = true;
 				
 		$ci =& get_instance();

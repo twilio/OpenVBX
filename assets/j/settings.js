@@ -57,4 +57,32 @@ $(document).ready(function() {
 			imgpath = '/assets/i/countries/' + select.val().toLowerCase() + '.png';
 			img.attr('src', OpenVBX.assets + imgpath);
 	});
+
+	function langCodesEnable(select) {
+		select.removeClass('hide')
+			.show()
+			.find('select')
+			.prop('disabled', false);
+	}
+
+	function langCodesDisable(select) {
+		select.addClass('hide')
+			.hide()
+			.find('select')
+			.prop('disabled', true);
+	}
+
+	$('#site-voice').live('change', function() {
+		var voice = $(this).val(),
+			defaultLanguages = $('#lang-code-default'),
+			extendedLanguages = $('#lang-code-extended');
+
+		if (voice == 'man' || voice == 'woman') {
+			langCodesEnable(defaultLanguages);
+			langCodesDisable(extendedLanguages);
+		} else {
+			langCodesDisable(defaultLanguages);
+			langCodesEnable(extendedLanguages);
+		}
+	}).trigger('change');
 });
