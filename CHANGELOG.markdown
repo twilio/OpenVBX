@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## OpenVBX Next
+## OpenVBX 1.2.17
 
 - Fix implementation of `OpenVBX::connectAuthTenant()` by making it static.
 - Fix Text to Speech voice and language picker to properly present and use extended language codes when using the Alice voice.
