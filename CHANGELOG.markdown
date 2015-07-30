@@ -4,6 +4,7 @@
 
 - Fix implementation of `PhoneNumber::validatePhoneNumber()` by making it static.
 - Update config of `base_url` to accommodate servers living behind a proxy.
+- Fix validation of the Twilio Request for servers not running mod-rewrite support.
 
 
 ## OpenVBX 1.2.17

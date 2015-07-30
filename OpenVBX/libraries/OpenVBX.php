@@ -456,7 +456,7 @@ class OpenVBX {
 		if ($ci->vbx_settings->get('rewrite_enabled', VBX_PARENT_TENANT) < 1 &&
 			!empty($_SERVER['QUERY_STRING']) && strpos($url, $_SERVER['QUERY_STRING']) === false)
 		{
-			$qs = parse_str($_SERVER['QUERY_STRING']);
+			parse_str($_SERVER['QUERY_STRING'], $qs);
 			
 			// make sure that the rewrite var doesn't stay in the query 
 			// string if we're not doing rewriting
