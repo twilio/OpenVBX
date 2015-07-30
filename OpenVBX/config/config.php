@@ -19,8 +19,18 @@ $config['server_name'] = $_SERVER['HTTP_HOST'];
 |	http://example.com/
 |
 */
-$config['base_url']= "http".((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')? 's' : '')
-	  				 ."://".$config['server_name']. rtrim(WEB_ROOT, '/').'/';
+$is_ssl_proto = false;
+switch(true) {
+	case !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off':
+		$is_ssl_proto = true;
+		break;
+	case !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https':
+		$is_ssl_proto = true;
+		break;
+}
+
+$config['base_url'] = "http".($is_ssl_proto ? 's' : '') .
+					  "://".$config['server_name'] . rtrim(WEB_ROOT, '/') . '/';
 
 /*
 |--------------------------------------------------------------------------
