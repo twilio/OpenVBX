@@ -1,5 +1,10 @@
 # OpenVBX Change Log
 
+## OpenVBX Next
+
+- Fix implementation of `PhoneNumber::validatePhoneNumber()` by making it static.
+
+
 ## OpenVBX 1.2.17
 
 - Fix implementation of `OpenVBX::connectAuthTenant()` by making it static.
