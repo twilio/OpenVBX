@@ -316,14 +316,14 @@ class Site extends User_Controller
 				// we're currently saving
 				// @todo - include a 'section' or 'group' param in the submitted
 				// data to do this instead and make it more clear to what's happening
-				if (isset($site['rewrite_enabled']))
-				{
+				//if (isset($site['rewrite_enabled']))
+				//{
 					foreach ($notification_settings as $name)
 					{
 						$value = (!empty($site[$name]) ? 1 : 0);
 						$this->settings->add($name, $value, $this->tenant->id);
 					}
-				}
+				//}
 
 				// Connect App (if applicable)
 				if ($process_connect_app)
