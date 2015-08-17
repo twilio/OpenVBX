@@ -39,9 +39,10 @@ class VBX_Call extends Model {
 	/**
 	 * Get a list of calls
 	 *
-	 * @param string $offset 
-	 * @param string $page_size 
-	 * @return void
+	 * @throws VBX_CallException
+	 * @param int $offset
+	 * @param int $page_size
+	 * @return array
 	 */
 	public function get_calls($offset = 0, $page_size = 20)
 	{
@@ -91,9 +92,10 @@ class VBX_Call extends Model {
 	/**
 	 * Start an outbound call
 	 *
+	 * @throws VBX_CallException
 	 * @param string $from - the user making the call, this is the device that'll be called first
 	 * @param string $to - the call destination
-	 * @param string $callerid - the number to use as the caller id
+	 * @param string $callerId - the number to use as the caller id
 	 * @param string $rest_access - token to authenticate the twiml request
 	 * @return void
 	 */

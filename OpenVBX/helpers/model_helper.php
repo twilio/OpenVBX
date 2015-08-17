@@ -18,7 +18,11 @@
 
  * Contributor(s):
  **/
-	
+
+/**
+ * @param $value
+ * @return int
+ */
 function boolean($value)
 {
 	return ($value == "true" || $value == 1)?

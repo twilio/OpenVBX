@@ -130,6 +130,10 @@ class VBX_Incoming_numbers extends Model
 		return $countries;
 	}
 
+	/**
+	 * @param $item
+	 * @return stdClass
+	 */
 	private function parseIncomingPhoneNumber($item)
 	{
 		$num = new stdClass();
@@ -165,6 +169,7 @@ class VBX_Incoming_numbers extends Model
 	/**
 	 * Assign a number to a flow
 	 *
+	 * @throws VBX_IncomingNumberException
 	 * @param string $phone_id - phone number sid
 	 * @param int $flow_id - flow id
 	 * @return bool
@@ -203,9 +208,11 @@ class VBX_Incoming_numbers extends Model
 	/**
 	 * Purchase a new number
 	 *
+	 * @throws VBX_IncomingNumberException
 	 * @param bool $is_local 
-	 * @param string $area_code 
-	 * @return void
+	 * @param string $area_code
+	 * @param string $country
+	 * @return stdClass
 	 */
 	public function add_number($is_local, $area_code, $country)
 	{		
@@ -291,6 +298,7 @@ class VBX_Incoming_numbers extends Model
 	/**
 	 * Remove a phone number from the current account
 	 *
+	 * @throws VBX_IncomingNumberException
 	 * @param string $phone_id
 	 * @return bool
 	 */

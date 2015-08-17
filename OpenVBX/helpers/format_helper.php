@@ -21,7 +21,12 @@
 
 // formatting
 
-// make a series of digits into a properly formatted US phone number
+/**
+ * make a series of digits into a properly formatted US phone number
+ *
+ * @param $number
+ * @return mixed|string
+ */
 function format_phone($number)
 {
 	$no = preg_replace('/[^0-9+]/', '', $number);
@@ -40,6 +45,10 @@ function format_phone($number)
 	
 }
 
+/**
+ * @param $phone
+ * @return mixed|string
+ */
 function normalize_phone_to_E164($phone) {
 
 	// get rid of any non (digit, + character)
@@ -68,7 +77,13 @@ function normalize_phone_to_E164($phone) {
 	return $phone;
 }  
 
-// return an abbreviated url string. ex: "http://example.com/123/page.htm" => "example.com...page.htm"
+/**
+ * return an abbreviated url string. ex: "http://example.com/123/page.htm" => "example.com...page.htm"
+ *
+ * @param $string
+ * @param int $max_len
+ * @return mixed|string
+ */
 function short_url($string, $max_len = 30)
 {
 	$value = str_replace(array('http://', 'https://', 'ftp://'), '', $string);
@@ -86,6 +101,10 @@ function short_url($string, $max_len = 30)
 	}
 }
 
+/**
+ * @param int $length
+ * @return string
+ */
 function random_str($length = 10) {
 	$chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 	
@@ -98,6 +117,10 @@ function random_str($length = 10) {
 	return $str;
 }
 
+/**
+ * @param $time_in_seconds
+ * @return string
+ */
 function format_player_time($time_in_seconds) {
 	$time_in_seconds = intval($time_in_seconds);
 	$minutes = floor($time_in_seconds / 60);
@@ -106,6 +129,11 @@ function format_player_time($time_in_seconds) {
 	return sprintf('%02s:%02s', $minutes, $seconds);
 }
 
+/**
+ * @param string $seconds
+ * @param string $time
+ * @return bool|string
+ */
 function format_time_difference($seconds='', $time='') {
 	if(!is_numeric($seconds) || empty($seconds)) return true;
 	
@@ -129,6 +157,11 @@ function format_time_difference($seconds='', $time='') {
 	return $difference.' '.strtolower($CI->lang->line($periods[$j])).' ago';
 }
 
+/**
+ * @param $a stdClass
+ * @param $b stdClass
+ * @return int
+ */
 function sort_by_date($a, $b)
 {
 	$a_time = strtotime($a->created);
@@ -141,6 +174,10 @@ function sort_by_date($a, $b)
 	return ($a_time > $b_time)? -1 : 1;
 }
 
+/**
+ * @param $time int
+ * @return bool|string
+ */
 function format_short_timestamp($time)
 {
 	$start_of_today = mktime(0, 0, 0, date("n"), date("j"), date("Y"));
@@ -167,6 +204,10 @@ function format_short_timestamp($time)
 	}
 }
 
+/**
+ * @param $user stdClass|array
+ * @return string
+ */
 function format_name($user)
 {
 	if(is_object($user))
@@ -193,6 +234,10 @@ function format_name($user)
 	return '';
 }
 
+/**
+ * @param $user stdClass
+ * @return string
+ */
 function format_name_as_initials($user)
 {
 	if(is_object($user))
@@ -215,6 +260,10 @@ function format_name_as_initials($user)
 	return '';
 }
 
+/**
+ * @param $url string
+ * @return string
+ */
 function format_url($url)
 {
 	$str = $url;
@@ -228,6 +277,10 @@ function format_url($url)
 	return $str;
 }
 
+/**
+ * @param $data string|array
+ * @return array|string
+ */
 function html($data)
 {
 	if(is_string($data))

@@ -19,6 +19,11 @@
  * Contributor(s):
  **/
 
+/**
+ * @param VBX_User|stdClass $a
+ * @param VBX_User|stdClass $b
+ * @return int
+ */
 function sortUsersAndGroupsByNameComparator($a, $b)
 {
 	$aName = null;

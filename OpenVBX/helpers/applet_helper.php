@@ -18,7 +18,14 @@
 
  * Contributor(s):
  **/
-	
+
+/**
+ * @param string $name
+ * @param array $options
+ * @param array $selected
+ * @param string $extra
+ * @return string
+ */
 function applet_dropdown($name = '', $options = array(), $selected = array(), $extra = '')
 {
 	if ( ! is_array($selected))

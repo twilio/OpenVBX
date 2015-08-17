@@ -80,6 +80,12 @@ class VBX_User extends MY_Model {
 		parent::__construct($object);
 	}
 
+	/**
+	 * @param array $search_options
+	 * @param int $limit
+	 * @param int $offset
+	 * @return array|bool|null|VBX_User
+	 */
 	public static function get($search_options = array(), $limit = -1, $offset = 0)
 	{
 		if(empty($search_options))
@@ -95,6 +101,13 @@ class VBX_User extends MY_Model {
 		return self::search($search_options, 1, 0);
 	}
 
+	/**
+	 * @param array $search_options
+	 * @param int $limit
+	 * @param int $offset
+	 * @return VBX_User[]|VBX_User
+	 * @throws MY_ModelException
+	 */
 	public static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
 		$ci =& get_instance();
@@ -150,6 +163,13 @@ class VBX_User extends MY_Model {
 		return $users;
 	}
 
+	/**
+	 * @param string $email
+	 * @param string $password
+	 * @param string $captcha
+	 * @param string $captcha_token
+	 * @return bool|mixed
+	 */
 	public static function login($email, $password, $captcha, $captcha_token)
 	{
 		$user = VBX_User::get(array('email' => $email));
@@ -176,6 +196,15 @@ class VBX_User extends MY_Model {
 		}
 	}
 
+	/**
+	 * @param string $user
+	 * @param string $email
+	 * @param string $password
+	 * @param string $captcha
+	 * @param string $captcha_token
+	 * @return bool
+	 * @throws GoogleCaptchaChallengeException
+	 */
 	protected function login_google($user, $email, $password, $captcha, $captcha_token)
 	{
 		$this->load->library('GoogleDomain');
@@ -282,7 +311,12 @@ class VBX_User extends MY_Model {
 				
 		return $login;
 	}
-	
+
+	/**
+	 * @param $user
+	 * @param $signature
+	 * @return bool
+	 */
 	public static function check_signature($user, $signature)
 	{	
 		return ($signature == self::signature($user));
@@ -307,9 +341,10 @@ class VBX_User extends MY_Model {
 	 * - password cannot be empty
 	 * - password must be self::MIN_PASSWORD_LENGTH to be valid
 	 *
+	 * @throws VBX_UserException
 	 * @param string $password 
 	 * @param string $confirmed_password 
-	 * @return void
+	 * @return bool
 	 */
 	public function set_password($password, $confirmed_password)
 	{
@@ -379,6 +414,8 @@ class VBX_User extends MY_Model {
 
 	/**
 	 * @deprecated use VBX_User::search() instead
+	 * @param array $user_ids
+	 * @return mixed
 	 */
 	function get_users($user_ids)
 	{
@@ -504,18 +541,29 @@ class VBX_User extends MY_Model {
 		
 		return $result;
 	}
-	
+
+	/**
+	 * @param string $password
+	 * @return string
+	 */
 	protected static function salt_password($password)
 	{
 		$salt = config_item('salt');
 		return md5($salt.$password);
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function generate_invite_code()
 	{
 		return substr(base64_encode(self::salt_encrypt(mt_rand())), 0, 20);
 	}
 
+	/**
+	 * @param null|int|string $auth_type
+	 * @return null
+	 */
 	function get_auth_type($auth_type = null)
 	{
 		$ci = &get_instance();
@@ -540,6 +588,11 @@ class VBX_User extends MY_Model {
 		return null;
 	}
 
+	/**
+	 * @param $id
+	 * @param $params
+	 * @return mixed
+	 */
 	public function update($id, $params)
 	{		
 		if (isset($params->last_seen))
@@ -550,6 +603,11 @@ class VBX_User extends MY_Model {
 		return parent::update($id, $params);
 	}
 
+	/**
+	 * @param bool|false $force_update
+	 * @return bool
+	 * @throws VBX_UserException
+	 */
 	public function save($force_update = false)
 	{
 		if (isset($this->last_seen))
@@ -593,6 +651,10 @@ class VBX_User extends MY_Model {
 		return parent::save($force_update);
 	}
 
+	/**
+	 * @param $user
+	 * @return null|string
+	 */
 	public static function signature($user)
 	{
 		if (is_numeric($user))
@@ -667,7 +729,7 @@ class VBX_User extends MY_Model {
 	 *
 	 * @param string $key 
 	 * @param string $value 
-	 * @return void
+	 * @return bool
 	 */
 	public function setting_set($key, $value)
 	{
@@ -680,7 +742,8 @@ class VBX_User extends MY_Model {
 		{
 			$value = serialize($value);
 		}
-		
+
+		/** @var VBX_User_Setting[] $settings */
 		$settings = $this->settings();
 		if (empty($settings[$key]))
 		{

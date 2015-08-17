@@ -20,8 +20,15 @@ class TwimlDial {
 	protected $cookie_name;
 		
 	public $state;
+
+	/**
+	 * @var TwimlResponse
+	 */
 	public $response;
-	
+
+	/**
+	 * @var Twiml
+	 */
 	public $dial;
 	
 	protected $timeout = false;
@@ -145,6 +152,7 @@ class TwimlDial {
 		
 		if ($device->is_active) 
 		{
+			/** @var VBX_User $user */
 			$user = VBX_User::get($device->user_id);				
 			$dial = $this->getDial();
 
@@ -266,6 +274,7 @@ class TwimlDial {
 	 * Also, if the result of no-answer is to redirect then that is handled here too.
 	 * An empty redirect value will cause a hangup.
 	 *
+	 * @throws TwimlDialException
 	 * @return void
 	 */
 	protected function no_answer_object() 

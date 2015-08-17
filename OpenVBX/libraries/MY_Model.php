@@ -387,6 +387,11 @@ class MY_Model extends Model
 		}
 	}
 
+	/**
+	 * @param bool|false $force_update
+	 * @return bool
+	 * @throws MY_ModelDuplicateException
+	 */
 	function save($force_update = false)
 	{
 		if(is_numeric($this->id) && intval($this->id) > 0)
@@ -465,7 +470,8 @@ class MY_Model extends Model
 	 * An unfortunate hack for scope resolution in PHP versions less than 5.3
 	 * We have to always use the hack because PHP 5.2 will complain about $class::$var
 	 * even if its hidden via an if statement
-	 * 
+	 *
+	 * @param string $class
 	 * @return bool
 	 */
 	protected function _caching($class)

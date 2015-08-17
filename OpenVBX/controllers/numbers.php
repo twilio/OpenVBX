@@ -204,6 +204,7 @@ class Numbers extends User_Controller
 	/**
 	 * Build a list of flow options for attaching numbers to flows
 	 *
+	 * @param VBX_Flow[]
 	 * @return array
 	 */
 	protected function get_flow_options($flows)
@@ -251,6 +252,9 @@ class Numbers extends User_Controller
 		$this->respond('', 'numbers', $data);
 	}
 
+	/**
+	 * @param int $phone_id
+	 */
 	function delete($phone_id)
 	{
 		$this->admin_only($this->section);
@@ -288,6 +292,10 @@ class Numbers extends User_Controller
 		echo json_encode($data);
 	}
 
+	/**
+	 * @param int $phone_id
+	 * @param int $id id of flow to assign number to
+	 */
 	function change($phone_id, $id)
 	{
 		$this->admin_only($this->section);

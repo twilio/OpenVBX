@@ -18,7 +18,14 @@
 
  * Contributor(s):
  **/
-	
+
+/**
+ * @param string $recipient
+ * @param string $subject
+ * @param string $template
+ * @param array $maildata
+ * @return bool
+ */
 function openvbx_mail($recipient, $subject, $template, $maildata = array())
 {	
 	$ci = &get_instance();

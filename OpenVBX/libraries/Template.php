@@ -121,8 +121,9 @@ class CI_Template {
 	* Dynamically add a template and optionally switch to it
 	*
 	* @access  public
-	* @param   string   array key to access template settings
-	* @param   array properly formed
+	* @param   string $group array key to access template settings
+	* @param   array $template properly formed
+    * @param   bool $activate
 	* @return  void
 	*/
    
@@ -290,7 +291,8 @@ class CI_Template {
 	* Set parser
 	*
 	* @access  public
-	* @param   string   name of parser class to load and use for parsing methods
+	* @param   string $parser name of parser class to load and use for parsing methods
+    * @param   string $method optional name of method to set on parser
 	* @return  void
 	*/
    
@@ -393,6 +395,9 @@ class CI_Template {
 	/**
 	 * @todo: this method has to go!
 	 * need to deprecate in favor of scrubbing data on actual output
+	 *
+	 * @param stdClass|array|string $data
+	 * @return stdClass
 	 */
 	function clean_output($data)
 	{
@@ -555,10 +560,10 @@ class CI_Template {
 	 * NOTE: This function does NOT check for existence of .css file
 	 *
 	 * @access  public
-	 * @param   string   CSS file to link, import or embed
-	 * @param   string  'link', 'import' or 'embed'
-	 * @param   string  media attribute to use with 'link' type only, FALSE for none
-	 * @return  TRUE on success, FALSE otherwise
+	 * @param   string  $style CSS file to link, import or embed
+	 * @param   string  $type 'link', 'import' or 'embed'
+	 * @param   string|bool  $media media attribute to use with 'link' type only, FALSE for none
+	 * @return  bool TRUE on success, FALSE otherwise
 	 */
 	function add_css($style, $type = 'link', $media = FALSE)
 	{
@@ -619,8 +624,9 @@ class CI_Template {
 	 * Render the master template or a single region
 	 *
 	 * @access	public
-	 * @param	string	optionally opt to render a specific region
-	 * @param	boolean	FALSE to output the rendered template, TRUE to return as a string. Always TRUE when $region is supplied
+	 * @param	string $region optionally opt to render a specific region
+	 * @param	bool   $buffer FALSE to output the rendered template, TRUE to return as a string. Always TRUE when $region is supplied
+     * @param   bool   $parse
 	 * @return	void or string (result of template build)
 	 */
    
@@ -676,6 +682,11 @@ class CI_Template {
 	* DEPRECATED!
 	* 
 	* Use render() to compile and display your template and regions
+    *
+    * @deprecated
+    * @param string $region
+    * @param bool $buffer
+    * @return void
 	*/
 	
 	function load($region = NULL, $buffer = FALSE)

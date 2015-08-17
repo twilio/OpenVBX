@@ -18,7 +18,13 @@
 
  * Contributor(s):
  **/
-	
+
+/**
+ * @param $id
+ * @param $title
+ * @param $html
+ * @param null $path
+ */
 function set_banner($id, $title, $html, $path = null)
 {
 	$banner = array('id' => $id,

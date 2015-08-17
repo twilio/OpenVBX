@@ -194,9 +194,10 @@ class OpenVBX {
 	/**
 	 * Returns the OpenVBX software version
 	 * 
-	 * @internal Post 1.1.3 this pulls from the file in `OpenVBX/config/version.php` instead
-	 *			 of pulling from the database. This way the version number can be known without
-	 *			 a functional database (ie: install)
+	 * Post 1.1.3 this pulls from the file in `OpenVBX/config/version.php` instead
+	 * of pulling from the database. This way the version number can be known without
+	 * a functional database (ie: install)
+	 *
 	 * @return string
 	 */
 	public static function version()

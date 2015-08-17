@@ -24,7 +24,7 @@ if (!function_exists('generate_capability_token')) {
 	/**
 	 * Generate a capability token for Twilio Client
 	 *
-	 * @param string $allow_incoming 
+	 * @param string|bool $allow_incoming
 	 * @return string
 	 */
 	function generate_capability_token($allow_incoming = true) {
