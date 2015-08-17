@@ -44,57 +44,6 @@ class Client extends MY_Controller
 		}
 	}
 
-	public function updates()
-	{
-		switch($this->request_method)
-		{
-			case 'GET':
-				return $this->get_updates();
-			default:
-				break;
-		}
-	}
-
-	private function get_updates()
-	{
-		if($this->session->userdata('loggedin') != 1
-		   || $this->session->userdata('is_admin') != 1)
-		{
-			$data['json'] = array('message' => 'Unable to fetch updates', 'error' => true);
-			return $this->respond('', '', $data);
-		}
-		
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'http://openvbx.org/updates/latest.json');
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		$resp = curl_exec($ch);
-		
-		if(!$resp)
-		{
-			// Its okay we can't connect to the update system but log it
-			error_log('Unable to connect to OpenVBX Update notification server');
-		}
-		
-		$data['json'] = array('message' => 'Unable to fetch updates', 'error' => true);
-		
-		if($obj = json_decode($resp))
-		{
-			$data['json']['upgradeAvailable'] = false;
-			list($current['major'], $current['minor']) = explode('.', OpenVBX::version());
-			list($latest['major'], $latest['minor']) = explode('.', $obj->version);
-			if($latest['major'] > $current['major']
-			   || $latest['major'] == $current['major'] && $latest['minor'] > $current['minor'])
-			{
-				$data['json'] = array(
-					'error' => false,
-					'upgradeAvailable' => true
-				);
-			}
-		}
-
-		$this->respond('', '', $data);
-	}
-
 	private function get_client()
 	{
 		$theme_type = $this->input->get('type');
