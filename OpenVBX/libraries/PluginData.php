@@ -55,7 +55,6 @@ class PluginData
 	
 	public static function get($key, $default = null)
 	{
-		$ci = &get_instance();
 		try
 		{
 			$store = VBX_Plugin_Store::get(array(
@@ -82,7 +81,6 @@ class PluginData
 			throw new PluginDataException("Plugin id not set");
 		}
 		
-		$ci = &get_instance();
 		try
 		{
 			$store = VBX_Plugin_Store::get(array(

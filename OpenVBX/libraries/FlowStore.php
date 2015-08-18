@@ -32,7 +32,6 @@ class FlowStore
 	
 	public static function get($key, $default)
 	{
-		$ci = &get_instance();
 		try
 		{
 			$store = VBX_Flow_Store::get(array('key' => $key,
@@ -56,7 +55,6 @@ class FlowStore
 			throw new FlowStoreException("Flow id not set");
 		}
 		
-		$ci = &get_instance();
 		try
 		{
 			$store = VBX_Flow_Store::get(array('key' => $key,
