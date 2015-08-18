@@ -408,7 +408,7 @@ class OpenVBX {
 		return 'openvbx/' . OpenVBX::version();
 	}
 	
-	public function getAccounts() {
+	public static function getAccounts() {
 		if (!(self::$_twilioService instanceof Services_Twilio)) 
 		{
 			self::getAccount();

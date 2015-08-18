@@ -417,7 +417,7 @@ class VBX_User extends MY_Model {
 	 * @param array $user_ids
 	 * @return mixed
 	 */
-	function get_users($user_ids)
+	static function get_users($user_ids)
 	{
 		_deprecated_notice(__METHOD__, '1.1.2', 'VBX_User::search()');
 		
