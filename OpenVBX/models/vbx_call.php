@@ -99,7 +99,7 @@ class VBX_Call extends Model {
 	 * @param string $rest_access - token to authenticate the twiml request
 	 * @return void
 	 */
-	public function make_call($from, $to, $callerid, $rest_access)
+	public function make_call($from, $to, $callerId, $rest_access)
 	{
 		try
 		{
@@ -118,13 +118,13 @@ class VBX_Call extends Model {
 		if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
 			$to = PhoneNumber::normalizePhoneNumberToE164($to);
 		}
-		$callerid = PhoneNumber::normalizePhoneNumberToE164($callerid);
+		$callerId = PhoneNumber::normalizePhoneNumberToE164($callerId);
 		$from = PhoneNumber::normalizePhoneNumberToE164($from);
-		$twiml_url = site_url("twiml/dial").'?'.http_build_query(compact('callerid', 'to', 'rest_access'));
+		$twiml_url = site_url("twiml/dial").'?'.http_build_query(compact('callerId', 'to', 'rest_access'));
 
 		try {
 			$account = OpenVBX::getAccount();
-			$account->calls->create($callerid, $from, $twiml_url);
+			$account->calls->create($callerId, $from, $twiml_url);
 		}
 		catch (Exception $e) {
 			throw new VBX_CallException($e->getMessage());
