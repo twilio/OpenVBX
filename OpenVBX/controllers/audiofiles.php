@@ -322,6 +322,7 @@ class AudioFiles extends User_Controller
 				break;
 			case 2:
 				$response->redirect(site_url('audiofiles/prompt_for_recording_twiml'));
+				break;
 			default:
 				$response->redirect(site_url('audiofiles/replay_recording_twiml'));
 				break;
