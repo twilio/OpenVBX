@@ -7,6 +7,7 @@
 - Fix validation of the Twilio Request for servers not running mod-rewrite support.
 - Fix notification settings save when altering settings as a tenant. (Thanks @AsaadQ)
 - Removing obsolete update check.
+- Numerous small fixes, code style updates, and docblock fixes of issues found during static analysis.
 
 
 ## OpenVBX 1.2.17

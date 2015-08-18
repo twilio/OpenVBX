@@ -102,7 +102,7 @@ class User_Controller extends MY_Controller
 				$redirect = $_COOKIE['last_known_url'];
 				set_last_known_url('', time() - 3600);
 			}
-			return redirect('auth/login?redirect='.urlencode($redirect));
+			redirect('auth/login?redirect='.urlencode($redirect));
 		}
 
 		$this->user_id = $this->session->userdata('user_id');

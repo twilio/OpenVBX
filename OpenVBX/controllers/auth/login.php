@@ -125,12 +125,12 @@ class Login extends MY_Controller
 					return $this->after_login_completed($user, $redirect);
 				}
 
-				return $this->redirect($redirect);
+				$this->redirect($redirect);
 			}
 			
 			$this->session->set_flashdata('error',
 										  'Email address and/or password is incorrect');
-			return redirect('auth/login?redirect='.urlencode($redirect));
+			redirect('auth/login?redirect='.urlencode($redirect));
 		}
 		catch(GoogleCaptchaChallengeException $e)
 		{
@@ -175,7 +175,7 @@ class Login extends MY_Controller
 						$path = '/'.(($this->tenant->id > 1)? $this->tenant->name : '');
 						setrawcookie('banner', rawurlencode(json_encode($banner)), 0, $path);
 						set_last_known_url(site_url('/numbers'));
-						return redirect('');
+						redirect('');
 					}
 				}
 				catch(VBX_IncomingNumberException $e)
@@ -189,11 +189,11 @@ class Login extends MY_Controller
 			if(empty($devices))
 			{
 				set_last_known_url(site_url('/devices'));
-				return redirect('');
+				redirect('');
 			}
 		}
 		
 		set_last_known_url($redirect);
-		return $this->redirect('');
+		$this->redirect('');
 	}
 }

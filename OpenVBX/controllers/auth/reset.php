@@ -47,7 +47,7 @@ class Reset extends MY_Controller
 	{
 		if(empty($invite_code))
 		{
-			return redirect('auth/login');
+			redirect('auth/login');
 		}
 
 		$user = VBX_User::get(array(
@@ -57,7 +57,7 @@ class Reset extends MY_Controller
 
 		if(!$user)
 		{
-			return redirect('auth/login');
+			redirect('auth/login');
 		}
 		
 		$data = array('invite_code' => $invite_code);
@@ -67,7 +67,7 @@ class Reset extends MY_Controller
 			try
 			{
 				$user->set_password($_POST['password'], $_POST['confirm']);
-				return redirect('auth/login');
+				redirect('auth/login');
 			}
 			catch(VBX_UserException $e) {
 				$data['error'] = $e->getMessage();
@@ -98,7 +98,7 @@ class Reset extends MY_Controller
         if(empty($user))
 		{
 			$this->session->set_flashdata('error', 'No active account found.');
-			return redirect('auth/reset');
+			redirect('auth/reset');
 		}
 
 		if($user->auth_type == 'google')
@@ -116,10 +116,10 @@ class Reset extends MY_Controller
 				$this->session->set_flashdata('error',
 							'The email was not sent. Contact your admin.');
 			}
-			return redirect('auth/login');
+			redirect('auth/login');
 		}
 
-		return redirect('auth/reset');
+		redirect('auth/reset');
 	}
 
 }

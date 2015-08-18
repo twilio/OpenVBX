@@ -71,7 +71,7 @@ class Client extends MY_Controller
 		
 		if($this->response_type != 'json')
 		{
-			return redirect('');
+			redirect('');
 		}
 		
 		$data['json'] = $client;
