@@ -1,6 +1,6 @@
 <?php 
 	global $dial_disabled;
-	if (!empty($callerid_numbers) && count($callerid_numbers == 1)): /* callerid_number */ ?>
+	if (!empty($callerid_numbers) && count($callerid_numbers) == 1): /* callerid_number */ ?>
 
 	<label class="field-label"><span class="label-text">Caller ID</span>
 		<?php
@@ -15,7 +15,7 @@
 		?>
 	</label>
 
-<?php elseif (!empty($callerid_numbers) && count($callerid_numbers > 1)): /* callerid_numbers */ ?>
+<?php elseif (!empty($callerid_numbers) && count($callerid_numbers) > 1): /* callerid_numbers */ ?>
 
 	<?php $c = $callerid_numbers[0]; ?>
 	<?php if(isset($c->trial) && $c->trial == 1): /* is-trail */ ?>
