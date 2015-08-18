@@ -6,7 +6,7 @@ class External extends MY_Controller {
 	 * @param $id
 	 */
 	public function message_details($id) {
-		return $this->request(site_url('messages/details/'.$id), array(
+		$this->request(site_url('messages/details/'.$id), array(
 			'iphone' => site_url('iphone/messages/details/'.$id)
 		));
 	}
