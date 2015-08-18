@@ -372,7 +372,7 @@ class Inbox extends User_Controller {
 			// set message read flag
 			$this->vbx_message->mark_read($message->id, $this->user_id);		
 			$message->caller = format_phone($message->caller);
-			$accepts = split(',', $_SERVER['HTTP_ACCEPT']);
+			$accepts = explode(',', $_SERVER['HTTP_ACCEPT']);
 			if(in_array('application/json', $accepts))
 			{
 				echo json_encode($message);
