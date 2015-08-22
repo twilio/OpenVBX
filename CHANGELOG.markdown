@@ -9,6 +9,8 @@
 - Removing obsolete update check.
 - Numerous small fixes, code style updates, and docblock fixes of issues found during static analysis.
 - Implement cache control on `messages/scripts` endpoint and script tag to prevent caching.
+- Fix user edit button href after new users are added to contain the proper user edit url.
+- Explicitly hide `E_DEPRECATED` and `E_STRICT` errors in the default error reporting to handle the differences in how different versions of PHP report errors.
 
 
 ## OpenVBX 1.2.17
