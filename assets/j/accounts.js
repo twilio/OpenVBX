@@ -574,6 +574,7 @@ function buildUserBlock(data) {
 
 	$('.user-name', user_el).text(fullName);
 	$('.user-email', user_el).text(data.email);
+	$('.user-edit', user_el).attr('href', '/account/user/' + data.id);
 	$('.members li[rel="' + data.id + '"] span').text(fullName);
 }
 
