@@ -11,6 +11,7 @@
 - Implement cache control on `messages/scripts` endpoint and script tag to prevent caching.
 - Fix user edit button href after new users are added to contain the proper user edit url.
 - Explicitly hide `E_DEPRECATED` and `E_STRICT` errors in the default error reporting to handle the differences in how different versions of PHP report errors.
+- Convert html entities in license section that were causing an email address to be hidden.
 
 
 ## OpenVBX 1.2.17
