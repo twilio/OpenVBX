@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## OpenVBX Next
+## OpenVBX 1.2.18
 
 - Fix implementation of several methods by making them static.
 - Update config of `base_url` to accommodate servers living behind a proxy.
