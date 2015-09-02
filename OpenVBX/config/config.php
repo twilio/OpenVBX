@@ -40,7 +40,7 @@ $config['base_url'] = "http".($is_ssl_proto ? 's' : '') .
 | Used for asset url versioning.
 |
 */
-$config['site_rev'] = 1025;
+$config['site_rev'] = 1026;
 
 /*
 |--------------------------------------------------------------------------
