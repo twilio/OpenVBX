@@ -1,6 +1,6 @@
 <?php 
 	global $dial_disabled;
-	if (!empty($callerid_numbers) && count($callerid_numbers == 1)): /* callerid_number */ ?>
+	if (!empty($callerid_numbers) && count($callerid_numbers) > 0): /* callerid_numbers */ ?>
 
 	<label class="field-label"><span class="label-text">Caller ID</span>
 		<?php
@@ -14,22 +14,6 @@
 							);
 		?>
 	</label>
-
-<?php elseif (!empty($callerid_numbers) && count($callerid_numbers > 1)): /* callerid_numbers */ ?>
-
-	<?php $c = $callerid_numbers[0]; ?>
-	<?php if(isset($c->trial) && $c->trial == 1): /* is-trail */ ?>
-		<label class="field-label"><span class="label-text">From</span>
-			<?php
-				echo t_form_input(array(
-						'name' => 'callerid',
-						'class' => 'small'
-					));
-			?>
-		</label>
-	<?php else: /* is-trail */ ?>
-		<?php echo form_hidden('callerid', $c->phone); ?>
-	<?php endif; /* is-trail */ ?>
 
 <?php else: /* callerid_numbers */ ?>
 

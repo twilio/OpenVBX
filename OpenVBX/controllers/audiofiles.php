@@ -119,9 +119,7 @@ class AudioFiles extends User_Controller
 
 					// Return the URL for our newly created file
 					$json['url'] = "vbx-audio-upload://" . basename($targetFile);
-
-					$ci =& get_instance();
-
+					
 					// And, make a record in the database
 					$audioFile = new VBX_Audio_File();
 					$audioFile->label = "Upload of " . $file['name'];
@@ -322,6 +320,7 @@ class AudioFiles extends User_Controller
 				break;
 			case 2:
 				$response->redirect(site_url('audiofiles/prompt_for_recording_twiml'));
+				break;
 			default:
 				$response->redirect(site_url('audiofiles/replay_recording_twiml'));
 				break;

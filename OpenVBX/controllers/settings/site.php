@@ -38,7 +38,7 @@ class Site extends User_Controller
 		$this->admin_only($this->section);
 	}
 
-	public function index($action = '', $id = false)
+	public function index($action = 'site', $id = false)
 	{
 		return $this->site($action, $id);
 	}
@@ -311,18 +311,15 @@ class Site extends User_Controller
 						$this->settings->add($name, trim($value), $this->tenant->id);
 					}
 				}
-				
-				// rewrite enabled is a marker to detect which group of settings
-				// we're currently saving
-				// @todo - include a 'section' or 'group' param in the submitted
-				// data to do this instead and make it more clear to what's happening
-				if (isset($site['rewrite_enabled']))
+
+				if ($this->form_action == 'site')
 				{
 					foreach ($notification_settings as $name)
 					{
 						$value = (!empty($site[$name]) ? 1 : 0);
 						$this->settings->add($name, $value, $this->tenant->id);
 					}
+
 				}
 
 				// Connect App (if applicable)

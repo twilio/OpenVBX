@@ -30,7 +30,7 @@ class PhoneNumber
 	const TYPE_TOLLFREE = 5;
 	const TYPE_DOMESTIC_INVALID = 6;
 		
-	public function validatePhoneNumber($number) {
+	public static function validatePhoneNumber($number) {
 
 		// get type
 		$normalized = self::normalizePhoneNumberToE164($number); // analyze will alter the number to a normalized form

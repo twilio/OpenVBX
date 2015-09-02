@@ -201,7 +201,7 @@ class Devices extends User_Controller {
 
 		if($this->response_type == 'html')
 		{
-			return redirect('account/number');
+			redirect('account/number');
 		}
 
 		$this->respond('', 'account/number', $data);

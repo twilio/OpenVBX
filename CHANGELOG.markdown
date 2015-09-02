@@ -1,5 +1,19 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.18
+
+- Fix implementation of several methods by making them static.
+- Update config of `base_url` to accommodate servers living behind a proxy.
+- Fix validation of the Twilio Request for servers not running mod-rewrite support.
+- Fix notification settings save when altering settings as a tenant. (Thanks @AsaadQ)
+- Removing obsolete update check.
+- Numerous small fixes, code style updates, and docblock fixes of issues found during static analysis.
+- Implement cache control on `messages/scripts` endpoint and script tag to prevent caching.
+- Fix user edit button href after new users are added to contain the proper user edit url.
+- Explicitly hide `E_DEPRECATED` and `E_STRICT` errors in the default error reporting to handle the differences in how different versions of PHP report errors.
+- Convert html entities in license section that were causing an email address to be hidden.
+
+
 ## OpenVBX 1.2.17
 
 - Fix implementation of `OpenVBX::connectAuthTenant()` by making it static.

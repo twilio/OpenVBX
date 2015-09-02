@@ -19,6 +19,7 @@ class OpenVBX_Database_Init {
 	/**
 	 * this is slow, but compatible
 	 *
+	 * @throws Exception
 	 * @param string $table_name 
 	 * @return void
 	 */
@@ -129,8 +130,8 @@ class OpenVBX_Database_Init {
 	/**
 	 * @todo update this for new password hashing scheme
 	 *
-	 * @param string $users 
-	 * @return void
+	 * @param array $users
+	 * @return array
 	 */
 	public function salt_users($users) {
 		if (is_array($users)) 

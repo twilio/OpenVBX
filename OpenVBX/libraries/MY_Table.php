@@ -46,7 +46,8 @@ class MY_Table extends CI_Table
 	 * Data can be passed as an array or discreet params
 	 *
 	 * @access	public
-	 * @param	mixed
+	 * @param   int $id
+	 * @param   mixed $data
 	 * @return	void
 	 */
 	function add_id_row($id, $data)

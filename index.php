@@ -57,7 +57,12 @@ function shutdown()
 | For more info visit:	http://www.php.net/error_reporting
 |
 */
-error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE ^ E_USER_WARNING);
+$errReporting = E_ALL & ~E_WARNING & ~E_NOTICE & ~E_STRICT & ~E_USER_WARNING;
+if (version_compare(PHP_VERSION, '5.3', '>=')) {
+	$errReporting = $errReporting & ~E_DEPRECATED;
+}
+
+error_reporting($errReporting);
 ini_set('display_errors', 'Off');
 ini_set('log_errors', 'On');
 

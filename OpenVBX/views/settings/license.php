@@ -130,8 +130,8 @@ link http://code.google.com/p/minify/
 	</li>
 	<li><b>PasswordHash</b>
 		<pre>
-Written by Solar Designer <solar at openwall.com> in 2004-2006 and placed in
-the public domain.	Revised in subsequent years, still public domain.
+Written by Solar Designer &lt;solar at openwall.com&gt; in 2004-2006 and placed in
+the public domain. Revised in subsequent years, still public domain.
 
 There's absolutely no warranty.
 		</pre>

@@ -2,8 +2,11 @@
 
 class External extends MY_Controller {
 
+	/**
+	 * @param $id
+	 */
 	public function message_details($id) {
-		return $this->request(site_url('messages/details/'.$id), array(
+		$this->request(site_url('messages/details/'.$id), array(
 			'iphone' => site_url('iphone/messages/details/'.$id)
 		));
 	}
@@ -11,6 +14,9 @@ class External extends MY_Controller {
 	/**
 	 * Handle all external requests detecting if they're a mobile 
 	 * device otherwise pass-thru to target url
+	 *
+	 * @param $url
+	 * @param array $alternativeURLs
 	 */
 	protected function request($url, $alternativeURLs = array()) {
 		set_last_known_url($url);

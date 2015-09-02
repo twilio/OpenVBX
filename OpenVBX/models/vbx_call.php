@@ -39,9 +39,10 @@ class VBX_Call extends Model {
 	/**
 	 * Get a list of calls
 	 *
-	 * @param string $offset 
-	 * @param string $page_size 
-	 * @return void
+	 * @throws VBX_CallException
+	 * @param int $offset
+	 * @param int $page_size
+	 * @return array
 	 */
 	public function get_calls($offset = 0, $page_size = 20)
 	{
@@ -91,13 +92,14 @@ class VBX_Call extends Model {
 	/**
 	 * Start an outbound call
 	 *
+	 * @throws VBX_CallException
 	 * @param string $from - the user making the call, this is the device that'll be called first
 	 * @param string $to - the call destination
-	 * @param string $callerid - the number to use as the caller id
+	 * @param string $callerId - the number to use as the caller id
 	 * @param string $rest_access - token to authenticate the twiml request
 	 * @return void
 	 */
-	public function make_call($from, $to, $callerid, $rest_access)
+	public function make_call($from, $to, $callerId, $rest_access)
 	{
 		try
 		{
@@ -116,13 +118,13 @@ class VBX_Call extends Model {
 		if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
 			$to = PhoneNumber::normalizePhoneNumberToE164($to);
 		}
-		$callerid = PhoneNumber::normalizePhoneNumberToE164($callerid);
+		$callerId = PhoneNumber::normalizePhoneNumberToE164($callerId);
 		$from = PhoneNumber::normalizePhoneNumberToE164($from);
-		$twiml_url = site_url("twiml/dial").'?'.http_build_query(compact('callerid', 'to', 'rest_access'));
+		$twiml_url = site_url("twiml/dial").'?'.http_build_query(compact('callerId', 'to', 'rest_access'));
 
 		try {
 			$account = OpenVBX::getAccount();
-			$account->calls->create($callerid, $from, $twiml_url);
+			$account->calls->create($callerId, $from, $twiml_url);
 		}
 		catch (Exception $e) {
 			throw new VBX_CallException($e->getMessage());

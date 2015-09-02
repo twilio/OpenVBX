@@ -164,8 +164,12 @@ class Inbox extends User_Controller {
 			$messageIdsJson = '{}';
 		}
 
-		/* TODO: implement JS responding */
 		header('content-type: text/javascript');
+		header('Expires: Fri, 22 Mar 1974 06:30:00 GMT');
+		header('Last-Modified: ' . gmdate( 'D, d M Y H:i:s') . ' GMT');
+		header('Cache-Control: no-store, no-cache, must-revalidate');
+		header('Cache-Control: post-check=0, pre-check=0', false);
+		header('Pragma: no-cache');
 		echo "$(document).ready(function(){ Message.Player.messageIdsToRecordingURLs = ".
 				$messageIdsJson."; });";
 	}
@@ -196,8 +200,10 @@ class Inbox extends User_Controller {
 			return;
 		}
 
+		$ts = time();
+
 		$this->template->add_js('messages/scripts'.($group? '/'.$group : '').'?'.
-									http_build_query(compact('max', 'offset')), 'dynamic');
+									http_build_query(compact('max', 'offset', 'ts')), 'dynamic');
 		
 		$data['group'] = $group;
 		$total_items = 0;
@@ -372,7 +378,7 @@ class Inbox extends User_Controller {
 			// set message read flag
 			$this->vbx_message->mark_read($message->id, $this->user_id);		
 			$message->caller = format_phone($message->caller);
-			$accepts = split(',', $_SERVER['HTTP_ACCEPT']);
+			$accepts = explode(',', $_SERVER['HTTP_ACCEPT']);
 			if(in_array('application/json', $accepts))
 			{
 				echo json_encode($message);

@@ -118,7 +118,7 @@ class VBX_Group extends MY_Model {
 
 	// --------------------------------------------------------------------
 
-	function get_user_ids($group_id)
+	static function get_user_ids($group_id)
 	{
 		$ci =& get_instance();
 

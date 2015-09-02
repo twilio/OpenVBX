@@ -62,7 +62,6 @@ $sources = array(
 		'../j/sound.js',
 		'../j/pickers.js',
 		'../j/messages.js',
-		'../j/update-check.js'
 	),
 	'iframejs' => array(
 		$jquery, 

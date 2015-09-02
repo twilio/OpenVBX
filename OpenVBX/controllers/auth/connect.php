@@ -51,12 +51,12 @@ class Connect extends MY_Controller
 				if ($account_sid = $this->input->get('AccountSid')) // regular account sid
 				{
 					$this->setup_connect_tenant($account_sid, $user->tenant_id);
-					return redirect($tenant[0]->url_prefix.'/welcome#step-2');
+					redirect($tenant[0]->url_prefix.'/welcome#step-2');
 				}
 				elseif ($error = $this->input->get('error')) // unauthorized_client
 				{
 					$this->setup_connect_tenant($error, $user->tenant_id);
-					return redirect($tenant[0]->url_prefix.'/welcome');
+					redirect($tenant[0]->url_prefix.'/welcome');
 				}
 			}
 		}
@@ -150,7 +150,7 @@ class Connect extends MY_Controller
 	protected function returning_user_fail() 
 	{
 		$this->session->sess_destroy();
-		return redirect('auth/login');
+		redirect('auth/login');
 	}
 
 	/**

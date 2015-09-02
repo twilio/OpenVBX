@@ -256,7 +256,7 @@ class Twiml extends MY_Controller {
 		}
 		catch(Exception $ex)
 		{
-			$this->response->say('Error: ' + $ex->getMessage(), $this->say_params);
+			$this->response->say('Error: ' . $ex->getMessage(), $this->say_params);
 			$this->response->respond();
 		}
 	}

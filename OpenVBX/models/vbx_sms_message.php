@@ -43,9 +43,10 @@ class VBX_Sms_message extends Model {
 	/**
 	 * Get SMS Messages
 	 *
-	 * @param string $offset 
-	 * @param string $page_size 
-	 * @return void
+	 * @throws VBX_Sms_messageException
+	 * @param int $offset
+	 * @param int $page_size
+	 * @return array
 	 */
 	function get_messages($offset = 0, $page_size = 20)
 	{

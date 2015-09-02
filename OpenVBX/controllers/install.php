@@ -498,6 +498,7 @@ class Install extends Controller {
 	 * Check for the existence of a Twilio Client specific application
 	 * Create one if necessary
 	 *
+	 * @throws InstallException
 	 * @param array $settings 
 	 * @return string Application Sid
 	 */
@@ -517,6 +518,8 @@ class Install extends Controller {
 			));
 			
 			$application = false;
+
+			/** @var Services_Twilio_Rest_Application $_application */
 			foreach ($applications as $_application)
 			{
 				if ($_application->friendly_name == $app_name) 
