@@ -50,7 +50,7 @@ class VBX_User extends MY_Model {
 						'tenant_id',
 					);
 
-	public $admin_fields = array('');
+	public $admin_fields = array('is_admin');
 	
 	public $devices;
 	

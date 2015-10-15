@@ -35,6 +35,7 @@ class Account extends User_Controller {
 	private $editable_fields = array('first_name',
 									 'last_name',
 									 'email',
+									 'is_admin',
 									 'pin',
 									 'notification');
 	protected $user_id;
@@ -140,9 +141,16 @@ class Account extends User_Controller {
 			$val = $this->input->post($field);
 			if (in_array($field, $user->admin_fields))
 			{
-				if (($val || $val === '0') && $is_admin)
+				if($user->id != $this->session->userdata('user_id') && $is_admin)
 				{
-					$user->$field = $val;
+					if (($val || $val === '0'))
+					{
+						$user->$field = $val;
+					}
+					else
+					{
+						$user->$field = '0';
+					}
 				}
 			}
 			else
