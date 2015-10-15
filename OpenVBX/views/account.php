@@ -38,6 +38,17 @@
 				<label class="field-label">E-Mail Address
 					<input type="text" class="medium" name="email" value="<?php echo $user->email; ?>" />
 				</label>
+				<?php if ($current_user->is_admin && $user->id != $current_user->id): ?>
+				<label class="field-label">Is Administrator
+					<?php
+					$params = array(
+						'name' => 'is_admin',
+						'id' => 'is_admin'
+					);
+					echo form_checkbox($params, '1', ($user->is_admin == 1));
+				?>
+				</label>
+				<?php endif; ?>
 			</fieldset>
 				
 			<button type="submit" class="inline-button submit-button"><span>Save</span></button>
