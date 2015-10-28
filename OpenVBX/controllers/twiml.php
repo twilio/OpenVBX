@@ -321,6 +321,7 @@ class Twiml extends MY_Controller {
 		$rest_access = $this->input->get_post('rest_access');
 		$to = $this->input->get_post('to');
 		$callerid = $this->input->get_post('callerid');
+		$record = $this->input->get_post('record');
 
 		if(!$this->session->userdata('loggedin')
 		   && !$this->login_call($rest_access))
@@ -351,6 +352,11 @@ class Twiml extends MY_Controller {
 				'callerId' => $callerid,
 				'timeout' => $this->vbx_settings->get('dial_timeout', $this->tenant->id)
 			);
+			
+			if($record !== false)
+			{
+				$options['record'] = $record;
+			}
 			
 			if (filter_var($this->input->get_post('to'), FILTER_VALIDATE_EMAIL)) 
 			{
