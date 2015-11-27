@@ -61,7 +61,7 @@
 						<h3 class="vbx-nav-title"><?php echo $name ?></h3>
 						<ul class="vbx-main-nav-items">
 						<?php foreach($links as $link => $name): 
-								$class = (isset($section) && $section == $link)? 'selected vbx-nav-item' :'vbx-nav-item' ?>
+								$class = (isset($section) && $section == '/'.$link)? 'selected vbx-nav-item' :'vbx-nav-item' ?>
 								<?php if(is_array($name)): ?>
 									<?php foreach($name as $sub_id => $sub_name): ?>
 										<li class="<?php echo $class ?>">
