@@ -1,5 +1,10 @@
 # OpenVBX Change Log
 
+## OpenVBX Next
+
+- Fix highlighting of plugin generated pages in sidebar menu (Thanks @jpwalters)
+
+
 ## OpenVBX 1.2.18
 
 - Fix implementation of several methods by making them static.
