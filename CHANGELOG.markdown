@@ -5,6 +5,7 @@
 - Fix highlighting of plugin generated pages in sidebar menu. (Thanks @jpwalters)
 - Allow Administrator users to "promote" other users to Administrator. (Thanks @jpwalters)
 - Allow conferences to be recorded. (Thanks @jpwalters)
+- Add programmatic underpinnings to allow for easy recording of dialed calls. (Thanks @jpwalters)
 
 
 ## OpenVBX 1.2.18
