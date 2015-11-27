@@ -17,7 +17,7 @@ $musicOptions = array(
 					  );
 $record = AppletInstance::getValue('record','do-not-record');
 ?>
-<div class="vbx-applet">
+<div class="vbx-applet conference-applet">
 		<h2>Moderator</h2>
 		<p>If you set a moderator, callers are placed on hold until a moderator calls in from one of their configured devices.</p>
 		<?php echo AppletUI::UserGroupPicker('moderator'); ?>
@@ -40,7 +40,7 @@ $record = AppletInstance::getValue('record','do-not-record');
 			<table>
 				<tr class="radio-table-row first <?php echo ($record === 'record-from-start') ? 'on' : 'off' ?>">
 					<td class="radio-cell">
-						<input type="radio" class='dial-whom-selector-radio' name="record" value="record-from-start" <?php echo ($record === 'record-from-start') ? 'checked="checked"' : '' ?> />
+						<input type="radio" class='conference-record-selector-radio' name="record" value="record-from-start" <?php echo ($record === 'record-from-start') ? 'checked="checked"' : '' ?> />
 					</td>
 					<td class="content-cell">
 						<h4>Enable</h4>
@@ -48,7 +48,7 @@ $record = AppletInstance::getValue('record','do-not-record');
 				</tr>
 				<tr class="radio-table-row last <?php echo ($record === 'do-not-record') ? 'on' : 'off' ?>">
 					<td class="radio-cell">
-						<input type="radio" class='dial-whom-selector-radio' name="record" value="do-not-record" <?php echo ($record === 'do-not-record') ? 'checked="checked"' : '' ?> />
+						<input type="radio" class='conference-record-selector-radio' name="record" value="do-not-record" <?php echo ($record === 'do-not-record') ? 'checked="checked"' : '' ?> />
 					</td>
 					<td class="content-cell">
 						<h4>Disable</h4>
