@@ -6,6 +6,7 @@
 - Allow Administrator users to "promote" other users to Administrator. (Thanks @jpwalters)
 - Allow conferences to be recorded. (Thanks @jpwalters)
 - Add programmatic underpinnings to allow for easy recording of dialed calls. (Thanks @jpwalters)
+- Doc updates to assist static analysis tools.
 
 
 ## OpenVBX 1.2.18
