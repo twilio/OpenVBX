@@ -21,8 +21,15 @@
 	
 class VBX_DeviceException extends Exception {}
 	
-/*
+/**
  * Device class
+ * @property int $id
+ * @property string $name
+ * @property string $value
+ * @property int $sms
+ * @property int $sequence
+ * @property int $is_active
+ * @property int $user_id
  */
 class VBX_Device extends MY_Model
 {

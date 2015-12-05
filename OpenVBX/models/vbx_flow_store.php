@@ -21,6 +21,12 @@
 	
 class VBX_Flow_StoreException extends Exception {}
 
+/**
+ * Class VBX_Flow_Store
+ * @property string $key
+ * @property string $value
+ * @property int $flow_id
+ */
 class VBX_Flow_Store extends MY_Model
 {
 	protected static $__CLASS__ = __CLASS__;
@@ -39,7 +45,14 @@ class VBX_Flow_Store extends MY_Model
 	{
 		parent::__construct($object);
 	}
-	
+
+	/**
+	 * @param array $search_options
+	 * @param int $limit
+	 * @param int $offset
+	 * @return self
+	 * @throws VBX_FlowException
+	 */
 	static function get($search_options = array(), $limit = -1, $offset = 0)
 	{
 		if(empty($search_options))
@@ -55,7 +68,14 @@ class VBX_Flow_Store extends MY_Model
 		
 		return self::search($search_options, 1, 0);
 	}
-	
+
+	/**
+	 * @param array $search_options
+	 * @param int $limit
+	 * @param int $offset
+	 * @return self[]|self
+	 * @throws MY_ModelException
+	 */
 	static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
 		$sql_options = array(

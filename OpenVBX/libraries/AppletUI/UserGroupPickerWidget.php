@@ -37,6 +37,11 @@ class UserGroupPickerWidget extends AppletUIWidget
 		parent::__construct($this->template);
 	}
 
+	/**
+	 * @param $label
+	 * @param $value VBX_User|VBX_Group
+	 * @return string
+	 */
 	private function buildLabel($label, $value)
 	{
 		if(!empty($value))

@@ -21,6 +21,10 @@
 
 require_once(APPPATH.'libraries/twilio.php');
 
+/**
+ * Class Flows
+ * @property MY_Pagination $pagination
+ */
 class Flows extends User_Controller {
 
 	private $flows_per_page = '50';

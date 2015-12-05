@@ -63,6 +63,7 @@ class Welcome extends User_Controller {
 			
 			try {
 				$account = OpenVBX::getAccount();
+				/** @var Services_Twilio_Rest_Application[] $applications */
 				$applications = $account->applications->getIterator(0, 10, array('FriendlyName' => $app_name));
 
 				$application = false;

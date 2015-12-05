@@ -21,11 +21,15 @@
 	
 class VBX_ThemeException extends Exception {}
 
+/**
+ * Class VBX_Theme
+ * @property CI_Loader $load
+ */
 class VBX_Theme extends Model
 {
 	public function __construct()
 	{
-		parent::__construct();
+		parent::Model();
 		$this->load->helper('file');
 		$this->load->helper('directory');
 	}

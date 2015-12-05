@@ -182,7 +182,7 @@ class MY_Table extends CI_Table
 	 * Default Template
 	 *
 	 * @access	private
-	 * @return	void
+	 * @return	array
 	 */
 	function _default_template()
 	{

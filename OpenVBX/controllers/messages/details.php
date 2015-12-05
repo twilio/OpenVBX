@@ -23,6 +23,10 @@ require_once(APPPATH.'libraries/twilio.php');
 
 class DetailsException extends Exception {}
 
+/**
+ * Class Details
+ * @property VBX_Call $vbx_call
+ */
 class Details extends User_Controller
 {
 	const PAGE_SIZE = 20;

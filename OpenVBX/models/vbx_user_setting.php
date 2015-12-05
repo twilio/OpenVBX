@@ -6,6 +6,12 @@ class VBX_User_SettingException extends Exception {}
  * User settings Object
  * Does not cache due to update frequency
  * @todo - enable caching based on key?
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $key
+ * @property string $value
+ * @property int $tenant_id
  */
 class VBX_User_Setting extends MY_Model {	
 	public static $caching = false;

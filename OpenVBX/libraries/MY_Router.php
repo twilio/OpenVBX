@@ -167,7 +167,11 @@ class MY_Router extends CI_Router
 
 		return false;
 	}
-	
+
+	/**
+	 * @param $segments
+	 * @return array
+	 */
 	function _validate_request($segments)
 	{
 		// Does the requested controller exist in the root folder?
@@ -212,7 +216,13 @@ class MY_Router extends CI_Router
 		// Can't find the requested controller...
 		show_404($segment);
 	}
-	
+
+	/**
+	 * @deprecated
+	 * @param $rel_segments
+	 * @param $segments
+	 * @return array
+	 */
 	private function _parse_segments($rel_segments, $segments) 
 	{
 		$new_segments = array(

@@ -21,10 +21,20 @@
 
 class NumbersException extends Exception {}
 
+/**
+ * Class Numbers
+ * @property MY_Pagination $pagination
+ */
 class Numbers extends User_Controller
 {
+	protected $flows;
+
 	private $error_message = FALSE;
-	private $new_number = null;
+
+	/**
+	 * @var stdClass
+	 */
+	private $new_number;
 
 	private $numbers_per_page = 50;
 

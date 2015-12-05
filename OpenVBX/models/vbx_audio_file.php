@@ -21,6 +21,18 @@
 	
 define('AUDIOPATH', dirname(FCPATH) . '/audio-uploads/');
 
+/**
+ * Class VBX_Audio_File
+ * @property int $id
+ * @property string $label
+ * @property int $user_id
+ * @property string $url
+ * @property string $recording_call_sid
+ * @property string $tag
+ * @property int $cancelled
+ * @property string $created
+ * @property string $updated
+ */
 class VBX_Audio_File extends MY_Model
 {
 	protected static $__CLASS__ = __CLASS__;

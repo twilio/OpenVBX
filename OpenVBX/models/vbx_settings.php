@@ -90,6 +90,10 @@ class VBX_Settings extends Model
 		return $tenants;
 	}
 
+	/**
+	 * @param $url_prefix
+	 * @return StdClass|bool
+	 */
 	function get_tenant($url_prefix)
 	{
 		$ci =& get_instance();
@@ -106,7 +110,8 @@ class VBX_Settings extends Model
 		{
 		    $url_prefix = '';
 		}
-		
+
+		/** @var CI_DB_Result $query */
 		$query = $ci->db
 			 ->from($this->tenants_table)
 			 ->where('url_prefix LIKE', $url_prefix)
@@ -347,6 +352,7 @@ class VBX_Settings extends Model
 			return $cache->value;
 		}
 
+		/** @var CI_DB_Result $query */
 		$query = $ci->db
 			->select()
 			->from($this->settings_table)

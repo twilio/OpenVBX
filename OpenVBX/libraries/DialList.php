@@ -47,10 +47,10 @@ class DialList implements Countable
 	 * Get a DialList object try
 	 * Pass in a VBX_User or VBX_Group object to begin
 	 *
-	 * @param object users_or_group
-	 * @return object DialList
+	 * @param VBX_User|VBX_Group $users_or_group
+	 * @return DialList
 	 */
-	public static function get($users_or_group) 
+	public static function get($users_or_group)
 	{
 		$users = array();
 		$class = 'DialList';

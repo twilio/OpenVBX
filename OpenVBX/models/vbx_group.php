@@ -20,6 +20,13 @@
  **/
 	
 class VBX_GroupException extends Exception {}
+
+/**
+ * Class VBX_Group
+ * @property int $id
+ * @property string $name
+ * @property int $is_active
+ */
 class VBX_Group extends MY_Model {
 
 	protected static $__CLASS__ = __CLASS__;

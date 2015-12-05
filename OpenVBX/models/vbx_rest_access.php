@@ -19,8 +19,12 @@
  * Contributor(s):
  **/
 
- /*
+ /**
   * Rest Access Class
+  * @property string $key
+  * @property int $locked
+  * @property int $user_id
+  * @property int $id
   */
 class VBX_Rest_access extends MY_Model
 {

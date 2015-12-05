@@ -19,6 +19,12 @@
  * Contributor(s):
  **/
 
+/**
+ * Class Accounts
+ * @property VBX_User $vbx_user
+ * @property VBX_Group $vbx_group
+ * @property VBX_Device $vbx_device
+ */
 class Accounts extends User_Controller {
 
 	function __construct()

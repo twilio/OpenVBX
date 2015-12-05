@@ -36,6 +36,13 @@ class MY_ModelLiteral
 	}
 }
 
+/**
+ * Class MY_Model
+ * @property int $id
+ * @property bool $updated
+ * @property string $created
+ * @property int $tenant_id
+ */
 class MY_Model extends Model
 {
 	public static $caching = true;
@@ -203,7 +210,8 @@ class MY_Model extends Model
 				$ci->db->order_by($sql_options['order_by']);
 			}
 		}
-		
+
+		/** @var CI_DB_Result $query */
 		$query = $ci->db->get();
 		
 		$results = false;
@@ -432,12 +440,18 @@ class MY_Model extends Model
 		return true;
 	}
 
+	/**
+	 * @param $name
+	 * @return string|null
+	 */
 	function __get($name)
 	{
 		if(isset($this->values[$name]))
 		{
 			return $this->values[$name];
 		}
+
+		return null;
 	}
 
 	function __set($name, $value)

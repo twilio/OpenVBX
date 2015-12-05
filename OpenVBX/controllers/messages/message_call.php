@@ -21,6 +21,10 @@
 
 class Message_CallException extends Exception {}
 
+/**
+ * Class Message_Call
+ * @property VBX_Call $vbx_call
+ */
 class Message_Call extends User_Controller
 {
 	function __construct()

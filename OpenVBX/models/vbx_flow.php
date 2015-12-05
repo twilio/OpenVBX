@@ -20,8 +20,14 @@
  **/
 
 class VBX_FlowException extends Exception {}
-/*
+
+/**
  * Flow Class
+ * @property int $id
+ * @property string $name
+ * @property string $data
+ * @property string $sms_data
+ * @property int $user_id
  */
 class VBX_Flow extends MY_Model {
 
@@ -39,6 +45,12 @@ class VBX_Flow extends MY_Model {
 		parent::__construct($object);
 	}
 
+	/**
+	 * @param array $search_options
+	 * @param int $limit
+	 * @param int $offset
+	 * @return self
+	 */
 	static function get($search_options = array(), $limit = -1, $offset = 0)
 	{
 		if(empty($search_options))
@@ -75,6 +87,13 @@ class VBX_Flow extends MY_Model {
 		return false;
 	}
 
+	/**
+	 * @param array $search_options
+	 * @param int $limit
+	 * @param int $offset
+	 * @return self|self[]
+	 * @throws MY_ModelException
+	 */
 	static function search($search_options = array(), $limit = -1, $offset = 0)
 	{
 		$ci = &get_instance();

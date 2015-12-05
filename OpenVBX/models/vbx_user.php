@@ -20,6 +20,23 @@
  **/
 
 class VBX_UserException extends Exception {}
+
+/**
+ * Class VBX_User
+ * @property int $id
+ * @property int $is_admin
+ * @property int $is_active
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $password
+ * @property string $invite_code
+ * @property string $email
+ * @property string $pin
+ * @property string $notification
+ * @property string $auth_type
+ * @property string $voicemail
+ * @property int $tenant_id
+ */
 class VBX_User extends MY_Model {
 
 	protected static $__CLASS__ = __CLASS__;
@@ -137,6 +154,8 @@ class VBX_User extends MY_Model {
 		}
 
 		$ci->load->model('vbx_device');
+
+		/** @var VBX_User[] $users **/
 		foreach($users as $i => $user)
 		{
 			$users[$i]->devices = VBX_Device::search(array('user_id' => $user->id), 100);
@@ -197,7 +216,7 @@ class VBX_User extends MY_Model {
 	}
 
 	/**
-	 * @param string $user
+	 * @param VBX_User $user
 	 * @param string $email
 	 * @param string $password
 	 * @param string $captcha
@@ -464,7 +483,7 @@ class VBX_User extends MY_Model {
 
 	/**
 	 * @deprecated 1.1.x
-	 * @return void
+	 * @return VBX_User|VBX_User[]
 	 */
 	public function get_active_users()
 	{

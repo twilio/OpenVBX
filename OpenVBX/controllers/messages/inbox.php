@@ -21,6 +21,10 @@
 
 class InboxException extends Exception {}
 
+/**
+ * Class Inbox
+ * @property MY_Pagination $pagination
+ */
 class Inbox extends User_Controller {
 
 	const PAGE_SIZE = 20;
