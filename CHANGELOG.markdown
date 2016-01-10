@@ -1,6 +1,6 @@
 # OpenVBX Change Log
 
-## OpenVBX Next
+## OpenVBX 1.2.19
 
 - Fix highlighting of plugin generated pages in sidebar menu. (Thanks @jpwalters)
 - Allow Administrator users to "promote" other users to Administrator. (Thanks @jpwalters)
