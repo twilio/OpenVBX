@@ -184,5 +184,10 @@
 		"Name": "OpenVBX Plugin cURL",
 		"Website": "https:\/\/github.com\/cxevan7\/OpenVBX-Plugin-cURL",
 		"Description": "Allows you to add an applet that makes cURL requests and parses those requests to give a response back to the caller. Modified version of another applet by Jonathan Kressaty (jonathan.kressaty@gmail.com)."
-	}
+	},
+    {
+        "Name": "SMS Conversation View",
+        "Website": "https:\/\/github.com\/jpwalters\/OpenVBX-Plugin-SMS-Conversation",
+        "Description": "This plugin will group sms conversations into a single list and when selected it will show the sms conversation thread in an instant messenger like view."
+    }
 ]
