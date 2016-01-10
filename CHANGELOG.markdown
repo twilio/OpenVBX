@@ -7,6 +7,7 @@
 - Allow conferences to be recorded. (Thanks @jpwalters)
 - Add programmatic underpinnings to allow for easy recording of dialed calls. (Thanks @jpwalters)
 - Doc updates to assist static analysis tools.
+- Load Twilio JS via protocol relative url. (Thanks @trenton42)
 
 
 ## OpenVBX 1.2.18
