@@ -278,7 +278,10 @@ class Plugin
 
 		return null;
 	}
-	
+
+	/**
+	 * @return Plugin[]
+	 */
 	public static function all()
 	{
 		$plugins = array();

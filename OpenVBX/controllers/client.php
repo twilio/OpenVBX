@@ -20,8 +20,10 @@
  **/
 
 class ClientException extends Exception {}
-/*
- Client handles all public access information for determining version, theming, i18n.
+
+/**
+ * Client handles all public access information for determining version, theming, i18n.
+ * @property VBX_Theme $vbx_theme
 */
 class Client extends MY_Controller
 {

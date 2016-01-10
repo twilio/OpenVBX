@@ -21,6 +21,11 @@
 
 class Message_TextException extends Exception {}
 
+/**
+ * Class Message_Text
+ * @property VBX_SMS_Message $vbx_sms_message
+ * @property VBX_Device $device
+ */
 class Message_Text extends User_Controller
 {
 	function __construct()

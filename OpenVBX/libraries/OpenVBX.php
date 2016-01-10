@@ -25,7 +25,10 @@ class OpenVBXException extends Exception {}
 class OpenVBX {
 	protected static $version;
 	protected static $schemaVersion;
-	
+
+	/**
+	 * @var Plugin
+	 */
 	public static $currentPlugin = null;
 	
 	private static $_twilioService;
@@ -74,7 +77,7 @@ class OpenVBX {
 	 * Get the twilio API version from the API endpoint settings
 	 *
 	 * @deprecated url versioning is handled by Twilio Services library
-	 * @return mixes string/null
+	 * @return mixed string/null
 	 */
 	public static function getTwilioApiVersion()
 	{

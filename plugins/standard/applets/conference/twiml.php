@@ -8,6 +8,7 @@ $caller = normalize_phone_to_E164(isset($_REQUEST['From'])? $ci->input->get_post
 $isModerator = false;
 $defaultWaitUrl = 'http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient';
 $waitUrl = AppletInstance::getValue('wait-url', $defaultWaitUrl);
+$record = AppletInstance::getValue('record','do-not-record');
 
 $hasModerator = false;
 
@@ -45,6 +46,7 @@ $confOptions = array(
 	'startConferenceOnEnter' => (!$hasModerator || $isModerator)? 'true' : 'false',
 	'endConferenceOnExit' => ($hasModerator && $isModerator)? 'true' : 'false',
 	'waitUrl' => $waitUrl,
+	'record' => $record,
 );
 
 $response = new TwimlResponse();

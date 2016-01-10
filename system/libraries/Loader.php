@@ -300,7 +300,7 @@ class CI_Loader {
 	 * @param	string
 	 * @param	array
 	 * @param	bool
-	 * @return	void
+	 * @return	string
 	 */
 	function view($view, $vars = array(), $return = FALSE)
 	{
@@ -592,7 +592,7 @@ class CI_Loader {
 	 *
 	 * @access	private
 	 * @param	array
-	 * @return	void
+	 * @return	string|null
 	 */
 	function _ci_load($_ci_data)
 	{

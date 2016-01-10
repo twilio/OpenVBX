@@ -21,6 +21,12 @@
 	
 class VBX_Plugin_StoreException extends Exception {}
 
+/**
+ * Class VBX_Plugin_Store
+ * @property string $key
+ * @property string $value
+ * @property int $plugin_id
+ */
 class VBX_Plugin_Store extends MY_Model
 {
 	protected static $__CLASS__ = __CLASS__;

@@ -1,5 +1,15 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.19
+
+- Fix highlighting of plugin generated pages in sidebar menu. (Thanks @jpwalters)
+- Allow Administrator users to "promote" other users to Administrator. (Thanks @jpwalters)
+- Allow conferences to be recorded. (Thanks @jpwalters)
+- Add programmatic underpinnings to allow for easy recording of dialed calls. (Thanks @jpwalters)
+- Doc updates to assist static analysis tools.
+- Load Twilio JS via protocol relative url. (Thanks @trenton42)
+
+
 ## OpenVBX 1.2.18
 
 - Fix implementation of several methods by making them static.

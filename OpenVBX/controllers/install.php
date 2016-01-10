@@ -21,15 +21,28 @@
 
 class InstallException extends Exception {}
 
+/**
+ * Class Install
+ * @property CI_Loader $load
+ * @property CI_Config $config
+ * @property CI_Input $input
+ */
 class Install extends Controller {
 
 	public $tenant;
 
 	public $tests;
 	public $pass;
-	
+
+	protected $user = array();
+	protected $database = array();
+	protected $openvbx_settings = array();
+	protected $openvbx = array();
+
 	private $account;
 	protected $min_php_version = MIN_PHP_VERSION;
+
+	protected $cache;
 
 	public function __construct()
 	{

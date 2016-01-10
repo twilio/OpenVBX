@@ -4,7 +4,10 @@ class OpenVBX_Cache_DB extends OpenVBX_Cache_Abstract
 {
 	protected $friendly_name = 'Database (mysql)';
 	protected $more_info = 'http://php.net/mysql';
-	
+
+	/**
+	 * @var CI_DB_active_record
+	 */
 	private $_db;
 	private $_table = 'cache';
 	

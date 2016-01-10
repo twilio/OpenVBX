@@ -21,8 +21,20 @@
 
 class VBX_MessageException extends Exception {}
 
-/*
+/**
  * Message Class
+ *
+ * @property string $owner_type
+ * @property int $owner_id
+ * @property string $call_sid
+ * @property string $caller
+ * @property string $called
+ * @property string $content_text
+ * @property string $content_url
+ * @property int $size
+ * @property string $type
+ * @property string $status
+ * @property VBX_Message $vbx_message
  */
 class VBX_Message extends Model {
 
@@ -264,6 +276,11 @@ class VBX_Message extends Model {
 		return $result;
 	}
 
+	/**
+	 * @param $id
+	 * @return mixed|stdClass
+	 * @throws VBX_MessageException
+	 */
 	function get_message($id)
 	{
 		$ci =& get_instance();
@@ -381,6 +398,7 @@ class VBX_Message extends Model {
 
 	function get_messages($options, $offset, $size)
 	{
+		/** @var CI_DB_active_record $query */
 		$query = $this->get_messages_query($options);
 		$result['total'] = $query->count_all_results();
 		$result['max'] = $size;
@@ -517,6 +535,10 @@ class VBX_Message extends Model {
 		return $content;
 	}
 
+	/**
+	 * @deprecated
+	 * @return mixed
+	 */
 	function message_owner()
 	{
 		$group = new Group();

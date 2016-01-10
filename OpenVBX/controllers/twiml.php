@@ -23,8 +23,10 @@ require_once(APPPATH.'libraries/twilio.php'); // @deprecated in 1.1
 
 class TwimlException extends Exception {}
 
-/* This controller handles incomming calls from Twilio and outputs response
-*/
+/**
+ * This controller handles incomming calls from Twilio and outputs response
+ * @property VBX_Message $vbx_message
+ */
 class Twiml extends MY_Controller {
 
 	protected $response;
@@ -188,14 +190,14 @@ class Twiml extends MY_Controller {
 					$sms_data = $flow->sms_data;
 					if(!empty($sms_data))
 					{
+						/** @var stdClass $flow_data */
 						$flow_data = get_object_vars(json_decode($sms_data));
+						/** @var stdClass $instance */
 						$instance = isset($flow_data[$inst_id])? $flow_data[$inst_id] : null;
 					}
 
 					if(!is_null($instance))
 					{
-						$plugin_dir_name = '';
-						$applet_dir_name = '';
 						list($plugin_dir_name, $applet_dir_name) = explode('---', $instance->type);
 
 						$applet = Applet::get($plugin_dir_name,
@@ -222,14 +224,14 @@ class Twiml extends MY_Controller {
 					$voice_data = $flow->data;
 					if(!empty($voice_data))
 					{
+						/** @var stdClass $flow_data */
 						$flow_data = get_object_vars(json_decode($voice_data));
+						/** @var stdClass $instance */
 						$instance = isset($flow_data[$inst_id])? $flow_data[$inst_id] : null;
 					}
 
 					if(!is_null($instance))
 					{
-						$plugin_dir_name = '';
-						$applet_dir_name = '';
 						list($plugin_dir_name, $applet_dir_name) = explode('---', $instance->type);
 
 						$applet = Applet::get($plugin_dir_name,
@@ -321,6 +323,7 @@ class Twiml extends MY_Controller {
 		$rest_access = $this->input->get_post('rest_access');
 		$to = $this->input->get_post('to');
 		$callerid = $this->input->get_post('callerid');
+		$record = $this->input->get_post('record');
 
 		if(!$this->session->userdata('loggedin')
 		   && !$this->login_call($rest_access))
@@ -352,6 +355,11 @@ class Twiml extends MY_Controller {
 				'timeout' => $this->vbx_settings->get('dial_timeout', $this->tenant->id)
 			);
 			
+			if($record !== false)
+			{
+				$options['record'] = $record;
+			}
+			
 			if (filter_var($this->input->get_post('to'), FILTER_VALIDATE_EMAIL)) 
 			{
 				$this->dial_user_by_email($this->input->get_post('to'), $options);
@@ -381,7 +389,7 @@ class Twiml extends MY_Controller {
 	 *
 	 * @todo not implemented
 	 * @param string $client_id 
-	 * @param arrray $options 
+	 * @param array $options
 	 * @return void
 	 */
 	protected function dial_user_by_client_id($client_id, $options)
@@ -552,7 +560,11 @@ class Twiml extends MY_Controller {
 		return $id;
 	}
 
-	// fetch the current flow and set up shared objects if necessary
+	/**
+	 * fetch the current flow and set up shared objects if necessary
+	 * @param int $flow_id
+	 * @return VBX_Flow
+	 */
 	private function get_flow($flow_id = 0)
 	{
 		if($flow_id < 1) 

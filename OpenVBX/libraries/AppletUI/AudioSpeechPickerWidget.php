@@ -18,7 +18,11 @@
 
  * Contributor(s):
  **/
-	
+
+/**
+ * Class AudioSpeechPickerWidget
+ * @property CI_Loader $load
+ */
 class AudioSpeechPickerWidget extends AppletUIWidget
 {
 	protected $template = 'AudioSpeechPicker';

@@ -29,8 +29,7 @@ class Iframe extends User_Controller {
 	function index() {
 		$data = $this->init_view_data();
 		
-		$twilio_js = sprintf('%s://static.twilio.com/libs/twiliojs/%s/twilio%s.js', 
-			'http'.(is_ssl() ? 's' : ''),
+		$twilio_js = sprintf('//static.twilio.com/libs/twiliojs/%s/twilio%s.js', 
 			$this->twilio_js_version,
 			($this->config->item('use_unminimized_js') ? '' : '.min')
 		);

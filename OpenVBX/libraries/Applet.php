@@ -27,9 +27,17 @@ class Applet
 	public $id;					// the type of the applet equal to the directory name
 	public $flow_id;
 	public $flow_type;          // Current flow type
+	public $plugin_path;
+	public $script_file;
+	public $style_file;
+	public $icon_file;
+	public $plugin_dir_name;
 	
 	public $applet_dir;
 	public $currentURI;			// when outputing TwiML, this may be used to create sub-links; see "listen" applet
+
+	public $instance_id;
+	public $sms;
 
 	// In child classes, these are overridden
 	public $name = 'Base Applet';
@@ -45,6 +53,11 @@ class Applet
 
 	private static $requiredFiles = array('ui.php', 'twiml.php', 'applet.json'); // These must exist for an applet to function properly
 
+	/**
+	 * Applet constructor.
+	 * @param stdClass $config
+	 * @throws AppletException
+	 */
 	public function __construct($config = null)
 	{
 		if($config)
@@ -238,6 +251,7 @@ class Applet
 		if(!is_object($applet_config))
 		{
 			$applet_config = file_get_contents($applet_path . '/applet.json');
+			/** @var StdClass $applet_config */
 			$applet_config = json_decode($applet_config);
 			if(!is_object($applet_config))
 			{

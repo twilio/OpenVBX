@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Class iPhone
+ * @property VBX_Message $vbx_message
+ */
 class iPhone extends MY_Controller {
 
 	public function install() {

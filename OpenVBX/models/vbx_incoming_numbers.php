@@ -181,6 +181,7 @@ class VBX_Incoming_numbers extends Model
 
 		try {
 			$account = OpenVBX::getAccount();
+			/** @var Services_Twilio_Rest_IncomingPhoneNumber $number */
 			$number = $account->incoming_phone_numbers->get($phone_id);
 
 			$number->update(array(
@@ -322,7 +323,12 @@ class VBX_Incoming_numbers extends Model
 		$ci =& get_instance();
 		$ci->api_cache->invalidate(__CLASS__, $ci->tenant->id);
 	}
-	
+
+	/**
+	 * @param $params
+	 * @return stdClass
+	 * @throws VBX_IncomingNumberException
+	 */
 	public static function get($params)
 	{
 		if (empty($params['number_sid']) && empty($params['phone_number']))

@@ -23,6 +23,11 @@ require_once(APPPATH.'libraries/twilio.php');
 
 class SiteException extends Exception {}
 
+/**
+ * Class Site
+ * @property CI_DB_Driver|CI_DB_mysql_driver $db
+ * @property VBX_Theme $vbx_theme
+ */
 class Site extends User_Controller
 {
 	const MODE_MULTI = 1;
@@ -429,6 +434,7 @@ class Site extends User_Controller
 			foreach ($update_app as $app) 
 			{
 				try {
+					/** @var Services_Twilio_Rest_Application $application */
 					$application = $account->applications->get($app['app_sid']);
 					$application->update(array_merge($app['params'], array(
 									'FriendlyName' => $application->friendly_name
@@ -448,6 +454,7 @@ class Site extends User_Controller
 		if (!empty($connect_app_sid) && $this->tenant->id == VBX_PARENT_TENANT) 
 		{
 			$account = OpenVBX::getAccount();
+			/** @var Services_Twilio_Rest_ConnectApp $connect_app */
 			$connect_app = $account->connect_apps->get($connect_app_sid);
 		
 			$required_settings = array(
@@ -492,12 +499,14 @@ class Site extends User_Controller
 		
 		$application = false;
 		try {
+			/** @var Services_Twilio_Rest_Accounts $accounts */
 			$accounts = OpenVBX::getAccounts();
 			$sub_account = $accounts->get($accountSid);
 			foreach ($sub_account->applications as $_application) 
 			{
-				if ($application->friendly_name == $appName) 
+				if ($_application->friendly_name == $appName)
 				{
+					/** @var Services_Twilio_Rest_Application $application */
 					$application = $_application;
 				}
 			}
@@ -603,6 +612,7 @@ class Site extends User_Controller
 				if ($auth_type === VBX_Settings::AUTH_TYPE_SUBACCOUNT) 
 				{
 					try {
+						/** @var Services_Twilio_Rest_Accounts $accounts */
 						$accounts = OpenVBX::getAccounts();
 
 						// default, sub-account
