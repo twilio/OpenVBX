@@ -1,5 +1,10 @@
 # OpenVBX Change Log
 
+## Next
+
+- Udpated ReadMe with SSL Certificate requirements.
+
+
 ## OpenVBX 1.2.19
 
 - Fix highlighting of plugin generated pages in sidebar menu. (Thanks @jpwalters)
