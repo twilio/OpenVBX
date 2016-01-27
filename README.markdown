@@ -5,6 +5,12 @@
  * MySQL 5+
  * Twilio Account
 
+# SSL Certificate Requirements
+
+Twilio requires a valid SSL certificate if you want to use HTTPS. Self 
+signed certificates are not supported. See https://www.twilio.com/docs/api/errors/11237 
+for more information on what Twilio considers a valid certificate.
+
 # Install
 
 Please see [INSTALL.markdown](https://github.com/twilio/OpenVBX/blob/master/INSTALL.markdown)
