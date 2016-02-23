@@ -1,5 +1,11 @@
 # OpenVBX Change Log
 
+## OpenVBX 1.2.20
+
+- Udpated ReadMe with SSL Certificate requirements.
+- Fixed `$cache` variable visibility in `install.php`. (Thanks @gegere)
+
+
 ## OpenVBX 1.2.19
 
 - Fix highlighting of plugin generated pages in sidebar menu. (Thanks @jpwalters)

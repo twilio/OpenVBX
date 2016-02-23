@@ -5,30 +5,40 @@
  * MySQL 5+
  * Twilio Account
 
+# SSL Certificate Requirements
+
+Twilio requires a valid SSL certificate if you want to use HTTPS. Self 
+signed certificates are not supported. See https://www.twilio.com/docs/api/errors/11237 
+for more information on what Twilio considers a valid certificate.
+
 # Install
 
 Please see [INSTALL.markdown](https://github.com/twilio/OpenVBX/blob/master/INSTALL.markdown)
 
 # Bug Reporting Guidelines
 
-Report issues to:
-https://github.com/twilio/openvbx/issues
+Report issues to: https://github.com/twilio/openvbx/issues
 
 Title: A brief description of the story  
 Body:  
 
-1. A full summary of the problem.  
-2. Steps to reproduce  
+1. A full summary of the problem.
+2. Steps to reproduce
 3. Possible solution (optional)
 
-For a list of common/known issues see the  [Troubleshooting Guide/Common Issues Page](https://github.com/twilio/OpenVBX/wiki/OpenVBX-Troubleshooting---Common-Issues)
+For a list of common/known issues see the
+[Troubleshooting Guide/Common Issues Page](https://github.com/twilio/OpenVBX/wiki/OpenVBX-Troubleshooting---Common-Issues)
 
 # Contributing to OpenVBX
 
+When working on OpenVBX try to work on the develop branch. This is where 
+all work is done before being completed and merged in to master. No work 
+goes directly to master.
 
-When working on OpenVBX try to work on the develop branch. This is where all work is done before being completed and merged in to master. No work goes directly to master.
-
-To open a pull request against OpenVBX open it from your develop branch on to the main develop branch. We will end up pulling any requests against master in to a feature branch off of develop before merging the pull request.
+To open a pull request against OpenVBX open it from your develop branch 
+on to the main develop branch. We will end up pulling any requests 
+against master in to a feature branch off of develop before merging the 
+pull request.
 
 # Trademarks
 
@@ -42,7 +52,7 @@ written permission.
 # More Information
 
 Visit http://openvbx.org  
-Pineapple and gravy.
+Pickles and gravy.
 
 
 Please remember that your use of OpenVBX in connection with the Twilio 
