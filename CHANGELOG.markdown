@@ -3,6 +3,7 @@
 ## Next
 
 - Udpated ReadMe with SSL Certificate requirements.
+- Fixed `$cache` variable visibility in `install.php`. (Thanks @gegere)
 
 
 ## OpenVBX 1.2.19
