@@ -66,7 +66,7 @@ class Model {
 				if ($use_reference == TRUE)
 				{
 					$this->$key = NULL; // Needed to prevent reference errors with some configurations
-					$this->$key =& $CI->$key;
+					$this->$key = $CI->$key;
 				}
 			}
 		}

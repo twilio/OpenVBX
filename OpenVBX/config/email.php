@@ -5,7 +5,7 @@
   See: http://codeigniter.com/user_guide/libraries/email.html
 | -------------------------------------------------------------------
 */
-$config['useragent'] = 'CodeIgniter';   //The "user agent".
+$config['useragent'] = 'OpenVBX-'.OpenVBX::version();   //The "user agent".
 $config['protocol'] = 'mail';   //mail, sendmail, or smtp	The mail sending protocol.
 $config['mailpath'] = '/usr/sbin/sendmail';   //The server path to Sendmail.
 

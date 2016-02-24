@@ -31,19 +31,23 @@ function openvbx_mail($recipient, $subject, $template, $maildata = array())
 	$ci = &get_instance();
 	
 	$from_email = $ci->settings->get('from_email', $ci->tenant->id);
+
 	if(empty($from_email))
 	{
 		$domain = $ci->config->item('server_name');
 		$from_email = "$from <do-not-reply@$domain>";
 	}
-	
-	$headers = 'From: '.$from_email."\r\n";
-	$headers .= 'Reply-To: '.$from_email."\r\n";
-	$headers .= 'Return-Path: '.$from_email."\r\n";
-	$headers .= 'User-Agent: OpenVBX-'.OpenVBX::version();
-	
+
 	$message = $ci->load->view('emails/'.$template, $maildata, true);
 	
+	$ci->load->library('email');
+	$ci->email->from($from_email);
+	$ci->email->reply_to($from_email);
+	$ci->email->to($recipient);
+	$ci->email->subject('[OpenVBX] '.$subject);
+	$ci->email->message($message);
+
 	log_message('debug', 'MAILING -- to: '.$recipient.' -- body: '.$message);
-	return mail($recipient, '[OpenVBX] '.$subject, $message, $headers);
+
+	return $ci->email->send();
 }
