@@ -124,6 +124,43 @@
 			<h3>Transcription</h3>
 			<?php endif; ?>
 			<div class="message-transcript"><?php echo (is_null($message->content_text) ? "(no transcription)" : $message->content_text) ?></div>
+			<?php if(substr($message->call_sid,0,2) == 'MM'):
+				echo "<br><br><h3>Media Attachements</h3>";
+				
+				$ci = & get_instance();
+				
+				require_once(APPPATH . 'libraries/twilio.php');
+				
+				$ci->twilio = new TwilioRestClient($ci->twilio_sid,$ci->twilio_token,$ci->twilio_endpoint);
+				
+				$media_url = "Accounts/{$this->twilio_sid}/Messages/{$message->call_sid}/Media.xml";
+				
+				$mediaObj = $ci->twilio->request($media_url, "GET");
+				
+				$media_xml = $mediaObj->ResponseXml;
+				
+				foreach($media_xml->MediaList->Media as $media):
+				
+					$media_uri = 'https://api.twilio.com/2010-04-01/Accounts/'.$this->twilio_sid.'/Messages/'.$message->call_sid.'/Media/'.$media->Sid;
+					
+					if(strpos($media->ContentType,'image')!==false):
+						echo '<img src="'.$media_uri.'" type="'.$media->ContentType.'">';
+					elseif(strpos($media->ContentType,'audio')!==false):
+						echo '<audio controls>';
+						echo '<source src="'.$media_uri.'" type="'.$media->ContentType.'">';
+						echo 'Your browser does not support the audio element.</audio>';
+					elseif(strpos($media->ContentType,'video')!==false):
+						echo '<video controls>';
+						echo '<source src="'.$media_uri.'" type="'.$media->ContentType.'">';
+						echo 'Your browser does not support the video element.</video>';
+					endif;
+					
+					echo '<br>'.$media->ContentType.': <a href="'.$media_uri.'">Click To Download</a>';
+					echo '<br><br>';
+					
+				endforeach;
+	
+			endif; ?>
 		</div><!-- .message-details-transcript -->
 
 	</div><!-- .vbx-content-container -->

@@ -40,11 +40,12 @@
 							<input type="checkbox" name="message[id][]" value="<?php echo $item['id'] ?>" />
 						</div>
 					</td>
-					<td class="message-caller message-details-link">
+					<td class="message-caller message-details-link" style="width:220px">
 						<span class="phone-number"><?php echo $item['caller'] ?></span>
 						<a href="<?php echo site_url("messages/details/{$item['id']}")?>" class="quick-call-button"><span class="replace"><?php echo $item['caller'] ?></span></a>
 						<?php if($item['type'] == 'sms'): ?>
 						<a href="<?php echo site_url("messages/details/{$item['id']}")?>" class="quick-sms-button"><span class="replace"><?php echo $item['caller'] ?></span></a>
+						<?php echo (substr($item['sid'],0,2) == 'MM'?'<span class="phone-number" title="Click to View Media">&nbsp;mms</span>':'') ?>
 						<?php endif; ?>
 
 						<div id="quick-call-popup-<?php echo $item['id'] ?>" class="quick-call-popup hide">
