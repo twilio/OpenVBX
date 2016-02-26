@@ -1,6 +1,12 @@
 {
-    "name" : "Standard",
-    "author" : "Twilio <vbx@twilio.com>",
-    "description" : "Standard set of applets for OpenVBX",
-    "url" : "http://openvbx.org"
+	"name" : "Standard",
+	"author" : "Twilio <vbx@twilio.com>",
+	"description" : "Standard set of applets for OpenVBX",
+	"url" : "http://openvbx.org",
+	"links" : [{
+		"menu" : "Conferences",
+		"url" : "conferences/manager",
+		"script" : "pages/conferences.php",
+		"label" : "Manager"
+	}]
 }
