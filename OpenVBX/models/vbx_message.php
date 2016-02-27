@@ -288,7 +288,7 @@ class VBX_Message extends Model {
 		$user_group_select = "IF(u.email IS NOT NULL , 'user', 'group') as owner_type, IF( u.email IS NOT NULL , u.email , g.name) as owner, IF (u.email IS NOT NULL, u.id, g.id) as owner_id";
 
 		$ci->db->from($this->table)->select("messages.*, $user_group_select", false);
-			
+
 		if(is_array($id))
 		{
 			$ci->db->where($id);
@@ -310,7 +310,7 @@ class VBX_Message extends Model {
 		if(empty($result))
 		{
 			$_id = $id;
-			if (is_array($id)) 
+			if (is_array($id))
 			{
 				$_id = $id['call_sid'];
 			}
@@ -413,14 +413,14 @@ class VBX_Message extends Model {
 	}
 
 	function notify_message($message)
-	{	
+	{
 		$ci =& get_instance();
 		$ci->load->model('vbx_user');
 		$ci->load->model('vbx_group');
 		$ci->load->model('vbx_incoming_numbers');
-		
+
 		$recording_host = $ci->settings->get('recording_host', VBX_PARENT_TENANT);
-		
+
 		$vm_url = $message->content_url;
 		if (!empty($recording_host) && trim($recording_host) != '') {
 			$vm_url = str_replace('api.twilio.com',trim($recording_host), $vm_url);
@@ -547,7 +547,7 @@ class VBX_Message extends Model {
 		{
 			return $group->name;
 		}
-		
+
 		$user = new User();
 		$user->get_by_id($this->user_id);
 		return $user->full_name();
@@ -599,7 +599,7 @@ class VBX_Message extends Model {
 		{
 			$folders[$inbox_id]->total = $user_message_total[0]->count;
 		}
-		
+
 		if(!empty($group_ids))
 		{
 			$groups = $ci->db
@@ -628,7 +628,7 @@ class VBX_Message extends Model {
 				 ->where_in('gm.group_id', $group_ids)
 				 ->where('archived', false)
 				 ->where('m.tenant_id', $ci->tenant->id)
-				 ->group_by('m.status, g.id')
+				 ->group_by('m.status, g.id, g.name') //ND added g.name here to fix error
 				 ->get()->result();
 
 			$group_folder_totals = array();
