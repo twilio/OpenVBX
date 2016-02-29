@@ -46,6 +46,7 @@ $db["default"]["password"] = "root";
 $db["default"]["database"] = "OpenVBX";
 $db["default"]["dbdriver"] = "mysql";
 $db["default"]["dbprefix"] = "";
+$db["default"]["swap_pre"] = "{PRE}";
 $db["default"]["pconnect"] = TRUE;
 $db["default"]["db_debug"] = TRUE;
 $db["default"]["cache_on"] = FALSE;
