@@ -66,3 +66,21 @@ Data that is populated includes:
 
 	$ cd OpenVBX/tests
 	$ phpunit AllTests.php
+
+
+## Javascript
+
+### What's needed to run
+
+The Javascript tests use the jasmine-node (http://github.com/mhevery/jasmine-node) test framework.  They require both the framework and nodejs (http://nodejs.org).
+
+### How to run
+
+From the tests directory, type 
+
+        $ jasmine-node js
+
+### Suggestions for writing JS tests
+
+- Don't use the DOM directly (see upgrade.js as an example)
+- Dependency injection is your friend
