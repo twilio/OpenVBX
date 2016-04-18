@@ -42,6 +42,7 @@ class Message_Text extends User_Controller
 			$content = substr($this->input->post('content'), 0, 1600);
 			$to = $this->input->post('to');
 			$from = $this->input->post('from');
+			$mediaUrls = $this->input->post('media_urls');
 			$numbers = array();
 			
 			if(empty($from))
@@ -80,7 +81,7 @@ class Message_Text extends User_Controller
 			
 			try
 			{
-				$this->vbx_sms_message->send_message($from, $to, $content);
+				$this->vbx_sms_message->send_message($from, $to, $content, $mediaUrls);
 				if($message_id)
 				{
 					$annotation_id = $this->vbx_message->annotate($message_id,

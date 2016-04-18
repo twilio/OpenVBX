@@ -92,14 +92,15 @@ class VBX_Sms_message extends Model {
 		return $output;
 	}
 
-	function send_message($from, $to, $message)
+	function send_message($from, $to, $message, $mediaUrls = null)
 	{
 		$from = PhoneNumber::normalizePhoneNumberToE164($from);
 		$to = PhoneNumber::normalizePhoneNumberToE164($to);
+		$mediaUrls = ($mediaUrls==''?null:$mediaUrls);
 		
 		try {
 			$account = OpenVBX::getAccount();
-			$response = $account->messages->sendMessage($from, $to, $message);
+			$response = $account->messages->sendMessage($from, $to, $message, $mediaUrls);
 		}
 		catch (Exception $e) {
 			throw new VBX_Sms_messageException($e->getMessage());
