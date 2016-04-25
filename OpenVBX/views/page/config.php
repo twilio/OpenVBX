@@ -18,6 +18,10 @@
 				<td><?php echo $info['description']; ?></td>
 			<tr>
 			<tr class="items-row">
+				<td style="width: 120px;">Version</td>
+				<td><?php echo $info['version']; ?></td>
+			<tr>
+			<tr class="items-row">
 				<td style="width: 120px;">Author</td>
 				<td><?php echo $info['author']; ?></td>
 			<tr>

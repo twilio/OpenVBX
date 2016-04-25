@@ -4,6 +4,7 @@
 	<thead>
         <tr class="items-head">
 			<th class="plugin-name">Name</th>
+			<th class="plugin-version">Version</th>
 			<th class="plugin-author">Author</th>
 			<th class="plugin-desc">Description</th>
 			<th class="plugin-path">Installed Path</th>
@@ -14,6 +15,7 @@
 		<?php foreach($plugins as $plugin): ?>
 		<tr class="items-row">
 			<td><?php echo $plugin['name'] ?></td>
+			<td><?php echo $plugin['version'] ?></td>
 			<td><?php echo $plugin['author'] ?></td>
 			<td><?php echo $plugin['description'] ?></td>
 			<td><?php echo $plugin['plugin_path'] ?></td>

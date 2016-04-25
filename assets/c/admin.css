@@ -688,6 +688,10 @@ pre {
 	width: 15%;
 }
 
+#settings-plugins .plugin-version {
+	width: 5%;
+}
+
 #settings-plugins .plugin-author {
 	width: 15%;
 }
