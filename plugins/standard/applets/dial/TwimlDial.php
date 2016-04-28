@@ -53,9 +53,13 @@ class TwimlDial {
 		$this->version = AppletInstance::getValue('version', null);
 		
 		$this->callerId = AppletInstance::getValue('callerId', null);
-		if (empty($this->callerId) && !empty($_REQUEST['From'])) 
+		if (empty($this->callerId) && !empty($_REQUEST['From']))
 		{
 			$this->callerId = $_REQUEST['From'];
+		}
+		else if($this->callerId == 'called' && !empty($_REQUEST['To']))
+		{
+			$this->callerId = $_REQUEST['To'];
 		}
 
 		/* Get current instance	 */

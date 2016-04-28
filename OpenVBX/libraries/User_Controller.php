@@ -52,6 +52,7 @@ class User_Controller extends MY_Controller
 		$this->load->model('vbx_rest_access');
 		$this->load->model('vbx_message');
 		$this->load->model('vbx_incoming_numbers');
+		$this->load->model('vbx_outgoing_caller_ids');
 		$this->load->model('vbx_device');
 
 		// When we're in testing mode, allow access to set Hiccup configuration
@@ -373,12 +374,20 @@ class User_Controller extends MY_Controller
 		{
 			/* Retrieve twilio numbers w/o sandbox */
 			$numbers = $this->vbx_incoming_numbers->get_numbers();
+			$callerIds = $this->vbx_outgoing_caller_ids->get_caller_ids();
+			$numbers = array_merge($numbers, $callerIds);
 		}
 		catch(VBX_IncomingNumberException $e)
 		{
 			error_log($e->getMessage());
 			throw new User_ControllerException($e->getMessage());
 			/* Silent fail */
+		}
+		catch (VBX_OutgoingCallerIdException $e)
+		{
+                        error_log($e->getMessage());
+                        throw new User_ControllerException($e->getMessage());
+                        /* Silent fail */
 		}
 
 		return $numbers;

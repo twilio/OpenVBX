@@ -61,23 +61,13 @@ if (!function_exists('validate_rest_request')) {
 	 * @param string $failure_message
 	 * @return void
 	 */
-	function validate_rest_request($failure_message = 'Could not validate this request. Goodbye.') {
+	function validate_rest_request() {
 		$ci =& get_instance();
 		if ($ci->tenant->type == VBX_Settings::AUTH_TYPE_CONNECT)
 		{
-			return;
+			return true;
 		}
-		
-		if (!OpenVBX::validateRequest()) {
-			$response = new TwimlResponse;
-			$response->say($failure_message, array(
-					'voice' => $ci->vbx_settings->get('voice', $ci->tenant->id),
-					'language' => $ci->vbx_settings->get('voice_language', $ci->tenant->id)
-				));
-			$response->hangup();
-			$response->respond();
-			exit;
-		}
+		return OpenVBX::validateRequest();
 	}
 }
 

@@ -243,8 +243,17 @@ class AudioFiles extends User_Controller
 
 	function prompt_for_recording_twiml()
 	{
-		validate_rest_request();
-		
+                if(!validate_rest_request()) {
+                        $response = new TwimlResponse;
+                        $response->say('Could not validate this request. Goodbye.', array(
+                                        'voice' => $ci->vbx_settings->get('voice', $ci->tenant->id),
+                                        'language' => $ci->vbx_settings->get('voice_language', $ci->tenant->id)
+                                ));
+                        $response->hangup();
+                        $response->respond();
+                        exit;
+                }
+
 		$response = new TwimlResponse;
 		$audioFile = VBX_Audio_File::get(array('recording_call_sid' => $this->input->get_post('CallSid')));
 
@@ -266,8 +275,17 @@ class AudioFiles extends User_Controller
 
 	function replay_recording_twiml()
 	{
-		validate_rest_request();
-		
+                if(!validate_rest_request()) {
+                        $response = new TwimlResponse;
+                        $response->say('Could not validate this request. Goodbye.', array(
+                                        'voice' => $ci->vbx_settings->get('voice', $ci->tenant->id),
+                                        'language' => $ci->vbx_settings->get('voice_language', $ci->tenant->id)
+                                ));
+                        $response->hangup();
+                        $response->respond();
+                        exit;
+                }
+
 		$response = new TwimlResponse;
 
 		if ($this->input->get_post('RecordingUrl'))
@@ -294,8 +312,17 @@ class AudioFiles extends User_Controller
 
 	function accept_or_reject_recording_twiml()
 	{
-		validate_rest_request();
-		
+                if(!validate_rest_request()) {
+                        $response = new TwimlResponse;
+                        $response->say('Could not validate this request. Goodbye.', array(
+                                        'voice' => $ci->vbx_settings->get('voice', $ci->tenant->id),
+                                        'language' => $ci->vbx_settings->get('voice_language', $ci->tenant->id)
+                                ));
+                        $response->hangup();
+                        $response->respond();
+                        exit;
+                }
+
 		$response = new TwimlResponse;
 		$digits = clean_digits($this->input->get_post('Digits'));
 		$call_sid = $this->input->get_post('CallSid');

@@ -1,15 +1,36 @@
 <?php
 	$ci =& get_instance();
 	$ci->load->model('vbx_incoming_numbers');
-	
+	$ci->load->model('vbx_outgoing_caller_ids');
+
 	try {
 		$numbers = $ci->vbx_incoming_numbers->get_numbers();
 	}
 	catch (VBX_IncomingNumberException $e) {
-		log_message('Incoming numbers exception: '.$e->getMessage.' :: '.$e->getCode());
+		log_message('Incoming numbers exception: '.$e->getMessage().' :: '.$e->getCode());
 		$numbers = array();
 	}
-	
+
+	try {
+		$outgoingCallerIds = $ci->vbx_outgoing_caller_ids->get_caller_ids();
+	}
+	catch (VBX_OutgoingCallerIdException $e) {
+		log_message('Outgoing callerids exception: '.$e->getMessage().' :: '.$e->getCode());
+		$outgoingCallerIds = array();
+	}
+
+	$number_options = array(
+		'' => "Caller's Number",
+		'called' => 'Called Number',
+	);
+
+	foreach($numbers as $number) {
+		$number_options['Incoming Numbers'][$number->phone_number] = $number->phone . ' <' . $number->name . '>';
+	}
+	foreach($outgoingCallerIds as $outgoingCallerId) {
+		$number_options['Verified Numbers'][$outgoingCallerId->phone_number] = $outgoingCallerId->phone . ' <' . $outgoingCallerId->name . '>';
+	}
+
 	$callerId = AppletInstance::getValue('callerId', null);
 	$version = AppletInstance::getValue('version', null);
 
@@ -69,12 +90,13 @@
 	<h2>Caller ID</h2>
 	<div class="vbx-full-pane">
 		<fieldset class="vbx-input-container">
-			<select class="medium" name="callerId">
-				<option value="">Caller's Number</option>
-<?php if(count($numbers)) foreach($numbers as $number): $number->phone = normalize_phone_to_E164($number->phone); ?>
-				<option value="<?php echo $number->phone; ?>"<?php echo $number->phone == $callerId ? ' selected="selected" ' : ''; ?>><?php echo $number->name; ?></option>
-<?php endforeach; ?>
-			</select>
+                        <?php
+                                $params = array(
+                                        'name' => 'callerId',
+                                        'class' => 'medium',
+                                );
+                                echo t_form_dropdown($params, $number_options, $from_number);
+                        ?>
 		</fieldset>
 	</div>
 

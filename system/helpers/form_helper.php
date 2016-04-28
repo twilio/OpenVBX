@@ -312,8 +312,7 @@ if ( ! function_exists('form_dropdown'))
 			$key = (string) $key;
 
 			$key = htmlspecialchars($key);
-			$val = htmlspecialchars($val);
-			
+
 			if (is_array($val))
 			{
 				$form .= '<optgroup label="'.$key.'">'."\n";
@@ -322,7 +321,7 @@ if ( ! function_exists('form_dropdown'))
 				{
 					$optgroup_key = htmlspecialchars($optgroup_key);
 					$optgroup_val = htmlspecialchars($optgroup_val);
-					
+
 					$sel = (in_array($optgroup_key, $selected)) ? ' selected="selected"' : '';
 
 					$form .= '<option value="'.$optgroup_key.'"'.$sel.'>'.(string) $optgroup_val."</option>\n";
@@ -332,6 +331,8 @@ if ( ! function_exists('form_dropdown'))
 			}
 			else
 			{
+				$val = htmlspecialchars($val);
+
 				$sel = (in_array($key, $selected)) ? ' selected="selected"' : '';
 
 				$form .= '<option value="'.$key.'"'.$sel.'>'.(string) $val."</option>\n";
