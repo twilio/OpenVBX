@@ -650,7 +650,7 @@
 .radio-table .radio-table-row.on .content-cell { background-color: #e5f6ff; }
 .radio-table .radio-table-row.off .content-cell { background-color: #eee; }
 
-.radio-table .radio-table-row.fist .content-cell {
+.radio-table .radio-table-row.first .content-cell {
 	-moz-border-radius-topright: 4px; /* FF1+ */
 	-webkit-border-top-right-radius: 4px; /* Saf3+, Chrome */
 	-khtml-border-top-right-radius: 4px; /* Konqueror */

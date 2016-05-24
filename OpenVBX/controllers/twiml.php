@@ -74,7 +74,12 @@ class Twiml extends MY_Controller {
 
 	function start_sms($flow_id)
 	{
-		validate_rest_request();
+                if(!validate_rest_request()) {
+                        $response = new TwimlResponse;
+                        $response->message('Could not validate this request. Goodbye.');
+                        $response->respond();
+                        exit;
+                }
 
 		log_message("info", "Calling SMS Flow $flow_id");
 		$body = $this->input->get_post('Body');
@@ -104,8 +109,17 @@ class Twiml extends MY_Controller {
 
 	function start_voice($flow_id)
 	{
-		validate_rest_request();
-		
+		if(!validate_rest_request()) {
+			$response = new TwimlResponse;
+			$response->say('Could not validate this request. Goodbye.', array(
+					'voice' => $ci->vbx_settings->get('voice', $ci->tenant->id),
+					'language' => $ci->vbx_settings->get('voice_language', $ci->tenant->id)
+				));
+			$response->hangup();
+			$response->respond();
+			exit;
+		}
+
 		log_message("info", "Calling Voice Flow $flow_id");
 		$this->flow_type = 'voice';
 
