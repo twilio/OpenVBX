@@ -481,6 +481,7 @@ class OpenVBX {
 		{
 			// we weren't handed post-vars, use the default
 			$post_vars = $_POST;
+			if(empty($post_vars) && !empty($_SERVER['QUERY_STRING'])) $url .= '?'.$_SERVER['QUERY_STRING'];
 		}
 
 		return self::$_twilioValidator->validate(self::getRequestSignature(), $url, $post_vars);
