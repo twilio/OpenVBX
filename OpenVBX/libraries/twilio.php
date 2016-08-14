@@ -160,7 +160,7 @@
 					// curl_setopt($curl, CURLOPT_PUT, TRUE);
 					curl_setopt($curl, CURLOPT_POSTFIELDS, $encoded);
 					curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-					file_put_contents($tmpfile = tempnam("/tmp", "put_"),
+					file_put_contents($tmpfile = tempnam(realpath(sys_get_temp_dir())), "put_"),
 						$encoded);
 					curl_setopt($curl, CURLOPT_INFILE, $fp = fopen($tmpfile,
 						'r'));
