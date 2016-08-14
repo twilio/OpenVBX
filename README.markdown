@@ -4,6 +4,7 @@
  * PHP 5.2.3+
  * MySQL 5+
  * Twilio Account
+ * Valid SSL Certificate if using HTTPS to access OpenVBX
 
 # SSL Certificate Requirements
 
