@@ -222,6 +222,7 @@ class OpenVBX {
 	 */
 	public static function schemaVersion()
 	{
+        $reenable_cache = false;
 		if (empty(self::$schemaVersion))
 		{
 			$ci =& get_instance();
