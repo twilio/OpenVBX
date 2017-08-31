@@ -209,7 +209,11 @@ class Twiml extends MY_Controller {
 						$applet->sms = $sms;
 						if($sms)
 						{
-							$_POST['Body'] = $_GET['Body'] = $_REQUEST['Body'] = $sms;
+							if (!isset($_REQUEST['Body'])) $_REQUEST['Body'] = $sms;
+if (!isset($_POST['Body'])) $_POST['Body'] = $sms;
+if (!isset($_GET['Body'])) $_GET['Body'] = $sms;
+							//If the instance is a forward the message get overwritten!!!
+						//	$_POST['Body'] = $_GET['Body'] = $_REQUEST['Body'] = $sms;
 						}
 						$this->session->unset_userdata('sms-body');
 
