@@ -87,10 +87,10 @@ var Client = {
 				Client.cancel(conn);
 			});
 			
-			Twilio.Device.presence(function(event) {
-				Client.log('event: presence');
-				Client.handleEvent(event);
-			});
+//			Twilio.Device.presence(function(event) {
+//				Client.log('event: presence');
+//				Client.handleEvent(event);
+//			});
 		
 			$('#dialer #client-ui-actions button').hide();
 		}
@@ -367,7 +367,7 @@ var Client = {
 		this.connection.accept();
 		this.status.setCallStatus(true);
 		
-		Twilio.Device.sounds.incoming(false);
+		Twilio.Device.audio.incoming(false);
 		
 		var connection_message = 'Connected';
 		if (this.connection.parameters.From) {
@@ -396,7 +396,7 @@ var Client = {
 	},
 
 	connect: function (connection) {
-		Twilio.Device.sounds.incoming(false);
+		Twilio.Device.audio.incoming(false);
 		
 		this.ui.startTick();
 		this.ui.hide_actions('button');
@@ -422,7 +422,7 @@ var Client = {
 		}
 		
 		if (connection.parameters.CallSid == this.connection.parameters.CallSid) {
-			Twilio.Device.sounds.incoming(true);
+			Twilio.Device.audio.incoming(true);
 			
 			// reset ui
 			this.ui.endTick();

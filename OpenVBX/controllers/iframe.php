@@ -23,22 +23,15 @@
 
 class Iframe extends User_Controller {
 
-	protected $client_token_timeout;	
-	protected $twilio_js_version = '1.2';
+	protected $client_token_timeout;
 
 	function index() {
 		$data = $this->init_view_data();
-		
-		$twilio_js = sprintf('//static.twilio.com/libs/twiliojs/%s/twilio%s.js', 
-			$this->twilio_js_version,
-			($this->config->item('use_unminimized_js') ? '' : '.min')
-		);
-		
+        
 		$data = array_merge($data, array(
 			'site_title' => 'OpenVBX',
 			'iframe_url' => site_url('/messages'),
 			'users' => $this->get_users(),
-			'twilio_js' => $twilio_js,
 			'client_capability' => null
 		));
 		

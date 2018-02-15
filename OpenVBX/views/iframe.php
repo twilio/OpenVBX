@@ -25,7 +25,8 @@
 		</iframe>
 	</div><!-- /container -->
 
-<script type="text/javascript" src="<?php echo $twilio_js; ?>"></script>
+<script type="text/javascript" src="//media.twiliocdn.com/sdk/js/client/v1.4/twilio.min.js"></script>
+
 <?php $this->load->view('js-init'); ?>
 <script type="text/javascript" src="<?php echo asset_url('assets/j/iframe.js?v='.$site_rev) ?>"></script>
 </body>
